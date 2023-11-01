@@ -1,3 +1,4 @@
-baseURL = ''
+baseURL = "https://gu1shermo.github.io/website-hrst4/"
 languageCode = 'en-us'
 title = 'My New Hugo Site'
+theme =  'PaperMod'
