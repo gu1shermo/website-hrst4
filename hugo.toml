@@ -7,14 +7,14 @@ theme =  'PaperMod'
 [params]
 defaultTheme = "dark"
 disableThemeToggle = true
-[[params.profileMode]]
-enabled = true
-title = "<Title>"
-subtitle = "This is subtitle"
-imageUrl = "https://static.oceandraw.com/wp-content/uploads/2018/06/24145039/Hanabi-Ko-Koko.jpg"
-imageTitle = "<title of image as alt>"
-imageWidth = 120
-imageHeight = 120
+# [[params.profileMode]]
+# enabled = true
+# title = "<Title>"
+# subtitle = "This is subtitle"
+# imageUrl = "https://static.oceandraw.com/wp-content/uploads/2018/06/24145039/Hanabi-Ko-Koko.jpg"
+# imageTitle = "<title of image as alt>"
+# imageWidth = 120
+# imageHeight = 120
 
 # [[params.socialIcons]]
 # name = "kofi"
