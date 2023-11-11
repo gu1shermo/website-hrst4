@@ -9,3 +9,10 @@ theme =  'PaperMod'
 source = 'content'
 target = 'content'
 excludeFiles = ['templates/**']
+
+[params.profileMode]
+enabled = true
+title = "<Title pmode>"
+subtitle = "This is subtitle pmode"
+imageUrl = "./content/docs/assets/image.png"
+imageTitle = "<title of image as alt pmode>"
