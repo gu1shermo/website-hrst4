@@ -6,7 +6,17 @@
     <description>Recent content in Docs on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 01 Nov 2023 14:04:30 +0100</lastBuildDate><atom:link href="https://hrst4.xyz/docs/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 11 Nov 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://hrst4.xyz/docs/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>test5</title>
+      <link>https://hrst4.xyz/docs/test5/</link>
+      <pubDate>Sat, 11 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://hrst4.xyz/docs/test5/</guid>
+      <description>Link to another post
+What is Lorem Ipsum? Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&amp;rsquo;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</description>
+    </item>
+    
     <item>
       <title>Test1 md</title>
       <link>https://hrst4.xyz/docs/test/</link>
@@ -32,6 +42,15 @@
       
       <guid>https://hrst4.xyz/docs/test3/</guid>
       <description> test4 </description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://hrst4.xyz/docs/another_post/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://hrst4.xyz/docs/another_post/</guid>
+      <description>anotherpost</description>
     </item>
     
   </channel>
