@@ -1,0 +1,10 @@
+baseURL: https://hrst4.xyz/
+languageCode: en-us
+title: hrst4's blog
+theme: PaperMod
+module:
+  mounts:
+    - source: content
+      target: content
+      excludeFiles:
+        - templates/**

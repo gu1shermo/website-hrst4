@@ -169,6 +169,7 @@
   },
   "active": "6d5fa9713ff85d53",
   "lastOpenFiles": [
+    "docs/assets/hugo.yml",
     "archives.md",
     "docs/LEARNOPENGL_FR/00_Introduction/introduction.md",
     "docs/LEARNOPENGL_FR/01_Getting_Started/01_creating a window.md",
@@ -208,7 +209,6 @@
     "docs/LEARNOPENGL_FR/04_Advanced_OpenGL/10_anti_aliasing.md",
     "docs/LEARNOPENGL_FR/04_Advanced_OpenGL/09_instancing.md",
     "docs/LEARNOPENGL_FR/04_Advanced_OpenGL/08_geometry_shader.md",
-    "docs/LEARNOPENGL_FR/04_Advanced_OpenGL/07_advanced_glsl.md",
     "docs/LEARNOPENGL_FR/04_Advanced_OpenGL",
     "docs/LEARNOPENGL_FR/03_Model_Loading",
     "docs/LEARNOPENGL_FR/02_Lighting/05_Multiple Lights",
