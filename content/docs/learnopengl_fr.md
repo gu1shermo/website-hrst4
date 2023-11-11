@@ -12,7 +12,7 @@ date:
 
 %% Begin Waypoint %%
 - **00_Introduction**
-	- [[LEARNOPENGL_FR/00_Introduction/introduction]]
+	- [introduction](./LEARNOPENGL_FR/00_Introduction/introduction.md)
 - **01_Getting_Started**
 	- [[LEARNOPENGL_FR/01_Getting_Started/00_opengl]]
 	- [[LEARNOPENGL_FR/01_Getting_Started/01_creating a window]]

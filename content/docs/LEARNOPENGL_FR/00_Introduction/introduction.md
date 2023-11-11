@@ -1,6 +1,13 @@
 ---
-tags: [cg, opengl, computer graphics, cpp]
-dg-publish: true
+series: 
+categories: 
+tags: 
+title:
+  "{ title }": 
+authors:
+  - hrst4
+date:
+  "{ date }":
 ---
 # Introduction
 Depuis que vous êtes arrivé ici, vous voulez probablement apprendre les rouages de l'infographie et faire tous les trucs que les jeunes cool font par eux-mêmes. Faire les choses par soi-même est extrêmement amusant et plein de ressources, et cela vous permet d'acquérir une excellente compréhension de la programmation graphique. Cependant, il y a quelques points à prendre en considération avant de commencer votre voyage.
