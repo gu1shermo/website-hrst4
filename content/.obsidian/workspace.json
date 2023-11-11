@@ -21,7 +21,19 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/src_post.md",
+                "file": "docs/learnopengl_fr.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "cb703a125c9bc039",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "docs/LEARNOPENGL_FR/00_Introduction/introduction.md",
                 "mode": "source",
                 "source": false
               }
@@ -94,7 +106,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "docs/src_post.md",
+                "file": "docs/learnopengl_fr.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -111,7 +123,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "docs/src_post.md",
+                "file": "docs/learnopengl_fr.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -134,7 +146,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "docs/src_post.md"
+                "file": "docs/learnopengl_fr.md"
               }
             }
           }
@@ -157,21 +169,51 @@
   },
   "active": "6d5fa9713ff85d53",
   "lastOpenFiles": [
+    "docs/LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting.md",
+    "docs/LEARNOPENGL_FR/00_Introduction/introduction.md",
+    "docs/learnopengl_fr.md",
     "docs/another_post.md",
+    "docs/LEARNOPENGL_FR",
     "docs/src_post.md",
-    "docs/assets/image.png",
-    "docs/assets",
-    "posts/Link to another post.md",
-    "posts/another post.md",
-    "posts/Our first post.md",
-    "posts/Our First",
-    "posts/assets/image.png",
-    "docs/test3.md",
-    "docs/test2.md",
-    "docs/test.md",
-    "templates/tpl_frontmatter.md",
-    "templates",
-    "docs/test5.md",
-    "content/templates/tpl_frontmatter.md"
+    "docs/LEARNOPENGL_FR/06_PBR/pbr9.png",
+    "docs/LEARNOPENGL_FR/06_PBR/pbr8.png",
+    "docs/LEARNOPENGL_FR/06_PBR/pbr7.png",
+    "docs/LEARNOPENGL_FR/06_PBR/pbr6.png",
+    "docs/LEARNOPENGL_FR/06_PBR/pbr5.png",
+    "docs/LEARNOPENGL_FR/06_PBR/pbr4.png",
+    "docs/LEARNOPENGL_FR/06_PBR/pbr3.png",
+    "docs/LEARNOPENGL_FR/06_PBR/pbr2.png",
+    "docs/LEARNOPENGL_FR/06_PBR/pbr10.png",
+    "docs/LEARNOPENGL_FR/06_PBR/pbr1.png",
+    "docs/LEARNOPENGL_FR/06_PBR/03_IBL/02_specular_ibl.md",
+    "docs/LEARNOPENGL_FR/06_PBR/03_IBL/01_diffuse_irradiance.md",
+    "docs/LEARNOPENGL_FR/06_PBR/03_IBL",
+    "docs/LEARNOPENGL_FR/06_PBR/02_lighting.md",
+    "docs/LEARNOPENGL_FR/06_PBR/01_theory.md",
+    "docs/LEARNOPENGL_FR/06_PBR",
+    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/08_ssao.md",
+    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/07_deferred_shading.md",
+    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/06_bloom.md",
+    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/05_hdr.md",
+    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/04_parallax_mapping.md",
+    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/03_normal_mapping.md",
+    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/02b_point_shadows.md",
+    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/02a_shadow_mapping.md",
+    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/01_gamma_correction.md",
+    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/00_advanced_lighting.md",
+    "docs/LEARNOPENGL_FR/05_Advanced_Lighting",
+    "docs/LEARNOPENGL_FR/04_Advanced_OpenGL/10_anti_aliasing.md",
+    "docs/LEARNOPENGL_FR/04_Advanced_OpenGL/09_instancing.md",
+    "docs/LEARNOPENGL_FR/04_Advanced_OpenGL/08_geometry_shader.md",
+    "docs/LEARNOPENGL_FR/04_Advanced_OpenGL/07_advanced_glsl.md",
+    "docs/LEARNOPENGL_FR/04_Advanced_OpenGL/06_advanced_data.md",
+    "docs/LEARNOPENGL_FR/04_Advanced_OpenGL/05_cubemaps.md",
+    "docs/LEARNOPENGL_FR/04_Advanced_OpenGL/04_framebuffers.md",
+    "docs/LEARNOPENGL_FR/04_Advanced_OpenGL",
+    "docs/LEARNOPENGL_FR/03_Model_Loading",
+    "docs/LEARNOPENGL_FR/02_Lighting/05_Multiple Lights",
+    "docs/LEARNOPENGL_FR/02_Lighting/04_Light Casters",
+    "docs/LEARNOPENGL_FR/02_Lighting/03_Lighting Maps",
+    "docs/LEARNOPENGL_FR/02_Lighting/02_Materials"
   ]
 }
