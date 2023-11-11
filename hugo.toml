@@ -7,6 +7,10 @@ theme =  'PaperMod'
 [params]
 defaultTheme = "dark"
 disableThemeToggle = true
+[[params.homeInfoParams]]
+Title = "Hi there wave dark theme"
+Content = "Can be Info, links, about... dark theme"
+
 
 [module]
 [[module.mounts]]
