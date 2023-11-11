@@ -2,133 +2,133 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>/</loc>
+    <loc>https://hrst4.xyz/docs/</loc>
     <lastmod>2023-11-11T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/docs/</loc>
+    <loc>https://hrst4.xyz/</loc>
     <lastmod>2023-11-11T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/docs/src_post/</loc>
+    <loc>https://hrst4.xyz/docs/src_post/</loc>
     <lastmod>2023-11-11T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/docs/another_post/</loc>
+    <loc>https://hrst4.xyz/tags/</loc>
+    <lastmod>2023-11-11T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/docs/learnopengl_fr/</loc>
+    <loc>https://hrst4.xyz/tags/test/</loc>
+    <lastmod>2023-11-11T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/docs/learnopengl_fr/00_introduction/introduction/</loc>
+    <loc>https://hrst4.xyz/docs/another_post/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/01_getting_started/00_opengl/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/01_getting_started/01_creating-a-window/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/00_introduction/introduction/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/01_getting_started/02_hello-window/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/00_opengl/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/01_getting_started/03_hello-triangle/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/01_creating-a-window/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/01_getting_started/04_shaders/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/02_hello-window/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/01_getting_started/05_textures/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/03_hello-triangle/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/01_getting_started/06_transformations/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/04_shaders/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/01_getting_started/07_coordinate-systems/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/05_textures/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/01_getting_started/08_camera/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/06_transformations/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/01_getting_started/09_glossary/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/07_coordinate-systems/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/02_lighting/00_colors/colors/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/08_camera/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/02_lighting/01_basic-lighting/basic-lighting/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/09_glossary/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/02_lighting/02_materials/materials/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/00_colors/colors/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/02_lighting/03_lighting-maps/lighting-maps/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/01_basic-lighting/basic-lighting/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/02_lighting/04_light-casters/light-casters/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/02_materials/materials/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/02_lighting/05_multiple-lights/multiple-lights/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/03_lighting-maps/lighting-maps/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/02_lighting/glossary/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/04_light-casters/light-casters/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/03_model_loading/assimp/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/05_multiple-lights/multiple-lights/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/03_model_loading/mesh/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/glossary/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/03_model_loading/model/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/03_model_loading/assimp/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/04_advanced_opengl/00_depth_testing/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/03_model_loading/mesh/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/04_advanced_opengl/01_stencil_testing/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/03_model_loading/model/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/04_advanced_opengl/02_blending/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/00_depth_testing/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/04_advanced_opengl/03_face_culling/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/01_stencil_testing/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/04_advanced_opengl/04_framebuffers/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/02_blending/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/04_advanced_opengl/05_cubemaps/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/03_face_culling/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/04_advanced_opengl/06_advanced_data/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/04_framebuffers/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/04_advanced_opengl/07_advanced_glsl/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/05_cubemaps/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/04_advanced_opengl/08_geometry_shader/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/06_advanced_data/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/04_advanced_opengl/09_instancing/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/07_advanced_glsl/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/04_advanced_opengl/10_anti_aliasing/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/08_geometry_shader/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/05_advanced_lighting/00_advanced_lighting/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/09_instancing/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/05_advanced_lighting/01_gamma_correction/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/10_anti_aliasing/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/05_advanced_lighting/02a_shadow_mapping/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/00_advanced_lighting/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/05_advanced_lighting/02b_point_shadows/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/01_gamma_correction/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/05_advanced_lighting/03_normal_mapping/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/02a_shadow_mapping/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/05_advanced_lighting/04_parallax_mapping/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/02b_point_shadows/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/05_advanced_lighting/05_hdr/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/03_normal_mapping/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/05_advanced_lighting/06_bloom/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/04_parallax_mapping/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/05_advanced_lighting/07_deferred_shading/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/05_hdr/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/05_advanced_lighting/08_ssao/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/06_bloom/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/06_pbr/01_theory/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/07_deferred_shading/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/06_pbr/02_lighting/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/08_ssao/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/06_pbr/03_ibl/01_diffuse_irradiance/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/06_pbr/01_theory/</loc>
   </url><url>
-    <loc>/docs/learnopengl_fr/06_pbr/03_ibl/02_specular_ibl/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/06_pbr/02_lighting/</loc>
   </url><url>
-    <loc>/shaders/spacetravel/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/06_pbr/03_ibl/01_diffuse_irradiance/</loc>
   </url><url>
-    <loc>/templates/tpl_frontmatter/</loc>
+    <loc>https://hrst4.xyz/docs/learnopengl_fr/06_pbr/03_ibl/02_specular_ibl/</loc>
   </url><url>
-    <loc>/archives/</loc>
+    <loc>https://hrst4.xyz/shaders/spacetravel/</loc>
   </url><url>
-    <loc>/categories/</loc>
+    <loc>https://hrst4.xyz/archives/</loc>
   </url><url>
-    <loc>/tags/cg/</loc>
+    <loc>https://hrst4.xyz/categories/</loc>
   </url><url>
-    <loc>/tags/computer-graphics/</loc>
+    <loc>https://hrst4.xyz/tags/cg/</loc>
   </url><url>
-    <loc>/tags/cpp/</loc>
+    <loc>https://hrst4.xyz/tags/computer-graphics/</loc>
   </url><url>
-    <loc>/tags/opengl/</loc>
+    <loc>https://hrst4.xyz/tags/cpp/</loc>
   </url><url>
-    <loc>/categories/opengl-graphics/</loc>
+    <loc>https://hrst4.xyz/tags/opengl/</loc>
   </url><url>
-    <loc>/shaders/</loc>
+    <loc>https://hrst4.xyz/categories/opengl-graphics/</loc>
   </url><url>
-    <loc>/tags/</loc>
-  </url><url>
-    <loc>/templates/</loc>
+    <loc>https://hrst4.xyz/shaders/</loc>
   </url>
 </urlset>
