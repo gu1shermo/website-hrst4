@@ -169,6 +169,7 @@
   },
   "active": "6d5fa9713ff85d53",
   "lastOpenFiles": [
+    "search.md",
     "docs/assets/hugo.yml",
     "archives.md",
     "docs/LEARNOPENGL_FR/00_Introduction/introduction.md",
@@ -213,7 +214,6 @@
     "docs/LEARNOPENGL_FR/03_Model_Loading",
     "docs/LEARNOPENGL_FR/02_Lighting/05_Multiple Lights",
     "docs/LEARNOPENGL_FR/02_Lighting/04_Light Casters",
-    "docs/LEARNOPENGL_FR/02_Lighting/03_Lighting Maps",
-    "docs/LEARNOPENGL_FR/02_Lighting/02_Materials"
+    "docs/LEARNOPENGL_FR/02_Lighting/03_Lighting Maps"
   ]
 }

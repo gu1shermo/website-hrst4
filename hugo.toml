@@ -16,6 +16,9 @@ disableThemeToggle = true
 # imageWidth = 120
 # imageHeight = 120
 
+[[outputs.home]]
+home = [ "HTML", "RSS", "JSON" ]
+
 # [[params.socialIcons]]
 # name = "kofi"
 # title = "<custom title>"
