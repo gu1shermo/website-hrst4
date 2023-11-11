@@ -1,37 +1,36 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>cpp on hrst4&#39;s blog toml</title>
-    <link>https://hrst4.xyz/tags/cpp/</link>
-    <description>Recent content in cpp on hrst4&#39;s blog toml</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://hrst4.xyz/tags/cpp/index.xml" rel="self" type="application/rss+xml" />
+    <title>cpp on </title>
+    <link>/tags/cpp/</link>
+    <description>Recent content in cpp on </description>
+    <generator>Hugo -- gohugo.io</generator><atom:link href="/tags/cpp/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/00_opengl/</link>
+      <link>/docs/learnopengl_fr/01_getting_started/00_opengl/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/00_opengl/</guid>
+      <guid>/docs/learnopengl_fr/01_getting_started/00_opengl/</guid>
       <description>OpenGL Avant de commencer notre voyage, nous devons d&amp;rsquo;abord définir ce qu&amp;rsquo;est OpenGL. OpenGL est principalement considéré comme une API (une interface de programmation d&amp;rsquo;applications) qui nous fournit un large ensemble de fonctions que nous pouvons utiliser pour manipuler les graphiques et les images. Cependant, OpenGL en lui-même n&amp;rsquo;est pas une API, mais simplement une spécification, développée et maintenue par le groupe Khronos.
 La spécification OpenGL précise exactement le résultat/la sortie de chaque fonction et la manière dont elle doit fonctionner.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/01_creating-a-window/</link>
+      <link>/docs/learnopengl_fr/01_getting_started/01_creating-a-window/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/01_creating-a-window/</guid>
+      <guid>/docs/learnopengl_fr/01_getting_started/01_creating-a-window/</guid>
       <description>Créer une fenêtre La première chose à faire avant de commencer à créer des graphiques étonnants est de créer un contexte OpenGL et une fenêtre d&amp;rsquo;application pour dessiner. Cependant, ces opérations sont spécifiques à chaque système d&amp;rsquo;exploitation et OpenGL essaie délibérément de s&amp;rsquo;abstraire de ces opérations. Cela signifie que nous devons créer une fenêtre, définir un contexte et gérer l&amp;rsquo;entrée de l&amp;rsquo;utilisateur par nous-mêmes.
 Heureusement, il existe de nombreuses bibliothèques qui fournissent les fonctionnalités que nous recherchons, dont certaines sont spécifiquement destinées à OpenGL.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/02_hello-window/</link>
+      <link>/docs/learnopengl_fr/01_getting_started/02_hello-window/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/02_hello-window/</guid>
+      <guid>/docs/learnopengl_fr/01_getting_started/02_hello-window/</guid>
       <description>Hello Window Voyons si nous pouvons faire fonctionner GLFW. Tout d&amp;rsquo;abord, créez un fichier .cpp et ajoutez les inclusions suivantes au début de votre fichier nouvellement créé.
 #include &amp;lt;glad/glad.h&amp;gt; #include &amp;lt;GLFW/glfw3.h&amp;gt; Assurez-vous d&amp;rsquo;inclure GLAD avant GLFW. Le fichier include de GLAD inclut les en-têtes OpenGL nécessaires dans les coulisses (comme GL/gl.h). Il faut donc s&amp;rsquo;assurer d&amp;rsquo;inclure GLAD avant les autres fichiers d&amp;rsquo;en-tête qui nécessitent OpenGL (comme GLFW).
 Ensuite, nous créons la fonction principale dans laquelle nous allons instancier la fenêtre GLFW:</description>
@@ -39,149 +38,149 @@ Ensuite, nous créons la fonction principale dans laquelle nous allons instancie
     
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/03_hello-triangle/</link>
+      <link>/docs/learnopengl_fr/01_getting_started/03_hello-triangle/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/03_hello-triangle/</guid>
+      <guid>/docs/learnopengl_fr/01_getting_started/03_hello-triangle/</guid>
       <description>Hello Dans OpenGL, tout est dans l&amp;rsquo;espace 3D, mais l&amp;rsquo;écran ou la fenêtre est un tableau de pixels 2D. Une grande partie du travail d&amp;rsquo;OpenGL consiste donc à transformer toutes les coordonnées 3D en pixels 2D qui tiennent sur l&amp;rsquo;écran. Le processus de transformation des coordonnées 3D en pixels 2D est géré par le pipeline graphique d&amp;rsquo;OpenGL. Le pipeline graphique peut être divisé en deux grandes parties : la première transforme vos coordonnées 3D en coordonnées 2D et la seconde transforme les coordonnées 2D en pixels colorés.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/04_shaders/</link>
+      <link>/docs/learnopengl_fr/01_getting_started/04_shaders/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/04_shaders/</guid>
+      <guid>/docs/learnopengl_fr/01_getting_started/04_shaders/</guid>
       <description>Shaders Comme mentionné dans le chapitre 03_hello triangle, les shaders sont de petits programmes qui reposent sur le GPU. Ces programmes sont exécutés pour chaque section spécifique du pipeline graphique. En gros, les shaders ne sont rien d&amp;rsquo;autre que des programmes qui transforment les entrées en sorties. Les shaders sont également des programmes très isolés dans la mesure où ils ne sont pas autorisés à communiquer entre eux ; la seule communication qu&amp;rsquo;ils ont se fait par le biais de leurs entrées et sorties.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/05_textures/</link>
+      <link>/docs/learnopengl_fr/01_getting_started/05_textures/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/05_textures/</guid>
+      <guid>/docs/learnopengl_fr/01_getting_started/05_textures/</guid>
       <description>Textures Nous avons appris que pour ajouter plus de détails à nos objets, nous pouvons utiliser des couleurs pour chaque sommet afin de créer des images intéressantes. Cependant, pour obtenir un certain réalisme, nous devons avoir beaucoup de sommets afin de pouvoir spécifier un grand nombre de couleurs. Cela représente un surcoût considérable, car chaque modèle nécessite beaucoup plus de sommets et, pour chacun d&amp;rsquo;eux, un attribut de couleur.
 Les artistes et les programmeurs préfèrent généralement utiliser une texture.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/06_transformations/</link>
+      <link>/docs/learnopengl_fr/01_getting_started/06_transformations/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/06_transformations/</guid>
+      <guid>/docs/learnopengl_fr/01_getting_started/06_transformations/</guid>
       <description>Transformations Nous savons maintenant comment créer des objets, les colorer et/ou leur donner une apparence détaillée à l&amp;rsquo;aide de textures, mais ils ne sont toujours pas très intéressants puisqu&amp;rsquo;il s&amp;rsquo;agit d&amp;rsquo;objets statiques. Nous pourrions essayer de les faire bouger en changeant leurs sommets et en reconfigurant leurs buffers à chaque image, mais c&amp;rsquo;est lourd et coûteux en puissance de traitement. Il existe de bien meilleures façons de transformer un objet, et c&amp;rsquo;est en utilisant des objets matriciels (multiples).</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/07_coordinate-systems/</link>
+      <link>/docs/learnopengl_fr/01_getting_started/07_coordinate-systems/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/07_coordinate-systems/</guid>
+      <guid>/docs/learnopengl_fr/01_getting_started/07_coordinate-systems/</guid>
       <description>Systèmes de coordonnées Dans le dernier chapitre, nous avons appris comment utiliser les matrices à notre avantage en transformant tous les sommets avec des matrices de transformation. OpenGL s&amp;rsquo;attend à ce que tous les sommets, que nous voulons rendre visibles, soient en coordonnées normalisées après chaque exécution du vertex shader. C&amp;rsquo;est-à-dire que les coordonnées $x$, $y$ et $z$ de chaque sommet doivent être comprises entre $-1.0$ et $1.0$ ; les coordonnées en dehors de cette plage ne seront pas visibles.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/08_camera/</link>
+      <link>/docs/learnopengl_fr/01_getting_started/08_camera/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/08_camera/</guid>
+      <guid>/docs/learnopengl_fr/01_getting_started/08_camera/</guid>
       <description>Camera Dans le chapitre précédent, nous avons discuté de la matrice de vue et de la façon dont nous pouvons l&amp;rsquo;utiliser pour nous déplacer dans la scène (nous avons un peu reculé). OpenGL n&amp;rsquo;est pas familier avec le concept de caméra, mais nous pouvons essayer d&amp;rsquo;en simuler une en déplaçant tous les objets de la scène dans le sens inverse, donnant l&amp;rsquo;illusion que nous nous déplaçons.
 Dans ce chapitre, nous verrons comment mettre en place une caméra dans OpenGL.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/09_glossary/</link>
+      <link>/docs/learnopengl_fr/01_getting_started/09_glossary/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/09_glossary/</guid>
+      <guid>/docs/learnopengl_fr/01_getting_started/09_glossary/</guid>
       <description>Glossaire OpenGL : une spécification formelle d&amp;rsquo;une API graphique qui définit la disposition et la sortie de chaque fonction. GLAD : une bibliothèque de chargement d&amp;rsquo;extension qui charge et définit tous les pointeurs de fonction d&amp;rsquo;OpenGL pour nous afin que nous puissions utiliser toutes les fonctions (modernes) d&amp;rsquo;OpenGL. Viewport : la région de la fenêtre 2D dans laquelle nous effectuons le rendu. Graphics Pipeline : le processus complet par lequel les vertices doivent passer avant de se retrouver sous la forme d&amp;rsquo;un ou plusieurs pixels sur l&amp;rsquo;écran.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/00_colors/colors/</link>
+      <link>/docs/learnopengl_fr/02_lighting/00_colors/colors/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/00_colors/colors/</guid>
+      <guid>/docs/learnopengl_fr/02_lighting/00_colors/colors/</guid>
       <description>Couleurs Nous avons brièvement utilisé et manipulé les couleurs dans les chapitres précédents, mais nous ne les avons jamais définies correctement. Nous allons ici discuter de ce que sont les couleurs et commencer à construire la scène pour les prochains chapitres sur l&amp;rsquo;éclairage.
 Dans le monde réel, les couleurs peuvent prendre n&amp;rsquo;importe quelle valeur connue, chaque objet ayant sa propre couleur. Dans le monde numérique, nous devons convertir les couleurs réelles (infinies) en valeurs numériques (limitées) et, par conséquent, toutes les couleurs du monde réel ne peuvent pas être représentées numériquement.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/01_basic-lighting/basic-lighting/</link>
+      <link>/docs/learnopengl_fr/02_lighting/01_basic-lighting/basic-lighting/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/01_basic-lighting/basic-lighting/</guid>
+      <guid>/docs/learnopengl_fr/02_lighting/01_basic-lighting/basic-lighting/</guid>
       <description>Basic lighting L&amp;rsquo;éclairage dans le monde réel est extrêmement compliqué et dépend de beaucoup trop de facteurs, ce que nous ne pouvons pas nous permettre de calculer avec la puissance de traitement limitée dont nous disposons. L&amp;rsquo;éclairage dans OpenGL est donc basé sur des approximations de la réalité en utilisant des modèles simplifiés qui sont beaucoup plus faciles à traiter et relativement similaires. Ces modèles d&amp;rsquo;éclairage sont basés sur la physique de la lumière telle que nous la comprenons.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/02_materials/materials/</link>
+      <link>/docs/learnopengl_fr/02_lighting/02_materials/materials/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/02_materials/materials/</guid>
+      <guid>/docs/learnopengl_fr/02_lighting/02_materials/materials/</guid>
       <description>Materials Dans le monde réel, chaque objet a une réaction différente à la lumière. Les objets en acier sont souvent plus brillants qu&amp;rsquo;un vase en argile, par exemple, et un récipient en bois ne réagit pas de la même manière à la lumière qu&amp;rsquo;un récipient en acier. Certains objets reflètent la lumière sans trop se disperser, ce qui donne de petits reflets spéculaires, tandis que d&amp;rsquo;autres se dispersent beaucoup, ce qui donne un plus grand rayon au reflet.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/03_lighting-maps/lighting-maps/</link>
+      <link>/docs/learnopengl_fr/02_lighting/03_lighting-maps/lighting-maps/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/03_lighting-maps/lighting-maps/</guid>
+      <guid>/docs/learnopengl_fr/02_lighting/03_lighting-maps/lighting-maps/</guid>
       <description>Lighting Maps Dans le chapitre précédent, nous avons évoqué la possibilité de doter chaque objet d&amp;rsquo;un matériau unique qui réagit différemment à la lumière. Cela permet de donner à chaque objet un aspect unique par rapport aux autres objets, mais n&amp;rsquo;offre pas encore beaucoup de flexibilité sur le rendu visuel d&amp;rsquo;un objet.
 Dans le chapitre précédent, nous avons défini un matériau pour l&amp;rsquo;ensemble d&amp;rsquo;un objet. Cependant, dans le monde réel, les objets ne sont généralement pas constitués d&amp;rsquo;un seul matériau, mais de plusieurs matériaux.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/04_light-casters/light-casters/</link>
+      <link>/docs/learnopengl_fr/02_lighting/04_light-casters/light-casters/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/04_light-casters/light-casters/</guid>
+      <guid>/docs/learnopengl_fr/02_lighting/04_light-casters/light-casters/</guid>
       <description>Projecteurs de lumière Tous les éclairages que nous avons utilisés jusqu&amp;rsquo;à présent provenaient d&amp;rsquo;une source unique, c&amp;rsquo;est-à-dire d&amp;rsquo;un seul point dans l&amp;rsquo;espace. Cela donne de bons résultats, mais dans le monde réel, nous avons plusieurs types de lumière qui agissent chacun différemment. Une source de lumière qui projette de la lumière sur des objets est appelée un projecteur de lumière (light caster). Dans ce chapitre, nous aborderons plusieurs types de projecteurs de lumière.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/05_multiple-lights/multiple-lights/</link>
+      <link>/docs/learnopengl_fr/02_lighting/05_multiple-lights/multiple-lights/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/05_multiple-lights/multiple-lights/</guid>
+      <guid>/docs/learnopengl_fr/02_lighting/05_multiple-lights/multiple-lights/</guid>
       <description>Plusieurs lumières Dans les chapitres précédents, nous avons beaucoup appris sur l&amp;rsquo;éclairage en OpenGL. Nous avons découvert l&amp;rsquo;ombrage Phong (Phong shading), les matériaux, les maps d&amp;rsquo;éclairage et les différents types de projecteurs de lumière. Dans ce chapitre, nous allons combiner toutes les connaissances acquises précédemment en créant une scène entièrement éclairée avec 6 sources de lumière actives. Nous allons simuler une lumière semblable à celle du soleil comme source de lumière directionnelle, 4 lumières ponctuelles dispersées dans la scène et nous ajouterons également une lampe de poche.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/glossary/</link>
+      <link>/docs/learnopengl_fr/02_lighting/glossary/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/02_lighting/glossary/</guid>
+      <guid>/docs/learnopengl_fr/02_lighting/glossary/</guid>
       <description>Glossaire Vecteur de couleur : un vecteur représentant la plupart des couleurs du monde réel par une combinaison des composantes rouge, verte et bleue (abrégé en RGB). La couleur d&amp;rsquo;un objet est la composante de couleur réfléchie que l&amp;rsquo;objet n&amp;rsquo;a pas absorbée. Modèle d&amp;rsquo;éclairage Phong : modèle d&amp;rsquo;approximation de l&amp;rsquo;éclairage du monde réel par le calcul d&amp;rsquo;une composante ambiante, diffuse et spéculaire. Éclairage ambiant : approximation de l&amp;rsquo;éclairage global en donnant à chaque objet une petite luminosité afin que les objets ne soient pas complètement sombres s&amp;rsquo;ils ne sont pas directement éclairés.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/03_model_loading/assimp/</link>
+      <link>/docs/learnopengl_fr/03_model_loading/assimp/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/03_model_loading/assimp/</guid>
+      <guid>/docs/learnopengl_fr/03_model_loading/assimp/</guid>
       <description>Assimp Dans toutes les scènes présentées jusqu&amp;rsquo;à présent, nous avons beaucoup joué avec notre petit ami le conteneur, mais avec le temps, même nos meilleurs amis peuvent devenir un peu ennuyeux. Dans les applications graphiques plus importantes, il y a généralement beaucoup de modèles compliqués et intéressants qui sont beaucoup plus jolis à regarder qu&amp;rsquo;un conteneur statique. Cependant, contrairement à l&amp;rsquo;objet conteneur, nous ne pouvons pas vraiment définir manuellement tous les sommets, les normales et les coordonnées de texture de formes compliquées telles que des maisons, des véhicules ou des personnages humains.</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/06_pbr/01_theory/</link>
+      <link>/docs/learnopengl_fr/06_pbr/01_theory/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/06_pbr/01_theory/</guid>
+      <guid>/docs/learnopengl_fr/06_pbr/01_theory/</guid>
       <description>Théorie Le PBR, ou plus communément appelé rendu basé sur la physique (physically based renderer), est un ensemble de techniques de rendu plus ou moins basées sur la même théorie sous-jacente qui correspond plus étroitement à celle du monde physique. Comme le rendu basé sur la physique vise à imiter la lumière d&amp;rsquo;une manière physiquement plausible, il semble généralement plus réaliste que nos algorithmes d&amp;rsquo;éclairage originaux tels que Phong et Blinn-Phong.</description>
     </item>
     

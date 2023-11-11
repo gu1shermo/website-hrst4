@@ -1,54 +1,53 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on hrst4&#39;s blog toml</title>
-    <link>https://hrst4.xyz/tags/</link>
-    <description>Recent content in Tags on hrst4&#39;s blog toml</description>
+    <title>Tags on </title>
+    <link>/tags/</link>
+    <description>Recent content in Tags on </description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sat, 11 Nov 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://hrst4.xyz/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 11 Nov 2023 00:00:00 +0000</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>test</title>
-      <link>https://hrst4.xyz/tags/test/</link>
+      <link>/tags/test/</link>
       <pubDate>Sat, 11 Nov 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/tags/test/</guid>
+      <guid>/tags/test/</guid>
       <description></description>
     </item>
     
     <item>
       <title>cg</title>
-      <link>https://hrst4.xyz/tags/cg/</link>
+      <link>/tags/cg/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/tags/cg/</guid>
+      <guid>/tags/cg/</guid>
       <description></description>
     </item>
     
     <item>
       <title>computer graphics</title>
-      <link>https://hrst4.xyz/tags/computer-graphics/</link>
+      <link>/tags/computer-graphics/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/tags/computer-graphics/</guid>
+      <guid>/tags/computer-graphics/</guid>
       <description></description>
     </item>
     
     <item>
       <title>cpp</title>
-      <link>https://hrst4.xyz/tags/cpp/</link>
+      <link>/tags/cpp/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/tags/cpp/</guid>
+      <guid>/tags/cpp/</guid>
       <description></description>
     </item>
     
     <item>
       <title>opengl</title>
-      <link>https://hrst4.xyz/tags/opengl/</link>
+      <link>/tags/opengl/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/tags/opengl/</guid>
+      <guid>/tags/opengl/</guid>
       <description></description>
     </item>
     
