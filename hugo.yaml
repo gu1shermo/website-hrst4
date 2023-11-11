@@ -7,12 +7,7 @@ params:
     defaultTheme: dark
     # defaultTheme: auto # to switch between dark or light according to browser theme
     disableThemeToggle: true
-    homeInfoParams:
-        Title: Hi there wave
-        Content: Can be Info, links, about...
-    socialIcons: # optional
-        name: "github"
-        url: "github.com"
+    
 
 module:
   mounts:
