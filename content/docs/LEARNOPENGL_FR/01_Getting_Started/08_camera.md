@@ -9,7 +9,7 @@ Dans ce chapitre, nous verrons comment mettre en place une caméra dans OpenGL. 
 ## Camera / view space
 **Lorsque nous parlons de l'espace caméra/vue, nous parlons de toutes les coordonnées des sommets vues du point de vue de la caméra en tant qu'origine de la scène** : la matrice de vue transforme toutes les coordonnées du monde en coordonnées de vue qui sont relatives à la position et à la direction de la caméra.
 **Pour définir une caméra, nous avons besoin de sa position dans l'espace monde, de la direction vers laquelle elle regarde, d'un vecteur pointant vers la droite et d'un vecteur pointant vers le haut à partir de la caméra**. Un lecteur attentif remarquera que nous allons en fait créer **un système de coordonnées avec 3 axes unitaires perpendiculaires, la position de la caméra étant l'origine.**
-![[img/camera1.png]]
+![camera1](img/camera1.png)
 ### Position de la caméra
 Obtenir la position de la caméra est facile. La position de la caméra est un vecteur dans l'espace monde qui pointe vers la position de la caméra. Nous plaçons la caméra à la même position que dans le chapitre précédent :
 ```cpp
@@ -77,7 +77,7 @@ glm::mat4 view;
 view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0)); 
 ```
  Si vous exécutez ce code, vous devriez obtenir quelque chose comme ceci : 
- ![[video/camera_video1.mp4]]
+ ![camera_video1](video/camera_video1.mp4)
 Avec ce petit bout de code, la caméra tourne autour de la scène au fil du temps. N'hésitez pas à expérimenter avec les paramètres de rayon et de position/direction pour vous faire une idée du fonctionnement de cette matrice `LookAt`. Consultez également le [code source](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/7.1.camera_circle/camera_circle.cpp) si vous êtes bloqué.
 ## Se déplacer avec la caméra
 Faire tourner la caméra autour d'une scène est amusant, mais il est encore plus amusant de faire tous les mouvements nous-mêmes ! Tout d'abord, nous devons mettre en place un système de caméra, il est donc utile de définir quelques variables de caméra au début de notre programme :
@@ -138,7 +138,7 @@ void processInput(GLFWwindow *window)
 }
 ```
 Puisque nous utilisons `deltaTime`, la caméra se déplacera à une vitesse constante de $2.5$ unités par seconde. Avec la section précédente, nous devrions maintenant avoir un système de caméra beaucoup plus fluide et cohérent pour se déplacer dans la scène :
-![[video/camera_video2.mp4]]
+![camera_video2](video/camera_video2.mp4)
 Et maintenant, nous avons une caméra qui se déplace et regarde aussi rapidement quel que soit le système. Encore une fois, consultez le [code source](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/7.2.camera_keyboard_dt/camera_keyboard_dt.cpp) si vous êtes bloqué. Nous verrons que la valeur `deltaTime` revient fréquemment avec tout ce qui concerne le mouvement. 
 
 ## Regarder autour de soi
@@ -148,7 +148,7 @@ Pour regarder autour de la scène, nous devons changer le vecteur `cameraFront` 
 
 ### Angles d'Euler
 **Les angles d'Euler sont trois valeurs qui peuvent représenter n'importe quelle rotation en 3D**. Ils ont été définis par Leonhard Euler dans les années 1700. **Il existe trois angles d'Euler : le tangage (pitch), le lacet (yaw) et le roulis (roll)**. L'image suivante leur donne une signification visuelle :
-![[img/camera2.png]]
+![camera2](img/camera2.png)
 Le tangage (pitch) est l'angle qui indique à quel point nous regardons vers le haut ou vers le bas, comme le montre la première image.
 La deuxième image montre la valeur de lacet (yaw) qui représente l'ampleur de notre regard vers la gauche ou vers la droite.
 L'angle de roulis (roll) représente l'ampleur du mouvement de roulis, comme c'est souvent le cas pour les caméras des vols spatiaux.
@@ -157,13 +157,13 @@ L'angle de roulis (roll) représente l'ampleur du mouvement de roulis, comme c'e
 **Pour notre système de caméra, seules les valeurs de lacet et de tangage nous intéressent, nous ne parlerons donc pas ici de la valeur de roulis.** **Étant donné une valeur de tangage et une valeur de lacet, nous pouvons les convertir en un vecteur 3D qui représente un nouveau vecteur de direction.** Le processus de conversion des valeurs de lacet et de tangage en un vecteur de direction nécessite un peu de trigonométrie, et nous commençons par un cas de base :  
   
 Commençons par un petit rappel et vérifions le cas général du triangle droit (avec un côté à un angle de 90 degrés) :
-![[img/camera3.png]]
+![camera3](img/camera3.png)
 Si nous définissons l'hypoténuse comme étant de longueur 1, nous savons, grâce à la trigonométrie (soh cah toa), que **la longueur du côté adjacent est $cos x/h=cos x/1=cos x$ et que la longueur du côté opposé est $sin y/h=sin y/1=sin y$.**  
   
 Cela nous donne des formules générales pour calculer la longueur des côtés $x$ et $y$ des triangles rectangles, en fonction de l'angle donné. Utilisons ces formules pour calculer les composantes du vecteur directionnel.  
   
 Imaginons ce même triangle, mais en le regardant d'un point de vue supérieur, les côtés adjacents et opposés étant parallèles aux axes $x$ et $z$ de la scène (comme si l'on regardait vers le bas sur l'axe $y$).
-![[img/camera4.png]]
+![camera4](img/camera4.png)
 Si l'on considère que l'angle de lacet est l'angle dans le sens inverse des aiguilles d'une montre à partir du côté $x$, on peut voir que la longueur du côté $x$ est liée à $cos(yaw)$. De même, la longueur du côté $z$ est liée à $sin(yaw)$.
 
 Si nous prenons ces connaissances et une valeur de lacet donnée, nous pouvons les utiliser pour créer un vecteur de direction de la caméra :
@@ -173,7 +173,7 @@ direction.x = cos(glm::radians(yaw)); // Note that we convert the angle to radia
 direction.z = sin(glm::radians(yaw));
 ```
 Cela permet d'obtenir un vecteur de direction 3D à partir d'une valeur de lacet, mais le tangage doit également être pris en compte. Regardons maintenant le côté de l'axe des $y$ comme si nous étions assis sur le plan $XZ$ :
-![[img/camera5.png]]
+![camera5](img/camera5.png)
 De même, ce triangle nous permet de constater que la composante $y$ de la direction est égale à $sin(pitch)$ :
 ```cpp
 direction.y = sin(glm::radians(pitch));  
@@ -325,7 +325,7 @@ Enfin, n'oubliez pas d'enregistrer la fonction de callback du scroll :
 glfwSetScrollCallback(window, scroll_callback); 
 ```
 Et voilà. Nous avons mis en place un système de caméra simple qui permet de se déplacer librement dans un environnement 3D. 
-![[video/camera_video3.mp4]]
+![camera_video3](video/camera_video3.mp4)
 
  N'hésitez pas à expérimenter un peu et, si vous êtes bloqué, comparez votre code avec le [code source](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/7.3.camera_mouse_zoom/camera_mouse_zoom.cpp).
 

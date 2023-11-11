@@ -4,13 +4,13 @@ Dans le dernier chapitre, nous avons appris à créer des ombres dynamiques avec
 
 Ce chapitre se concentre sur la génération d'ombres dynamiques dans toutes les directions environnantes. La technique que nous utilisons est parfaite pour les lumières ponctuelles, car une vraie lumière ponctuelle projetterait des ombres dans toutes les directions. Cette technique est connue sous le nom d'ombres ponctuelles (lumière) ou plus anciennement sous le nom de maps d'ombres omnidirectionnelles.
 
->Ce chapitre s'appuie sur le chapitre précédent consacré au mapping des ombres. Par conséquent, si vous n'êtes pas familiarisé avec le mapping des ombres traditionnel, il est conseillé de lire d'abord le chapitre consacré au [[02a_shadow_mapping|mapping des ombres]].
+>Ce chapitre s'appuie sur le chapitre précédent consacré au mapping des ombres. Par conséquent, si vous n'êtes pas familiarisé avec le mapping des ombres traditionnel, il est conseillé de lire d'abord le chapitre consacré au [mapping des ombres](02a_shadow_mapping.md).
 
 La technique est essentiellement similaire au mapping directionnel des ombres : nous générons une map de profondeur à partir de la ou des perspectives de la lumière, nous échantillonnons la map de profondeur en fonction de la position actuelle du fragment et nous comparons chaque fragment à la valeur de profondeur stockée pour voir s'il se trouve dans l'ombre. La principale différence entre le mappage directionnel des ombres et le mappage omnidirectionnel des ombres est la carte de profondeur utilisée.
 
 La carte de profondeur dont nous avons besoin nécessite le rendu d'une scène à partir de toutes les directions environnantes d'une lumière ponctuelle et, de ce fait, une map de profondeur 2D normale ne fonctionnera pas ; et si nous utilisions une cubemap à la place ? Comme une cubemap peut stocker des données d'environnement complètes avec seulement 6 faces, il est possible de rendre la scène entière sur chacune des faces d'une cubemap et de les échantillonner comme les valeurs de profondeur environnantes de la lumière ponctuelle.
-![[02b_point_shadows-20230830-cubemap.png]]
-Le cubemap de profondeur généré est ensuite transmis au shader de fragment d'éclairage qui échantillonne le cubemap avec un vecteur de direction pour obtenir la profondeur la plus proche (du point de vue de la lumière) de ce fragment. La plupart des choses compliquées ont déjà été abordées dans le chapitre sur le [[02a_shadow_mapping|shadow mapping]]. Ce qui rend cette technique un peu plus difficile est la génération du cubemap de profondeur.
+![02b_point_shadows-20230830-cubemap](02b_point_shadows-20230830-cubemap.png)
+Le cubemap de profondeur généré est ensuite transmis au shader de fragment d'éclairage qui échantillonne le cubemap avec un vecteur de direction pour obtenir la profondeur la plus proche (du point de vue de la lumière) de ce fragment. La plupart des choses compliquées ont déjà été abordées dans le chapitre sur le [shadow mapping](02a_shadow_mapping.md). Ce qui rend cette technique un peu plus difficile est la génération du cubemap de profondeur.
 
 ## Générer la cubemap de profondeur
 Pour créer une cubemap des valeurs de profondeur environnantes d'une lumière, nous devons effectuer le rendu de la scène 6 fois : une fois pour chaque face. Une façon (assez évidente) de le faire est de rendre la scène 6 fois avec 6 matrices de vue différentes, en attachant à chaque fois une face cubemap différente à l'objet framebuffer. Cela ressemblerait à quelque chose comme ceci :
@@ -327,7 +327,7 @@ float ShadowCalculation(vec3 fragPos)
 }  
 ```
 Avec ces shaders, nous obtenons déjà de bonnes ombres, et cette fois dans toutes les directions environnantes, à partir d'une lumière ponctuelle. Avec une lumière ponctuelle positionnée au centre d'une scène simple, cela ressemblera un peu à ceci :
-![[02b_point_shadows-20230902_shadow01.png]]
+![02b_point_shadows-20230902_shadow01](02b_point_shadows-20230902_shadow01.png)
 Vous pouvez trouver le code source de cette démo [ici](https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/3.2.1.point_shadows/point_shadows.cpp).
 ## Visualisation du tampon de profondeur cubemap
 Si vous êtes un peu comme moi, vous n'avez probablement pas réussi du premier coup, il est donc logique de faire un peu de débogage, l'une des vérifications évidentes étant de valider si la map de profondeur a été construite correctement. Une astuce simple pour visualiser le tampon de profondeur est de prendre la variable `closestDepth` dans la fonction `ShadowCalculation` et de l'afficher comme suit :
@@ -335,7 +335,7 @@ Si vous êtes un peu comme moi, vous n'avez probablement pas réussi du premier 
 FragColor = vec4(vec3(closestDepth / far_plane), 1.0);  
 ```
 Le résultat est une scène grisée où chaque couleur représente les valeurs de profondeur linéaire de la scène :
-![[02b_point_shadows-20230902_depth.png]]
+![02b_point_shadows-20230902_depth](02b_point_shadows-20230902_depth.png)
 Vous pouvez également voir les zones d'ombre à venir sur le mur extérieur. Si l'aspect est similaire, vous savez que le cubemap de profondeur a été correctement généré.
 
 ## PCF
@@ -365,7 +365,7 @@ shadow /= (samples * samples * samples);
 Le code n'est pas très différent du code traditionnel de shadow mapping. Nous calculons et ajoutons des décalages de texture dynamiquement pour chaque axe sur la base d'un nombre fixe d'échantillons. Pour chaque échantillon, nous répétons le processus d'ombrage original sur la direction de l'échantillon décalé et nous faisons la moyenne des résultats à la fin.
 
 Les ombres sont maintenant plus douces et lisses et donnent des résultats plus plausibles.
-![[02b_point_shadows-20230902-PCF.png]]
+![02b_point_shadows-20230902-PCF](02b_point_shadows-20230902-PCF.png)
 Cependant, avec des échantillons réglés sur $4.0$, nous prélevons un total de 64 échantillons par fragment, ce qui est beaucoup !
 
 Comme la plupart de ces échantillons sont redondants en ce sens qu'ils échantillonnent à proximité du vecteur de direction original, il pourrait être plus judicieux de n'échantillonner que dans les directions perpendiculaires au vecteur de direction de l'échantillon. Cependant, comme il n'y a pas de moyen (facile) de déterminer quelles sous-directions sont redondantes, cela devient difficile. Une astuce consiste à prendre un tableau de directions de décalage qui sont toutes à peu près séparables, c'est-à-dire que chacune d'entre elles pointe dans des directions complètement différentes. Cela permet de réduire considérablement le nombre de sous-directions proches les unes des autres. Nous présentons ci-dessous un tableau de 20 directions de décalage au maximum :
@@ -402,7 +402,7 @@ Une autre astuce intéressante que nous pouvons appliquer ici est que nous pouvo
 float diskRadius = (1.0 + (viewDistance / far_plane)) / 25.0;  
 ```
 Les résultats de l'algorithme PCF mis à jour donnent des résultats tout aussi bons, voire meilleurs, pour les ombres douces :
-![[02b_point_shadows-20230902-PCF2.png]]
+![02b_point_shadows-20230902-PCF2](02b_point_shadows-20230902-PCF2.png)
 
 Bien entendu, le biais que nous ajoutons à chaque échantillon dépend fortement du contexte et devra toujours être ajusté en fonction de la scène avec laquelle vous travaillez. Jouez avec toutes les valeurs et voyez comment elles affectent la scène.
 

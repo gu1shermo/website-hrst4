@@ -2,13 +2,13 @@
 Toutes nos scènes sont remplies de meshes, chacun composé de centaines, voire de milliers de triangles. Nous avons renforcé le réalisme en appliquant des textures 2D sur ces triangles plats, cachant ainsi le fait que les polygones ne sont que de minuscules triangles plats. Les textures sont utiles, mais lorsque l'on examine de près les meshes, il est toujours facile de voir les surfaces planes sous-jacentes. La plupart des surfaces de la vie réelle ne sont cependant pas plates et présentent de nombreux détails (bosses).
 
 Prenons l'exemple d'une surface en briques. La surface d'une brique est assez rugueuse et n'est évidemment pas complètement plate : elle contient des bandes de ciment enfoncées et un grand nombre de petits trous et fissures détaillés. Si nous devions voir une telle surface de briques dans une scène éclairée, l'immersion serait facilement rompue. Ci-dessous, nous pouvons voir une texture de brique appliquée à une surface plane éclairée par une lumière ponctuelle.
-![[03_normal_mapping-20230902-normal1.png]]
+![03_normal_mapping-20230902-normal1](03_normal_mapping-20230902-normal1.png)
 L'éclairage ne tient compte d'aucune des petites fissures et des trous et ignore complètement les rayures profondes entre les briques ; la surface semble parfaitement plate. Nous pouvons partiellement corriger l'aspect plat en utilisant une carte spéculaire pour prétendre que certaines surfaces sont moins éclairées en raison de la profondeur ou d'autres détails, mais il s'agit plus d'une astuce que d'une véritable solution. Ce qu'il nous faut, c'est un moyen d'informer le système d'éclairage de tous les petits détails de la surface qui ressemblent à de la profondeur.
 
 **Si nous y réfléchissons du point de vue de la lumière, comment se fait-il que la surface soit éclairée comme une surface complètement plate ? La réponse est le vecteur normal de la surface**. Du point de vue de la technique d'éclairage, la seule façon de déterminer la forme d'un objet est son vecteur normal perpendiculaire. La surface de la brique n'a qu'un seul vecteur normal et, par conséquent, la surface est uniformément éclairée en fonction de la direction de ce vecteur normal. Et si, au lieu d'une normale par surface qui est la même pour chaque fragment, nous utilisions une normale par fragment qui est différente pour chaque fragment ? De cette façon, nous pouvons légèrement dévier le vecteur normal en fonction des petits détails d'une surface ; cela donne l'illusion que la surface est beaucoup plus complexe :
-![[03_normal_mapping-20230902-normal2.png]]
+![03_normal_mapping-20230902-normal2](03_normal_mapping-20230902-normal2.png)
 L'utilisation de normales par fragment permet de faire croire à l'éclairage qu'une surface est constituée de minuscules plans (perpendiculaires aux vecteurs normaux), ce qui augmente considérablement le niveau de détail de la surface. Cette technique d'utilisation des normales par fragment par rapport aux normales par surface est appelée "**normal mapping**" ou "**bump mapping**". Appliquée au plan de la brique, elle ressemble un peu à ceci :
-![[03_normal_mapping-20230902-normal3.png]]
+![03_normal_mapping-20230902-normal3](03_normal_mapping-20230902-normal3.png)
 Comme vous pouvez le constater, cette méthode permet d'augmenter considérablement le niveau de détail pour un coût relativement faible. Comme nous ne modifions que les vecteurs normaux par fragment, il n'est pas nécessaire de modifier l'équation d'éclairage. Nous transmettons maintenant à l'algorithme d'éclairage une normale par fragment, au lieu d'une normale de surface interpolée. L'éclairage fait le reste.
 
 ## Normal mapping
@@ -19,7 +19,7 @@ Bien que les vecteurs normaux soient des entités géométriques et que les text
 vec3 rgb_normal = normal * 0.5 + 0.5; // transforms from [-1,1] to [0,1]  
 ```
 Avec des vecteurs normaux transformés en une composante de couleur RVB comme celle-ci, nous pouvons stocker une normale par fragment dérivée de la forme d'une surface sur une texture 2D. Un exemple de map des normales de la surface de briques présentée au début de ce chapitre est illustré ci-dessous :
-![[03_normal_mapping-20230902-normal-rgb.png]]
+![03_normal_mapping-20230902-normal-rgb](03_normal_mapping-20230902-normal-rgb.png)
 Cette map (et presque toutes les maps de normales que vous trouverez en ligne) aura une teinte bleutée. En effet, les normales sont toutes étroitement orientées vers l'axe z positif (0,0,1) : une couleur bleutée. Les écarts de couleur représentent des vecteurs normaux légèrement décalés par rapport à l'axe z positif général, ce qui donne une impression de profondeur à la texture. Par exemple, vous pouvez voir qu'au sommet de chaque brique, la couleur a tendance à être plus verdâtre, ce qui est logique puisque la face supérieure d'une brique a des normales qui pointent davantage dans la direction positive y (0,1,0), ce qui correspond à la couleur verte !
 
 Avec un simple plan, en regardant l'axe z positif, nous pouvons prendre [cette texture diffuse](https://learnopengl.com/img/textures/brickwall.jpg) et [cette texture de normale](https://learnopengl.com/img/textures/brickwall_normal.jpg) pour rendre l'image de la section précédente. Notez que la map des normales liée est différente de celle montrée ci-dessus. La raison en est qu'OpenGL lit les coordonnées de texture avec la coordonnée y (ou v) inversée par rapport à la façon dont les textures sont généralement créées. La carte des normales liées a donc sa composante y (ou verte) inversée (vous pouvez voir que les couleurs vertes pointent maintenant vers le bas) ; si vous ne prenez pas cela en compte, l'éclairage sera incorrect. Chargez les deux textures, liez-les aux unités de texture appropriées et effectuez le rendu d'un plan avec les modifications suivantes dans le shader de fragment d'éclairage :
@@ -41,11 +41,11 @@ void main()
 Ici, nous inversons le processus de mappage des normales aux couleurs RVB en remappant la couleur normale échantillonnée de $[0,1]$ à $[-1,1]$, puis nous utilisons les vecteurs normaux échantillonnés pour les calculs d'éclairage à venir. Dans ce cas, nous avons utilisé un shader Blinn-Phong.
 
 En déplaçant lentement la source lumineuse dans le temps, vous obtenez vraiment une sensation de profondeur en utilisant la map de normale. L'exécution de cet exemple de normal mapping donne les mêmes résultats que ceux présentés au début de ce chapitre :
-![[03_normal_mapping-20230902-normal5.png]]
+![03_normal_mapping-20230902-normal5](03_normal_mapping-20230902-normal5.png)
 Il existe cependant un problème qui limite considérablement l'utilisation des maps de normales. La map des normales que nous avons utilisée comportait des vecteurs de normales qui pointaient tous dans la direction positive z. Cela fonctionnait parce que la normale de la surface du plan pointait également dans la direction positive z. Cependant, que se passerait-il si nous utilisions la même map des normales sur un plan posé sur le sol dont le vecteur normal de surface pointerait dans la direction positive y ?
-![[03_normal_mapping-20230902-normal6.png]]
+![03_normal_mapping-20230902-normal6](03_normal_mapping-20230902-normal6.png)
 L'éclairage ne semble pas correct ! Cela est dû au fait que les normales échantillonnées de ce plan pointent toujours grosso modo dans la direction z positive, alors qu'elles devraient plutôt pointer dans la direction y positive. Par conséquent, l'éclairage pense que les normales de la surface sont les mêmes qu'auparavant, lorsque le plan pointait vers la direction z positive ; l'éclairage est incorrect. L'image ci-dessous montre à quoi ressemblent approximativement les normales échantillonnées sur cette surface :
-![[03_normal_mapping-20230902-normal8.png]]
+![03_normal_mapping-20230902-normal8](03_normal_mapping-20230902-normal8.png)
 Vous pouvez voir que toutes les normales sont orientées vers la direction z positive alors qu'elles devraient être orientées vers la direction y positive. Une solution à ce problème consiste à définir une carte de normales pour chaque direction possible de la surface ; dans le cas d'un cube, nous aurions besoin de 6 cartes de normales. Cependant, avec des meshes avancés qui peuvent avoir plus de centaines de directions de surface possibles, cette approche devient irréalisable.
 
 Il existe une autre solution qui consiste à effectuer tout l'éclairage dans un espace de coordonnées différent : un espace de coordonnées dans lequel les vecteurs de la carte des normales pointent toujours vers la direction z positive ; tous les autres vecteurs d'éclairage sont alors transformés par rapport à cette direction z positive. De cette façon, nous pouvons toujours utiliser la même map de normales, quelle que soit l'orientation. Cet espace de coordonnées est appelé **espace tangent** (tangent space).
@@ -58,10 +58,10 @@ Supposons que nous ayons la surface incorrecte de la section précédente qui re
 Une telle matrice est appelée matrice **TBN**, où les lettres représentent les vecteurs Tangente, Bitangente et Normale. Ce sont les vecteurs dont nous avons besoin pour construire cette matrice. Pour construire une telle matrice de changement de base, qui transforme un vecteur de l'espace tangent en un espace de coordonnées différent, nous avons besoin de trois vecteurs perpendiculaires alignés le long de la surface d'une carte normale : un vecteur vers le haut, un vecteur vers la droite et un vecteur vers l'avant, comme nous l'avons fait dans le chapitre sur les cameras.
 
 Nous connaissons déjà le vecteur haut, qui est le vecteur normal de la surface. Le vecteur droit et le vecteur avant sont respectivement le vecteur tangent et le vecteur bitangent. L'image suivante d'une surface montre les trois vecteurs sur une surface :
-![[03_normal_mapping-20230902-normal9.png]]
+![03_normal_mapping-20230902-normal9](03_normal_mapping-20230902-normal9.png)
 
 Le calcul des vecteurs tangents et bitangents n'est pas aussi simple que celui du vecteur normal. Nous pouvons voir sur l'image que la direction des vecteurs tangent et bitangent de la carte des normales s'aligne sur la direction dans laquelle nous définissons les coordonnées de texture d'une surface. Nous utiliserons ce fait pour calculer les vecteurs tangents et bitangents pour chaque surface. Pour les récupérer, il faut faire un peu de mathématiques ; regardez l'image suivante :
-![[03_normal_mapping-20230902-normal10.png]]
+![03_normal_mapping-20230902-normal10](03_normal_mapping-20230902-normal10.png)
 L'image montre que les différences de coordonnées de texture d'une arête $E2$ d'un triangle (notées $ΔU2$ et $ΔV2$) sont exprimées dans la même direction que le vecteur tangent $T$ et le vecteur bitangent $B$. Pour cette raison, nous pouvons écrire les deux arêtes affichées $E1$ et $E2$ du triangle comme une combinaison linéaire du vecteur tangent $T$ et du vecteur bitangent $B$ :
 $$
 E_1 = \Delta U_1T + \Delta V_1B
@@ -186,7 +186,7 @@ Ici, nous pré-calculons d'abord la partie fractionnaire de l'équation sous la 
 
 Le vecteur tangent et bitangent résultant doit avoir une valeur de (1,0,0) et (0,1,0) respectivement qui, avec la normale (0,0,1), forme une matrice TBN orthogonale. Visualisés sur le plan, les vecteurs TBN se présentent comme suit :
 
-![[03_normal_mapping-20230902-normal11.png]]
+![03_normal_mapping-20230902-normal11](03_normal_mapping-20230902-normal11.png)
 Avec les vecteurs tangents et bitangents définis pour chaque sommet, nous pouvons commencer à mettre en œuvre un mapping de normales approprié.
 
 ### Mapping des normales dans l'espace tangent
@@ -311,7 +311,7 @@ shader.setMat4("model", model);
 RenderQuad();
 ```
 Ce qui ressemble en effet à un mapping de normales correct :
-![[03_normal_mapping-20230902-normal13.png]]
+![03_normal_mapping-20230902-normal13](03_normal_mapping-20230902-normal13.png)
 Vous pouvez trouver le code source [ici](https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/4.normal_mapping/normal_mapping.cpp).
 
 ## Objets complexes
@@ -339,11 +339,11 @@ vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT
 Bien sûr, cela est différent pour chaque type de modèle chargé et de format de fichier.
 
 L'exécution de l'application sur un modèle avec des maps de spéculaires et de normales, en utilisant un chargeur de modèle mis à jour, donne le résultat suivant :
-![[03_normal_mapping-20230903-normalmap1.png]]
+![03_normal_mapping-20230903-normalmap1](03_normal_mapping-20230903-normalmap1.png)
 Comme vous pouvez le constater, le mapping de normales permet d'augmenter considérablement le niveau de détail d'un objet sans trop de frais supplémentaires.
 
 L'utilisation du mapping de normales est également un excellent moyen d'améliorer les performances. Avant le mapping de normales, il fallait utiliser un grand nombre de sommets pour obtenir un niveau de détail élevé sur un mesh. Avec le normal mapping, nous pouvons obtenir le même niveau de détail sur un mesh en utilisant beaucoup moins de sommets. L'image ci-dessous de Paolo Cignoni montre une belle comparaison des deux méthodes :
-![[03_normal_mapping-20230903-normalmap2.png]]
+![03_normal_mapping-20230903-normalmap2](03_normal_mapping-20230903-normalmap2.png)
 
 Les détails du mesh high poly et du mesh low poly avec la conversion normale sont presque impossibles à distinguer. Le normal mapping n'est donc pas seulement esthétique, c'est aussi un excellent outil pour remplacer les meshes high poly par des meshes low poly sans perdre (trop) de détails.
 

@@ -1,8 +1,8 @@
 # Anti Aliasing (Anti-crénelage)
 Au cours de votre aventure dans le domaine du rendu, vous avez probablement rencontré des motifs dentelés semblables à des scies sur les bords de vos modèles. La raison pour laquelle ces bords dentelés apparaissent est due à la façon dont le rasterizer transforme les données de vertex en fragments réels. Un exemple de ce à quoi ressemblent ces bords crénelés peut déjà être vu en dessinant un simple cube :
-![[anti_aliasing_aliasing.png]]
+![anti_aliasing_aliasing](anti_aliasing_aliasing.png)
 Bien que cela ne soit pas immédiatement visible, si vous regardez de plus près les bords du cube, vous verrez un motif crénelé. Si vous faites un zoom avant, vous verrez ce qui suit :
-![[anti_aliasing_zoomed.png]]
+![anti_aliasing_zoomed](anti_aliasing_zoomed.png)
 Ce n'est évidemment pas quelque chose que nous voulons dans la version finale d'une application. **Cet effet, qui consiste à voir clairement les formations de pixels dont un bord est composé, s'appelle l'aliasing**. Il existe un certain nombre de techniques appelées techniques d'anti aliasing qui changent ce comportement en produisant des bords plus lisses.
 
 Au début, nous avions une technique appelée **super sample anti-aliasing (SSAA)** qui utilisait temporairement un tampon de rendu de résolution beaucoup plus élevée pour effectuer le rendu de la scène (super sampling). Ensuite, lorsque la scène complète est rendue, la résolution est ramenée à la résolution normale. Cette résolution supplémentaire a été utilisée pour éviter les bords irréguliers. **Bien qu'elle nous ait apporté une solution au problème de l'aliasing, elle s'accompagne d'un inconvénient majeur en termes de performances, puisque nous devons dessiner beaucoup plus de fragments qu'à l'accoutumée. Cette technique n'a donc connu qu'un bref moment de gloire.**
@@ -13,16 +13,16 @@ Au début, nous avions une technique appelée **super sample anti-aliasing (SSAA
 **Pour comprendre ce qu'est le multi-échantillonnage et comment il permet de résoudre le problème de l'aliasing, nous devons d'abord nous plonger un peu plus dans le fonctionnement interne du rasterizer d'OpenGL.**
 
 Le rasterizer est la combinaison de tous les algorithmes et processus qui se situent entre les sommets traités et le fragment shader. **Le rasterizer prend tous les sommets appartenant à une primitive unique et les transforme en un ensemble de fragments**. **Les coordonnées des sommets peuvent théoriquement avoir n'importe quelle coordonnée, mais les fragments ne le peuvent pas puisqu'ils sont limités par la résolution de votre écran**. Il n'y aura presque jamais de correspondance un à un entre les coordonnées des sommets et les fragments, de sorte que **le rasterizer doit déterminer d'une manière ou d'une autre à quel fragment/coordonnée d'écran chaque sommet spécifique aboutira.**
-![[anti_aliasing_rasterization.png]]
+![anti_aliasing_rasterization](anti_aliasing_rasterization.png)
 Nous voyons ici une grille de pixels d'écran où le centre de chaque pixel contient un point d'échantillonnage qui est utilisé pour déterminer si un pixel est couvert par le triangle. Les points d'échantillonnage rouges sont couverts par le triangle et un fragment sera généré pour ce pixel couvert. Même si certaines parties des bords du triangle pénètrent encore dans certains pixels de l'écran, le point d'échantillonnage du pixel n'est pas couvert par l'intérieur du triangle et ce pixel ne sera donc pas influencé par un fragment shader.
 
 Vous pouvez probablement déjà comprendre l'origine de l'aliasing. La version rendue complète du triangle ressemblerait à ceci sur votre écran :
-![[anti_aliasing_rasterization_filled.png]]
+![anti_aliasing_rasterization_filled](anti_aliasing_rasterization_filled.png)
 En raison du nombre limité de pixels de l'écran, certains pixels seront rendus le long d'un bord et d'autres non. Le résultat est que nous rendons les primitives avec des bords non lisses, ce qui donne lieu aux bords crénelés que nous avons vus précédemment.
 
 **Le multi-échantillonnage n'utilise pas un seul point d'échantillonnage pour déterminer la couverture du triangle, mais plusieurs points d'échantillonnage (devinez d'où vient son nom). Au lieu d'un seul point d'échantillonnage au centre de chaque pixel, nous allons placer 4 sous-échantillons dans un schéma général et les utiliser pour déterminer la couverture des pixels.**
 
-![[../05_Advanced_Lighting/anti_aliasing_sample_points.png]]
+![anti_aliasing_sample_points](../05_Advanced_Lighting/anti_aliasing_sample_points.png)
 La partie gauche de l'image montre comment nous déterminerions normalement la couverture d'un triangle. Ce pixel spécifique n'exécutera pas de shader de fragment (et restera donc vide) puisque son point d'échantillonnage n'était pas couvert par le triangle. **La partie droite de l'image montre une version multi-échantillonnée où chaque pixel contient 4 points d'échantillonnage. Ici, nous pouvons voir que seuls 2 des points d'échantillonnage couvrent le triangle.**
 
 Le nombre de points d'échantillonnage peut être quelconque, un plus grand nombre d'échantillons permettant d'obtenir une meilleure précision de couverture.
@@ -32,12 +32,12 @@ C'est ici que le multi-échantillonnage devient intéressant. **Nous avons déte
 Le fonctionnement réel de MSAA est le suivant : **le shader de fragment n'est exécuté qu'une seule fois par pixel (pour chaque primitive), quel que soit le nombre de sous-échantillons couverts par le triangle ; le shader de fragment s'exécute avec les données du sommet interpolées au centre du pixel. MSAA utilise ensuite un tampon de profondeur/stencil plus important pour déterminer la couverture des sous-échantillons. Le nombre de sous-échantillons couverts détermine la contribution de la couleur du pixel au framebuffer. Étant donné que seuls 2 des 4 échantillons ont été couverts dans l'image précédente, la moitié de la couleur du triangle est mélangée à la couleur du framebuffer (dans ce cas, la couleur claire), ce qui donne une couleur bleu clair.**
 
 Le résultat est un tampon de plus haute résolution (avec une profondeur/un stencil de plus haute résolution) où tous les bords primitifs produisent maintenant un motif plus lisse. Voyons à quoi ressemble le multi-échantillonnage lorsque nous déterminons la couverture du triangle précédent :
-![[anti_aliasing_rasterization_samples.png]]
+![anti_aliasing_rasterization_samples](anti_aliasing_rasterization_samples.png)
 
 Ici, chaque pixel contient 4 sous-échantillons (les échantillons non pertinents ont été cachés) où les sous-échantillons bleus sont couverts par le triangle et les points d'échantillonnage gris ne le sont pas. Dans la région intérieure du triangle, tous les pixels exécuteront une fois le fragment shader dont la couleur de sortie est stockée directement dans le framebuffer (en supposant qu'il n'y ait pas de mélange). Cependant, sur les bords intérieurs du triangle, tous les sous-échantillons ne seront pas couverts, de sorte que le résultat du fragment shader ne contribuera pas entièrement au framebuffer. En fonction du nombre d'échantillons couverts, une plus ou moins grande partie de la couleur du fragment de triangle aboutit à ce pixel.
 
 **Pour chaque pixel, moins il y a de sous-échantillons dans le triangle, moins il prend la couleur du triangle**. Si nous remplissons les couleurs des pixels, nous obtenons l'image suivante :
-![[anti_aliasing_rasterization_samples_filled.png]]
+![anti_aliasing_rasterization_samples_filled](anti_aliasing_rasterization_samples_filled.png)
 **Les bords du triangle sont maintenant entourés de couleurs légèrement plus claires que la couleur réelle du bord, ce qui donne un aspect lisse au bord lorsqu'on le regarde de loin**.
 
 Les valeurs de profondeur et de stencil sont stockées par sous-échantillon et, même si nous n'exécutons le shader de fragment qu'une seule fois, les valeurs de couleur sont également stockées par sous-échantillon dans le cas où plusieurs triangles se chevauchent sur un seul pixel. Pour les tests de profondeur, la valeur de profondeur du sommet est interpolée à chaque sous-échantillon avant d'exécuter le test de profondeur, et pour les tests de stencil, nous stockons les valeurs de stencil par sous-échantillon. **Cela signifie que la taille des tampons est maintenant augmentée par le nombre de sous-échantillons par pixel.**
@@ -57,7 +57,7 @@ Maintenant que nous avons demandé à GLFW des tampons multi-échantillonnés, n
 ```cpp
 glEnable(GL_MULTISAMPLE);  
 ```
-Comme les algorithmes de multi-échantillonnage sont implémentés dans le rasterizer de vos pilotes OpenGL, il n'y a pas grand-chose d'autre à faire. Si nous effectuons maintenant le rendu du cube vert du début de ce chapitre, nous devrions voir des bords plus lisses :![[LEARNOPENGL_FR/05_Advanced_Lighting/anti_aliasing_multisampled.png]]
+Comme les algorithmes de multi-échantillonnage sont implémentés dans le rasterizer de vos pilotes OpenGL, il n'y a pas grand-chose d'autre à faire. Si nous effectuons maintenant le rendu du cube vert du début de ce chapitre, nous devrions voir des bords plus lisses :![anti_aliasing_multisampled](LEARNOPENGL_FR/05_Advanced_Lighting/anti_aliasing_multisampled.png)
 Le cube a effectivement l'air beaucoup plus lisse et il en va de même pour tout autre objet que vous dessinez dans votre scène.
 Vous trouverez le code source de cet exemple simple [ici](https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/11.1.anti_aliasing_msaa/anti_aliasing_msaa.cpp).
 ## ## MSAA hors-écran
@@ -97,7 +97,7 @@ glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 ```
 Si nous effectuons ensuite le rendu de la même application, nous devrions obtenir le même résultat : un cube vert tilleul affiché avec MSAA et présentant à nouveau des arêtes nettement moins irrégulières :
-![[LEARNOPENGL_FR/05_Advanced_Lighting/anti_aliasing_multisampled.png]]
+![anti_aliasing_multisampled](LEARNOPENGL_FR/05_Advanced_Lighting/anti_aliasing_multisampled.png)
 Vous pouvez trouver le code source [ici](https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/11.2.anti_aliasing_offscreen/anti_aliasing_offscreen.cpp).
 
 Mais que se passe-t-il si nous voulons utiliser le résultat de la texture d'un framebuffer multi-échantillonné pour faire des choses comme du post-traitement ? Nous ne pouvons pas utiliser directement la (les) texture(s) multi-échantillonnée(s) dans le fragment shader. Ce que nous pouvons faire cependant, c'est blitter le(s) tampon(s) multi-échantillonné(s) vers un FBO différent avec un attachement de texture non multi-échantillonné. Nous utilisons ensuite cette texture de couleur ordinaire pour le post-traitement, ce qui revient à post-traiter une image rendue via le multi-échantillonnage. Cela signifie que nous devons générer un nouveau FBO qui agit uniquement comme un objet framebuffer intermédiaire pour résoudre le tampon multi-échantillonné en une texture 2D normale que nous pouvons utiliser dans le fragment shader. Ce processus ressemble un peu à ceci en pseudocode :
@@ -127,7 +127,7 @@ while(!glfwWindowShouldClose(window))
     [...] 
 ```
 Si nous implémentons ceci dans le code de post-traitement du chapitre sur les framebuffers, nous pouvons créer toutes sortes d'effets de post-traitement sympas sur une texture d'une scène qui n'a (presque) pas de bords irréguliers. Avec un filtre de post-traitement en niveaux de gris appliqué, cela ressemblera à quelque chose comme ceci :
-![[../05_Advanced_Lighting/anti_aliasing_post_processing.png]]
+![anti_aliasing_post_processing](../05_Advanced_Lighting/anti_aliasing_post_processing.png)
 >La texture de l'écran étant à nouveau une texture normale (non multi-échantillonnée), certains filtres de post-traitement tels que la détection des bords introduiront à nouveau des bords irréguliers. Pour y remédier, vous pouvez flouter la texture par la suite ou créer votre propre algorithme d'anticrénelage.
 
 Vous pouvez voir que lorsque nous voulons combiner le multi-échantillonnage avec le rendu hors écran, nous devons suivre quelques étapes supplémentaires. Ces étapes en valent cependant la peine puisque le multi-échantillonnage améliore considérablement la qualité visuelle de votre scène. Notez que l'activation du multi-échantillonnage peut sensiblement réduire les performances au fur et à mesure que vous utilisez plus d'échantillons.

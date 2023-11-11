@@ -10,7 +10,7 @@ Dans le monde réel, les couleurs peuvent prendre n'importe quelle valeur connue
 glm::vec3 coral(1.0f, 0.5f, 0.31f);   
 ```
 **La couleur d'un objet que nous voyons dans la vie réelle n'est pas la couleur qu'il a réellement, mais la couleur réfléchie par l'objet**. Les couleurs qui ne sont pas absorbées (rejetées) par l'objet sont celles que nous percevons. Par exemple, la lumière du soleil est perçue comme une lumière blanche qui est la somme combinée de nombreuses couleurs différentes (comme vous pouvez le voir sur l'image). Si nous éclairons un jouet bleu avec cette lumière blanche, il absorbera toutes les sous-couleurs de la couleur blanche, à l'exception de la couleur bleue. Comme le jouet n'absorbe pas la partie bleue, la lumière est réfléchie. Cette lumière réfléchie pénètre dans notre œil, ce qui donne l'impression que le jouet a une couleur bleue. L'image suivante illustre ce phénomène pour un jouet de couleur corail qui reflète plusieurs couleurs avec une intensité variable :
-![[color1.png]]
+![color1](color1.png)
 Vous pouvez voir que la lumière blanche du soleil est un ensemble de toutes les couleurs visibles et que l'objet absorbe une grande partie de ces couleurs. Il ne reflète que les couleurs qui représentent la couleur de l'objet et c'est la combinaison de ces couleurs que nous percevons (dans ce cas, une couleur corail). 
 
 Techniquement, c'est un peu plus compliqué, mais nous y reviendrons dans les chapitres consacrés au PBR (physical based renderer).
@@ -143,7 +143,7 @@ glDrawArrays(GL_TRIANGLES, 0, 36);
 ```
 L'injection de tous les fragments de code à leurs emplacements appropriés aboutirait alors à une application OpenGL propre, correctement configurée pour expérimenter l'éclairage. Si tout se compile, cela devrait ressembler à ceci : 
 
-![[colors2.png]]
+![colors2](colors2.png)
 Il n'y a pas grand-chose à voir pour l'instant, mais je vous promets que cela deviendra plus intéressant dans les prochains chapitres.  
   
 Si vous avez des difficultés à trouver où tous les extraits de code s'intègrent dans l'application dans son ensemble, consultez le code source [ici](https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/1.colors/colors.cpp) et travaillez soigneusement dans le code/commentaires.  

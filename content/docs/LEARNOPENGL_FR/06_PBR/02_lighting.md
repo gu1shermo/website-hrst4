@@ -24,7 +24,7 @@ Nous savons maintenant à peu près ce qui se passe, mais il reste une grande in
 Nous savons que la radiance $L$ (telle qu'elle est interprétée dans le domaine de l'infographie) mesure le flux radiant $\phi$ ou l'énergie lumineuse d'une source de lumière sur un angle solide donné $\omega$. Dans notre cas, nous avons supposé que l'angle solide $\omega$ est infiniment petit, auquel cas la radiance mesure le flux d'une source lumineuse sur un seul rayon lumineux ou vecteur de direction.
 
 Compte tenu de ces connaissances, comment les transposer dans les connaissances sur l'éclairage que nous avons accumulées dans les chapitres précédents ? Imaginons que nous ayons une lumière ponctuelle (une source lumineuse qui brille de la même manière dans toutes les directions) avec un flux radiant de $(23.47, 21.31, 20.79)$ traduit en un triplet RVB. L'intensité rayonnante de cette source lumineuse est égale à son flux rayonnant pour tous les rayons de direction sortants. Cependant, lors de l'ombrage d'un point spécifique $p$ sur une surface, parmi toutes les directions de lumière entrantes possibles sur son hémisphère $\Omega$, seul un vecteur de direction entrant $w_i$ provient directement de la source lumineuse ponctuelle. Comme nous n'avons qu'une seule source lumineuse dans notre scène, supposée être un point unique dans l'espace, toutes les autres directions possibles de la lumière entrante ont une radiance nulle observée sur le point $p$ de la surface :
-![[02_lighting-20230909-pbrlight1.png]]
+![02_lighting-20230909-pbrlight1.png](02_lighting-20230909-pbrlight1.png)
 Si, dans un premier temps, nous supposons que l'atténuation de la lumière (diminution de la lumière sur la distance) n'affecte pas la source lumineuse ponctuelle, la radiance du rayon lumineux entrant est la même quel que soit l'endroit où nous positionnons la lumière (à l'exception de la mise à l'échelle de la radiance en fonction de l'angle d'incidence $cos\theta$). En effet, la lumière ponctuelle a la même intensité radiante quel que soit l'angle sous lequel on la regarde, ce qui permet de modéliser son intensité radiante comme son flux radiant : un vecteur constant $(23.47, 21.31, 20.79)$.
 
 Cependant, la radiance prend également une position $p$ et comme toute source lumineuse ponctuelle réaliste prend en compte l'atténuation de la lumière, l'intensité rayonnante de la source lumineuse ponctuelle est mise à l'échelle par une mesure de la distance entre le point $p$ et la source lumineuse. Ensuite, comme l'indique l'équation originale de la radiance, le résultat est mis à l'échelle par le produit de points entre la normale à la surface $n$ et la direction de la lumière entrante $w_i$.
@@ -43,7 +43,7 @@ Hormis la terminologie différente, ce morceau de code devrait vous être très 
 
 Pour d'autres types de sources lumineuses provenant d'un seul point, nous calculons la radiance de la même manière. Par exemple, une source lumineuse directionnelle a un $w_i$ constant sans facteur d'atténuation. Et un projecteur n'aurait pas une intensité radiante constante, mais une intensité mise à l'échelle par le vecteur de direction vers l'avant du projecteur.
 
-Cela nous ramène également à l'intégrale $\int$ sur l'hémisphère $\Omega$ de la surface. Comme nous connaissons à l'avance les emplacements uniques de toutes les sources lumineuses contribuant à l'ombrage d'un seul point de la surface, il n'est pas nécessaire d'essayer de résoudre l'intégrale. Nous pouvons directement prendre le nombre (connu) de sources lumineuses et calculer leur irradiance totale, étant donné que chaque source lumineuse n'a qu'une seule direction lumineuse qui influence l'irradiance de la surface. Cela rend le PBR sur les sources de lumière directe relativement simple puisque nous n'avons en fait qu'à boucler sur les sources de lumière qui y contribuent. Lorsque nous prenons ensuite en compte l'éclairage de l'environnement dans les chapitres [[IBL]] (todo: link), nous devons tenir compte de l'intégrale, car la lumière peut provenir de n'importe quelle direction.
+Cela nous ramène également à l'intégrale $\int$ sur l'hémisphère $\Omega$ de la surface. Comme nous connaissons à l'avance les emplacements uniques de toutes les sources lumineuses contribuant à l'ombrage d'un seul point de la surface, il n'est pas nécessaire d'essayer de résoudre l'intégrale. Nous pouvons directement prendre le nombre (connu) de sources lumineuses et calculer leur irradiance totale, étant donné que chaque source lumineuse n'a qu'une seule direction lumineuse qui influence l'irradiance de la surface. Cela rend le PBR sur les sources de lumière directe relativement simple puisque nous n'avons en fait qu'à boucler sur les sources de lumière qui y contribuent. Lorsque nous prenons ensuite en compte l'éclairage de l'environnement dans les chapitres [IBL](IBL) (todo: link), nous devons tenir compte de l'intégrale, car la lumière peut provenir de n'importe quelle direction.
 
 ## Un modèle de surface PBR
 Commençons par écrire un shader de fragment qui met en œuvre les modèles PBR décrits précédemment. Tout d'abord, nous devons prendre les entrées PBR nécessaires à l'ombrage de la surface :
@@ -88,7 +88,7 @@ for(int i = 0; i < 4; ++i)
     [...]  
 ```
 
-Comme nous calculons l'éclairage dans l'espace linéaire (nous corrigerons le [[../05_Advanced_Lighting/01_gamma_correction|gamma]] à la fin du shader), nous atténuons les sources de lumière par la loi de l'inverse du carré, plus correcte physiquement.
+Comme nous calculons l'éclairage dans l'espace linéaire (nous corrigerons le [gamma](../05_Advanced_Lighting/01_gamma_correction.md) à la fin du shader), nous atténuons les sources de lumière par la loi de l'inverse du carré, plus correcte physiquement.
 
 > Bien qu'elle soit physiquement correcte, vous pouvez toujours utiliser l'équation d'atténuation linéaire-quadratique constante qui (bien qu'elle ne soit pas physiquement correcte) peut vous offrir un contrôle beaucoup plus important sur l'affaiblissement de l'énergie de la lumière.
 
@@ -153,7 +153,7 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 ```
-Il est important de noter ici que, contrairement au chapitre sur la [[01_theory|théorie]], nous transmettons le paramètre de rugosité directement à ces fonctions ; de cette façon, nous pouvons apporter des modifications spécifiques au terme à la valeur de rugosité d'origine. D'après les observations de Disney, adoptées par Epic Games, l'éclairage semble plus correct si l'on élève la rugosité au carré dans la géométrie et la fonction de distribution normale.
+Il est important de noter ici que, contrairement au chapitre sur la [théorie](01_theory.md), nous transmettons le paramètre de rugosité directement à ces fonctions ; de cette façon, nous pouvons apporter des modifications spécifiques au terme à la valeur de rugosité d'origine. D'après les observations de Disney, adoptées par Epic Games, l'éclairage semble plus correct si l'on élève la rugosité au carré dans la géométrie et la fonction de distribution normale.
 
 Une fois les deux fonctions définies, le calcul de la $NDF$ et du terme $G$ dans la boucle de réflectance est simple :
 ```cpp
@@ -201,7 +201,7 @@ color = pow(color, vec3(1.0/2.2));
 ```
 Ici, nous appliquons le tone mapping à la couleur HDR à l'aide de l'opérateur Reinhard, en préservant la plage dynamique élevée d'une irradiation qui peut varier fortement, après quoi nous corrigeons la couleur au niveau du gamma. Nous n'avons pas de framebuffer séparé ou d'étape de post-traitement, ce qui nous permet d'appliquer directement le mapping des tons et l'étape de correction gamma à la fin du fragment shader avant.
 
-![[02_lighting-20230909_pbrlight2.png]]
+![02_lighting-20230909_pbrlight2.png](02_lighting-20230909_pbrlight2.png)
 
 La prise en compte de l'espace colorimétrique linéaire et de la plage dynamique élevée est extrêmement importante dans un pipeline PBR. Sans cela, il est impossible de capturer correctement les détails élevés et faibles des différentes intensités lumineuses et vos calculs finissent par être incorrects et donc visuellement désagréables.
 
@@ -279,8 +279,8 @@ void main()
     FragColor = vec4(color, 1.0);
 }  
 ```
-Avec la [[01_theory|théorie]] du chapitre précédent et la connaissance de l'équation de réflectance, ce shader ne devrait plus être aussi intimidant. Si nous prenons ce shader, 4 lumières ponctuelles, et quelques sphères dont nous faisons varier les valeurs métalliques et de rugosité sur les axes verticaux et horizontaux respectivement, nous obtiendrons quelque chose comme ceci :
-![[02_lighting-20230909-pbrlight3.png]]
+Avec la [théorie](01_theory.md) du chapitre précédent et la connaissance de l'équation de réflectance, ce shader ne devrait plus être aussi intimidant. Si nous prenons ce shader, 4 lumières ponctuelles, et quelques sphères dont nous faisons varier les valeurs métalliques et de rugosité sur les axes verticaux et horizontaux respectivement, nous obtiendrons quelque chose comme ceci :
+![02_lighting-20230909-pbrlight3.png](02_lighting-20230909-pbrlight3.png)
 De bas en haut, la valeur métallique varie de $0.0$ à $1.0$, la rugosité augmentant de gauche à droite de $0.0$ à $1.0$. Vous pouvez voir qu'en changeant seulement ces deux paramètres simples à comprendre, nous pouvons déjà afficher un large éventail de matériaux différents.
 
 Vous pouvez trouver le code source complet de la démo [ici](https://learnopengl.com/code_viewer_gh.php?code=src/6.pbr/1.1.lighting/lighting.cpp).
@@ -308,7 +308,7 @@ void main()
 Notez que les textures d'albédo provenant des artistes sont généralement créées dans l'espace **sRGB**, c'est pourquoi nous les convertissons d'abord en espace linéaire avant d'utiliser l'albédo dans nos calculs d'éclairage. En fonction du système utilisé par les artistes pour générer les cartes d'occlusion ambiante, il se peut que vous deviez également les convertir de l'espace sRGB à l'espace linéaire. Les maps métalliques et de rugosité sont presque toujours créées dans l'espace linéaire.
 
 Le remplacement des propriétés matérielles de l'ensemble précédent de sphères par des textures montre déjà une amélioration visuelle majeure par rapport aux algorithmes d'éclairage précédents que nous avons utilisés :
-![[02_lighting-20230909-pbrlight5.png]]
+![02_lighting-20230909-pbrlight5.png](02_lighting-20230909-pbrlight5.png)
 Vous pouvez trouver le code source complet de la démo texturée [ici](https://learnopengl.com/code_viewer_gh.php?code=src/6.pbr/1.2.lighting_textured/lighting_textured.cpp) et le jeu de textures utilisé [ici](http://freepbr.com/materials/rusted-iron-pbr-metal-material-alt/) (avec une map d'ao blanche). Gardez à l'esprit que les surfaces métalliques ont tendance à paraître trop sombres dans les environnements à éclairage direct car elles n'ont pas de réflectance diffuse. Elles sont plus correctes lorsque l'on prend en compte l'éclairage spéculaire de l'environnement, ce sur quoi nous nous concentrerons dans les prochains chapitres.
 
 Bien qu'il ne soit pas aussi impressionnant visuellement que certaines démonstrations de rendu PBR, étant donné que nous n'avons pas encore intégré l'éclairage basé sur l'image, le système que nous avons maintenant est toujours un moteur de rendu basé sur la physique, et même sans IBL, vous verrez que votre éclairage sera beaucoup plus réaliste.

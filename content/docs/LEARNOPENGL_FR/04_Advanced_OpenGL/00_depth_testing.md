@@ -1,6 +1,6 @@
 # Test de profondeur (depth testing)
 
-Dans le chapitre sur les [[../01_Getting_Started/07_coordinate systems|systèmes de coordonnées]] , nous avons effectué le rendu d'un conteneur 3D et utilisé un tampon de profondeur (depth buffer) pour éviter que des triangles ne soient rendus à l'avant alors qu'ils sont censés se trouver derrière d'autres triangles. Dans ce chapitre, nous allons développer un peu plus les valeurs de profondeur que le tampon de profondeur (ou tampon z : z-buffer) stocke et la manière dont il détermine si un fragment est à l'avant.  
+Dans le chapitre sur les [systèmes de coordonnées](../01_Getting_Started/07_coordinate%20systems.md) , nous avons effectué le rendu d'un conteneur 3D et utilisé un tampon de profondeur (depth buffer) pour éviter que des triangles ne soient rendus à l'avant alors qu'ils sont censés se trouver derrière d'autres triangles. Dans ce chapitre, nous allons développer un peu plus les valeurs de profondeur que le tampon de profondeur (ou tampon z : z-buffer) stocke et la manière dont il détermine si un fragment est à l'avant.  
   
 Le tampon de profondeur est un tampon qui, tout comme le tampon de couleur (qui stocke toutes les couleurs des fragments : la sortie visuelle), stocke des informations par fragment et **a la même largeur et la même hauteur que le tampon de couleur**. Le tampon de profondeur est automatiquement créé par le système de fenêtrage et stocke ses valeurs de profondeur sous forme de valeurs flottantes de 16, 24 ou 32 bits. **Dans la plupart des systèmes, vous verrez un tampon de profondeur avec une précision de 24 bits.**  
   
@@ -54,17 +54,17 @@ glEnable(GL_DEPTH_TEST);
 glDepthFunc(GL_ALWAYS); 
 ```
 Cela simule le même comportement que nous obtiendrions si nous n'activions pas le test de profondeur. Le test de profondeur réussit toujours, de sorte que les fragments dessinés en dernier sont rendus devant les fragments dessinés avant, même s'ils auraient dû se trouver à l'avant. Puisque nous avons dessiné le plan du sol en dernier, les fragments du plan écrasent chacun des fragments du conteneur écrits précédemment :
-![[depth_testing_func_always.png]]
+![depth_testing_func_always](depth_testing_func_always.png)
 En rétablissant la valeur `GL_LESS`, nous obtenons le type de scène auquel nous sommes habitués :
-![[depth_testing_func_less.png]]
+![depth_testing_func_less](depth_testing_func_less.png)
 ## Précision de la valeur de la profondeur
 Le tampon de profondeur contient des valeurs de profondeur comprises entre 0,0 et 1,0 et compare son contenu aux valeurs z de tous les objets de la scène vus par le spectateur. Ces valeurs z dans l'espace visuel peuvent être n'importe quelle valeur entre le plan proche et le plan lointain de la projection-frustum. Nous avons donc besoin d'un moyen pour transformer ces valeurs z de l'espace de vision dans l'intervalle \[0,1] et l'un des moyens consiste à les transformer linéairement. L'équation (linéaire) suivante transforme la valeur z en une valeur de profondeur comprise entre 0,0 et 1,0 :
 
 $$
 F_{depth} = { {z - near} \over {far - near} }
 $$
-Ici, $near$ et $far$ sont les valeurs proches et lointaines que nous avons fournies à la matrice de projection pour définir le frustum visible (voir [[../01_Getting_Started/07_coordinate systems|Systèmes de coordonnées]]). L'équation prend une valeur de profondeur z à l'intérieur du frustum et la transforme dans l'intervalle [0,1]. La relation entre la valeur z et la valeur de profondeur correspondante est présentée dans le graphique suivant :
-![[depth_linear_graph.png]]
+Ici, $near$ et $far$ sont les valeurs proches et lointaines que nous avons fournies à la matrice de projection pour définir le frustum visible (voir [Systèmes de coordonnées](../01_Getting_Started/07_coordinate%20systems.md)). L'équation prend une valeur de profondeur z à l'intérieur du frustum et la transforme dans l'intervalle [0,1]. La relation entre la valeur z et la valeur de profondeur correspondante est présentée dans le graphique suivant :
+![depth_linear_graph](depth_linear_graph.png)
 > Notez que toutes les équations donnent une valeur de profondeur proche de 0,0 lorsque l'objet est proche et une valeur de profondeur proche de 1,0 lorsque l'objet est proche du plan éloigné. 
 
 **Dans la pratique, cependant, un tampon de profondeur linéaire comme celui-ci n'est presque jamais utilisé**. En raison des propriétés de projection, **on utilise une équation de profondeur non linéaire qui est proportionnelle à $1/z$. Le résultat est que nous obtenons une précision énorme lorsque z est petit et beaucoup moins de précision lorsque z est éloigné.**  
@@ -74,7 +74,7 @@ $$
 F_{depth} = { {1/z - 1/near} \over {1/far - 1/near} }
 $$
 Ne vous inquiétez pas si vous ne savez pas exactement ce qui se passe avec cette équation. Ce qu'il faut retenir, c'est que les valeurs du tampon de profondeur ne sont pas linéaires dans l'espace-clip (elles sont linéaires dans l'espace-vue avant l'application de la matrice de projection). Une valeur de 0,5 dans le tampon de profondeur ne signifie pas que la valeur z du pixel se trouve à mi-chemin dans le frustum ; la valeur z du sommet est en fait assez proche du plan proche ! Vous pouvez voir la relation non linéaire entre la valeur z et la valeur du tampon de profondeur dans le graphique suivant :
-![[depth_non_linear_graph.png]]
+![depth_non_linear_graph](depth_non_linear_graph.png)
 Comme vous pouvez le constater, les valeurs de profondeur sont largement déterminées par les petites valeurs z, ce qui nous donne une grande précision de profondeur pour les objets proches. L'équation permettant de transformer les valeurs z (du point de vue de l'observateur) est intégrée à la matrice de projection. Ainsi, lorsque nous transformons les coordonnées des vertex de la vue au clip, puis à l'espace écran, l'équation non linéaire est appliquée.  
   
 L'effet de cette équation non linéaire devient rapidement apparent lorsque nous essayons de visualiser le tampon de profondeur.
@@ -90,7 +90,7 @@ void main()
 **Si vous exécutez ensuite le programme, vous remarquerez probablement que tout est blanc**, ce qui donne l'impression que toutes nos valeurs de profondeur correspondent à la valeur de profondeur maximale de 1,0. **Pourquoi certaines valeurs de profondeur ne sont-elles pas plus proches de 0,0 et donc plus sombres ?**  
   
 Dans la section précédente, nous avons décrit que les valeurs de profondeur dans l'espace de l'écran ne sont pas linéaires, c'est-à-dire qu'elles ont une très grande précision pour les petites valeurs de z et une faible précision pour les grandes valeurs de z. La valeur de profondeur du fragment augmente rapidement. La valeur de profondeur du fragment augmente rapidement en fonction de la distance, de sorte que presque tous les sommets ont des valeurs proches de 1,0. Si l'on se rapproche prudemment d'un objet, on peut voir les couleurs s'assombrir et les valeurs z se réduire :
-![[depth_testing_visible_depth.png]]
+![depth_testing_visible_depth](depth_testing_visible_depth.png)
 Cela montre clairement la non-linéarité de la valeur de profondeur. Les objets proches ont un effet beaucoup plus important sur la valeur de profondeur que les objets éloignés. Il suffit de se déplacer de quelques centimètres pour que les couleurs passent de l'obscurité au blanc complet. 
 
 Nous pouvons cependant transformer les valeurs de profondeur non linéaires du fragment en son équivalent linéaire. Pour ce faire, nous devons inverser le processus de projection pour les seules valeurs de profondeur. Cela signifie que nous devons d'abord retransformer les valeurs de profondeur de l'intervalle $[0,1]$ en coordonnées normalisées du device dans l'intervalle $[-1,1]$. Ensuite, nous voulons inverser l'équation non linéaire (équation 2) comme dans la matrice de projection et appliquer cette équation inversée à la valeur de profondeur résultante. Le résultat est alors une valeur de profondeur linéaire.  
@@ -129,7 +129,7 @@ void main()
 Étant donné que les valeurs de profondeur linéarisées vont de près à loin, la plupart d'entre elles seront supérieures à 1,0 et affichées comme étant complètement blanches. En divisant la valeur de profondeur linéaire par la distance dans la fonction principale, nous convertissons la valeur de profondeur linéaire dans la plage $[0, 1]$. De cette manière, nous pouvons voir la scène devenir progressivement plus lumineuse au fur et à mesure que les fragments se rapprochent du plan éloigné du tronc de projection, ce qui est plus efficace pour la visualisation.  
   
 Si nous exécutons maintenant l'application, nous obtenons des valeurs de profondeur qui sont linéaires en fonction de la distance. Essayez de vous déplacer dans la scène pour voir les valeurs de profondeur changer de manière linéaire.
-![[depth_testing_visible_linear.png]]
+![depth_testing_visible_linear](depth_testing_visible_linear.png)
 Les couleurs sont principalement noires parce que les valeurs de profondeur varient linéairement du plan proche (0.1) au plan lointain (100), qui est encore assez éloigné de nous. Le résultat est que nous sommes relativement proches du plan proche et que nous obtenons donc des valeurs de profondeur plus faibles (plus sombres). 
 
 ## Z-fighting
@@ -138,7 +138,7 @@ Un artefact visuel courant peut se produire lorsque deux plans ou triangles sont
 Dans la scène que nous avons utilisée jusqu'à présent, il y a quelques endroits où le z-fighting peut être remarqué. Les conteneurs ont été placés à la hauteur exacte du sol, ce qui signifie que le plan inférieur du conteneur est coplanaire avec le plan du sol. Les valeurs de profondeur des deux plans sont donc identiques, de sorte que le test de profondeur résultant n'a aucun moyen de déterminer lequel est le bon.  
   
 Si vous déplacez la caméra à l'intérieur d'un des conteneurs, les effets sont clairement visibles : la partie inférieure du conteneur passe constamment du plan du conteneur au plan du sol dans un motif en zigzag :
-![[depth_testing_z_fighting.png]]
+![depth_testing_z_fighting](depth_testing_z_fighting.png)
 Le Z-fighting est un problème courant avec les tampons de profondeur et elle est généralement plus visible lorsque les objets sont plus éloignés (parce que le tampon de profondeur a moins de précision à des valeurs de z plus élevées). Le Z-fighting ne peut pas être complètement évité, mais il existe quelques astuces qui permettront d'atténuer ou d'empêcher complètement le Z-fighting dans votre scène. 
 
 ### Prévenir le Z-fighting

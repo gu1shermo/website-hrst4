@@ -275,12 +275,12 @@ Alors donnons un coup de pouce à notre implémentation en important un modèle 
 > La version modifiée du sac à dos utilise des chemins de texture relatifs locaux et renomme les textures albédo et métallique en diffus et spéculaire respectivement. 
 
 Déclarez maintenant un objet `Model` et indiquez l'emplacement du fichier du modèle. Le modèle devrait alors se charger automatiquement et (s'il n'y a pas d'erreurs) rendre l'objet dans la boucle de rendu en utilisant sa fonction `Draw` et c'est tout. Plus d'allocations de tampon, de pointeurs d'attributs et de commandes de rendu, juste une simple ligne de code. Si vous créez un ensemble simple de shaders où le shader de fragment ne produit que la texture diffuse de l'objet, le résultat ressemble un peu à ceci :
-![[model_diffuse.png]]
+![model_diffuse](model_diffuse.png)
 
 Vous pouvez trouver le code source complet [ici](https://learnopengl.com/code_viewer_gh.php?code=src/3.model_loading/1.model_loading/model_loading.cpp). Notez que nous demandons à `stb_image.h` de retourner les textures verticalement, si vous ne l'avez pas déjà fait, avant de charger le modèle. Dans le cas contraire, les textures auront l'air tout chamboulé.  
   
 Nous pouvons également être plus créatifs et introduire des lumières ponctuelles dans l'équation de rendu, comme nous l'avons appris dans les chapitres sur l'éclairage, et avec les maps de spéculaires, nous obtiendrons des résultats étonnants :
-![[model_lighting.png]]
+![model_lighting](model_lighting.png)
 Même moi, je dois admettre que c'est peut-être un peu plus fantaisiste que les conteneurs que nous avons utilisés jusqu'à présent. Assimp permet de charger des tonnes de modèles trouvés sur Internet. Il existe un grand nombre de sites Internet qui proposent des modèles 3D gratuits à télécharger dans différents formats de fichiers. Notez que certains modèles ne se chargent pas correctement, ont des chemins de texture qui ne fonctionnent pas, ou sont simplement exportés dans un format qu'Assimp ne peut pas lire.
 
 ## Pour aller plus loin

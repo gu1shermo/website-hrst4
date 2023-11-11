@@ -10,11 +10,11 @@ Les artistes et les programmeurs préfèrent généralement utiliser une texture
 >	Outre les images, les textures peuvent également être utilisées pour stocker une grande collection de données arbitraires à envoyer aux shaders, mais nous laisserons cela pour un autre sujet.
 
 Vous trouverez ci-dessous une image de texture d'un [mur de briques](https://learnopengl.com/img/textures/wall.jpg) mappée sur le triangle du chapitre précédent.
-![[img/textures1.png]]
+![textures1](img/textures1.png)
 Afin d'appliquer une texture au triangle, nous devons indiquer à chaque sommet du triangle à quelle partie de la texture il correspond. **Chaque sommet doit donc être associé à une coordonnée de texture qui spécifie la partie de l'image de texture à échantillonner.** **L'interpolation des fragments fait ensuite le reste pour les autres fragments.**
 
 **Les coordonnées de texture sont comprises entre 0 et 1 sur les axes x et y (n'oubliez pas que nous utilisons des images de texture en 2D). L'extraction de la couleur de la texture à l'aide des coordonnées de la texture s'appelle l'échantillonnage (ou sampling)**. Les coordonnées de texture commencent à (0,0) pour le coin inférieur gauche d'une image de texture et à (1,1) pour le coin supérieur droit d'une image de texture. L'image suivante montre comment nous faisons correspondre les coordonnées de texture au triangle :
-![[img/textures2.png]]
+![textures2](img/textures2.png)
 Nous spécifions 3 points de coordonnées de texture pour le triangle. Nous voulons que le côté inférieur gauche du triangle corresponde au côté inférieur gauche de la texture. Nous utilisons donc la coordonnée de texture (0,0) pour le sommet inférieur gauche du triangle. Il en va de même pour le côté inférieur droit avec une coordonnée de texture (1,0). Le sommet du triangle doit correspondre au centre supérieur de l'image de texture, nous prenons donc (0.5,1.0) comme coordonnée de texture. **Il suffit de transmettre 3 coordonnées de texture au vertex shader, qui les transmet ensuite au fragment shader qui interpole proprement toutes les coordonnées de texture pour chaque fragment.**
 
 Les coordonnées de texture résultantes ressembleraient alors à ceci :
@@ -36,7 +36,7 @@ L'échantillonnage des textures est interprété de manière très large et peut
 
 Chacune de ces options a un rendu visuel différent lorsque l'on utilise des coordonnées de texture en dehors de la plage par défaut. Voyons ce que cela donne sur un exemple d'image de texture (image originale de Hólger Rezende) :
 
-![[img/textures3.png]]
+![textures3](img/textures3.png)
 Chacune des options susmentionnées peut être définie par axe de coordonnées (s, t (et r si vous utilisez des textures 3D) équivalent à x,y,z) avec la fonction `glTexParameter*` :
 ```cpp
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
@@ -56,11 +56,11 @@ glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 Les coordonnées de la texture ne dépendent pas de la résolution mais peuvent être n'importe quelle valeur à virgule flottante. OpenGL doit donc déterminer à quel pixel de la texture (également connu sous le nom de **texel**) mapper les coordonnées de la texture. Cela devient particulièrement important si vous avez un objet très grand et une texture à faible résolution. Vous avez probablement deviné qu'OpenGL dispose également d'options pour le filtrage de la texture. Il y a plusieurs options disponibles, mais pour l'instant nous allons discuter des options les plus importantes : `GL_NEAREST` et `GL_LINEAR`.
 
 `GL_NEAREST` (également connu sous le nom de plus proche voisin ou de filtrage ponctuel) est la méthode de filtrage de texture par défaut d'OpenGL. Lorsqu'il est réglé sur `GL_NEAREST`, OpenGL sélectionne le texel dont le centre est le plus proche de la coordonnée de la texture. Ci-dessous, vous pouvez voir 4 pixels où la croix représente la coordonnée exacte de la texture. Le texel en haut à gauche a son centre le plus proche de la coordonnée de texture et est donc choisi comme couleur échantillonnée :
-![[img/textures4.png]]
+![textures4](img/textures4.png)
 `GL_LINEAR` (également connu sous le nom de filtrage (bi)linéaire) prend une valeur interpolée à partir des texels voisins de la coordonnée de texture, approximant une couleur entre les texels. Plus la distance entre la coordonnée de texture et le centre d'un texel est faible, plus la couleur de ce texel contribue à la couleur échantillonnée. Ci-dessous, nous pouvons voir qu'une couleur mélangée des pixels voisins est renvoyée :
-![[img/textures5.png]]
+![textures5](img/textures5.png)
 Mais quel est l'effet visuel d'une telle méthode de filtrage des textures ? Voyons comment ces méthodes fonctionnent lorsqu'on utilise une texture de faible résolution sur un objet de grande taille (la texture est donc mise à l'échelle vers le haut et les texels individuels sont perceptibles) :
-![[img/textures6.png]]
+![textures6](img/textures6.png)
 `GL_NEAREST` produit des motifs bloqués où l'on peut clairement voir les pixels qui forment la texture, tandis que `GL_LINEAR` produit un motif plus lisse où les pixels individuels sont moins visibles. `GL_LINEAR` produit un résultat plus réaliste, mais certains développeurs préfèrent un aspect plus 8 bits et choisissent donc l'option `GL_NEAREST`.
 
 Le filtrage des textures peut être défini pour les opérations d'agrandissement et de réduction (lors de la mise à l'échelle vers le haut ou vers le bas). Vous pouvez donc, par exemple, utiliser le filtrage du plus proche voisin lorsque les textures sont mises à l'échelle vers le bas et le filtrage linéaire pour les textures mises à l'échelle vers le haut. Nous devons donc spécifier la méthode de filtrage pour les deux options via `glTexParameter*`. Le code devrait ressembler à la définition de la méthode de wrapping :
@@ -72,7 +72,7 @@ glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 Imaginons que nous ayons une grande pièce avec des milliers d'objets, chacun avec une texture attachée. Il y aura des objets très éloignés qui auront la même texture haute résolution que les objets proches de l'observateur. **Puisque les objets sont éloignés et ne produisent probablement que quelques fragments, OpenGL a des difficultés à récupérer la bonne valeur de couleur pour son fragment à partir de la texture haute résolution, puisqu'il doit choisir une couleur de texture pour un fragment qui s'étend sur une grande partie de la texture**. **Cela produira des artefacts visibles sur les petits objets, sans parler du gaspillage de la bande passante de la mémoire en utilisant des textures à haute résolution sur de petits objets.**
 
 **Pour résoudre ce problème, OpenGL utilise un concept appelé mipmaps**, qui est en fait **une collection d'images de texture où chaque texture suivante est deux fois plus petite que la précédente**. L'idée derrière les mipmaps devrait être facile à comprendre : après un certain seuil de distance de l'observateur, OpenGL utilisera une texture mipmap différente qui correspond le mieux à la distance de l'objet. Comme l'objet est éloigné, la résolution plus faible ne sera pas perceptible par l'utilisateur. OpenGL est alors capable d'échantillonner les bons texels, et il y a moins de mémoire cache impliquée dans l'échantillonnage de cette partie des mipmaps. Regardons de plus près à quoi ressemble une texture mipmap :
-![[img/textures7.png]]
+![textures7](img/textures7.png)
 Créer une collection de textures mipmap pour chaque image de texture est lourd à faire manuellement, mais **heureusement OpenGL est capable de faire tout le travail pour nous avec un seul appel à `glGenerateMipmap` après que nous ayons créé une texture**.
 
 Lorsque l'on passe d'un niveau de mipmap à l'autre pendant le rendu, OpenGL peut montrer des artefacts comme des bords nets visibles entre les deux couches de mipmap. **Tout comme le filtrage normal des textures, il est également possible de filtrer entre les niveaux de mipmap en utilisant les filtres `NEAREST` et `LINEAR` pour passer d'un niveau de mipmap à l'autre.** Pour spécifier la méthode de filtrage entre les niveaux des mipmaps, nous pouvons remplacer les méthodes de filtrage originales par l'une des quatre options suivantes :
@@ -163,7 +163,7 @@ stbi_image_free(data);
 ```
 
 ## Appliquer les textures
-Pour les sections suivantes, nous utiliserons le rectangle dessiné avec `glDrawElements` dans la dernière partie du chapitre [[03_hello triangle]]. Nous devons informer OpenGL de la manière d'échantillonner la texture, nous devrons donc mettre à jour les données des vertex avec les coordonnées de la texture : 
+Pour les sections suivantes, nous utiliserons le rectangle dessiné avec `glDrawElements` dans la dernière partie du chapitre [03_hello triangle](03_hello%20triangle.md). Nous devons informer OpenGL de la manière d'échantillonner la texture, nous devrons donc mettre à jour les données des vertex avec les coordonnées de la texture : 
 ```cpp
 float vertices[] = {
     // positions          // colors           // texture coords
@@ -174,7 +174,7 @@ float vertices[] = {
 };
 ```
 Puisque nous avons ajouté un attribut de sommet supplémentaire, nous devons à nouveau informer OpenGL du nouveau format de sommet : 
-![[img/textures8.png]]
+![textures8](img/textures8.png)
 ```cpp
 glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 glEnableVertexAttribArray(2); 
@@ -224,7 +224,7 @@ glBindVertexArray(VAO);
 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 ```
 Si vous avez tout fait correctement, vous devriez voir l'image suivante : 
- ![[img/textures9.png]]
+ ![textures9](img/textures9.png)
 Si votre rectangle est complètement blanc ou noir, vous avez probablement commis une erreur en cours de route. Vérifiez les journaux des shaders et essayez de comparer votre code avec le [code source](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/4.1.textures/textures.cpp) de l'application.
 
 > Si votre code de texture ne fonctionne pas ou s'il est complètement noir, continuez à lire et travaillez jusqu'au dernier exemple qui devrait fonctionner. Sur certains pilotes, il est nécessaire d'assigner une unité de texture à chaque uniforme d'échantillonneur, ce dont nous parlerons plus loin dans ce chapitre.
@@ -234,7 +234,7 @@ Pour un peu d'originalité, nous pouvons également mélanger la couleur de text
 FragColor = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0);  
 ```
 Le résultat doit être un mélange de la couleur du sommet et de la couleur de la texture : 
- ![[img/textures10.png]]
+ ![textures10](img/textures10.png)
 On peut dire que notre conteneur aime la disco.
 
 ## Unités de texture (unit textures)
@@ -298,11 +298,11 @@ while(...)
 }
 ```
 En définissant les échantillonneurs via `glUniform1i`, nous nous assurons que chaque échantillonneur uniforme correspond à l'unité de texture appropriée. Vous devriez obtenir le résultat suivant : 
-![[img/textures11.png]]
+![textures11](img/textures11.png)
 Vous avez probablement remarqué que la texture est inversée ! Cela se produit parce qu'OpenGL s'attend à ce que la coordonnée 0.0 sur l'axe des y soit en bas de l'image, mais les images ont généralement 0.0 en haut de l'axe des y. Heureusement pour nous, `stb_image.h` peut inverser l'axe des y pendant le chargement de l'image en ajoutant la déclaration suivante avant de charger une image :
 ```cpp
 stbi_set_flip_vertically_on_load(true);  
 ```
 Après avoir demandé à `stb_image.h` d'inverser l'axe des ordonnées lors du chargement des images, vous devriez obtenir le résultat suivant : 
-![[img/textures12.png]]
+![textures12](img/textures12.png)
 Si vous voyez un conteneur heureux, c'est que vous avez bien fait les choses. Vous pouvez le comparer avec le [code source](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/4.2.textures_combined/textures_combined.cpp). 

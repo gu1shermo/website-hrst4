@@ -3,7 +3,7 @@ tags: [cg, opengl, computer graphics, cpp]
 dg-publish: true
 ---
 # Shaders
-Comme mentionné dans le chapitre [[03_hello triangle]], les shaders sont de petits programmes qui reposent sur le GPU. Ces programmes sont exécutés pour chaque section spécifique du pipeline graphique. **En gros, les shaders ne sont rien d'autre que des programmes qui transforment les entrées en sorties. Les shaders sont également des programmes très isolés dans la mesure où ils ne sont pas autorisés à communiquer entre eux ; la seule communication qu'ils ont se fait par le biais de leurs entrées et sorties.**
+Comme mentionné dans le chapitre [03_hello triangle](03_hello%20triangle.md), les shaders sont de petits programmes qui reposent sur le GPU. Ces programmes sont exécutés pour chaque section spécifique du pipeline graphique. **En gros, les shaders ne sont rien d'autre que des programmes qui transforment les entrées en sorties. Les shaders sont également des programmes très isolés dans la mesure où ils ne sont pas autorisés à communiquer entre eux ; la seule communication qu'ils ont se fait par le biais de leurs entrées et sorties.**
 
 Dans le chapitre précédent, nous avons brièvement abordé la question des shaders et la manière de les utiliser correctement. Nous allons maintenant expliquer les shaders, et plus particulièrement le langage shader d'OpenGL, d'une manière plus générale.
 
@@ -106,7 +106,7 @@ void main()
 ```
 
 Vous pouvez voir que nous avons déclaré une variable `vertexColor` en tant que sortie `vec4` que nous avons définie dans le vertex shader et que nous déclarons une entrée `vertexColor` similaire dans le fragment shader. Comme elles ont toutes deux le même type et le même nom, la variable `vertexColor` dans le fragment shader est liée à la variable `vertexColor` dans le vertex shader. Étant donné que nous avons défini une couleur rouge foncé dans le vertex shader, les fragments résultants devraient également être rouge foncé. L'image suivante montre le résultat :
-![[img/shader1.png]]
+![shader1](img/shader1.png)
 Nous y voilà ! Nous venons de réussir à envoyer une valeur du vertex shader au fragment shader. Mettons un peu de piment et voyons si nous pouvons envoyer une couleur de notre application au fragment shader !
 ## Uniforms
 Les uniformes sont un autre moyen de transmettre les données de notre application sur le processeur aux shaders sur le GPU. Les uniformes sont toutefois légèrement différents des attributs de vertex. Tout d'abord, les uniformes sont globaux. Globaux, ce qui signifie qu'une variable uniforme est unique par objet du programme de shaders, et qu'elle est accessible à partir de n'importe quel shader à n'importe quelle étape du programme de shaders. Deuxièmement, quelle que soit la valeur de l'uniforme, les uniformes conservent leur valeur jusqu'à ce qu'ils soient réinitialisés ou mis à jour.
@@ -178,7 +178,7 @@ while(!glfwWindowShouldClose(window))
 ```
 Le code est une adaptation relativement simple du code précédent. Cette fois, nous mettons à jour une valeur uniforme à chaque image avant de dessiner le triangle. Si vous mettez à jour l'uniforme correctement, vous devriez voir la couleur de votre triangle passer progressivement du vert au noir, puis au vert.
 
-![[video/shaders.mp4]]
+![shaders](video/shaders.mp4)
 Consultez le code source [ici](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/3.1.shaders_uniform/shaders_uniform.cpp) si vous êtes bloqué.
 
 Comme vous pouvez le voir, les uniformes sont un outil utile pour définir des attributs qui peuvent changer à chaque image, ou pour échanger des données entre votre application et vos shaders, mais que faire si nous voulons définir une couleur pour chaque vertex ? Dans ce cas, nous devrions déclarer autant d'uniformes que de sommets. Une meilleure solution serait d'inclure plus de données dans les attributs des vertex, ce que nous allons faire maintenant.
@@ -219,7 +219,7 @@ void main()
 }
 ```
 Comme nous avons ajouté un autre attribut de sommet et mis à jour la mémoire du VBO, nous devons reconfigurer les pointeurs d'attributs de sommet. Les données mises à jour dans la mémoire du VBO ressemblent maintenant à ceci :
-![[img/shader2.png]]
+![shader2](img/shader2.png)
 En connaissant la disposition actuelle, nous pouvons mettre à jour le format des vertex avec `glVertexAttribPointer` :
 ```cpp
 // position attribute
@@ -235,7 +235,7 @@ Les premiers arguments de `glVertexAttribPointer` sont relativement simples. Cet
 **Cette fois-ci, nous devons également spécifier un décalage (offset)**. Pour chaque sommet, l'attribut de sommet de position est le premier, nous déclarons donc un décalage de 0. L'attribut de couleur commence après les données de position, le décalage est donc de 3 * sizeof(float) en octets (= 12 octets).
 
 L'exécution de l'application devrait donner l'image suivante :
-![[img/shader3.png]]
+![shader3](img/shader3.png)
 Consultez le code source [ici](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/3.2.shaders_interpolation/shaders_interpolation.cpp) si vous êtes bloqué.
 
 L'image n'est peut-être pas exactement ce à quoi vous vous attendez, car nous n'avons fourni que 3 couleurs, et non la vaste palette de couleurs que nous voyons actuellement. Tout ceci est le résultat de ce que l'on appelle **l'interpolation de fragments** dans le fragment shader. Lors du rendu d'un triangle, l'étape de **rastérisation** produit généralement beaucoup plus de fragments que de vertices spécifiés à l'origine. Le rasterizer détermine alors les positions de chacun de ces fragments en fonction de leur emplacement sur la forme du triangle.

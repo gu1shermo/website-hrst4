@@ -2,7 +2,7 @@
 Nous utilisons des textures 2D depuis un certain temps, mais il existe d'autres types de textures que nous n'avons pas encore explorés. Dans ce chapitre, nous aborderons un type de texture qui est une combinaison de plusieurs textures mappées en une seule : une **cubemap**.
 
 **Une cubemap est une texture qui contient 6 textures 2D individuelles qui forment chacune un côté d'un cube : un cube texturé**. Vous vous demandez peut-être quel est l'intérêt d'un tel cube ? **Pourquoi se donner la peine de combiner 6 textures individuelles en une seule entité au lieu d'utiliser simplement 6 textures individuelles ?** Eh bien, les cubemaps ont la propriété utile de pouvoir être indexées/échantillonnées à l'aide d'un vecteur de direction. Imaginons que nous ayons un cube de 1x1x1 unités avec l'origine d'un vecteur de direction résidant en son centre. L'échantillonnage d'une valeur de texture à partir de la carte du cube avec un vecteur de direction orange ressemble un peu à ceci :
-![[cubemaps_sampling.png]]
+![cubemaps_sampling](cubemaps_sampling.png)
 >La magnitude du vecteur de direction n'a pas d'importance. Tant qu'une direction est fournie, OpenGL récupère les texels correspondants que la direction atteint (éventuellement) et renvoie la valeur de texture correctement échantillonnée.
 
 Si nous imaginons que nous avons une forme de cube à laquelle nous attachons une telle cubemap, ce vecteur de direction serait similaire à la position locale (interpolée) des sommets du cube. De cette manière, nous pouvons échantillonner la cubemap en utilisant les vecteurs de position réels du cube tant que le cube est centré sur l'origine. Nous considérons donc que toutes les positions des sommets du cube sont ses coordonnées de texture lors de l'échantillonnage d'un cubemap. Le résultat est une coordonnée de texture qui accède à la texture de la face individuelle appropriée du cubemap.
@@ -74,11 +74,11 @@ L'une de ces techniques est la création d'une **skybox**.
 ## Skybox
 
 Une skybox est un (grand) cube qui englobe toute la scène et contient 6 images de l'environnement, donnant au joueur / à l'observateur l'illusion que l'environnement dans lequel il se trouve est en fait beaucoup plus grand qu'il ne l'est en réalité. Certains exemples de skybox utilisés dans les jeux vidéo sont des images de montagnes, de nuages ou d'un ciel étoilé. Un exemple de skybox, utilisant des images de ciel étoilé, peut être vu dans la capture d'écran suivante du troisième jeu Elder Scrolls :
-![[cubemaps_morrowind.jpg]]
+![cubemaps_morrowind](cubemaps_morrowind.jpg)
 Vous avez probablement deviné que les skyboxes comme celle-ci conviennent parfaitement aux cubemaps : nous avons un cube qui a 6 faces et qui doit être texturé par face. Dans l'image précédente, ils ont utilisé plusieurs images d'un ciel nocturne pour donner l'illusion que le joueur se trouve dans un grand univers alors qu'il est en fait à l'intérieur d'une toute petite boîte.
 
 Il y a généralement suffisamment de ressources en ligne pour trouver des skyboxes de ce type. Ces images de skyboxes présentent généralement le schéma suivant :
-![[cubemaps_skybox.png]]
+![cubemaps_skybox](cubemaps_skybox.png)
 Si vous pliez ces 6 faces dans un cube, vous obtiendrez un cube entièrement texturé qui simule un grand paysage. Certaines ressources fournissent la skybox dans un tel format, auquel cas vous devrez extraire manuellement les 6 images de face, mais dans la plupart des cas, elles sont fournies sous la forme de 6 images de texture unique.
 
 Cette skybox particulière (de haute qualité) est celle que nous utiliserons pour notre scène et peut être téléchargée [ici](https://learnopengl.com/img/textures/skybox.zip).
@@ -198,7 +198,7 @@ glm::mat4 view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
 Cela supprime toute translation, mais conserve toutes les transformations de rotation afin que l'utilisateur puisse toujours regarder autour de la scène.
 
 Le résultat est une scène qui semble instantanément énorme grâce à notre skybox. Si vous vous déplacez autour du conteneur (la caisse) de base, vous obtenez immédiatement une sensation d'échelle qui améliore considérablement le réalisme de la scène. Le résultat ressemble à ceci :
-![[cubemaps_skybox_result.png]]
+![cubemaps_skybox_result](cubemaps_skybox_result.png)
 Essayez d'expérimenter différentes skyboxes et voyez comment elles peuvent avoir un impact énorme sur l'aspect et la sensation de votre scène.
 
 ## Une optimisation
@@ -233,7 +233,7 @@ La réflexion est la propriété d'un objet (ou d'une partie d'un objet) de refl
 
 Les principes de base de la réflexion ne sont pas si difficiles à comprendre. L'image suivante montre comment nous pouvons calculer un vecteur de réflexion et utiliser ce vecteur pour échantillonner à partir d'un cubemap :
 
-![[cubemaps_reflection_theory.png]]
+![cubemaps_reflection_theory.png](cubemaps_reflection_theory.png)
 Nous calculons un vecteur de réflexion $\vec{R}$ autour du vecteur normal de l'objet $\vec{N}$ sur la base du vecteur de direction de vue $\vec{I}$. Nous pouvons calculer ce vecteur de réflexion à l'aide de la fonction `reflect` intégrée à GLSL. Le vecteur résultant $\vec{R}$ est ensuite utilisé comme vecteur de direction pour indexer/échantillonner le cubemap, ce qui renvoie une valeur de couleur de l'environnement. L'effet résultant est que l'objet semble refléter la skybox.
 
 Puisque nous avons déjà une skybox dans notre scène, créer des reflets n'est pas trop difficile. Nous allons modifier le fragment shader utilisé par la caisse pour lui donner des propriétés réfléchissantes :
@@ -287,13 +287,13 @@ glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
 glDrawArrays(GL_TRIANGLES, 0, 36);
 ```
 En compilant et en exécutant votre code, vous obtenez une caisse qui agit comme un miroir parfait. Le ciel environnant est parfaitement reflété sur le conteneur :
-![[cubemaps_reflection.png]]
+![cubemaps_reflection](cubemaps_reflection.png)
 
 Vous pouvez trouver le code source complet [ici](https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/6.2.cubemaps_environment_mapping/cubemaps_environment_mapping.cpp).
 
 Lorsque la réflexion est appliquée à un objet entier (comme la caisse), l'objet a l'air d'être fait d'un matériau très réfléchissant comme l'acier ou le chrome. Si nous devions charger un objet plus intéressant (comme le modèle de sac à dos des chapitres sur le chargement des modèles), nous obtiendrions l'effet que l'objet semble entièrement fait de chrome :
 
-![[cubemaps_reflection_nanosuit.png]]
+![cubemaps_reflection_nanosuit](cubemaps_reflection_nanosuit.png)
 Cela semble assez impressionnant, mais en réalité, la plupart des modèles ne sont pas complètement réfléchissants. Nous pourrions par exemple introduire des maps de réflexion qui donneraient aux modèles un niveau de détail supplémentaire. Tout comme les maps diffuses et spéculaires, les maps de réflexion sont des images de texture que nous pouvons échantillonner pour déterminer la réflectivité d'un fragment. En utilisant ces maps de réflexion, nous pouvons déterminer quelles parties du modèle sont réfléchissantes et avec quelle intensité.
 
 ### Réfraction
@@ -301,7 +301,7 @@ Une autre forme de mapping de l'environnement est appelée **réfraction** et es
 
 La réfraction est décrite par la [loi de Snell](http://en.wikipedia.org/wiki/Snell%27s_law) qui, avec les maps de l'environnement, ressemble un peu à ceci :
 
-![[cubemaps_refraction_theory-1.png]]
+![cubemaps_refraction_theory-1](cubemaps_refraction_theory-1.png)
 
 Nous avons à nouveau un vecteur de vue $\vec{I}$, un vecteur normal $\vec{N}$ et, cette fois, un vecteur de réfraction $\vec{R}$. Comme vous pouvez le voir, la direction du vecteur de vue est légèrement courbée. Ce vecteur courbé $\vec{R}$ est ensuite utilisé pour échantillonner le cubemap.
 
@@ -332,7 +332,7 @@ void main()
 }  
 ```
 En modifiant les indices de réfraction, vous pouvez créer des résultats visuels complètement différents. La compilation de l'application et l'exécution des résultats sur l'objet conteneur n'est pas très intéressante car elle ne montre pas vraiment l'effet de la réfraction, hormis le fait qu'elle agit comme une loupe pour l'instant. En revanche, l'utilisation des mêmes shaders sur le modèle 3D chargé permet d'obtenir l'effet recherché : un objet ressemblant à du verre.
-![[cubemaps_refraction.png]]
+![cubemaps_refraction.png](cubemaps_refraction.png)
 
 Vous pouvez imaginer qu'avec la bonne combinaison d'éclairage, de réflexion, de réfraction et de mouvement des vertex, vous pouvez créer des graphiques d'eau très soignés. Notez que pour obtenir des résultats physiquement exacts, nous devrions réfracter la lumière à nouveau lorsqu'elle quitte l'objet ; pour l'instant, nous avons simplement utilisé une réfraction unilatérale, ce qui convient à la plupart des usages.
 ## Maps d'environnement dynamiques

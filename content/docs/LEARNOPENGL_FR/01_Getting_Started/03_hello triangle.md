@@ -14,7 +14,7 @@ Certains de ces shaders sont configurables par le développeur, ce qui nous perm
 
   
 Vous trouverez ci-dessous une représentation abstraite de toutes les étapes du pipeline graphique. Notez que les sections bleues représentent les sections où nous pouvons injecter nos propres shaders. 
-![[img/triangle1.png]]
+![triangle1](img/triangle1.png)
 Comme vous pouvez le constater, le pipeline graphique contient un grand nombre de sections qui gèrent chacune une partie spécifique de la **conversion de vos données de vertex en un pixel entièrement rendu**. Nous allons expliquer brièvement chaque partie du pipeline de manière simplifiée afin de vous donner une bonne vue d'ensemble de son fonctionnement.  
   
 **En entrée du pipeline graphique, nous transmettons une liste de trois coordonnées 3D devant former un triangle dans un tableau appelé "données de sommet"** (vertex data) ; ces données de sommet sont une collection de sommets. **Un sommet est une collection de données par coordonnée 3D**. L**es données de ce sommet sont représentées à l'aide d'attributs de sommet qui peuvent contenir toutes les données souhaitées, mais pour des raisons de simplicité, supposons que chaque sommet se compose uniquement d'une position 3D et d'une valeur de couleur.**
@@ -54,7 +54,7 @@ Comme OpenGL travaille dans l'espace 3D, nous rendons un triangle 2D dont chaque
 
 >Coordonnées normalisées (NDC: normalized device coordinates)  
   Une fois que les coordonnées de vos vertex ont été traitées dans le vertex shader, elles doivent être en coordonnées normalisées, c'est-à-dire dans un petit espace où les valeurs x, y et z varient de -1,0 à 1,0. Toutes les coordonnées qui se situent en dehors de cette plage seront rejetées/coupées et ne seront pas visibles à l'écran. Ci-dessous, vous pouvez voir le triangle que nous avons spécifié dans les coordonnées normalisées de l'appareil (en ignorant l'axe z):
-  ![[img/triangle2.png]]
+  ![triangle2](img/triangle2.png)
   Contrairement aux coordonnées d'écran habituelles, **l'axe y positif pointe vers le haut et les coordonnées (0,0) sont au centre du graphique**, au lieu d'être en haut à gauche. En fin de compte, vous souhaitez que toutes les coordonnées (transformées) se retrouvent dans cet espace de coordonnées, sinon elles ne seront pas visibles.  
   Vos coordonnées NDC seront ensuite transformées en coordonnées d'espace-écran (screen space) via la transformation de la fenêtre de visualisation en utilisant les données que vous avez fournies avec `glViewport`. Les coordonnées d'espace-écran résultantes sont ensuite transformées en fragments qui serviront d'entrées à votre fragment shader.
 
@@ -220,7 +220,7 @@ Pour l'instant, nous avons envoyé les données de vertex d'entrée au GPU et in
 **Le vertex shader nous permet de spécifier n'importe quelle entrée sous la forme d'attributs de vertex et bien que cela permette une grande flexibilité, cela signifie que nous devons spécifier manuellement quelle partie de nos données d'entrée va à quel attribut de vertex dans le vertex shader**. Cela signifie que **nous devons spécifier comment OpenGL doit interpréter les données de vertex avant le rendu.**  
   
 Nos données de buffer de vertex (VBO) sont formatées comme suit :
-![[img/triangle3.png]]
+![triangle3](img/triangle3.png)
 - Les données de position sont stockées sous forme de valeurs à virgule flottante de 32 bits (4 octets).
 - Chaque position est composée de 3 de ces valeurs.
 - Il n'y a pas d'espace (ou d'autres valeurs) entre chaque série de 3 valeurs. Les valeurs sont étroitement regroupées dans le tableau.
@@ -265,7 +265,7 @@ Un VAO contient les éléments suivants :
 - Appels à `glEnableVertexAttribArray` ou `glDisableVertexAttribArray`.
 - Configurations des attributs de sommet via `glVertexAttribPointer`.
 - VBO associés aux attributs de sommet par des appels à `glVertexAttribPointer`.
-![[img/triangle4.png]]
+![triangle4](img/triangle4.png)
  Le processus de création d'un VAO est similaire à celui d'un VBO :
 ```cpp
 unsigned int VAO;
@@ -307,7 +307,7 @@ Le deuxième argument spécifie l'indice de départ du tableau de sommets que no
 Le dernier argument spécifie le nombre de sommets que nous souhaitons dessiner, soit 3 (nous ne rendons qu'un seul triangle à partir de nos données, qui font exactement 3 sommets).  
   
 Essayez maintenant de compiler le code et revenez en arrière si des erreurs apparaissent. Dès que votre application se compile, vous devriez voir le résultat suivant :
-![[img/triangle5.png]]
+![triangle5](img/triangle5.png)
 Le code source du programme complet se trouve [ici](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/2.1.hello_triangle/hello_triangle.cpp) .
 
 Si votre résultat n'est pas le même, vous avez probablement fait une erreur en cours de route. Vérifiez donc le code source complet et voyez si vous avez manqué quelque chose.
@@ -362,7 +362,7 @@ Le troisième argument est le type des indices qui est de type GL_UNSIGNED_INT.
 Le dernier argument nous permet de spécifier un offset dans l'EBO (ou de passer un tableau d'index, mais c'est lorsque vous n'utilisez pas d'objets tampons d'éléments), mais nous allons simplement le laisser à 0.  
   
 La fonction `glDrawElements` prend ses indices dans l'EBO actuellement lié à la cible `GL_ELEMENT_ARRAY_BUFFER`. Cela signifie que nous devons lier l'EBO correspondant à chaque fois que nous voulons rendre un objet avec des indices, ce qui est encore une fois un peu encombrant. Il se trouve qu'un objet de tableau de vertex garde également la trace des liaisons d'objets de tampon d'élément. Le dernier objet de tampon d'élément qui est lié pendant qu'un VAO est lié est stocké en tant qu'objet de tampon d'élément du VAO. Le fait de lier un VAO lie donc automatiquement cet EBO.
-![[img/triangle6.png]]
+![triangle6](img/triangle6.png)
 > 	Un VAO stocke les appels `glBindBuffer` lorsque la cible est `GL_ELEMENT_ARRAY_BUFFER`. Cela signifie également qu'il stocke ses appels de déliaison. Assurez-vous donc de ne pas délier le tampon du tableau d'éléments avant de délier votre VAO, sinon il n'aura pas d'EBO configuré.
 
  Le code d'initialisation et de dessin qui en résulte ressemble maintenant à ceci : 
@@ -389,7 +389,7 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 glBindVertexArray(0);
 ```
 L'exécution du programme devrait permettre d'obtenir l'image ci-dessous. L'image de gauche devrait vous sembler familière et l'image de droite est le rectangle dessiné en mode filaire. Le rectangle en mode filaire montre que le rectangle est en fait constitué de deux triangles.
-![[img/triangle7.png]]
+![triangle7](img/triangle7.png)
 >**Mode filaire **
 	Pour dessiner vos triangles en mode filaire, vous pouvez configurer la façon dont OpenGL dessine ses primitives via `glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)`. Le premier argument indique que nous voulons l'appliquer à l'avant et à l'arrière de tous les triangles et la deuxième ligne nous indique de les dessiner comme des lignes. Tout appel de dessin ultérieur rendra les triangles en mode filaire jusqu'à ce que nous le ramenions à sa valeur par défaut en utilisant `glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)`.
 

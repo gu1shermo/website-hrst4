@@ -2,14 +2,14 @@
 La méthode d'éclairage utilisée jusqu'à présent s'appelait "**forward rendering**" ou "**forward shading**". Il s'agit d'une approche simple qui consiste à effectuer le rendu d'un objet et à l'éclairer en fonction de toutes les sources lumineuses de la scène. Nous faisons cela pour chaque objet individuellement pour chaque objet de la scène. Bien qu'elle soit facile à comprendre et à mettre en œuvre, cette approche est également très coûteuse en termes de performances, car chaque objet rendu doit itérer sur chaque source de lumière pour chaque fragment rendu, ce qui est beaucoup ! Le forward rendering a également tendance à gaspiller beaucoup de shaders de fragments dans les scènes avec une grande complexité de profondeur (plusieurs objets couvrent le même pixel de l'écran) car les sorties des shaders de fragments sont remplacées par des sorties de shaders de fragments.
 
 L'ombrage différé ou le rendu différé vise à surmonter ces problèmes en changeant radicalement la façon dont nous rendons les objets. Cela nous donne plusieurs nouvelles options pour optimiser de manière significative les scènes avec un grand nombre de lumières, nous permettant de rendre des centaines (ou même des milliers) de lumières avec un framerate acceptable. **L'image suivante est une scène avec 1847 lumières ponctuelles rendues avec un ombrage différé** (image fournie par Hannes Nevalainen) ; quelque chose qui ne serait pas possible avec un rendu direct.
-![[07_deferred_shading-20230903-deferred1.png]]
+![07_deferred_shading-20230903-deferred1.png](07_deferred_shading-20230903-deferred1.png)
 L'ombrage différé est basé sur l'idée que nous différons ou reportons la majeure partie du rendu lourd (comme l'éclairage) à un stade ultérieur. L**'ombrage différé consiste en deux passes : dans la première passe, appelée passe géométrique, nous effectuons le rendu de la scène une fois et récupérons toutes sortes d'informations géométriques des objets que nous stockons dans une collection de textures appelée G-buffer ; pensez aux vecteurs de position, aux vecteurs de couleur, aux vecteurs de normalité et/ou aux valeurs spéculaires**. **Les informations géométriques d'une scène stockées dans le G-buffer sont ensuite utilisées pour des calculs d'éclairage (plus complexes)**. Voici le contenu du tampon G d'une seule image :
-![[07_deferred_shading-20230903-deferred2.png]]
+![07_deferred_shading-20230903-deferred2.png](07_deferred_shading-20230903-deferred2.png)
 Nous utilisons les textures du tampon G dans une deuxième passe appelée **passe d'éclairage** où nous rendons un quad qui remplit l'écran et calculons l'éclairage de la scène pour chaque fragment en utilisant les informations géométriques stockées dans le tampon G ; pixel par pixel, nous itérons sur le tampon G. Au lieu de faire passer chaque objet du vertex shader au fragment shader, nous découplons les processus avancés de fragmentation à un stade ultérieur. Les calculs d'éclairage sont exactement les mêmes, mais cette fois-ci, nous prenons toutes les variables d'entrée nécessaires dans les textures correspondantes du G-buffer, au lieu du vertex shader (plus quelques variables uniformes).
 
 L'image ci-dessous illustre bien le processus d'ombrage différé.
 
-![[07_deferred_shading-20230903-deferred3.png]]
+![07_deferred_shading-20230903-deferred3.png](07_deferred_shading-20230903-deferred3.png)
 
 L'un des principaux avantages de cette approche est que, quel que soit le fragment qui se retrouve dans le tampon G, ce sont les informations relatives au fragment qui se retrouvent sous la forme d'un pixel à l'écran. Le test de profondeur a déjà conclu que ce fragment était le dernier et le plus élevé. Cela garantit que pour chaque pixel que nous traitons dans la passe d'éclairage, nous ne calculons l'éclairage qu'une seule fois. En outre, le rendu différé ouvre la voie à d'autres optimisations qui nous permettent de rendre un nombre beaucoup plus important de sources lumineuses par rapport au rendu direct.
 
@@ -130,7 +130,7 @@ Comme nous utilisons plusieurs cibles de rendu, le spécificateur de disposition
 > Gardez à l'esprit que pour les calculs d'éclairage, il est extrêmement important de conserver toutes les variables pertinentes dans le même espace de coordonnées. Dans ce cas, nous stockons (et calculons) toutes les variables dans l'espace monde.
 
 Si nous devions maintenant rendre une grande collection d'objets sac à dos dans le framebuffer `gBuffer` et visualiser son contenu en projetant chaque tampon de couleur un par un sur un quad qui remplit l'écran, nous obtiendrions quelque chose comme ceci :
-![[07_deferred_shading-20230904-deferred4.png]]
+![07_deferred_shading-20230904-deferred4.png](07_deferred_shading-20230904-deferred4.png)
 Essayez de visualiser que les vecteurs de position et de normalité de l'espace monde sont effectivement corrects. Par exemple, les vecteurs normaux pointant vers la droite seront plus alignés sur une couleur rouge, de même pour les vecteurs de position qui pointent de l'origine de la scène vers la droite. Dès que vous êtes satisfait du contenu du tampon G, il est temps de passer à l'étape suivante : la passe d'éclairage.
 
 ## La passe d'éclairage différée
@@ -199,7 +199,7 @@ Le shader de la passe d'éclairage accepte 3 textures uniformes qui représenten
 Comme nous disposons maintenant des variables par fragment (et des variables uniformes correspondantes) nécessaires au calcul de l'éclairage Blinn-Phong, nous n'avons pas besoin de modifier le code d'éclairage. La seule chose que nous changeons ici dans l'ombrage différé est la méthode d'obtention des variables d'entrée de l'éclairage.
 
 L'exécution d'une démo simple avec un total de 32 petites lumières ressemble un peu à ceci :
-![[07_deferred_shading-20230904-deffered5.png]]
+![07_deferred_shading-20230904-deffered5.png](07_deferred_shading-20230904-deffered5.png)
 L'un des inconvénients de l'ombrage différé est qu'il n'est pas possible d'effectuer des blendings, car toutes les valeurs du tampon G proviennent de fragments uniques, et les mélanges opèrent sur la combinaison de fragments multiples. Un autre inconvénient est que l'ombrage différé vous oblige à utiliser le même algorithme d'éclairage pour la plupart des éclairages de votre scène ; vous pouvez pallier ce problème en incluant plus de données spécifiques aux matériaux dans le tampon G.
 
 Pour surmonter ces inconvénients (en particulier le blending), nous divisons souvent le moteur de rendu en deux parties : une partie de rendu différé, et l'autre une partie de rendu direct spécifiquement destinée au mélange ou à des effets de shaders spéciaux qui ne conviennent pas à un pipeline de rendu différé. Pour illustrer comment cela fonctionne, nous rendrons les sources lumineuses sous forme de petits cubes en utilisant un moteur de rendu différé, car les cubes lumineux nécessitent un shader spécial (il suffit de produire une seule couleur de lumière).
@@ -226,12 +226,12 @@ for (unsigned int i = 0; i < lightPositions.size(); i++)
 }
 ```
 Cependant, ces cubes rendus ne tiennent pas compte de la profondeur géométrique stockée dans le moteur de rendu différé et sont, par conséquent, toujours rendus au-dessus des objets rendus précédemment ; ce n'est pas le résultat que nous recherchions.
-![[07_deferred_shading-20230904-deferred6.png]]
+![07_deferred_shading-20230904-deferred6.png](07_deferred_shading-20230904-deferred6.png)
 Ce que nous devons faire, c'est d'abord copier les informations de profondeur stockées dans la passe géométrique dans le tampon de profondeur du framebuffer par défaut et ensuite seulement rendre les cubes de lumière. De cette manière, les fragments des cubes de lumière ne sont rendus que lorsqu'ils se trouvent au-dessus de la géométrie rendue précédemment.
 
 Nous pouvons copier le contenu d'un framebuffer dans le contenu d'un autre framebuffer à l'aide de `glBlitFramebuffer`, une fonction que nous avons également utilisée dans le chapitre sur l'anticrénelage pour résoudre les framebuffers multi-échantillonnés. La fonction `glBlitFramebuffer` nous permet de copier une région définie par l'utilisateur d'un framebuffer dans une région définie par l'utilisateur d'un autre framebuffer.
 
-Nous avons stocké la profondeur de tous les objets rendus dans la passe de géométrie différée dans le FBO `gBuffer`. Si nous copions le contenu de son tampon de profondeur dans le tampon de profondeur du framebuffer par défaut, les cubes de lumière seraient alors rendus comme si toute la géométrie de la scène était rendue avec le rendu différé. Comme nous l'avons brièvement expliqué dans le chapitre sur l'[[anti aliasing]] (todo: link), nous devons spécifier un framebuffer en tant que framebuffer de lecture et spécifier de la même manière un framebuffer en tant que framebuffer d'écriture :
+Nous avons stocké la profondeur de tous les objets rendus dans la passe de géométrie différée dans le FBO `gBuffer`. Si nous copions le contenu de son tampon de profondeur dans le tampon de profondeur du framebuffer par défaut, les cubes de lumière seraient alors rendus comme si toute la géométrie de la scène était rendue avec le rendu différé. Comme nous l'avons brièvement expliqué dans le chapitre sur l'[anti aliasing](anti%20aliasing) (todo: link), nous devons spécifier un framebuffer en tant que framebuffer de lecture et spécifier de la même manière un framebuffer en tant que framebuffer d'écriture :
 
 ```cpp
 glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
@@ -245,7 +245,7 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);
 ```
 Ici, nous copions tout le contenu du tampon de profondeur du framebuffer lu dans le tampon de profondeur du framebuffer par défaut ; cela peut être fait de la même manière pour les tampons de couleur et les tampons de stencil. Si nous effectuons ensuite le rendu des cubes de lumière, les cubes s'affichent correctement sur la géométrie de la scène :
 
-![[07_deferred_shading-20230904-deferred6-1.png]]
+![07_deferred_shading-20230904-deferred6-1.png](07_deferred_shading-20230904-deferred6-1.png)
 Vous pouvez trouver le code source complet de la démo [ici](https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/8.1.deferred_shading/deferred_shading.cpp).
 
 Avec cette approche, nous pouvons facilement combiner l'ombrage différé avec l'ombrage direct. C'est une excellente chose car nous pouvons encore appliquer des mélanges et rendre des objets qui nécessitent des effets de shaders spéciaux, ce qui n'est pas possible dans un contexte de rendu différé pur.
@@ -260,7 +260,7 @@ L'idée derrière les volumes de lumière est de calculer le rayon, ou le volume
 L'astuce de cette approche consiste principalement à déterminer la taille ou le rayon du volume de lumière d'une source lumineuse.
 
 ### Calculer le rayon ou le volume d'une lumière
-Pour obtenir le rayon de volume d'une lumière, nous devons résoudre l'équation d'atténuation pour le moment où sa contribution lumineuse devient $0.0$. Pour la fonction d'atténuation, nous utiliserons la fonction introduite dans le chapitre sur les [[projecteurs de lumière]] (todo: link) :
+Pour obtenir le rayon de volume d'une lumière, nous devons résoudre l'équation d'atténuation pour le moment où sa contribution lumineuse devient $0.0$. Pour la fonction d'atténuation, nous utiliserons la fonction introduite dans le chapitre sur les [projecteurs de lumière](projecteurs%20de%20lumière) (todo: link) :
 
 $$
 F_{light}
@@ -295,10 +295,10 @@ Ici, I_{max} est la composante de couleur la plus lumineuse de la source lumineu
 
 À partir de là, nous continuons à résoudre l'équation :
 
-![[07_deferred_shading-20230904-deferred7.png]]
+![07_deferred_shading-20230904-deferred7.png](07_deferred_shading-20230904-deferred7.png)
 
 La dernière équation est une équation de la forme $ax^2+bx+c=0$, que nous pouvons résoudre à l'aide de l'équation quadratique :
-![[07_deferred_shading-20230904-deferred8.png]]
+![07_deferred_shading-20230904-deferred8.png](07_deferred_shading-20230904-deferred8.png)
 Nous obtenons ainsi une équation générale qui nous permet de calculer x, c'est-à-dire le rayon du volume de lumière pour la source lumineuse, en fonction d'un paramètre constant, linéaire et quadratique :
 ```cpp
 float constant  = 1.0; 
@@ -340,7 +340,7 @@ Vous pouvez trouver le code source final de la démo [ici](https://learnopengl.c
 Le fragment shader présenté ci-dessus ne fonctionne pas vraiment en pratique et illustre seulement comment nous pouvons en quelque sorte utiliser le volume d'une lumière pour réduire les calculs d'éclairage. **La réalité est que votre GPU et GLSL sont assez mauvais pour optimiser les boucles et les branches. La raison en est que l'exécution des shaders sur le GPU est hautement parallèle et que la plupart des architectures ont l'obligation d'exécuter exactement le même code de shaders pour un grand nombre de threads afin d'être efficaces**. Cela signifie souvent qu'un shader qui exécute toutes les branches d'une instruction `if` pour s'assurer que l'exécution du shader est la même pour ce groupe de threads, ce qui rend notre précédente optimisation de vérification du rayon complètement inutile ; nous calculerions toujours l'éclairage pour toutes les sources de lumière !
 
 L'approche appropriée pour utiliser les volumes de lumière consiste à rendre des sphères réelles, mises à l'échelle par le rayon du volume de lumière. Les centres de ces sphères sont positionnés à l'emplacement de la source de lumière, et lorsqu'elle est mise à l'échelle par le rayon du volume de lumière, la sphère englobe exactement le volume visible de la lumière. C'est là qu'intervient l'astuce : nous utilisons le shader d'éclairage différé pour le rendu des sphères. Comme une sphère rendue produit des invocations de shader de fragment qui correspondent exactement aux pixels affectés par la source de lumière, nous ne rendons que les pixels concernés et sautons tous les autres pixels. L'image ci-dessous l'illustre :
-![[07_deferred_shading-20230904-deferred9.png]]
+![07_deferred_shading-20230904-deferred9.png](07_deferred_shading-20230904-deferred9.png)
 Cette opération est effectuée pour chaque source lumineuse de la scène, et les fragments résultants sont mélangés de manière additive. Le résultat est alors exactement la même scène que précédemment, mais cette fois-ci en ne rendant que les fragments pertinents par source lumineuse. Cela réduit effectivement les calculs de $nr_{objets} * nr_{lumières}$ à $nr_{objets} + nr_{lumières}$, ce qui le rend incroyablement efficace dans les scènes avec un grand nombre de lumières. C'est cette approche qui rend le rendu différé si adapté au rendu d'un grand nombre de lumières.
 
 **Il y a encore un problème avec cette approche : le face culling doit être activé** (sinon nous rendrions l'effet d'une lumière deux fois) et lorsqu'il est activé, l'utilisateur peut entrer dans le volume d'une source de lumière après quoi le volume n'est plus rendu (à cause du back-face culling), supprimant l'influence de la source de lumière ; nous pouvons résoudre ce problème en ne rendant que les faces arrières des sphères.

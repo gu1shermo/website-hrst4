@@ -64,7 +64,7 @@ L_i(p,w_i)dw_i
 f_r(p,w_i,w_o)n * w_idw_i
 $$
 La première partie (lorsqu'elle est convoluée) est connue sous le nom de **map d'environnement pré-filtrée**. Il s'agit (comme pour la map d'irradiance) d'une carte de convolution d'environnement pré-calculée, mais qui prend cette fois en compte la rugosité. Pour des niveaux de rugosité croissants, la map d'environnement est convoluée avec davantage de vecteurs d'échantillons dispersés, ce qui crée des réflexions plus floues. Pour chaque niveau de rugosité que nous convoluons, nous stockons les résultats séquentiellement plus flous dans les niveaux mipmap de la map pré-filtrée. Par exemple, une map d'environnement pré-filtrée stockant le résultat pré-convolué de 5 valeurs de rugosité différentes dans ses 5 niveaux mipmap se présente comme suit :
-![[02_specular_ibl-20230910-pbribl1.png]]
+![02_specular_ibl-20230910-pbribl1.png](02_specular_ibl-20230910-pbribl1.png)
 Nous générons les vecteurs d'échantillonnage et leur quantité de diffusion en utilisant la fonction de distribution normale (NDF) de la BRDF de Cook-Torrance qui prend en entrée la normale et la direction de la vue. Comme nous ne connaissons pas à l'avance la direction de la vue lors de la convolution de la map de l'environnement, Epic Games fait une approximation supplémentaire en supposant que la direction de la vue (et donc la direction de la réflexion spéculaire) est égale à la direction de l'échantillon de sortie $ω_o$. Cela se traduit par le code suivant :
 ```cpp
 vec3 N = normalize(w_o);
@@ -72,9 +72,9 @@ vec3 R = N;
 vec3 V = R;
 ```
 De cette façon, la convolution pré-filtrée de l'environnement n'a pas besoin d'être consciente de la direction de la vue. Cela signifie que nous n'obtenons pas de belles réflexions spéculaires rasantes lorsque nous regardons des réflexions de surface spéculaire depuis un angle, comme le montre l'image ci-dessous (avec l'autorisation de l'article Moving Frostbite to PBR) ; ceci est cependant généralement considéré comme un compromis acceptable :
-![[02_specular_ibl-20230910-pbribl2.png]]
+![02_specular_ibl-20230910-pbribl2.png](02_specular_ibl-20230910-pbribl2.png)
 La deuxième partie de l'équation de la somme fractionnée est égale à la partie BRDF de l'intégrale spéculaire. Si nous supposons que la radiance entrante est complètement blanche pour chaque direction (donc $L(p,x)=1.0$), nous pouvons pré-calculer la réponse de la BRDF en fonction d'une rugosité d'entrée et d'un angle d'entrée entre la normale $\vec{n}$ et la direction de la lumière $ω_i$, ou $n⋅ω_i$. Epic Games stocke la réponse précalculée de la BRDF à chaque combinaison de normale et de direction de la lumière sur des valeurs de rugosité variables dans une texture de consultation 2D (LUT) connue sous le nom de map d'intégration de la BRDF. La texture de consultation 2D fournit une échelle (rouge) et une valeur de biais (verte) à la réponse de Fresnel de la surface, ce qui nous donne la deuxième partie de l'intégrale spéculaire divisée :
-![[02_specular_ibl-20230910-pbribl3.png]]
+![02_specular_ibl-20230910-pbribl3.png](02_specular_ibl-20230910-pbribl3.png)
 Nous générons la texture de recherche en traitant la coordonnée de texture horizontale (comprise entre $0.0$ et $1.0$) d'un plan comme l'entrée $n⋅ω_i$ de la BRDF, et sa coordonnée de texture verticale comme la valeur de rugosité d'entrée. Avec cette map d'intégration de la BRDF et la map d'environnement pré-filtrée, nous pouvons combiner les deux pour obtenir le résultat de l'intégrale spéculaire :
 ```cpp
 float lod             = getMipLevelFromRoughness(roughness);
@@ -108,7 +108,7 @@ glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 Notez qu'étant donné que nous prévoyons d'échantillonner les mipmaps de `prefilterMap`, vous devrez vous assurer que son filtre de minification est réglé sur `GL_LINEAR_MIPMAP_LINEAR` afin d'activer le filtrage trilinéaire. Nous stockons les réflexions spéculaires pré-filtrées dans une résolution par face de 128 par 128 au niveau du mip de base. Cela devrait suffire pour la plupart des réflexions, mais si vous avez un grand nombre de matériaux lisses (pensez aux réflexions des voitures), vous voudrez peut-être augmenter la résolution.
 
 Dans le chapitre précédent, nous avons convolué la carte de l'environnement en générant des vecteurs d'échantillonnage uniformément répartis sur l'hémisphère $\Omega$ en utilisant des coordonnées sphériques. Si cette méthode fonctionne parfaitement pour l'irradiation, elle est moins efficace pour les réflexions spéculaires. En ce qui concerne les réflexions spéculaires, en fonction de la rugosité d'une surface, la lumière se reflète de près ou de loin autour d'un vecteur de réflexion $\vec{r}$ sur une normale $\vec{n}$, mais (à moins que la surface ne soit extrêmement rugueuse) autour du vecteur de réflexion tout de même :
-![[02_specular_ibl-20230910-pblibr4.png]]
+![02_specular_ibl-20230910-pblibr4.png](02_specular_ibl-20230910-pblibr4.png)
 La forme générale des réflexions possibles de la lumière sortante est connue sous le nom de **lobe spéculaire**. Plus la rugosité augmente, plus la taille du lobe spéculaire augmente ; et la forme du lobe spéculaire change en fonction de la direction de la lumière entrante. La forme du lobe spéculaire dépend donc fortement du matériau.
 
 En ce qui concerne le modèle de microsurface, nous pouvons imaginer le lobe spéculaire comme l'orientation de la réflexion autour des vecteurs de la micro-facette en fonction de la direction de la lumière entrante. Étant donné que la plupart des rayons lumineux aboutissent à un lobe spéculaire réfléchi autour des vecteurs médians de la micro-facette, il est logique de générer les vecteurs d'échantillonnage d'une manière similaire, car la plupart d'entre eux seraient sinon gaspillés. Ce processus est connu sous le nom d'échantillonnage d'importance.
@@ -137,7 +137,7 @@ pdf(x)
 }
 $$
 Pour résoudre l'intégrale, nous prélevons $N$ échantillons aléatoires sur la population $a$ à $b$, nous les additionnons et nous les divisons par le nombre total d'échantillons pour en faire la moyenne. La **pdf** est la fonction de densité de probabilité qui nous indique la probabilité qu'un échantillon spécifique se produise sur l'ensemble des échantillons. Par exemple, la **pdf** de la taille d'une population ressemblerait à ceci :
-![[02_specular_ibl-20230910-pbribl7.png]]
+![02_specular_ibl-20230910-pbribl7.png](02_specular_ibl-20230910-pbribl7.png)
 Ce graphique montre que si l'on prend un échantillon aléatoire de la population, il y a plus de chances d'obtenir un échantillon d'une personne de taille $1.70$ que de chances d'obtenir un échantillon d'une personne de taille $1.50$.
 
 En ce qui concerne l'intégration de Monte Carlo, certains échantillons peuvent avoir une probabilité plus élevée d'être générés que d'autres. C'est pourquoi, pour toute estimation Monte Carlo générale, nous divisons ou multiplions la valeur échantillonnée par la probabilité de l'échantillon, conformément à une $pdf$. Jusqu'à présent, dans chacun de nos cas d'estimation d'une intégrale, les échantillons que nous avons générés étaient uniformes, c'est-à-dire qu'ils avaient exactement la même probabilité d'être générés. Nos estimations jusqu'à présent étaient sans biais, ce qui signifie qu'avec un nombre toujours croissant d'échantillons, nous finirons par converger vers la solution exacte de l'intégrale.
@@ -147,7 +147,7 @@ En ce qui concerne l'intégration de Monte Carlo, certains échantillons peuvent
 L'intégration de Monte Carlo est très répandue dans l'infographie, car c'est un moyen assez intuitif d'approximer des intégrales continues d'une manière discrète et efficace : prenez une zone/un volume quelconque à échantillonner (comme l'hémisphère $\Omega$), générer un nombre $N$ d'échantillons aléatoires à l'intérieur de la zone/du volume, et additionner et pondérer la contribution de chaque échantillon au résultat final.
 
 L'intégration de Monte Carlo est un sujet mathématique très vaste et je ne m'attarderai pas sur les détails, mais nous mentionnerons qu'il existe plusieurs façons de générer les échantillons aléatoires. Par défaut, chaque échantillon est complètement (pseudo)aléatoire, comme nous en avons l'habitude, mais en utilisant certaines propriétés des séquences semi-aléatoires, nous pouvons générer des vecteurs d'échantillons qui sont toujours aléatoires, mais qui ont des propriétés intéressantes. Par exemple, nous pouvons effectuer une intégration Monte Carlo sur ce que l'on appelle des **séquences à faible discrépance** (?), qui génèrent toujours des échantillons aléatoires, mais chaque échantillon est distribué plus uniformément (image fournie par James Heald) :
-![[02_specular_ibl-20230910-pbribl8.png]]
+![02_specular_ibl-20230910-pbribl8.png](02_specular_ibl-20230910-pbribl8.png)
 Lorsque l'on utilise une séquence à faible discrépance pour générer les vecteurs d'échantillonnage de Monte Carlo, le processus est connu sous le nom d'**intégration Quasi-Monte Carlo**. **Les méthodes de Quasi-Monte Carlo ont un taux de convergence plus rapide, ce qui les rend intéressantes pour les applications gourmandes en performances.**
 
 Compte tenu de notre nouvelle connaissance de Monte Carlo et de l'intégration Quasi-Monte Carlo, il existe une propriété intéressante que nous pouvons utiliser pour obtenir un taux de convergence encore plus rapide : **l'échantillonnage d'importance**. Nous l'avons déjà mentionné dans ce chapitre, mais lorsqu'il s'agit de réflexions spéculaires de la lumière, les vecteurs de lumière réfléchie sont contraints dans un lobe spéculaire dont la taille est déterminée par la rugosité de la surface. Étant donné que tout échantillon généré (quasi-)aléatoirement en dehors du lobe spéculaire n'est pas pertinent pour l'intégrale spéculaire, il est logique de concentrer la génération d'échantillons à l'intérieur du lobe spéculaire, au prix d'un biais de l'estimateur de Monte Carlo.
@@ -215,7 +215,7 @@ for(uint i = 0u; i < SAMPLE_COUNT; ++i)
 {
     vec2 Xi = Hammersley(i, SAMPLE_COUNT); 
 ```
-De plus, pour construire un vecteur d'échantillonnage, nous avons besoin d'un moyen d'orienter et de biaiser le vecteur d'échantillonnage vers le lobe spéculaire d'une certaine rugosité de surface. Nous pouvons prendre le **NDF** tel que décrit dans le chapitre [[../01_theory|théorique]] et combiner le GGX NDF dans le processus de vecteur d'échantillon sphérique tel que décrit par Epic Games :
+De plus, pour construire un vecteur d'échantillonnage, nous avons besoin d'un moyen d'orienter et de biaiser le vecteur d'échantillonnage vers le lobe spéculaire d'une certaine rugosité de surface. Nous pouvons prendre le **NDF** tel que décrit dans le chapitre [théorique](../01_theory.md) et combiner le GGX NDF dans le processus de vecteur d'échantillon sphérique tel que décrit par Epic Games :
 ```cpp
 vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness)
 {
@@ -288,7 +288,7 @@ void main()
 Nous pré-filtrons l'environnement, sur la base d'une certaine rugosité d'entrée qui varie pour chaque niveau de mipmap du cubemap pré-filtré (de $0.0$ à $1.0$), et nous stockons le résultat dans `prefilteredColor` (couleur pré-filtrée). La couleur pré filtrée résultante est divisée par le poids total de l'échantillon, les échantillons ayant moins d'influence sur le résultat final (pour les petits `NdotL`) contribuant moins au poids final.
 
 ## Capturer les niveaux de mipmap avant le filtre
-Ce qu'il reste à faire est de laisser OpenGL pré-filtrer la carte de l'environnement avec différentes valeurs de rugosité sur plusieurs niveaux de la mipmap. C'est en fait assez facile à faire avec la configuration originale du chapitre sur l'[[01_diffuse_irradiance|irradiation]] :
+Ce qu'il reste à faire est de laisser OpenGL pré-filtrer la carte de l'environnement avec différentes valeurs de rugosité sur plusieurs niveaux de la mipmap. C'est en fait assez facile à faire avec la configuration originale du chapitre sur l'[irradiation](01_diffuse_irradiance.md) :
 
 ```cpp
 prefilterShader.use();
@@ -329,7 +329,7 @@ Cela devrait nous donner une map d'environnement correctement pré-filtrée qui 
 vec3 envColor = textureLod(environmentMap, WorldPos, 1.2).rgb; 
 ```
 Nous obtenons un résultat qui ressemble effectivement à une version plus floue de l'environnement original :
-![[02_specular_ibl-20230917-ibl0.png]]
+![02_specular_ibl-20230917-ibl0.png](02_specular_ibl-20230917-ibl0.png)
 Si l'aspect est similaire, vous avez réussi à pré-filtrer la map de l'environnement HDR. Jouez avec différents niveaux de mipmap pour voir la map pré-filtrée passer progressivement de reflets nets à des reflets flous à mesure que les niveaux de mip augmentent.
 
 ## Artefacts de convolution du pré-filtre
@@ -337,7 +337,7 @@ Bien que la map pré-filtre actuelle fonctionne bien dans la plupart des cas, t�
 
 ### Coutures Cubemap à forte rugosité
 L'échantillonnage de la map de pré filtre sur les surfaces rugueuses signifie l'échantillonnage de la map de pré filtre sur certains de ses niveaux de mip inférieurs. Lors de l'échantillonnage de cubemaps, OpenGL par défaut n'interpole pas linéairement les faces du cubemap. Parce que les niveaux de mip inférieurs sont à la fois d'une résolution plus faible et que la map de pré-filtre est convoluée avec un lobe d'échantillonnage beaucoup plus grand, le manque de filtrage entre les faces du cubemap devient assez évident :
-![[02_specular_ibl-20230917-ibl1.png]]
+![02_specular_ibl-20230917-ibl1.png](02_specular_ibl-20230917-ibl1.png)
 Heureusement pour nous, OpenGL nous donne la possibilité de filtrer correctement les faces du cubemap en activant `GL_TEXTURE_CUBE_MAP_SEAMLESS` :
 ```cpp
 glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);  
@@ -346,7 +346,7 @@ Il suffit d'activer cette propriété quelque part au début de votre applicatio
 
 ### Points lumineux dans la convolution du pré-filtre
 En raison des détails à haute fréquence et des intensités lumineuses extrêmement variables dans les réflexions spéculaires, la convolution des réflexions spéculaires nécessite un grand nombre d'échantillons pour tenir compte de la nature extrêmement variable des réflexions environnementales HDR. Nous prenons déjà un très grand nombre d'échantillons, mais dans certains environnements, cela peut ne pas suffire pour les niveaux de mip les plus grossiers, auquel cas vous commencerez à voir apparaître des motifs en pointillés autour des zones lumineuses :
-![[02_specular_ibl-20230917-ibr3.png]]
+![02_specular_ibl-20230917-ibr3.png](02_specular_ibl-20230917-ibr3.png)
 Une option consiste à augmenter le nombre d'échantillons, mais cela ne suffira pas pour tous les environnements. Comme l'a décrit Chetan Jags, nous pouvons réduire cet artefact (pendant la convolution du pré filtre) en n'échantillonnant pas directement la map de l'environnement, mais en échantillonnant un niveau de mip de la map de l'environnement basé sur le PDF de l'intégrale et la rugosité :
 ```cpp
 float D   = DistributionGGX(NdotH, roughness);
@@ -601,7 +601,7 @@ RenderQuad();
 glBindFramebuffer(GL_FRAMEBUFFER, 0); 
 ```
 La partie convoluée de la BRDF de l'intégrale de la somme divisée devrait donner le résultat suivant :
-![[02_specular_ibl-20230917-ibl4.png]]
+![02_specular_ibl-20230917-ibl4.png](02_specular_ibl-20230917-ibl4.png)
 Avec la map d'environnement pré-filtrée et la LUT 2D BRDF, nous pouvons reconstruire l'intégrale spéculaire indirecte selon l'approximation de la somme divisée. Le résultat combiné sert alors de lumière spéculaire indirecte ou ambiante.
 
 ## Compléter la réflectance IBL
@@ -653,13 +653,13 @@ vec3 ambient = (kD * diffuse + specular) * ao;
 Notez que nous ne multiplions pas le spéculaire par $k_S$ car nous avons déjà une multiplication de Fresnel.
 
 Maintenant, en exécutant ce code exact sur la série de sphères qui diffèrent par leur rugosité et leurs propriétés métalliques, nous pouvons enfin voir leurs vraies couleurs dans le rendu PBR final :
-![[02_specular_ibl-20230917-ibl5.png]]
+![02_specular_ibl-20230917-ibl5.png](02_specular_ibl-20230917-ibl5.png)
 Nous pourrions même aller plus loin et utiliser des matériaux PBR texturés :
-![[02_specular_ibl-20230917-ibl6.png]]
+![02_specular_ibl-20230917-ibl6.png](02_specular_ibl-20230917-ibl6.png)
 Ou chargez ce [superbe modèle 3D PBR gratuit](http://artisaverb.info/PBT.html) d'Andrew Maximov :
-![[02_specular_ibl-20230917-ibl7.png]]
+![02_specular_ibl-20230917-ibl7.png](02_specular_ibl-20230917-ibl7.png)
 Je suis sûr que nous sommes tous d'accord pour dire que notre éclairage est maintenant beaucoup plus convaincant. Ce qui est encore mieux, c'est que notre éclairage semble physiquement correct quelle que soit la map d'environnement que nous utilisons. Ci-dessous, vous verrez plusieurs cartes HDR pré-calculées différentes, qui changent complètement la dynamique de l'éclairage, mais qui restent physiquement correctes sans changer une seule variable d'éclairage !
-![[02_specular_ibl-20230917-ibl8.png]]
+![02_specular_ibl-20230917-ibl8.png](02_specular_ibl-20230917-ibl8.png)
 Cette aventure PBR s'est avérée être un long voyage. Il y a beaucoup d'étapes et donc beaucoup de choses qui peuvent mal tourner, alors travaillez soigneusement sur les exemples de code de la scène sphérique ou de la scène texturée (y compris tous les shaders) si vous êtes bloqué, ou vérifiez et posez des questions dans les commentaires.
 
 ### Et ensuite ?

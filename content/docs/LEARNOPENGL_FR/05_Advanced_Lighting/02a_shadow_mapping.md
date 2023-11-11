@@ -1,6 +1,6 @@
 # Shadow mapping
 Les ombres résultent de l'absence de lumière due à une occlusion. Lorsque les rayons lumineux d'une source de lumière n'atteignent pas un objet parce qu'il est occulté par un autre objet, l'objet est dans l'ombre. Les ombres ajoutent beaucoup de réalisme à une scène éclairée et permettent au spectateur d'observer plus facilement les relations spatiales entre les objets. Elles donnent une plus grande impression de profondeur à la scène et aux objets. Par exemple, regardez l'image suivante d'une scène avec et sans ombres :
-![[shadow_mapping_with_without.png]]
+![shadow_mapping_with_without](shadow_mapping_with_without.png)
 
 Vous pouvez constater qu'avec les ombres, la relation entre les objets devient beaucoup plus évidente. Par exemple, le fait que l'un des cubes flotte au-dessus des autres n'est vraiment perceptible que lorsqu'il y a des ombres.
 
@@ -10,7 +10,7 @@ L'une des techniques utilisées par la plupart des jeux vidéo, qui donne des r�
 
 ## Shadow mapping
 L'idée derrière le shadow mapping est assez simple : nous rendons la scène du point de vue de la lumière et tout ce que nous voyons du point de vue de la lumière est éclairé et tout ce que nous ne pouvons pas voir doit être dans l'ombre. Imaginez une section de plancher avec une grande caisse entre elle et une source de lumière. Étant donné que la source lumineuse verra cette boîte et non la section du sol lorsqu'elle regardera dans sa direction, cette section spécifique du sol devrait être dans l'ombre.
-![[shadow_mapping_theory.png]]
+![shadow_mapping_theory](shadow_mapping_theory.png)
 
 Ici, toutes les lignes bleues représentent les fragments que la source lumineuse peut voir. Les fragments occultés sont représentés par des lignes noires : ils sont rendus comme étant dans l'ombre. Si nous traçons une ligne ou un rayon de la source lumineuse vers un fragment de la boîte la plus à droite, nous pouvons voir que le rayon touche d'abord le conteneur flottant avant de toucher le conteneur le plus à droite. Par conséquent, le fragment du conteneur flottant est éclairé et le fragment du conteneur le plus à droite n'est pas éclairé et se trouve donc dans l'ombre.
 
@@ -18,7 +18,7 @@ Nous voulons déterminer le point du rayon où il a touché un objet pour la pre
 
 Vous vous souvenez peut-être du chapitre sur les tests de profondeur, selon lequel une valeur dans le tampon de profondeur correspond à la profondeur d'un fragment fixé à $[0,1]$ du point de vue de la caméra. Et si nous rendions la scène du point de vue de la lumière et stockions les valeurs de profondeur résultantes dans une texture ? De cette manière, nous pouvons échantillonner les valeurs de profondeur les plus proches du point de vue de la lumière. Après tout, les valeurs de profondeur montrent le premier fragment visible du point de vue de la lumière. Nous stockons toutes ces valeurs de profondeur dans une texture que nous appelons map de profondeur ou shadow map.
 
-![[02a_shadow_mapping-20230829.png]]
+![02a_shadow_mapping-20230829](02a_shadow_mapping-20230829.png)
 L'image de gauche montre une source lumineuse directionnelle (tous les rayons lumineux sont parallèles) qui projette une ombre sur la surface située sous le cube. En utilisant les valeurs de profondeur stockées dans la map de profondeur, nous trouvons le point le plus proche et l'utilisons pour déterminer si les fragments sont dans l'ombre. Nous créons la map de profondeur en effectuant le rendu de la scène (du point de vue de la lumière) à l'aide d'une vue et d'une matrice de projection spécifiques à cette source lumineuse. Cette projection et cette matrice de vue forment ensemble une transformation $T$ qui transforme toute position 3D en espace de coordonnées de la lumière (visible).
 
 >Une lumière directionnelle n'a pas de position puisqu'elle est modélisée pour être infiniment éloignée. Cependant, pour les besoins de la cartographie des ombres, nous devons rendre la scène du point de vue d'une lumière et donc rendre la scène à partir d'une position située quelque part dans la direction de la lumière.
@@ -142,7 +142,7 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);
 Ici, la fonction `RenderScene` prend un programme de shader, appelle toutes les fonctions de dessin pertinentes et définit les matrices de modèle correspondantes si nécessaire.
 
 Le résultat est un tampon de profondeur joliment rempli qui contient la profondeur la plus proche de chaque fragment visible du point de vue de la lumière. En rendant cette texture sur un quad 2D qui remplit l'écran (similaire à ce que nous avons fait dans la section de post-traitement à la fin du chapitre sur les framebuffers), nous obtenons quelque chose comme ceci :
-![[shadow_mapping_depth_map.png]]
+![shadow_mapping_depth_map](shadow_mapping_depth_map.png)
 Pour le rendu de la map de profondeur sur un quad, nous avons utilisé le fragment shader suivant :
 ```cpp
 #version 330 core
@@ -291,7 +291,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 }  
 ```
 L'activation de ce shader, la liaison des textures appropriées et l'activation des matrices de projection et de vue par défaut lors de la deuxième passe de rendu devraient donner un résultat similaire à l'image ci-dessous :
-![[shadow_mapping_shadows.png]]
+![shadow_mapping_shadows](shadow_mapping_shadows.png)
 Si vous avez bien fait les choses, vous devriez en effet voir (bien qu'avec quelques artefacts) des ombres sur le sol et les cubes. Vous pouvez trouver le code source de l'application de démonstration [ici](https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/3.1.2.shadow_mapping_base/shadow_mapping_base.cpp).
 
 ## Améliorer les shadow maps
@@ -299,15 +299,15 @@ Nous avons réussi à faire fonctionner les bases du shadow mapping, mais comme 
 
 ### Shadow acne
 L'image précédente montre clairement que quelque chose ne va pas. Un zoom plus rapproché montre un motif *Moiré* très évident :
-![[shadow_mapping_acne.png]]
+![shadow_mapping_acne](shadow_mapping_acne.png)
 Nous pouvons voir qu'une grande partie de la surface du sol est rendue avec des lignes noires évidentes en alternance. Cet artefact de mappage des ombres est appelé acné des ombres et peut être expliqué par l'image suivante :
-![[shadow_mapping_acne_diagram.png]]
+![shadow_mapping_acne_diagram](shadow_mapping_acne_diagram.png)
 Comme la map des ombres est limitée par la résolution, plusieurs fragments peuvent échantillonner la même valeur de la map de profondeur lorsqu'ils sont relativement éloignés de la source lumineuse. L'image montre le sol où chaque panneau jaune incliné représente un seul texel de la map de profondeur. Comme vous pouvez le voir, plusieurs fragments échantillonnent le même échantillon de profondeur.
 
 Bien que cela soit généralement acceptable, cela devient un problème lorsque la source lumineuse regarde la surface sous un angle, car dans ce cas, la map de profondeur est également rendue sous un angle. Plusieurs fragments accèdent alors au même texel de profondeur incliné alors que certains sont au-dessus et d'autres au-dessous du sol ; nous obtenons une divergence d'ombre. De ce fait, certains fragments sont considérés comme étant dans l'ombre et d'autres non, ce qui donne le motif rayé de l'image.
 
 Nous pouvons résoudre ce problème à l'aide d'une petite astuce appelée "biais d'ombre" (shadow bias), qui consiste simplement à décaler la profondeur de la surface (ou de la map d'ombre) d'une petite quantité de biais, de sorte que les fragments ne soient pas considérés à tort comme étant au-dessus de la surface.
-![[shadow_mapping-20230830.png]]
+![shadow_mapping-20230830](shadow_mapping-20230830.png)
 Avec le biais appliqué, tous les échantillons ont une profondeur inférieure à la profondeur de la surface et la surface entière est donc correctement éclairée sans aucune ombre. Nous pouvons mettre en œuvre un tel biais de la manière suivante :
 ```cpp
 float bias = 0.005;
@@ -319,16 +319,16 @@ Un biais d'ombre de $0.005$ résout en grande partie les problèmes de notre sc�
 float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);  
 ```
 Nous avons ici un biais maximum de $0.05$ et un minimum de $0.005$ en fonction de la normale de la surface et de la direction de la lumière. Ainsi, les surfaces comme le sol qui sont presque perpendiculaires à la source lumineuse ont un petit biais, tandis que les surfaces comme les faces latérales du cube ont un biais beaucoup plus important. L'image suivante montre la même scène, mais avec un biais pour les ombres :
-![[shadow_mapping_with_bias.png]]
+![shadow_mapping_with_bias](shadow_mapping_with_bias.png)
 Le choix de la (des) valeur(s) de biais correcte(s) nécessite quelques ajustements car elle(s) sera(ont) différente(s) pour chaque scène, mais la plupart du temps, il s'agit simplement d'incrémenter lentement le biais jusqu'à ce que toute l'acné soit supprimée.
 
 ### ### Peter panning
 L'inconvénient de l'utilisation d'un biais d'ombre est que vous appliquez un décalage à la profondeur réelle des objets. Par conséquent, le biais peut devenir suffisamment important pour que les ombres soient visiblement décalées par rapport à l'emplacement réel des objets, comme vous pouvez le voir ci-dessous (avec une valeur de biais exagérée) :
-![[shadow_mapping_peter_panning.png]]
+![shadow_mapping_peter_panning](shadow_mapping_peter_panning.png)
 Cet artefact d'ombre est appelé "**peter panning**", car les objets semblent légèrement détachés de leurs ombres. Nous pouvons utiliser une petite astuce pour résoudre la plupart des problèmes de peter panning en utilisant l'élimination des faces avant lors du rendu de la carte de profondeur. Vous vous souvenez peut-être du chapitre sur l'élimination des faces qu'OpenGL élimine par défaut les faces arrière. **En indiquant à OpenGL que nous voulons éliminer les faces avant pendant l'étape de la map des ombres, nous inversons cet ordre.**
 
 Comme nous n'avons besoin que des valeurs de profondeur pour la map de profondeur, cela ne devrait pas avoir d'importance pour les objets solides que nous prenions la profondeur de leurs faces avant ou de leurs faces arrière. L'utilisation de la profondeur de la face arrière ne donne pas de mauvais résultats car l'existence d'ombres à l'intérieur des objets n'a pas d'importance ; de toute façon, nous ne pouvons pas voir à l'intérieur des objets.
-![[Pasted image 20230830111353.png]]
+![Pasted image 20230830111353.png](Pasted%20image%2020230830111353.png)
 Pour corriger le peter panning, nous éliminons toutes les faces avant lors de la génération de la map d'ombres. Notez que vous devez d'abord activer `GL_CULL_FACE`.
 ```cpp
 glCullFace(GL_FRONT);
@@ -341,7 +341,7 @@ Il faut également tenir compte du fait que les objets proches du récepteur d'o
 
 ### Over sampling
 Une autre anomalie visuelle que vous pouvez apprécier ou non est que les régions situées en dehors du frustum visible de la lumière sont considérées comme étant dans l'ombre alors qu'elles ne le sont (généralement) pas. Cela est dû au fait que les coordonnées projetées en dehors du frustum de la lumière sont supérieures à $1.0$ et échantillonneront donc la texture de profondeur en dehors de sa plage par défaut de $[0.1]$. En se basant sur la méthode de wrapping de la texture, nous obtiendrons des résultats de profondeur incorrects qui ne sont pas basés sur les valeurs de profondeur réelles de la source lumineuse.
-![[shadow_mapping_outside_frustum.png]]
+![shadow_mapping_outside_frustum](shadow_mapping_outside_frustum.png)
 Vous pouvez voir dans l'image qu'il y a une sorte de région imaginaire de lumière, et qu'une grande partie en dehors de cette zone est dans l'ombre ; cette zone représente la taille de la map de profondeur projetée sur le sol. Cette zone représente la taille de la map de profondeur projetée sur le sol. La raison pour laquelle cela se produit est que nous avons précédemment défini les options de wrapping de la map de profondeur sur `GL_REPEAT`.
 
 Ce que nous préférons, c'est que toutes les coordonnées situées en dehors de la plage de la map de profondeur aient une profondeur de $1.0$, ce qui signifie que ces coordonnées ne seront jamais dans l'ombre (car aucun objet n'aura une profondeur supérieure à $1.0$). Nous pouvons le faire en configurant une couleur de bordure de texture et en réglant les options de wrapping de texture de la map de profondeur sur `GL_CLAMP_TO_BORDER` :
@@ -352,7 +352,7 @@ float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);  
 ```
 Désormais, chaque fois que nous échantillonnons en dehors de la plage de coordonnées $[0,1]$ de la map de profondeur, la fonction de texture renvoie toujours une profondeur de $1.0$, ce qui produit une valeur d'ombre de $0.0$ Le résultat est désormais plus plausible :
-![[shadow_mapping_clamp_edge.png]]
+![shadow_mapping_clamp_edge](shadow_mapping_clamp_edge.png)
 Il semble qu'il y ait encore une partie présentant une région sombre. Il s'agit des coordonnées situées à l'extérieur du plan éloigné du frustum orthographique de la lumière. Vous pouvez constater que cette région sombre se trouve toujours à l'extrémité du frustum de la source lumineuse en observant les directions des ombres.
 
 La coordonnée d'un fragment projeté dans l'espace lumineux est plus éloignée que le plan éloigné de la lumière lorsque sa coordonnée $z$ est supérieure à $1.0$. Dans ce cas, la méthode de wrapping `GL_CLAMP_TO_BORDER` ne fonctionne plus car nous comparons la composante $z$ de la coordonnée avec les valeurs de la map de profondeur ; cette méthode renvoie toujours un résultat positif pour les valeurs $z$ supérieures à $1.0$.
@@ -369,12 +369,12 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 }
 ```
 Le fait de vérifier le plan éloigné et de limiter la map de profondeur à une couleur de bordure spécifiée manuellement résout le problème du suréchantillonnage de la map de profondeur. Cela nous permet enfin d'obtenir le résultat que nous recherchons :
-![[shadow_mapping_over_sampling_fixed.png]]
+![shadow_mapping_over_sampling_fixed](shadow_mapping_over_sampling_fixed.png)
 Le résultat de tout ceci signifie que nous n'avons des ombres que là où les coordonnées du fragment projeté se trouvent dans la zone de la map de profondeur, donc tout ce qui se trouve en dehors du frustum de lumière n'aura pas d'ombres visibles. Comme les jeux vidéo font généralement en sorte que cela ne se produise qu'au loin, c'est un effet beaucoup plus plausible que les régions noires évidentes que nous avions auparavant.
 
 ### PCF
 Les ombres actuelles sont un ajout agréable au paysage, mais ce n'est pas encore exactement ce que nous voulons. Si l'on zoome sur les ombres, la dépendance de la résolution du mapping des ombres devient rapidement évidente.
-![[shadow_mapping_zoom.png]]
+![shadow_mapping_zoom.png](shadow_mapping_zoom.png)
 Comme la map de profondeur a une résolution fixe, la profondeur s'étend souvent sur plus d'un fragment par texel. Par conséquent, plusieurs fragments échantillonnent la même valeur de profondeur à partir de la map de profondeur et parviennent aux mêmes conclusions d'ombre, ce qui produit ces bords irréguliers.
 
 Vous pouvez réduire ces ombres en bloc en augmentant la résolution de la carte de profondeur ou en essayant d'ajuster le cône de lumière le plus près possible de la scène.
@@ -398,7 +398,7 @@ shadow /= 9.0;
 Ici, `textureSize` renvoie un `vec2` de la largeur et de la hauteur de la texture du sampler donnée au niveau 0 de la mipmap. 1 divisé par ce `vec2` **renvoie la taille d'un texel unique** que nous utilisons pour décaler les coordonnées de la texture, en nous assurant que chaque nouvel échantillon échantillonne une valeur de profondeur différente. Ici, nous échantillonnons 9 valeurs autour des valeurs $x$ et $y$ de la coordonnée projetée, nous testons l'occlusion des ombres et enfin nous faisons la moyenne des résultats en fonction du nombre total d'échantillons prélevés.
 
 En utilisant plus d'échantillons et/ou en variant la variable `texelSize`, vous pouvez augmenter la qualité des ombres douces. Ci-dessous, vous pouvez voir les ombres avec un simple PCF appliqué :
-![[shadow_mapping_soft_shadows.png]]
+![shadow_mapping_soft_shadows](shadow_mapping_soft_shadows.png)
 De loin, les ombres sont beaucoup plus belles et moins dures. Si vous zoomez, vous pouvez toujours voir les artefacts de résolution du shadow mapping, mais en général cela donne de bons résultats pour la plupart des applications.
 
 Vous pouvez trouver le code source complet de l'exemple [ici](https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/3.1.3.shadow_mapping/shadow_mapping.cpp).
@@ -407,10 +407,10 @@ Il y a en fait beaucoup plus à faire avec le PCF et pas mal de techniques pour 
 
 ### Orthographique vs Perspective
 Il existe une différence entre le rendu de la map de profondeur avec une matrice de projection orthographique ou perspective. Une matrice de projection orthographique ne déforme pas la scène avec la perspective, de sorte que tous les rayons de vue/lumière sont parallèles. Cela en fait une excellente matrice de projection pour les lumières directionnelles. En revanche, une matrice de projection en perspective déforme tous les sommets en fonction de la perspective, ce qui donne des résultats différents. L'image suivante montre les différentes zones d'ombre des deux méthodes de projection :
-![[shadow_mapping-ortho-proj-0230830.png]]
+![shadow_mapping-ortho-proj-0230830](shadow_mapping-ortho-proj-0230830.png)
 Les projections en perspective sont plus utiles pour les sources lumineuses qui ont un emplacement réel, contrairement aux lumières directionnelles. **Les projections en perspective sont le plus souvent utilisées avec les projecteurs et les lumières ponctuelles, tandis que les projections orthographiques sont utilisées pour les lumières directionnelles.**
 
-Une autre différence subtile avec l'utilisation d'une matrice de projection en perspective est que la visualisation du tampon de profondeur donne souvent un résultat presque entièrement blanc. Cela s'explique par le fait qu'avec la projection en perspective, la profondeur est transformée en valeurs de profondeur non linéaires dont la majeure partie de la plage visible se situe près du plan proche. Pour pouvoir visualiser correctement les valeurs de profondeur comme nous l'avons fait avec la projection orthographique, vous devez d'abord transformer les valeurs de profondeur non linéaires en valeurs linéaires, comme nous l'avons expliqué dans le chapitre sur les [[../04_Advanced_OpenGL/00_depth_testing|tests de profondeur]]:
+Une autre différence subtile avec l'utilisation d'une matrice de projection en perspective est que la visualisation du tampon de profondeur donne souvent un résultat presque entièrement blanc. Cela s'explique par le fait qu'avec la projection en perspective, la profondeur est transformée en valeurs de profondeur non linéaires dont la majeure partie de la plage visible se situe près du plan proche. Pour pouvoir visualiser correctement les valeurs de profondeur comme nous l'avons fait avec la projection orthographique, vous devez d'abord transformer les valeurs de profondeur non linéaires en valeurs linéaires, comme nous l'avons expliqué dans le chapitre sur les [tests de profondeur](../04_Advanced_OpenGL/00_depth_testing.md):
 ```cpp
 #version 330 core
 out vec4 FragColor;

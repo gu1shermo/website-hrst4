@@ -6,7 +6,7 @@ Un tampon de stencil contient (généralement) 8 bits par valeur de stencil, ce 
 > Chaque bibliothèque de fenêtrage doit mettre en place un tampon de stencil pour vous. GLFW le fait automatiquement, nous n'avons donc pas besoin de lui dire d'en créer un, mais d'autres bibliothèques de fenêtrage peuvent ne pas créer de tampon de stencil par défaut, alors vérifiez la documentation de votre bibliothèque. 
 
  Un exemple simple de tampon de stencil est illustré ci-dessous (les pixels ne sont pas à l'échelle) : 
- ![[stencil_buffer 1.png]]
+ ![stencil_buffer 1](stencil_buffer%201.png)
 Le stencil buffer est d'abord vidé avec des zéros, puis un rectangle ouvert de `1` est stocké dans le stencil buffer. Les fragments de la scène ne sont alors rendus (les autres sont rejetés) que là où la valeur du stencil de ce fragment contient un `1`.  
   
 Les opérations sur le tampon de stencil nous permettent de fixer le tampon de stencil à des valeurs spécifiques partout où nous rendons des fragments. En changeant le contenu du tampon de stencil pendant le rendu, nous _écrivons_ dans le tampon de stencil. Dans la même image (ou les suivantes), nous pouvons _lire_ ces valeurs pour écarter ou passer certains fragments. Lors de l'utilisation des tampons de stencil, vous pouvez être aussi fou que vous le souhaitez, mais les grandes lignes sont généralement les suivantes :  
@@ -76,7 +76,7 @@ Ainsi, en utilisant `glStencilFunc` et `glStencilOp`, nous pouvons spécifier pr
 
 ## Object outlining (contour d'objet)
 Il est peu probable que vous ayez parfaitement compris le fonctionnement du test du stencil à partir des seules sections précédentes. Nous allons donc vous présenter une fonction particulièrement utile qui peut être mise en œuvre avec le seul test du stencil et qui s'appelle le contour d'objet ou **object outlining**. 
-![[stencil_object_outlining.png]]
+![stencil_object_outlining](stencil_object_outlining.png)
 
 Le contournement d'objet fait exactement ce qu'il dit faire. Pour chaque objet (ou un seul), nous créons une petite bordure colorée autour des objets (combinés). Cet effet est particulièrement utile lorsque vous souhaitez sélectionner des unités dans un jeu de stratégie, par exemple, et que vous devez montrer à l'utilisateur quelles unités ont été sélectionnées. La routine pour délimiter vos objets est la suivante :  
   
@@ -162,7 +162,7 @@ Tant que vous comprenez l'idée générale des tests de stencils, cela ne devrai
 
 Le résultat de l'algorithme de contour ressemble alors à ceci : 
 
-![[stencil_scene_outlined 1.png]]
+![stencil_scene_outlined 1](stencil_scene_outlined%201.png)
 Consultez le code source [ici](https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/2.stencil_testing/stencil_testing.cpp) pour voir le code complet de l'algorithme de contour d'objet. 
 
 Vous pouvez voir que les contours se chevauchent entre les deux conteneurs, ce qui est généralement l'effet recherché (pensez aux jeux de stratégie dans lesquels nous voulons sélectionner 10 unités ; la fusion des contours est généralement préférée). Si vous voulez un contour complet par objet, vous devez effacer le tampon de stencil par objet et faire preuve d'un peu de créativité avec le tampon de profondeur.

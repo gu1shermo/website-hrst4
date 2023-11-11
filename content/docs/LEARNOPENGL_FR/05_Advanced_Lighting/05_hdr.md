@@ -1,6 +1,6 @@
 # HDR
 Les valeurs de luminosité et de couleur sont, par défaut, comprises entre $0.0$ et $1.0$ lorsqu'elles sont stockées dans un framebuffer. Cette déclaration, à première vue innocente, nous a poussés à toujours spécifier les valeurs de luminosité et de couleur quelque part dans cette fourchette, en essayant de les faire correspondre à la scène. Cela fonctionne bien et donne des résultats corrects, mais que se passe-t-il si nous marchons dans une zone très lumineuse avec plusieurs sources lumineuses dont la somme totale dépasse $1.0$ ? La réponse est que tous les fragments dont la somme de la luminosité ou de la couleur est supérieure à $1.0$ sont bloqués à $1.0$, ce qui n'est pas très joli à voir :
-![[05_hdr-20230903-hdr1.png]]
+![05_hdr-20230903-hdr1.png](05_hdr-20230903-hdr1.png)
 En raison du fait que les valeurs de couleur d'un grand nombre de fragments sont fixées à $1.0$, tous les fragments lumineux ont exactement la même valeur de couleur blanche dans de vastes régions, ce qui entraîne une perte importante de détails et donne un aspect faux.
 
 Une solution à ce problème consisterait à réduire la puissance des sources lumineuses et à s'assurer qu'aucune zone de fragments de votre scène ne soit plus lumineuse que $1.0$ ; ce n'est pas une bonne solution car cela vous oblige à utiliser des paramètres d'éclairage irréalistes. **Une meilleure approche consiste à autoriser les valeurs de couleur à dépasser temporairement $1.0$ et à les ramener à la plage d'origine de $0.0$ et $1.0$ lors de la dernière étape, mais sans perdre de détails.**
@@ -11,7 +11,7 @@ Une solution à ce problème consisterait à réduire la puissance des sources l
 
 Par exemple, l'image suivante (attribuée à Colin Smith) montre beaucoup de détails dans les zones très éclairées avec une faible exposition (regardez la fenêtre), mais ces détails disparaissent avec une forte exposition. Cependant, une exposition élevée révèle maintenant une grande quantité de détails dans les zones plus sombres qui n'étaient pas visibles auparavant.
 
-![[05_hdr-20230903-hdr2.png]]
+![05_hdr-20230903-hdr2.png](05_hdr-20230903-hdr2.png)
 
 Ce principe est également très proche du fonctionnement de l'œil humain et constitue la base du rendu de la gamme dynamique élevée. **Lorsqu'il y a peu de lumière, l'œil humain s'adapte pour que les parties sombres deviennent plus visibles, et il en va de même pour les zones lumineuses**. **C'est comme si l'œil humain disposait d'un curseur d'exposition automatique basé sur la luminosité de la scène.**
 
@@ -73,7 +73,7 @@ void main()
 }
 ```
 Ici, nous échantillonnons directement le tampon de couleur en virgule flottante et utilisons sa valeur de couleur comme sortie du shader de fragment. Cependant, comme la sortie du quad 2D est directement rendue dans le framebuffer par défaut, toutes les valeurs de sortie du shader de fragment resteront bloquées entre $0.0$ et $1.0$, même si plusieurs valeurs de la texture de couleur à virgule flottante dépassent $1.0$.
-![[05_hdr-20230903-hdr3.png]]
+![05_hdr-20230903-hdr3.png](05_hdr-20230903-hdr3.png)
 Il apparaît clairement que les valeurs de lumière intense au bout du tunnel sont bloquées à $1.0$ car une grande partie est complètement blanche, ce qui entraîne la perte de tous les détails de l'éclairage. Comme nous écrivons directement les valeurs HDR dans un tampon de sortie LDR, c'est comme si nous n'avions pas activé le HDR en premier lieu. Ce que nous devons faire, c'est transformer toutes les valeurs de couleur à virgule flottante dans la plage $0.0$ - $1.0$ sans perdre aucun détail. Nous devons appliquer un processus appelé "tone mapping".
 
 ## Tone mapping
@@ -97,7 +97,7 @@ void main()
 ```
 Avec l'application du mapping des tons de Reinhard, nous ne perdons plus aucun détail dans les zones lumineuses de notre scène. Elle a toutefois tendance à favoriser légèrement les zones lumineuses, ce qui fait que les zones plus sombres semblent moins détaillées et moins distinctes :
 
-![[05_hdr-20230903-hdr4.png]]
+![05_hdr-20230903-hdr4.png](05_hdr-20230903-hdr4.png)
 Ici, vous pouvez à nouveau voir les détails au bout du tunnel, car le motif de la texture du bois redevient visible. Grâce à cet algorithme relativement simple de mappage des tons, nous pouvons voir correctement toute la gamme des valeurs HDR stockées dans le tampon d'image en virgule flottante, ce qui nous permet de contrôler avec précision l'éclairage de la scène sans perdre de détails.
 
 > Notez que nous pourrions également effectuer un tone map directement à la fin de notre shader d'éclairage, sans avoir besoin d'un framebuffer en virgule flottante ! Cependant, à mesure que les scènes deviennent plus complexes, vous aurez souvent besoin de stocker des résultats HDR intermédiaires dans des tampons à virgule flottante, c'est donc un bon exercice.
@@ -123,7 +123,7 @@ void main()
 }  
 ```
 Ici, nous avons défini un uniforme d'exposition dont la valeur par défaut est $1.0$ et qui nous permet de spécifier plus précisément si nous souhaitons nous concentrer davantage sur les zones sombres ou claires des valeurs de couleur HDR. Par exemple, avec des valeurs d'exposition élevées, les zones sombres du tunnel sont nettement plus détaillées. À l'inverse, une exposition faible supprime en grande partie les détails des zones sombres, mais permet de voir plus de détails dans les zones lumineuses d'une scène. L'image ci-dessous montre le tunnel avec plusieurs niveaux d'exposition :
-![[05_hdr-20230903-hdr5.png]]
+![05_hdr-20230903-hdr5.png](05_hdr-20230903-hdr5.png)
 Cette image montre clairement les avantages d'un rendu à plage dynamique élevée. En changeant le niveau d'exposition, nous pouvons voir de nombreux détails de notre scène, qui auraient été perdus avec un rendu à faible plage dynamique. Prenons l'exemple de la fin du tunnel. Avec une exposition normale, la structure en bois est à peine visible, mais avec une faible exposition, les motifs en bois détaillés sont clairement visibles. Il en va de même pour les motifs en bois situés à proximité, qui sont plus visibles avec une exposition élevée.
 
 Vous pouvez trouver le code source de la démo [ici](https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/6.hdr/hdr.cpp).

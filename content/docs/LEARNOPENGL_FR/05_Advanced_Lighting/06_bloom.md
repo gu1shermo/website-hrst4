@@ -2,7 +2,7 @@
 Les sources lumineuses vives et les régions très éclairées sont souvent difficiles à faire comprendre à l'observateur, car la plage d'intensité d'un moniteur est limitée. L'un des moyens de distinguer les sources lumineuses vives sur un moniteur consiste à les faire briller ; la lumière s'étend alors autour de la source lumineuse. Cela donne au spectateur l'illusion que ces sources lumineuses ou ces zones lumineuses sont intensément lumineuses.
 
 Cet effet de brillance/lueur (bleeding) est obtenu grâce à un effet de post-traitement appelé **Bloom**. Le bloom donne à toutes les zones fortement éclairées d'une scène un effet de brillance. Vous trouverez ci-dessous un exemple de scène avec et sans effet de lueur (avec l'aimable autorisation d'Epic Games) :
-![[06_bloom-20230903-bloom1.png]]
+![06_bloom-20230903-bloom1.png](06_bloom-20230903-bloom1.png)
 Le Bloom donne des indications visuelles notables sur la luminosité des objets. Lorsqu'il est utilisé de manière subtile (ce que certains jeux ne font absolument pas), le Bloom augmente de manière significative l'éclairage de votre scène et permet une large gamme d'effets dramatiques.
 
 **Le Bloom fonctionne mieux en combinaison avec le rendu HDR**. On croit souvent à tort que le HDR est la même chose que Bloom, car de nombreuses personnes utilisent ces termes de manière interchangeable. Il s'agit pourtant de techniques complètement différentes utilisées à des fins différentes. Il est possible de mettre en œuvre le Bloom avec des framebuffers par défaut d'une précision de 8 bits, tout comme il est possible d'utiliser HDR sans l'effet Bloom. **C'est simplement que le HDR rend la mise en œuvre de Bloom plus efficace (comme nous le verrons plus tard).**
@@ -10,18 +10,18 @@ Le Bloom donne des indications visuelles notables sur la luminosité des objets.
 Pour mettre en œuvre l'effet Bloom, nous effectuons le rendu d'une scène éclairée comme d'habitude et nous extrayons à la fois le tampon de couleurs HDR de la scène et une image de la scène dont seules les zones lumineuses sont visibles. Cette image de luminosité extraite est ensuite floutée et le résultat est ajouté à l'image originale de la scène HDR.
 
 Illustrons ce processus étape par étape. Nous rendons une scène remplie de 4 sources lumineuses, visualisées sous forme de cubes colorés. Les cubes lumineux colorés ont des valeurs de luminosité comprises entre $1.5$ et $15.0$. Si nous effectuons le rendu dans un tampon de couleurs HDR, la scène se présente comme suit :
-![[06_bloom-20230903-bloom2.png]]
+![06_bloom-20230903-bloom2.png](06_bloom-20230903-bloom2.png)
 Nous prenons cette texture tampon couleur HDR et extrayons tous les fragments qui dépassent une certaine luminosité. Nous obtenons ainsi une image qui ne montre que les régions de couleur vive dont l'intensité des fragments dépasse un certain seuil :
-![[06_bloom-20230903-bloom3.png]]
+![06_bloom-20230903-bloom3.png](06_bloom-20230903-bloom3.png)
 Nous prenons ensuite cette texture de luminosité seuillée et nous rendons le résultat flou. L'intensité de l'effet d'efflorescence (?) est largement déterminée par la portée et l'intensité du filtre de flou utilisé.
-![[06_bloom-20230903-bloom4.png]]
+![06_bloom-20230903-bloom4.png](06_bloom-20230903-bloom4.png)
 La texture floue qui en résulte est utilisée pour obtenir l'effet de lueur ou de brillance de la lumière. **Cette texture floue est ajoutée à la texture originale de la scène HDR**. **Comme les régions lumineuses sont étendues en largeur et en hauteur grâce au filtre flou, les régions lumineuses de la scène paraissent rayonnantes ou saignent (?) de lumière.**
 
-![[06_bloom-20230903-bloom5.png]]
+![06_bloom-20230903-bloom5.png](06_bloom-20230903-bloom5.png)
 Le Bloom n'est pas une technique compliquée en soi, mais il est difficile de l'utiliser à bon escient. La qualité visuelle est en grande partie déterminée par la qualité et le type de filtre de flou utilisé pour estomper les zones de luminosité extraites. Le simple fait de modifier le filtre de flou peut changer radicalement la qualité de l'effet Bloom.
 
 En suivant ces étapes, nous obtenons l'effet de post-traitement Bloom. L'image suivante résume brièvement les étapes nécessaires à la mise en œuvre de l'effet Bloom :
-![[06_bloom-20230903-bloom6.png]]
+![06_bloom-20230903-bloom6.png](06_bloom-20230903-bloom6.png)
 La première étape consiste à extraire toutes les couleurs vives d'une scène en fonction d'un certain seuil. Voyons d'abord ce qu'il en est.
 
 ## Extraire les couleurs vives
@@ -85,12 +85,12 @@ Cela montre également pourquoi Bloom fonctionne incroyablement bien avec le ren
 
 Avec ces deux tampons de couleur, nous avons une image de la scène normale et une image des régions lumineuses extraites, le tout généré en une seule passe de rendu.
 
-![[06_bloom-20230903-bloom7.png]]
+![06_bloom-20230903-bloom7.png](06_bloom-20230903-bloom7.png)
 Avec une image des régions lumineuses extraites, nous devons maintenant flouter l'image. Nous pouvons le faire avec un simple filtre en boîte (?) comme nous l'avons fait dans la section post-traitement du chapitre sur les framebuffers, mais nous préférons utiliser un filtre de flou plus avancé (et plus esthétique) appelé **flou gaussien**.
 
 ## Flou gaussien
 Dans le chapitre sur le flou du post-traitement, nous avons pris la moyenne de tous les pixels environnants d'une image. Bien que cette méthode permette d'obtenir un flou facile, elle ne donne pas les meilleurs résultats. **Un flou gaussien est basé sur la courbe gaussienne qui est communément décrite comme une courbe en forme de cloche donnant des valeurs élevées près de son centre qui s'estompent progressivement avec la distance. La courbe de Gauss peut être représentée mathématiquement sous différentes formes, mais elle a généralement la forme suivante :**
-![[06_bloom-20230903-bloom8.png]]
+![06_bloom-20230903-bloom8.png](06_bloom-20230903-bloom8.png)
 Comme la courbe gaussienne présente une zone plus large près de son centre, l'utilisation de ses valeurs en tant que poids pour rendre une image floue donne des résultats plus naturels, car les échantillons proches ont une plus grande priorité. Si, par exemple, nous échantillonnons une boîte de $32x32$ autour d'un fragment, nous utilisons des poids progressivement plus petits à mesure que la distance au fragment augmente ; cela donne un flou meilleur et plus réaliste, connu sous le nom de flou gaussien.
 
 Pour mettre en œuvre un filtre de flou gaussien, nous avons besoin d'une boîte bidimensionnelle de poids que nous pouvons obtenir à partir d'une équation de courbe gaussienne bidimensionnelle. Le problème de cette approche est qu'elle devient rapidement très gourmande en performances. Prenons par exemple un kernel de flou de 32 par 32, cela nous obligerait à échantillonner une texture un total de 1024 fois pour chaque fragment !
@@ -98,7 +98,7 @@ Pour mettre en œuvre un filtre de flou gaussien, nous avons besoin d'une boîte
 Heureusement pour nous, **l'équation de Gauss possède une propriété très intéressante qui nous permet de séparer l'équation bidimensionnelle en deux équations unidimensionnelles plus petites : l'une qui décrit les poids horizontaux et l'autre qui décrit les poids verticaux**. Nous commençons par effectuer un flou horizontal avec les poids horizontaux sur la texture de la scène, puis nous effectuons un flou vertical sur la texture résultante. **Grâce à cette propriété, les résultats sont exactement les mêmes, mais cette fois-ci, nous économisons une quantité incroyable de performances puisque nous n'avons plus qu'à faire 32 + 32 échantillons au lieu de 1024 ! C'est ce qu'on appelle le flou gaussien à deux passages.**
 
 
-![[06_bloom-20230903-bloom9.png]]
+![06_bloom-20230903-bloom9.png](06_bloom-20230903-bloom9.png)
 Cela signifie que nous devons flouter une image au moins deux fois et cela fonctionne mieux avec l'utilisation d'objets framebuffer. Pour le flou gaussien à deux passages, nous allons implémenter des **framebuffers ping-pong**. Il s'agit d'une paire de framebuffers où nous effectuons le rendu et échangeons, un nombre donné de fois, le tampon de couleur de l'autre framebuffer dans le tampon de couleur du framebuffer actuel avec un effet de shader alternatif. En fait, nous changeons continuellement le framebuffer dans lequel nous effectuons le rendu et la texture avec laquelle nous dessinons. Cela nous permet d'abord de flouter la texture de la scène dans le premier framebuffer, puis de flouter le tampon de couleur du premier framebuffer dans le second framebuffer, puis le tampon de couleur du second framebuffer dans le premier, et ainsi de suite.
 
 Avant de nous pencher sur les framebuffers, examinons d'abord le fragment shader du flou gaussien :
@@ -186,7 +186,7 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 En floutant 5 fois la texture de luminosité extraite, nous obtenons une image correctement floutée de toutes les régions lumineuses d'une scène.
 
-![[06_bloom-20230903-blur10.png]]
+![06_bloom-20230903-blur10.png](06_bloom-20230903-blur10.png)
 La dernière étape pour compléter l'effet Bloom consiste à combiner cette texture de luminosité floue avec la texture HDR de la scène originale.
 
 ## Combiner (mélanger) les 2 textures
@@ -217,7 +217,7 @@ void main()
 Il est intéressant de noter que nous ajoutons l'effet Bloom avant d'appliquer le tone mapping. De cette façon, la luminosité ajoutée par l'effet Bloom est également transformée en douceur en plage LDR, ce qui permet d'obtenir un meilleur éclairage relatif.
 
 Avec les deux textures ajoutées ensemble, toutes les zones lumineuses de notre scène bénéficient maintenant d'un effet d'éclat approprié :
-![[06_bloom-20230903-bloom11.png]]
+![06_bloom-20230903-bloom11.png](06_bloom-20230903-bloom11.png)
 Les cubes colorés apparaissent maintenant beaucoup plus lumineux et donnent une meilleure illusion d'objets émettant de la lumière. Il s'agit d'une scène relativement simple et l'effet Bloom n'est donc pas très impressionnant, mais dans des scènes bien éclairées, il peut faire une différence significative lorsqu'il est correctement configuré. Vous pouvez trouver le code source de cette démo simple [ici](https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/7.bloom/bloom.cpp).
 
 Pour ce chapitre, nous avons utilisé un filtre de flou gaussien relativement simple dans lequel nous ne prenons que 5 échantillons dans chaque direction. En prenant plus d'échantillons sur un plus grand rayon ou en répétant le filtre de flou un nombre supplémentaire de fois, nous pouvons améliorer l'effet de flou. La qualité du flou étant directement liée à la qualité de l'effet de Bloom, l'amélioration de l'étape de flou peut apporter une amélioration significative. Certaines de ces améliorations combinent des filtres de flou avec des noyaux de flou de taille variable ou utilisent plusieurs courbes gaussiennes pour combiner sélectivement les poids. Les ressources supplémentaires de Kalogirou et Epic Games expliquent comment améliorer de manière significative l'effet Bloom en améliorant le flou gaussien.

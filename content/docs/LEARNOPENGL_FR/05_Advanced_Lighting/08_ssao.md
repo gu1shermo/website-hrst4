@@ -2,23 +2,23 @@
 Nous avons brièvement abordé le sujet dans le chapitre sur l'éclairage de base : l'éclairage ambiant. **L'éclairage ambiant est une constante lumineuse fixe que nous ajoutons à l'éclairage global d'une scène pour simuler la diffusion de la lumière**. En réalité, la lumière se disperse dans toutes sortes de directions avec des intensités variables, de sorte que les parties indirectement éclairées d'une scène doivent également présenter des intensités variables. **L'un des types d'approximation de l'éclairage indirect est appelé occlusion ambiante**. Il tente d'approximer l'éclairage indirect en assombrissant les plis, les trous et les surfaces proches les unes des autres. Ces zones sont largement occultées par la géométrie environnante et les rayons lumineux ont donc moins d'endroits où s'échapper, d'où l'aspect plus sombre de ces zones. Jetez un coup d'œil aux coins et aux plis de votre pièce pour constater que la lumière y semble un peu plus sombre.
 
 Vous trouverez ci-dessous un exemple d'image d'une scène avec et sans occlusion ambiante. Remarquez que la lumière (ambiante) est plus occultée, en particulier entre les plis :
-![[08_ssao-20230904-ssao1.png]]
+![08_ssao-20230904-ssao1.png](08_ssao-20230904-ssao1.png)
 Bien qu'il ne s'agisse pas d'un effet incroyablement évident, l'image avec l'occlusion ambiante activée semble beaucoup plus réaliste grâce à ces petits détails ressemblant à des occlusions, ce qui donne à l'ensemble de la scène une plus grande impression de profondeur.
 
 Les techniques d'occlusion ambiante sont coûteuses car elles doivent prendre en compte la géométrie environnante. On pourrait tirer un grand nombre de rayons pour chaque point de l'espace afin de déterminer son degré d'occlusion, mais cela devient rapidement impossible à calculer pour des solutions en temps réel. En 2007, Crytek a publié une technique appelée "**screen-space ambient occlusion**" (**SSAO**) pour son titre Crysis. Cette technique utilise le tampon de profondeur d'une scène dans l'espace-écran pour déterminer la quantité d'occlusion au lieu de données géométriques réelles. Cette approche est incroyablement rapide par rapport à l'occlusion ambiante réelle et donne des résultats plausibles, ce qui en fait la norme de facto pour l'approximation de l'occlusion ambiante en temps réel.
 
 Les principes de base de l'occlusion ambiante dans l'espace-écran sont simples : pour chaque fragment d'un quad qui remplit l'écran, nous calculons un facteur d'occlusion basé sur les valeurs de profondeur environnantes du fragment. Le facteur d'occlusion est ensuite utilisé pour réduire ou annuler la composante d'éclairage ambiant du fragment. Le facteur d'occlusion est obtenu en prenant plusieurs échantillons de profondeur dans un kernel d'échantillons de sphère entourant la position du fragment et en comparant chacun des échantillons avec la valeur de profondeur du fragment actuel. Le nombre d'échantillons dont la valeur de profondeur est supérieure à celle du fragment représente le facteur d'occlusion.
-![[08_ssao-20230904-ssao2.png]]
+![08_ssao-20230904-ssao2.png](08_ssao-20230904-ssao2.png)
 Chacun des échantillons de profondeur de gris situés à l'intérieur de la géométrie contribue au facteur d'occlusion total ; plus nous trouvons d'échantillons à l'intérieur de la géométrie, moins le fragment devrait recevoir d'éclairage ambiant.
 
 Il est clair que la qualité et la précision de l'effet sont directement liées au nombre d'échantillons environnants que nous prenons. Si le nombre d'échantillons est trop faible, la précision diminue considérablement et nous obtenons un artefact appelé "**banding**" ; s'il est trop élevé, nous perdons en performance. Nous pouvons réduire le nombre d'échantillons à tester en introduisant un peu de hasard dans le kernel de l'échantillon. En faisant tourner au hasard le kernel de l'échantillon à chaque fragment, nous pouvons obtenir des résultats de haute qualité avec un nombre d'échantillons beaucoup plus réduit. **Cela a un prix, car le caractère aléatoire introduit un bruit perceptible que nous devrons corriger en rendant les résultats flous**. L'image ci-dessous (avec l'aimable autorisation de John Chapman) illustre l'effet de bande et l'effet du hasard sur les résultats :
-![[08_ssao-20230904-ssao3.png]]
+![08_ssao-20230904-ssao3.png](08_ssao-20230904-ssao3.png)
 Comme vous pouvez le constater, même si les résultats SSAO présentent des bandes visibles en raison du faible nombre d'échantillons, l'introduction d'un élément aléatoire permet de supprimer complètement les effets de bande.
 
 La méthode SSAO développée par Crytek avait un certain style visuel. Le kernel d'échantillonnage utilisé étant une sphère, les murs plats paraissent gris car la moitié des échantillons du kernel se retrouvent dans la géométrie environnante. Vous trouverez ci-dessous une image de l'occlusion ambiante de l'espace-écran de Crysis qui illustre clairement cette impression de gris :
-![[08_ssao-20230904-ssao4.png]]
+![08_ssao-20230904-ssao4.png](08_ssao-20230904-ssao4.png)
 C'est pourquoi nous n'utiliserons pas un kernel d'échantillonnage de sphère, mais plutôt un kernel d'échantillonnage d'hémisphère orienté le long du vecteur normal d'une surface.
-![[08_ssao-20230904-ssao5.png]]
+![08_ssao-20230904-ssao5.png](08_ssao-20230904-ssao5.png)
 En échantillonnant autour de cet hémisphère orienté vers la normale, nous ne considérons pas la géométrie sous-jacente du fragment comme une contribution au facteur d'occlusion. Cela supprime la sensation de gris de l'occlusion ambiante et produit généralement des résultats plus réalistes. La technique de ce chapitre est basée sur cette méthode de l'hémisphère orienté normal et sur une version légèrement modifiée du brillant tutoriel SSAO de John Chapman.
 
 ## Tampons pour les échantillons
@@ -31,10 +31,10 @@ SSAO nécessite des informations géométriques car nous avons besoin d'un moyen
 - Un vecteur de **rotation aléatoire** par fragment, utilisé pour faire pivoter le kernel de l'échantillon.
 
 En utilisant une position par fragment dans l'espace visuel, nous pouvons orienter un échantillon de kernel hémisphérique autour de la normale à la surface du fragment dans l'espace visuel et utiliser ce kernel pour échantillonner la texture du tampon de position à des décalages variables. Pour chaque échantillon de kernel par fragment, nous comparons sa profondeur avec sa profondeur dans le tampon de position pour déterminer le degré d'occlusion. Le facteur d'occlusion résultant est ensuite utilisé pour limiter la composante finale de l'éclairage ambiant. En incluant également un vecteur de rotation par fragment, nous pouvons réduire de manière significative le nombre d'échantillons que nous devrons prendre, comme nous le verrons bientôt.
-![[08_ssao-20230904-ssao6.png]]
+![08_ssao-20230904-ssao6.png](08_ssao-20230904-ssao6.png)
 Le SSAO étant une technique d'espace-écran, nous calculons son effet sur chaque fragment dans un quad 2D qui remplit l'écran. Cela signifie que nous ne disposons d'aucune information géométrique sur la scène. Ce que nous pourrions faire, c'est rendre les données géométriques par fragment dans des textures de l'espace-écran que nous envoyons ensuite au shader SSAO afin d'avoir accès aux données géométriques par fragment. Si vous avez suivi le chapitre précédent, vous vous rendrez compte que cela ressemble beaucoup à la configuration du tampon G d'un moteur de rendu différé. C'est pourquoi SSAO est parfaitement adapté à la combinaison avec le rendu différé, car nous disposons déjà des vecteurs de position et de normalité dans le G-buffer.
 
->Dans ce chapitre, nous allons implémenter SSAO au-dessus d'une version légèrement simplifiée du [[moteur de rendu différé]] (todo: link) du chapitre sur l'ombrage différé. Si vous n'êtes pas sûr de ce qu'est l'ombrage différé, lisez d'abord ce chapitre.
+>Dans ce chapitre, nous allons implémenter SSAO au-dessus d'une version légèrement simplifiée du [moteur de rendu différé](moteur%20de%20rendu%20différé) (todo: link) du chapitre sur l'ombrage différé. Si vous n'êtes pas sûr de ce qu'est l'ombrage différé, lisez d'abord ce chapitre.
 
 Comme nous devrions disposer des données de position et de normale par fragment à partir des objets de la scène, le shader de fragment de l'étape de géométrie est assez simple :
 ```cpp
@@ -78,7 +78,7 @@ Ensuite, nous avons besoin du kernel d'échantillonnage de l'hémisphère et d'u
 
 ## Hémisphère orienté vers la normale
 Nous devons générer un certain nombre d'échantillons orientés le long de la normale d'une surface. Comme nous l'avons brièvement évoqué au début de ce chapitre, nous voulons générer des échantillons qui forment un hémisphère. Comme il est difficile et peu plausible de générer un kernel d'échantillons pour chaque direction de la normale à la surface, nous allons générer un kernel d'échantillons dans l'espace tangent, avec le vecteur normal pointant dans la direction z positive.
-![[08_ssao-20230904-ssao7.png]]
+![08_ssao-20230904-ssao7.png](08_ssao-20230904-ssao7.png)
 En supposant que nous disposons d'un hémisphère unitaire, nous pouvons obtenir un kernel d'échantillonnage avec un maximum de 64 valeurs d'échantillonnage comme suit :
 ```cpp
 std::uniform_real_distribution<float> randomFloats(0.0, 1.0); // random floats between [0.0, 1.0]
@@ -115,7 +115,7 @@ float lerp(float a, float b, float f)
 }
 ```
 Nous obtenons ainsi une distribution du kernel qui place la plupart des échantillons plus près de son origine.
-![[08_ssao-20230904-ssao8.png]]
+![08_ssao-20230904-ssao8.png](08_ssao-20230904-ssao8.png)
 Chacun des échantillons du kernel sera utilisé pour décaler la position du fragment dans l'espace visuel afin d'échantillonner la géométrie environnante. Nous avons besoin d'un grand nombre d'échantillons dans l'espace visuel pour obtenir des résultats réalistes, ce qui peut s'avérer trop lourd en termes de performances. Cependant, si nous pouvons introduire une rotation/un bruit semi-aléatoire par fragment, nous pouvons réduire de manière significative le nombre d'échantillons requis.
 
 ## Rotations du kernel au hasard
@@ -269,7 +269,7 @@ occlusion += (sampleDepth >= samplePos.z + bias ? 1.0 : 0.0);
 Notez que nous ajoutons ici un petit biais à la valeur de profondeur du fragment d'origine (fixée à $0.025$ dans cet exemple). Un biais n'est pas toujours nécessaire, mais il permet d'ajuster visuellement l'effet SSAO et de résoudre les effets d'acné qui peuvent se produire en fonction de la complexité de la scène.
 
 Nous n'avons pas encore tout à fait terminé, car il reste un petit problème à prendre en compte. Lorsqu'un fragment est testé pour l'occlusion ambiante et qu'il est aligné près du bord d'une surface, il prendra également en compte les valeurs de profondeur des surfaces situées loin derrière la surface testée ; ces valeurs contribueront (à tort) au facteur d'occlusion. Nous pouvons résoudre ce problème en introduisant une vérification de la portée, comme l'illustre l'image suivante (avec l'aimable autorisation de John Chapman) :
-![[08_ssao-20230909-ssao9.png]]
+![08_ssao-20230909-ssao9.png](08_ssao-20230909-ssao9.png)
 Nous introduisons un contrôle de portée qui garantit qu'un fragment contribue au facteur d'occlusion si ses valeurs de profondeur sont comprises dans le rayon de l'échantillon. Nous remplaçons la dernière ligne par :
 
 ```cpp
@@ -277,7 +277,7 @@ float rangeCheck = smoothstep(0.0, 1.0, radius / abs(fragPos.z - sampleDepth));
 occlusion       += (sampleDepth >= samplePos.z + bias ? 1.0 : 0.0) * rangeCheck;
 ```
 Ici, nous avons utilisé la fonction `smoothstep` de GLSL qui interpole son troisième paramètre entre les plages du premier et du deuxième paramètre, en renvoyant $0.0$ si la valeur est inférieure ou égale à son premier paramètre et $1.0$ si elle est égale ou supérieure à son deuxième paramètre. Si la différence de profondeur se situe entre deux rayons, sa valeur est interpolée entre $0.0$ et $1.0$ à l'aide de la courbe suivante :
-![[08_ssao-20230909-ssao10.png]]
+![08_ssao-20230909-ssao10.png](08_ssao-20230909-ssao10.png)
 Si nous devions utiliser un contrôle de plage à coupure dure (?) (hard cut-off range) qui supprimerait brusquement les contributions d'occlusion si les valeurs de profondeur sont en dehors du rayon, nous verrions des frontières évidentes (peu attrayantes) à l'endroit où le contrôle de plage est appliqué.
 
 La dernière étape consiste à normaliser la contribution de l'occlusion en fonction de la taille du kernel et à produire les résultats. Notez que nous soustrayons le facteur d'occlusion de $1.0$ afin de pouvoir utiliser directement le facteur d'occlusion pour mettre à l'échelle la composante d'éclairage ambiant.
@@ -288,7 +288,7 @@ occlusion = 1.0 - (occlusion / kernelSize);
 FragColor = occlusion;  
 ```
 Si nous imaginons une scène où notre modèle de sac à dos préféré fait une petite sieste, le shader d'occlusion ambiante produit la texture suivante :
-![[08_ssao-20230909-ssao11.png]]
+![08_ssao-20230909-ssao11.png](08_ssao-20230909-ssao11.png)
 Comme nous pouvons le voir, l'occlusion ambiante donne une grande impression de profondeur. Avec la seule texture d'occlusion ambiante, nous pouvons déjà voir clairement que le modèle est effectivement posé sur le sol, au lieu de planer légèrement au-dessus.
 
 Le résultat n'est pas encore parfait, car le motif répétitif de la texture de bruit est clairement visible. Pour créer un résultat d'occlusion ambiante lisse, nous devons flouter la texture d'occlusion ambiante.
@@ -332,7 +332,7 @@ void main() {
 } 
 ```
 Ici, nous parcourons les texels SSAO environnants entre $-2.0$ et $2.0$, en échantillonnant la texture SSAO d'une quantité identique aux dimensions de la texture de bruit. Nous décalons chaque coordonnée de texture de la taille exacte d'un seul texel en utilisant `textureSize` qui renvoie un `vec2` des dimensions de la texture donnée. Nous faisons la moyenne des résultats obtenus pour obtenir un flou simple mais efficace :
-![[08_ssao-20230909-ssao12.png]]
+![08_ssao-20230909-ssao12.png](08_ssao-20230909-ssao12.png)
 Et voilà, une texture avec des données d'occlusion ambiante par fragment, prête à être utilisée dans la passe d'éclairage.
 
 ## Application de l'occlusion ambiante
@@ -388,7 +388,7 @@ void main()
 }
 ```
 La seule chose (à part le changement d'espace de vue) que nous avons vraiment changée est la multiplication de la composante ambiante de la scène par `AmbientOcclusion`. Avec une seule lumière ponctuelle bleutée dans la scène, nous obtiendrions le résultat suivant :
-![[08_ssao-20230909-ssao12-1.png]]
+![08_ssao-20230909-ssao12-1.png](08_ssao-20230909-ssao12-1.png)
 Vous pouvez trouver le code source complet de la scène de démonstration [ici](https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/9.ssao/ssao.cpp).
 
 L'occlusion ambiante dans l'espace-écran est un effet hautement personnalisable qui repose en grande partie sur l'ajustement de ses paramètres en fonction du type de scène. Il n'existe pas de combinaison parfaite de paramètres pour chaque type de scène. Certaines scènes ne fonctionnent qu'avec un petit rayon, tandis que d'autres scènes nécessitent un plus grand rayon et un plus grand nombre d'échantillons pour être réalistes. La démo actuelle utilise 64 échantillons, ce qui est un peu trop ; essayez d'obtenir de bons résultats avec une taille de kernel plus petite.

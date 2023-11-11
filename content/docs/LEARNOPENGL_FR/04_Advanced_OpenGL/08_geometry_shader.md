@@ -36,7 +36,7 @@ Avec ces trois spécificateurs de sortie, nous pouvons créer presque toutes les
 Le shader géométrique s'attend également à ce que nous définissions un nombre maximum de sommets en sortie (si vous dépassez ce nombre, OpenGL ne dessinera pas les sommets supplémentaires), ce que nous pouvons également faire dans le qualificatif layout du mot-clé out. Dans ce cas particulier, nous allons sortir une `line strip` avec un nombre maximum de 2 sommets.
 
 >Au cas où vous vous demanderiez ce qu'est une `line strip` : une **`line strip` relie un ensemble de points pour former une ligne continue entre eux avec un minimum de 2 points.** **Chaque point supplémentaire crée une nouvelle ligne entre le nouveau point et le point précédent, comme vous pouvez le voir dans l'image suivante avec des sommets à 5 points** :
-![[08_geometry_shader-20230823 1.png]]
+![08_geometry_shader-20230823 1](08_geometry_shader-20230823%201.png)
 
 Pour générer des résultats significatifs, nous avons besoin d'un moyen de récupérer la sortie de l'étape de shader précédente. GLSL nous donne une variable intégrée appelée `gl_in` qui, en interne, ressemble (probablement) à quelque chose comme ceci :
 ```cpp
@@ -71,7 +71,7 @@ void main() {
 Chaque fois que nous appelons `EmitVertex`, le vecteur actuellement défini dans `gl_Position` est ajouté à la primitive de sortie. Chaque fois que `EndPrimitive` est appelé, tous les sommets émis pour cette primitive sont combinés dans la primitive de rendu de sortie spécifiée. En appelant plusieurs fois `EndPrimitive`, après un ou plusieurs appels EmitVertex, il est possible de générer plusieurs primitives. Ce cas particulier émet deux vertices qui ont été translatés d'un petit décalage par rapport à la position originale du vertex, puis appelle `EndPrimitive`, combinant les deux vertices en une seule ligne de 2 vertices.
 
 Maintenant que vous savez (en quelque sorte) comment fonctionnent les geometry shaders, vous pouvez probablement deviner ce que fait ce geometry shader. Ce shader géométrique prend une primitive de point comme entrée et crée une primitive de ligne horizontale avec le point d'entrée en son centre. Si nous devions effectuer un rendu, cela ressemblerait à quelque chose comme ceci :
-![[geometry_shader_lines.png]]
+![geometry_shader_lines](geometry_shader_lines.png)
 Ce n'est pas encore très impressionnant, mais il est intéressant de considérer que cette sortie a été générée en utilisant seulement l'appel de rendu suivant :
 ```cpp
 glDrawArrays(GL_POINTS, 0, 4);  
@@ -116,7 +116,7 @@ glBindVertexArray(VAO);
 glDrawArrays(GL_POINTS, 0, 4); 
 ```
 Le résultat est une scène sombre avec 4 points verts (difficiles à voir) :
-![[geometry_shader_points.png]]
+![geometry_shader_points](geometry_shader_points.png)
 Mais n'avons-nous pas déjà appris à faire tout cela ? Oui, et maintenant nous allons pimenter cette petite scène en y ajoutant la magie des shaders géométriques.
 
 À des fins d'apprentissage, nous allons d'abord créer ce que l'on appelle un **shader géométrique pass-through** qui prend une primitive ponctuelle en entrée et la transmet au shader suivant sans la modifier :
@@ -145,7 +145,7 @@ glLinkProgram(program);
 Le code de compilation des shaders est le même que celui des vertex et des fragment shaders. Vérifiez bien qu'il n'y a pas d'erreurs de compilation ou d'édition de liens !
 
 Si vous compilez et exécutez maintenant, vous devriez obtenir un résultat qui ressemble un peu à celui-ci :
-![[geometry_shader_points.png]]
+![geometry_shader_points](geometry_shader_points.png)
 C'est exactement la même chose que sans le geometry shader ! C'est un peu ennuyeux, je l'admets, mais le fait que nous ayons pu dessiner les points signifie que le geometry shader fonctionne, alors maintenant il est temps de passer aux choses plus funky !
 ## Construisons des maisons
 Dessiner des points et des lignes n'est pas très intéressant. Nous allons donc faire preuve d'un peu de créativité en utilisant le shader géométrique pour dessiner une maison à l'emplacement de chaque point.
@@ -153,11 +153,11 @@ Nous pouvons y parvenir en réglant la sortie du shader géométrique sur `trian
 
 Un `triangle strip` en OpenGL est un moyen plus efficace de dessiner des triangles avec moins de sommets. Une fois le premier triangle dessiné, chaque sommet suivant génère un autre triangle à côté du premier : tous les trois sommets adjacents formeront un triangle. **Si nous avons un total de 6 sommets qui forment une bande de triangle, nous obtiendrons les triangles suivants : (1,2,3), (2,3,4), (3,4,5) et (4,5,6) ; formant un total de 4 triangles**.
 **Un triangle strip nécessite au moins 3 sommets et génère N-2 triangles ; avec 6 sommets, nous avons créé 6-2 = 4 triangles.** L'image suivante illustre ce phénomène :
-![[08_geometry_shader-20230823 1.png]]
+![08_geometry_shader-20230823 1](08_geometry_shader-20230823%201.png)
 En utilisant un `triangle strip` comme sortie du shader géométrique, nous pouvons facilement créer la forme de maison que nous recherchons en générant 3 triangles adjacents dans le bon ordre.
 
 L'image suivante montre dans quel ordre nous devons dessiner les sommets pour obtenir les triangles dont nous avons besoin, le point bleu étant le point d'entrée :
-![[08_geometry_shader-20230823 2.png]]
+![08_geometry_shader-20230823 2](08_geometry_shader-20230823%202.png)
 Cela se traduit par le shader géométrique suivant :
 ```cpp
 #version 330 core
@@ -184,7 +184,7 @@ void main() {
 }  
 ```
 Ce shader géométrique génère 5 sommets, chaque sommet étant la position du point plus un décalage pour former une grande bande triangulaire. La primitive résultante est ensuite rastérisée et le shader de fragments s'exécute sur l'ensemble du triangle strip, ce qui permet d'obtenir une maison verte pour chaque point rendu :
-![[geometry_shader_houses.png]]
+![geometry_shader_houses.png](geometry_shader_houses.png)
 Vous pouvez voir que chaque maison est constituée de trois triangles, tous dessinés à partir d'un seul point dans l'espace. Les maisons vertes ont l'air un peu ennuyeuses, donc nous allons les animer un peu en donnant à chaque maison une couleur unique. Pour ce faire, nous allons ajouter un attribut de vertex supplémentaire dans le vertex shader avec des informations de couleur par vertex et le diriger vers le geometry shader qui le transmet ensuite au fragment shader.
 
 Les données de vertex mises à jour sont indiquées ci-dessous :
@@ -249,7 +249,7 @@ EmitVertex();
 EndPrimitive();  
 ```
 Tous les sommets émis auront la dernière valeur stockée dans `fColor` intégrée dans leurs données, qui est égale à la couleur du sommet d'entrée telle que nous l'avons définie dans ses attributs. Toutes les maisons auront désormais leur propre couleur :
-![[geometry_shader_houses_colored.png]]
+![geometry_shader_houses_colored](geometry_shader_houses_colored.png)
 
 Pour nous amuser, nous pourrions aussi prétendre que c'est l'hiver et donner un peu de neige à leurs toits en donnant au dernier sommet une couleur qui lui est propre :
 
@@ -269,7 +269,7 @@ EmitVertex();
 EndPrimitive();  
 ```
 Le résultat ressemble maintenant à ceci :
-![[geometry_shader_houses_snow.png]]
+![geometry_shader_houses_snow](geometry_shader_houses_snow.png)
 Vous pouvez comparer votre code source avec le code OpenGL [ici](https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/9.1.geometry_shader_houses/geometry_shader_houses.cpp).
 
 Vous pouvez voir qu'avec les shaders géométriques, vous pouvez être très créatif, même avec les primitives les plus simples. Comme les formes sont générées dynamiquement sur le matériel ultra-rapide de votre GPU, cela peut être beaucoup plus puissant que de définir ces formes soi-même dans les tampons de vertex. Les shaders de géométrie sont un excellent outil pour les formes simples (qui se répètent souvent), comme les cubes dans un monde de voxels ou les feuilles d'herbe sur un grand terrain extérieur.
@@ -418,7 +418,7 @@ void main()
 }  
 ```
 Si vous rendez votre modèle d'abord avec les shaders normaux, puis avec le shader spécial de visualisation des normales, vous obtiendrez quelque chose comme ceci :
-![[geometry_shader_normals.png]]
+![geometry_shader_normals](geometry_shader_normals.png)
 Outre le fait que notre sac à dos a maintenant l'air un peu poilu, cela nous donne une méthode très utile pour déterminer si les vecteurs normaux d'un modèle sont effectivement corrects. On peut imaginer que des shaders géométriques comme celui-ci pourraient également être utilisés pour ajouter de la fourrure aux objets.
 
 Vous pouvez trouver le code source de l'OpenGL [ici](https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/9.3.geometry_shader_normals/normal_visualization.cpp).

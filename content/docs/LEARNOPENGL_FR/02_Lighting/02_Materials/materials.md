@@ -22,7 +22,7 @@ Dans le fragment shader, nous créons une structure pour stocker les propriété
 Comme vous pouvez le voir, nous définissons un vecteur de couleur pour chacun des composants de l'éclairage Phong. Le vecteur de matériau ambiant définit la couleur que la surface reflète sous un éclairage ambiant ; il s'agit généralement de la même couleur que celle de la surface. Le vecteur de matériau diffus définit la couleur de la surface sous un éclairage diffus. La couleur diffuse est (comme pour l'éclairage ambiant) réglée sur la couleur de la surface souhaitée. Le vecteur de matériau spéculaire définit la couleur de l'accentuation spéculaire de la surface (ou peut même refléter une couleur spécifique à la surface). Enfin, la brillance influe sur la diffusion/le rayon de la lumière spéculaire.  
   
 Avec ces 4 composants qui définissent le matériau d'un objet, nous pouvons simuler de nombreux matériaux du monde réel. Un tableau trouvé sur [devernay.free.fr](devernay.free.fr) montre une liste de propriétés de matériaux qui simulent des matériaux réels trouvés dans le monde extérieur. L'image suivante montre l'effet de plusieurs de ces valeurs de matériaux du monde réel sur notre cube :
-![[material1.png]]
+![material1](material1.png)
 Comme vous pouvez le constater, en spécifiant correctement les propriétés matérielles d'une surface, il semble que la perception que nous avons de l'objet soit modifiée. Les effets sont clairement perceptibles, mais pour obtenir des résultats plus réalistes, nous devrons remplacer le cube par quelque chose de plus compliqué. Dans les chapitres consacrés au chargement des modèles, nous aborderons des formes plus complexes.  
   
 Trouver les bons paramètres de matériau pour un objet est une tâche difficile qui requiert principalement de l'expérimentation et beaucoup d'expérience. Il n'est pas rare de détruire complètement la qualité visuelle d'un objet à cause d'un matériau mal placé.  
@@ -65,7 +65,7 @@ lightingShader.setFloat("material.shininess", 32.0f);
 Nous réglons les composantes ambiante et diffuse sur la couleur que nous souhaitons donner à l'objet et nous réglons la composante spéculaire de l'objet sur une couleur moyennement lumineuse ; nous ne voulons pas que la composante spéculaire soit trop forte. Nous maintenons également la brillance à 32.  
   
 Nous pouvons maintenant facilement influencer le matériau de l'objet à partir de l'application. L'exécution du programme donne quelque chose comme ceci :  
-![[material2.png]]
+![material2](material2.png)
 Mais cela n'a pas l'air d'être le cas ?
 
 ## Propriétés de la lumiàre
@@ -110,7 +110,7 @@ lightingShader.setVec3("light.diffuse",  0.5f, 0.5f, 0.5f); // darken diffuse li
 lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f); 
 ```
 Maintenant que nous avons modulé l'influence de la lumière sur le matériau de l'objet, nous obtenons un résultat visuel qui ressemble beaucoup à celui du chapitre précédent. Cette fois-ci, cependant, nous avons un contrôle total sur l'éclairage et le matériau de l'objet :
-![[material3.png]]
+![material3.png](material3.png)
 Modifier l'aspect visuel des objets est relativement facile à l'heure actuelle. Mettons un peu de piment dans tout cela ! 
 ## Des couleurs de lumières différentes
 Jusqu'à présent, nous avons utilisé les couleurs de lumière pour faire varier l'intensité de leurs composants individuels en choisissant des couleurs qui vont du blanc au gris en passant par le noir, sans affecter les couleurs réelles de l'objet (seulement son intensité). Puisque nous avons maintenant un accès facile aux propriétés de la lumière, nous pouvons changer leurs couleurs au fil du temps pour obtenir des effets vraiment intéressants. Comme tout est déjà configuré dans le fragment shader, changer les couleurs de la lumière est facile et crée immédiatement des effets amusants : 

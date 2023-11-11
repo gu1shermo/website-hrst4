@@ -177,7 +177,7 @@ Ainsi, pour dessiner la scène sur une seule texture, nous devrons suivre les é
 2. Lier au framebuffer par défaut.  
 3. Dessinez un quad qui s'étend sur tout l'écran avec le tampon de couleur du nouveau framebuffer comme texture.  
   
-Nous allons effectuer le rendu de la même scène que nous avons utilisée dans le chapitre [[00_depth_testing|depth testing]], mais cette fois-ci avec la texture [container](https://learnopengl.com/img/textures/container.jpg) de la vieille école.  
+Nous allons effectuer le rendu de la même scène que nous avons utilisée dans le chapitre [depth testing](00_depth_testing.md), mais cette fois-ci avec la texture [container](https://learnopengl.com/img/textures/container.jpg) de la vieille école.  
   
 Pour effectuer le rendu du quad, nous allons créer un nouvel ensemble de shaders simples. Nous n'allons pas inclure de transformations matricielles fantaisistes puisque nous fournirons les coordonnées des sommets en tant que coordonnées normalisées du device afin de pouvoir les transmettre directement en sortie du shader de sommets. Le vertex shader ressemble à ceci :
 ```cpp
@@ -233,7 +233,7 @@ Deuxièmement, lorsque nous dessinons le quad, nous désactivons le test de prof
   
 Il y a pas mal d'étapes qui peuvent mal se passer ici, donc si vous n'avez pas de résultat, essayez de déboguer là où c'est possible et relisez les sections pertinentes du chapitre. Si tout s'est déroulé correctement, vous obtiendrez un résultat visuel qui ressemble à ceci :
 
-![[framebuffers_screen_texture-1.png]]
+![framebuffers_screen_texture-1](framebuffers_screen_texture-1.png)
 La partie gauche montre le résultat visuel, exactement le même que nous avons vu dans le chapitre sur les tests de profondeur, mais cette fois rendu sur un simple quad. Si nous rendons la scène en wireframe, il est évident que nous n'avons dessiné qu'un seul quad dans le framebuffer par défaut.  
   
 Vous pouvez trouver le code source de l'application [ici](https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/5.1.framebuffers/framebuffers.cpp).  
@@ -256,7 +256,7 @@ void main()
 
 Bien que l'inversion soit un effet de post-traitement relativement simple, elle permet déjà d'obtenir des résultats étonnants : 
 
-![[framebuffers_inverse 1.png]]
+![framebuffers_inverse 1](framebuffers_inverse%201.png)
 La scène entière a maintenant toutes ses couleurs inversées avec une seule ligne de code dans le fragment shader. Plutôt cool, non ? 
 
 ### Niveaux de gris (grayscale)
@@ -281,7 +281,7 @@ void main()
 }  
 ```
 
-![[framebuffers_grayscale 1.png]]
+![framebuffers_grayscale 1](framebuffers_grayscale%201.png)
 Vous ne remarquerez probablement pas la différence tout de suite, mais avec des scènes plus complexes, un tel effet d'échelle de gris pondérée tend à être plus réaliste. 
 
 ### Effets Kernel
@@ -341,7 +341,7 @@ Dans le fragment shader, nous créons d'abord un tableau de 9 décalages `vec2` 
   
 Ce kernel de netteté particulier se présente comme suit :
 
-![[framebuffers_sharpen 1.png]]
+![framebuffers_sharpen 1](framebuffers_sharpen%201.png)
 Cela peut être à la base d'effets intéressants lorsque votre joueur se lance dans une aventure narcotique. 
 
 ### Blur (flou)
@@ -368,7 +368,7 @@ float kernel[9] = float[](
 En modifiant uniquement le tableau de kernel dans le shader de fragment, nous pouvons changer complètement l'effet de post-traitement. Il ressemble maintenant à ceci : 
 
 
-![[framebuffers_blur 1.png]]
+![framebuffers_blur 1](framebuffers_blur%201.png)
 
 Un tel effet de flou offre des possibilités intéressantes. Nous pourrions faire varier la quantité de flou dans le temps pour créer l'effet d'une personne ivre, ou augmenter le flou lorsque le personnage principal ne porte pas de lunettes. Le flou peut également être un outil utile pour lisser les valeurs de couleur, ce que nous verrons dans les chapitres suivants.  
   

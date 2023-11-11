@@ -11,7 +11,7 @@ C'est une très bonne idée, mais il y a un problème à résoudre : comment sav
 
 ## Winding order
 **Lorsque nous définissons un ensemble de sommets de triangle, nous les définissons dans un certain ordre d'enroulement, soit dans le sens des aiguilles d'une montre, soit dans le sens inverse.** Chaque triangle est composé de 3 sommets et nous spécifions ces 3 sommets dans un ordre d'enroulement vu du centre du triangle. 
-![[Pasted image 20230816161422.png]]
+![Pasted image 20230816161422](Pasted%20image%2020230816161422.png)
 Comme vous pouvez le voir sur l'image, nous définissons d'abord le sommet 1 et, à partir de là, nous pouvons choisir si le sommet suivant est 2 ou 3. Ce choix définit l'ordre d'enroulement de ce triangle. Le code suivant l'illustre : 
 
 ```cpp
@@ -31,7 +31,7 @@ Chaque ensemble de 3 sommets qui forment un triangle primitif contient donc un o
 Lorsque vous définissez l'ordre des sommets, vous visualisez le triangle correspondant comme s'il vous faisait face, de sorte que chaque triangle que vous spécifiez doit être traité dans le sens inverse des aiguilles d'une montre, comme si vous lui faisiez directement face. L'avantage de spécifier tous les sommets de cette manière est que l'ordre d'enroulement réel est calculé lors de l'étape de rastérisation, c'est-à-dire lorsque le shader de sommets a déjà été exécuté. Les sommets sont alors vus du point de vue de l'observateur.  
   
 Tous les sommets des triangles auxquels le spectateur fait face sont effectivement dans l'ordre d'enroulement correct tel que nous l'avons spécifié, mais les sommets des triangles situés de l'autre côté du cube sont maintenant rendus de telle sorte que leur ordre d'enroulement est inversé. Le résultat est que les triangles auxquels nous faisons face sont vus comme des triangles orientés vers l'avant et les triangles à l'arrière sont vus comme des triangles orientés vers l'arrière. L'image suivante illustre cet effet :
-![[03_face_culling-20230816.png]]
+![03_face_culling-20230816](03_face_culling-20230816.png)
 Dans les données relatives aux sommets, nous avons défini les deux triangles dans le sens inverse des aiguilles d'une montre (les triangles avant et arrière étant 1, 2, 3). Cependant, du point de vue de l'observateur, le triangle arrière est rendu dans le sens des aiguilles d'une montre si nous le dessinons dans l'ordre 1, 2 et 3 du point de vue actuel de l'observateur. Même si nous avons spécifié le triangle arrière dans le sens inverse des aiguilles d'une montre, il est maintenant rendu dans le sens des aiguilles d'une montre. C'est exactement ce que nous voulons pour éliminer les faces non visibles !
 
 ## Face culling
@@ -69,7 +69,7 @@ glCullFace(GL_BACK);
 glFrontFace(GL_CW);
 ```
  Il en résulte que seules les faces arrière sont rendues : 
- ![[faceculling_reverse.png]]
+ ![faceculling_reverse](faceculling_reverse.png)
  
 Notez que vous pouvez créer le même effet en éliminant les faces avant avec l'ordre d'enroulement par défaut dans le sens inverse des aiguilles d'une montre : 
 ```cpp

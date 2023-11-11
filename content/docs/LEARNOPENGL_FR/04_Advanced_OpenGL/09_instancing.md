@@ -20,7 +20,7 @@ En soi, cette fonction est un peu inutile. Rendre le même objet un millier de f
 Lorsque l'on dessine avec l'un des appels de rendu instancié, `gl_InstanceID` est incrémenté pour chaque instance rendue en partant de 0. Si nous devions rendre la 43e instance par exemple, `gl_InstanceID` aurait la valeur 42 dans le vertex shader. Le fait d'avoir une valeur unique par instance signifie que nous pouvons maintenant, par exemple, indexer un grand tableau de valeurs de position pour positionner chaque instance à un endroit différent dans le monde.
 
 Pour vous familiariser avec le dessin instancié, nous allons vous présenter un exemple simple qui rend une centaine de quads 2D en coordonnées normalisées avec un seul appel de rendu. Pour ce faire, nous positionnons chaque carré instancié de manière unique en indexant un tableau uniforme de 100 vecteurs de décalage. Le résultat est une grille bien organisée de quads qui remplissent toute la fenêtre :
-![[instancing_quads 1.png]]
+![instancing_quads 1](instancing_quads%201.png)
 Chaque quad est composé de 2 triangles avec un total de 6 sommets. Chaque sommet contient un vecteur de position NDC 2D et un vecteur de couleur. Voici les données de vertex utilisées pour cet exemple - les triangles sont suffisamment petits pour s'adapter à l'écran lorsqu'il y en a une centaine :
 
 ```cpp
@@ -144,7 +144,7 @@ Ce qui rend ce code intéressant est la dernière ligne où nous appelons `glVer
 Son premier paramètre est l'attribut de sommet en question et le second le diviseur d'attribut. Par défaut, le diviseur d'attribut est 0, ce qui indique à OpenGL de mettre à jour le contenu de l'attribut de sommet à chaque itération du shader de sommet. En mettant cet attribut à 1, nous indiquons à OpenGL que nous voulons mettre à jour le contenu de l'attribut vertex lorsque nous commençons à effectuer le rendu d'une nouvelle instance. En lui donnant la valeur 2, nous mettrons à jour le contenu toutes les 2 instances, et ainsi de suite. En fixant le diviseur d'attribut à 1, nous indiquons effectivement à OpenGL que l'attribut de sommet à l'emplacement d'attribut 2 est un tableau instancié.
 
 Si nous rendions à nouveau les quads avec `glDrawArraysInstanced`, nous obtiendrions la sortie suivante :
-![[instancing_quads 1.png]]
+![instancing_quads 1](instancing_quads%201.png)
 C'est exactement la même chose que dans l'exemple précédent, mais maintenant avec des tableaux instanciés, ce qui nous permet de passer beaucoup plus de données (autant que la mémoire nous le permet) au vertex shader pour le dessin instancié.
 
 Pour le plaisir, nous pourrions lentement réduire l'échelle de chaque quadrant du haut à droite au bas à gauche en utilisant à nouveau `gl_InstanceID`, parce que pourquoi pas ?
@@ -224,7 +224,7 @@ for(unsigned int i = 0; i < amount; i++)
 Nous dessinons d'abord le modèle de la planète, que nous traduisons et mettons à l'échelle pour l'adapter à la scène, puis nous dessinons un nombre de modèles de rochers égal à la quantité de transformations que nous avons générées précédemment. Cependant, avant de dessiner chaque roche, nous définissons d'abord la matrice de transformation du modèle correspondant dans le shader.
 
 Le résultat est une scène spatiale où l'on peut voir un anneau d'astéroïdes d'apparence naturelle autour d'une planète :
-![[instancing_asteroids.png]]
+![instancing_asteroids](instancing_asteroids.png)
 Cette scène contient un total de 1001 appels de rendu par image, dont 1000 pour le modèle de la roche. Vous pouvez trouver le code source de cette scène [ici](https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/10.2.asteroids/asteroids.cpp).
 
 Dès que nous commençons à augmenter ce nombre, nous remarquons rapidement que la scène cesse de fonctionner de manière fluide et que le nombre d'images que nous sommes capables de rendre par seconde diminue de manière drastique. Dès que nous fixons la valeur à près de 2000, la scène devient si lente sur notre GPU qu'il devient difficile de se déplacer.
@@ -295,7 +295,7 @@ for(unsigned int i = 0; i < rock.meshes.size(); i++)
 }  
 ```
 Ici, nous dessinons la même quantité d'astéroïdes que dans l'exemple précédent, mais cette fois avec un rendu instancié. Les résultats devraient être exactement les mêmes, mais une fois que nous aurons augmenté le nombre d'astéroïdes, vous commencerez vraiment à voir la puissance du rendu instancié. Sans le rendu instancié, nous avons pu obtenir un rendu fluide d'environ 1000 à 1500 astéroïdes. Avec le rendu instancié, nous pouvons maintenant fixer cette valeur à 100000. Ceci, avec le modèle de roche ayant 576 vertices, équivaudrait à environ 57 millions de vertices dessinés chaque image sans baisse significative de performance ; et seulement 2 appels de dessin !
-![[instancing_asteroids_quantity.png]]
+![instancing_asteroids_quantity](instancing_asteroids_quantity.png)
 Cette image a été rendue avec 100000 astéroïdes avec un rayon de 150.0f et un décalage égal à 25.0f. Vous pouvez trouver le code source de la démo de rendu instancié [ici](https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/10.3.asteroids_instanced/asteroids_instanced.cpp).
 
 >Sur différentes machines, un nombre d'astéroïdes de 100 000 peut être un peu trop élevé, alors essayez d'ajuster les valeurs jusqu'à ce que vous atteigniez un framerate acceptable.

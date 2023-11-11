@@ -14,7 +14,7 @@ Dans leur définition la plus élémentaire, **les vecteurs sont des directions 
 Ici, "gauche" est la direction et "10 pas" est la magnitude du vecteur. Les directions de la carte au trésor contiennent donc 3 vecteurs. **Les vecteurs peuvent avoir n'importe quelle dimension, mais nous travaillons généralement avec des dimensions de 2 à 4**. Si un vecteur a 2 dimensions, il représente une direction sur un plan (pensez aux graphiques en 2D) et s'il a 3 dimensions, il peut représenter n'importe quelle direction dans un monde en 3D.  
   
 Ci-dessous, vous verrez 3 vecteurs où chaque vecteur est représenté par des flèches (x,y) dans un graphique en 2D. Comme il est plus intuitif d'afficher les vecteurs en 2D (plutôt qu'en 3D), vous pouvez considérer les vecteurs 2D comme des vecteurs 3D avec une coordonnée z de 0. Comme les vecteurs représentent des directions, l'origine du vecteur ne change pas sa valeur. Dans le graphique ci-dessous, nous pouvons voir que les vecteurs $\vec{v}$ et $\vec{w}$ sont égaux bien que leur origine soit différente :
-![[img/transfo1.png]]
+![transfo1](img/transfo1.png)
 Pour décrire les vecteurs, les mathématiciens préfèrent généralement utiliser des symboles de caractères avec une petite barre au-dessus de leur tête, comme v¯. De même, lorsque les vecteurs sont affichés dans des formules, ils sont généralement présentés comme suit :
 
 $$\vec{v} = \begin{pmatrix}
@@ -97,7 +97,7 @@ $$
 \end{pmatrix}
 $$
 Visuellement, cela ressemble à ceci pour les vecteurs $\vec{v}=(4,2)$ et $\vec{k}=(1,2)$, où le deuxième vecteur est ajouté à l'extrémité du premier vecteur pour trouver le point final du vecteur résultant (méthode de la tête à la queue (head to tail method)) :
-![[img/transfo2.png]]
+![transfo2](img/transfo2.png)
 Tout comme l'addition et la soustraction normales, la soustraction de vecteurs est la même chose que l'addition avec un second vecteur annulé : 
 $$
 \vec{v}
@@ -128,10 +128,10 @@ $$
 \end{pmatrix}
 $$
 En soustrayant deux vecteurs l'un de l'autre, on obtient un vecteur qui est la différence des positions vers lesquelles pointent les deux vecteurs. Cela s'avère utile dans certains cas où nous devons récupérer un vecteur qui est la différence entre deux points. 
-![[img/transfo3.png]]
+![transfo3](img/transfo3.png)
 ### Longueur
 Pour déterminer la longueur/magnitude d'un vecteur, nous utilisons le théorème de Pythagore dont vous vous souvenez peut-être de vos cours de mathématiques. Un vecteur forme un triangle lorsque vous visualisez ses composantes x et y individuelles comme les deux côtés d'un triangle :
-![[img/transfo4.png]]
+![transfo4](img/transfo4.png)
 Puisque les longueurs des deux côtés (x, y) sont connues et que nous voulons connaître la longueur du côté incliné $\vec{v}$, nous pouvons la calculer en utilisant le théorème de Pythagore comme suit :
 $$
 ||\vec{v}||
@@ -193,7 +193,7 @@ Pour calculer le degré entre ces deux vecteurs unitaires, nous utilisons l'inve
 
 #### Produit vectoriel (cross product)
 Le produit vectoriel n'est défini que dans l'espace 3D. Il prend deux vecteurs non parallèles en entrée et produit un troisième vecteur qui est orthogonal aux deux vecteurs d'entrée. Si les deux vecteurs d'entrée sont également orthogonaux l'un par rapport à l'autre, un produit vectoriel produira trois vecteurs orthogonaux, ce qui s'avérera utile dans les chapitres suivants. L'image suivante montre à quoi cela ressemble dans l'espace 3D :
-![[img/transfo5.png]]
+![transfo5](img/transfo5.png)
 Contrairement aux autres opérations, le produit vectoriel n'est pas vraiment intuitif si l'on ne se plonge pas dans l'algèbre linéaire. Il est donc préférable de mémoriser la formule et de s'en sortir (ou de ne pas le faire, vous vous en sortirez probablement aussi). Vous trouverez ci-dessous le produit vectoriel de deux vecteurs orthogonaux A et B : 
 $$
 \begin{pmatrix}
@@ -333,7 +333,7 @@ $$
 \end{bmatrix}
 $$
 À l'heure actuelle, vous essayez probablement de comprendre ce qui vient de se passer ? La multiplication matricielle est une combinaison de la multiplication normale et de l'addition utilisant les lignes de la matrice gauche avec les colonnes de la matrice droite. Essayons d'en discuter à l'aide de l'image suivante :
-![[img/transfo6.png]]
+![transfo6](img/transfo6.png)
 Nous prenons d'abord la ligne supérieure de la matrice de gauche, puis une colonne de la matrice de droite. La ligne et la colonne que nous avons choisies déterminent la valeur de sortie de la matrice `2x2` résultante que nous allons calculer. Si nous prenons la première ligne de la matrice de gauche, la valeur résultante se retrouvera dans la première ligne de la matrice de résultat, puis nous choisissons une colonne et s'il s'agit de la première colonne, la valeur résultante se retrouvera dans la première colonne de la matrice de résultat. C'est exactement le cas du chemin rouge. Pour calculer le résultat en bas à droite, nous prenons la ligne inférieure de la première matrice et la colonne la plus à droite de la deuxième matrice.  
   
 Pour calculer la valeur résultante, nous multiplions le premier élément de la ligne et de la colonne en utilisant la multiplication normale, nous faisons de même pour les deuxième éléments, troisième, quatrième, etc. Les résultats des multiplications individuelles sont ensuite additionnés et nous obtenons notre résultat. Il est logique que l'une des conditions requises soit que la taille des colonnes de la matrice de gauche et celle des lignes de la matrice de droite soient égales, sinon nous ne pouvons pas terminer les opérations !  
@@ -343,7 +343,7 @@ Pour calculer la valeur résultante, nous multiplions le premier élément de la
 Ne vous inquiétez pas si vous avez du mal à imaginer les multiplications dans votre tête. Essayez simplement de faire les calculs à la main et revenez à cette page chaque fois que vous rencontrez des difficultés. Avec le temps, la multiplication matricielle deviendra pour vous une seconde nature.  
   
 Terminons la discussion sur la multiplication matrice-matrice avec un exemple plus large. Essayez de visualiser le modèle à l'aide des couleurs. À titre d'exercice utile, voyez si vous pouvez trouver votre propre réponse à la multiplication, puis comparez-la avec la matrice résultante (une fois que vous aurez essayé de faire une multiplication matricielle à la main, vous comprendrez rapidement ce que c'est).
-![[img/transfo7.png]]
+![transfo7](img/transfo7.png)
 
 Comme vous pouvez le constater, la multiplication matrice-matrice est un processus assez lourd et très sujet aux erreurs (c'est pourquoi nous laissons généralement les ordinateurs s'en charger) et cela devient rapidement problématique lorsque les matrices deviennent plus grandes. Si vous avez encore soif d'en savoir plus et que vous êtes curieux de découvrir d'autres propriétés mathématiques des matrices, je vous suggère vivement de jeter un coup d'œil à ces vidéos de la [Khan Academy](https://www.khanacademy.org/math/algebra-home/alg-matrices) sur les matrices.  
   
@@ -385,7 +385,7 @@ Le vecteur est totalement intact. Les règles de multiplication le montrent clai
 Lorsque nous mettons un vecteur à l'échelle, nous augmentons la longueur de la flèche de la quantité que nous souhaitons mettre à l'échelle, tout en conservant la même direction. Comme nous travaillons en 2 ou 3 dimensions, nous pouvons définir la mise à l'échelle par un vecteur de 2 ou 3 variables de mise à l'échelle, chacune mettant à l'échelle un axe (x, y ou z).  
   
 Essayons de mettre à l'échelle le vecteur $\vec{v}=(3,2)$. Nous allons mettre à l'échelle le vecteur le long de l'axe des $x$ par $0.5$, ce qui le rendra deux fois plus étroit ; et nous allons mettre à l'échelle le vecteur par 2 le long de l'axe des $y$, ce qui le rendra deux fois plus haut. Voyons ce que cela donne si nous mettons le vecteur à l'échelle $(0.5,2)$ (le résultat sera le vecteur $\vec{s}$) :
-![[img/transfo8.png]]
+![transfo8](img/transfo8.png)
 Gardez à l'esprit qu'OpenGL fonctionne généralement dans l'espace 3D, donc pour ce cas 2D, nous pourrions mettre l'échelle de l'axe $z$ à 1, ce qui le laisserait intact. **L'opération de mise à l'échelle que nous venons d'effectuer est une mise à l'échelle non uniforme, car le facteur d'échelle n'est pas le même pour chaque axe. Si le facteur d'échelle était égal sur tous les axes, on parlerait d'une échelle uniforme.**  
   
 Commençons par construire une matrice de transformation qui effectue la mise à l'échelle pour nous. Nous avons vu dans la matrice d'identité que chacun des éléments diagonaux était multiplié par l'élément vectoriel correspondant. Que se passerait-il si nous remplacions les 1 de la matrice d'identité par des 3 ? Dans ce cas, nous multiplierions chacun des éléments du vecteur par une valeur de 3, ce qui aurait pour effet d'augmenter uniformément le vecteur de 3. Si nous représentons les variables d'échelle par $(S1,S2,S3)$ nous pouvons définir une matrice d'échelle sur n'importe quel vecteur $(x,y,z)$ comme suit :
@@ -459,7 +459,7 @@ Tout d'abord, définissons ce qu'est une rotation d'un vecteur. **Une rotation e
 	Où $\pi$ est égal (arrondi) à $3,14159265359$. 
 
 La rotation d'un demi-cercle nous fait tourner de $360/2 = 180$ degrés et la rotation d'un cinquième vers la droite nous fait tourner de $360/5 = 72$ degrés vers la droite. Ceci est démontré pour un vecteur 2D de base où $\vec{v}$ est tourné de 72 degrés vers la droite, ou dans le sens des aiguilles d'une montre, à partir de $\vec{k}$ : 
-![[img/transfo9.png]]
+![transfo9](img/transfo9.png)
 Les rotations en 3D sont spécifiées par un angle et un axe de rotation. L'angle spécifié fera tourner l'objet le long de l'axe de rotation indiqué. Essayez de visualiser cela en faisant tourner votre tête d'un certain degré tout en regardant continuellement vers le bas un seul axe de rotation. **Lorsque l'on fait tourner des vecteurs 2D dans un monde 3D, par exemple, on fixe l'axe de rotation sur l'axe z** (essayez de visualiser cela).  
   
 En utilisant la trigonométrie, il est possible de transformer des vecteurs en vecteurs nouvellement tournés en fonction d'un angle. Cela se fait généralement par une combinaison intelligente des fonctions sinus et cosinus (communément abrégées en $\sin$ et $\cos$). Une discussion sur la manière dont les matrices de rotation sont générées n'entre pas dans le cadre de ce chapitre.  
@@ -675,7 +675,7 @@ Nous demandons d'abord l'emplacement de la variable uniforme, puis nous envoyons
 - Le dernier paramètre est **la donnée réelle de la matrice**, mais GLM stocke les données de ses matrices d'une manière qui ne correspond pas toujours aux attentes d'OpenGL, **donc nous convertissons d'abord les données avec la fonction intégrée `value_ptr` de GLM**.  
   
 Nous avons créé une matrice de transformation, déclaré un uniforme dans le vertex shader et envoyé la matrice aux shaders où nous transformons les coordonnées de nos vertex. Le résultat devrait ressembler à ceci :
-![[img/transfo10.png]]
+![transfo10](img/transfo10.png)
 C'est parfait ! Notre conteneur est en effet incliné vers la gauche et deux fois plus petit, la transformation est donc réussie. Soyons un peu plus funky et voyons si nous pouvons faire pivoter le conteneur dans le temps, et pour le plaisir nous allons aussi repositionner le conteneur en bas à droite de la fenêtre. Pour faire pivoter le conteneur dans le temps, nous devons mettre à jour la matrice de transformation dans la boucle de rendu, car elle doit être mise à jour à chaque image. Nous utilisons la fonction temps de GLFW pour obtenir un angle dans le temps :
 ```cpp
 glm::mat4 trans = glm::mat4(1.0f);
@@ -687,7 +687,7 @@ Gardez à l'esprit que dans le cas précédent, nous pouvions déclarer la matri
 Ici, nous faisons d'abord pivoter le conteneur autour de l'origine $(0,0,0)$ et une fois qu'il a pivoté, nous traduisons sa version pivotée dans le coin inférieur droit de l'écran. **N'oubliez pas que l'ordre de transformation réel doit être lu à l'envers : même si, dans le code, nous effectuons d'abord une translation, puis une rotation, les transformations réelles appliquent d'abord une rotation, puis une translation.** Il est difficile de comprendre toutes ces combinaisons de transformations et la manière dont elles s'appliquent aux objets. Essayez d'expérimenter avec des transformations comme celles-ci et vous comprendrez rapidement.  
   
 Si vous avez bien fait les choses, vous devriez obtenir le résultat suivant :
-![[video/transfo_video1.mp4]]
+![transfo_video1](video/transfo_video1.mp4)
 Et voilà. Un conteneur translaté qui pivote au fil du temps, le tout grâce à une seule matrice de transformation ! Vous comprenez maintenant pourquoi les matrices sont si puissantes dans le domaine du graphisme. Nous pouvons définir un nombre infini de transformations et les combiner dans une seule matrice que nous pouvons réutiliser aussi souvent que nous le souhaitons. **L'utilisation de transformations comme celle-ci dans le vertex shader nous évite de redéfinir les données des vertex et nous fait également gagner du temps de traitement, puisque nous n'avons pas à renvoyer nos données en permanence (ce qui est assez lent) ; tout ce que nous avons à faire, c'est de mettre à jour l'uniforme de transformation.**  
   
 Si vous n'avez pas obtenu le bon résultat ou si vous êtes bloqué à un autre endroit, jetez un coup d'œil au [code source](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/5.1.transformations/transformations.cpp) et à la [classe de shader](https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/shader_m.h) mise à jour.  

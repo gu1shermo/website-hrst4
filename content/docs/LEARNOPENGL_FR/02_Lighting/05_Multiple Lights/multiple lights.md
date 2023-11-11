@@ -165,13 +165,13 @@ glm::vec3 pointLightPositions[] = {
 Nous indexons ensuite la structure `PointLight` correspondante à partir du tableau `pointLights` et définissons son attribut de position comme l'une des positions que nous venons de définir. Veillez également à dessiner 4 cubes de lumière au lieu d'un seul. Créez simplement une matrice de modèle différente pour chacun des objets de lumière, comme nous l'avons fait pour les conteneurs.
 
 Si vous utilisez également une lampe de poche, le résultat de toutes les lumières combinées ressemble à ceci :
-![[mlight1.png]]
+![mlight1](mlight1.png)
 Comme vous pouvez le voir, il semble y avoir une forme de lumière globale (comme un soleil) quelque part dans le ciel, nous avons 4 lumières dispersées dans la scène et une lampe de poche est visible du point de vue du joueur. Ça a l'air plutôt sympa, non ?
 
 Vous pouvez trouver le code source complet de l'application finale [ici](https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/6.multiple_lights/multiple_lights.cpp).
 
 L'image montre toutes les sources de lumière définies avec les propriétés de lumière par défaut que nous avons utilisées dans les chapitres précédents, mais si vous jouez avec ces valeurs, vous pouvez obtenir des résultats assez intéressants. Les artistes et les concepteurs de niveaux modifient généralement toutes ces variables d'éclairage dans un grand éditeur pour s'assurer que l'éclairage correspond à l'environnement. En utilisant notre environnement simple, vous pouvez déjà créer des visuels assez intéressants simplement en modifiant les attributs des lumières :
-![[mlight2.png]]
+![mlight2](mlight2.png)
 
 
 Nous avons également modifié la couleur de la lumière pour qu'elle reflète mieux l'éclairage. Vous pouvez voir qu'en ajustant simplement certains paramètres d'éclairage, vous pouvez créer des atmosphères complètement différentes.

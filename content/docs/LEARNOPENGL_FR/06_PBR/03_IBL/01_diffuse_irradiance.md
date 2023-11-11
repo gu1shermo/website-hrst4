@@ -112,17 +112,17 @@ Cela nous donne une intégrale qui ne dépend que de $w_i$ (en supposant que $p$
 La convolution consiste à appliquer un calcul à chaque entrée d'un ensemble de données en tenant compte de toutes les autres entrées de l'ensemble de données, l'ensemble de données étant la radiance de la scène ou la map de l'environnement. Ainsi, pour chaque direction d'échantillonnage dans la cubemap, nous prenons en compte toutes les autres directions d'échantillonnage sur l'hémisphère $\Omega$ sont prises en compte.
 
 Pour convoluer (?) une map d'environnement, nous résolvons l'intégrale pour chaque direction d'échantillonnage $w_o$ en échantillonnant discrètement un grand nombre de directions $w_i$ sur l'hémisphère $\Omega$ et en calculant la moyenne de leur radiance. L'hémisphère à partir duquel nous construisons les directions d'échantillonnage $w_i$ est orienté vers la direction d'échantillonnage $w_o$ de sortie que nous convoluons.
-![[01_diffuse_irradiance-20230909-pbrdiff1.png]]
+![01_diffuse_irradiance-20230909-pbrdiff1.png](01_diffuse_irradiance-20230909-pbrdiff1.png)
 Cette cubemap précalculée, qui pour chaque direction d'échantillonnage $w_o$ stocke le résultat intégral, peut être considérée comme la somme précalculée de toute la lumière diffuse indirecte de la scène frappant une surface alignée le long de la direction $w_o$. Une telle cubemap est connue sous le nom de map d'irradiance, étant donné que la cubemap convoluée nous permet effectivement d'échantillonner directement l'irradiance (précalculée) de la scène à partir de n'importe quelle direction $\vec{w_o}$.
 
 >L'équation de la radiance dépend également d'une position $p$, que nous avons supposée être au centre de la carte d'irradiation. Cela signifie que toute la lumière indirecte diffuse doit provenir d'une seule map d'environnement, ce qui peut briser l'illusion de la réalité (en particulier à l'intérieur). Les moteurs de rendu résolvent ce problème en plaçant des sondes (?) de réflexion dans toute la scène, chacune d'entre elles calculant sa propre map d'irradiance de son environnement. De cette manière, l'irradiance (et la radiance) à la position $p$ est l'irradiance interpolée entre les sondes de réflexion les plus proches. Pour l'instant, nous supposons que nous échantillonnons toujours la map de l'environnement à partir de son centre.
 
 Voici un exemple de map d'environnement cubemap et de la carte d'irradiance qui en résulte (avec l'aimable autorisation de wave engine), en calculant la moyenne de l'irradiation de la scène pour chaque direction.
-![[01_diffuse_irradiance-20230909-pbrdiff2.png]]
+![01_diffuse_irradiance-20230909-pbrdiff2.png](01_diffuse_irradiance-20230909-pbrdiff2.png)
 En stockant le résultat convolué dans chaque texel cubemap (dans la direction de $\vec{w_o}$), la map d'irradiance s'affiche un peu comme une couleur moyenne ou un affichage de l'éclairage de l'environnement. L'échantillonnage de n'importe quelle direction à partir de cette map d'environnement nous donnera l'irradiance de la scène dans cette direction particulière.
 
 ## PBR et HDR
-Nous l'avons brièvement évoqué dans le chapitre [[../02_lighting|précédent]] : il est extrêmement important de prendre en compte la gamme dynamique élevée de l'éclairage de votre scène dans un pipeline PBR. Comme le PBR base la plupart de ses entrées sur des propriétés et des mesures physiques réelles, il est logique de faire correspondre les valeurs de lumière entrantes à leurs équivalents physiques. Que nous fassions des suppositions éclairées sur le flux radiant de chaque lumière ou que nous utilisions leur équivalent physique direct, la différence entre une simple ampoule ou le soleil est significative dans les deux cas. Sans travailler dans un environnement de rendu HDR, il est impossible de spécifier correctement l'intensité relative de chaque lumière.
+Nous l'avons brièvement évoqué dans le chapitre [précédent](../02_lighting.md) : il est extrêmement important de prendre en compte la gamme dynamique élevée de l'éclairage de votre scène dans un pipeline PBR. Comme le PBR base la plupart de ses entrées sur des propriétés et des mesures physiques réelles, il est logique de faire correspondre les valeurs de lumière entrantes à leurs équivalents physiques. Que nous fassions des suppositions éclairées sur le flux radiant de chaque lumière ou que nous utilisions leur équivalent physique direct, la différence entre une simple ampoule ou le soleil est significative dans les deux cas. Sans travailler dans un environnement de rendu HDR, il est impossible de spécifier correctement l'intensité relative de chaque lumière.
 
 PBR et HDR vont donc de pair, mais quel est le rapport avec l'éclairage basé sur l'image ? Nous avons vu dans le chapitre précédent qu'il est relativement facile de faire fonctionner le PBR en HDR. Cependant, étant donné que pour l'éclairage basé sur l'image, nous basons l'intensité de la lumière indirecte de l'environnement sur les valeurs de couleur d'une cubemap d'environnement, nous avons besoin d'un moyen de stocker la plage dynamique élevée de l'éclairage dans une map d'environnement.
 
@@ -132,7 +132,7 @@ Les maps d'environnement que nous avons utilisées jusqu'à présent comme cubem
 Entrez dans le format de fichier radiance. Le format de fichier radiance (avec l'extension `.hdr`) stocke un cubemap complet avec les 6 faces sous forme de données à virgule flottante. Cela nous permet de spécifier des valeurs de couleur en dehors de la plage de $0.0$ à $1.0$ pour donner aux lumières les intensités de couleur correctes. Le format de fichier utilise également une astuce pour stocker chaque valeur en virgule flottante, non pas comme une valeur de 32 bits par canal, mais de 8 bits par canal en utilisant le canal alpha de la couleur comme exposant (ce qui implique une perte de précision). Cela fonctionne assez bien, mais nécessite que le programme d'analyse syntaxique reconvertisse chaque couleur en son équivalent en virgule flottante.
 
 Il existe un certain nombre de maps d'environnement HDR de radiance disponibles gratuitement à partir de sources telles que l'[archive sIBL](http://www.hdrlabs.com/sibl/archive.html), dont vous pouvez voir un exemple ci-dessous :
-![[01_diffuse_irradiance-20230909-pbrdiff3.png]]
+![01_diffuse_irradiance-20230909-pbrdiff3.png](01_diffuse_irradiance-20230909-pbrdiff3.png)
 Ce n'est peut-être pas exactement ce à quoi vous vous attendiez, car l'image semble déformée et ne montre aucune des 6 faces cubemap individuelles des cartes d'environnement que nous avons vues auparavant. Cette map d'environnement est projetée à partir d'une sphère sur un plan plat, ce qui nous permet de stocker plus facilement l'environnement dans une seule image, connue sous le nom de map équirectangulaire. Cette méthode est assortie d'une petite mise en garde : la majeure partie de la résolution visuelle est stockée dans la direction horizontale de la vue, tandis qu'une partie moindre est préservée dans les directions inférieure et supérieure. Dans la plupart des cas, il s'agit d'un bon compromis, car avec presque tous les moteurs de rendu, vous trouverez la plupart des éclairages et des environnements intéressants dans les directions de visualisation horizontales.
 
 ### HDR et `stb_image.h`
@@ -210,7 +210,7 @@ void main()
 }
 ```
 Si vous effectuez le rendu d'un cube au centre de la scène avec une carte HDR équirectangulaire, vous obtiendrez quelque chose qui ressemble à ceci :
-![[01_diffuse_irradiance-20230910-pbrdiff5.png]]
+![01_diffuse_irradiance-20230910-pbrdiff5.png](01_diffuse_irradiance-20230910-pbrdiff5.png)
 Ceci démontre que nous avons effectivement mappé une image équirectangulaire sur une forme cubique, mais ne nous aide pas encore à convertir l'image HDR source en une texture cubemap. Pour ce faire, nous devons effectuer le rendu du même cube 6 fois, en regardant chaque face individuelle du cube, tout en enregistrant le résultat visuel à l'aide d'un objet framebuffer :
 ```cpp
 unsigned int captureFBO, captureRBO;
@@ -241,7 +241,7 @@ glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 ```
 Il ne reste plus qu'à capturer la texture 2D équirectangulaire sur les faces du cubemap.
 
-Je ne m'étendrai pas sur les détails car le code détaille des sujets déjà abordés dans les chapitres sur les [[../../04_Advanced_OpenGL/04_framebuffers|framebuffers]] et les [[../../05_Advanced_Lighting/02b_point_shadows|ombres ponctuelles]], mais cela se résume à mettre en place 6 matrices de vue différentes (face à chaque côté du cube), à mettre en place une matrice de projection avec un **fov** (field of view) de $90$ degrés pour capturer l'ensemble de la face, et à rendre un cube 6 fois en stockant les résultats dans un framebuffer à virgule flottante :
+Je ne m'étendrai pas sur les détails car le code détaille des sujets déjà abordés dans les chapitres sur les [framebuffers](../../04_Advanced_OpenGL/04_framebuffers.md) et les [ombres ponctuelles](../../05_Advanced_Lighting/02b_point_shadows.md), mais cela se résume à mettre en place 6 matrices de vue différentes (face à chaque côté du cube), à mettre en place une matrice de projection avec un **fov** (field of view) de $90$ degrés pour capturer l'ensemble de la face, et à rendre un cube 6 fois en stockant les résultats dans un framebuffer à virgule flottante :
 ```cpp
 glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
 glm::mat4 captureViews[] = 
@@ -322,7 +322,7 @@ void main()
 Nous échantillonnons la map de l'environnement en utilisant les positions interpolées des vertex cube qui correspondent directement au vecteur de direction correct à échantillonner. Étant donné que les composantes de translation de la caméra sont ignorées, le rendu de ce shader sur un cube devrait vous donner la map de l'environnement comme un arrière-plan immobile. De plus, comme nous sortons directement les valeurs HDR de la map de l'environnement dans le framebuffer **LDR** par défaut, nous voulons que les valeurs de couleur soient correctement reproduites. De plus, presque toutes les cartes **HDR** sont dans un espace colorimétrique linéaire par défaut, nous devons donc appliquer une correction gamma avant d'écrire dans le framebuffer par défaut.
 
 Le rendu de la map d'environnement échantillonnée sur les sphères précédemment rendues devrait ressembler à ceci :
-![[01_diffuse_irradiance-20230910-pbrdiff6.png]]
+![01_diffuse_irradiance-20230910-pbrdiff6.png](01_diffuse_irradiance-20230910-pbrdiff6.png)
 Eh bien... il nous a fallu pas mal de configuration pour en arriver là, mais nous avons réussi à lire une carte d'environnement HDR, à la convertir de son mapping équirectangulaire en un cubemap, et à rendre le cubemap HDR dans la scène en tant que skybox. De plus, nous avons mis en place un petit système pour effectuer le rendu sur les 6 faces d'une cubemap, ce dont nous aurons à nouveau besoin lors de la convolution de la map d'environnement. Vous pouvez trouver le code source de l'ensemble du processus de conversion [ici](https://learnopengl.com/code_viewer_gh.php?code=src/6.pbr/2.1.1.ibl_irradiance_conversion/ibl_irradiance_conversion.cpp).
 
 ## Convolution de la cubemap
@@ -348,7 +348,7 @@ $$
 vec3 irradiance = texture(irradianceMap, N).rgb;
 ```
 Maintenant, pour générer la map d'irradiance, nous devons convoluer l'éclairage de l'environnement tel qu'il a été converti en cubemap. Étant donné que pour chaque fragment, l'hémisphère de la surface est orienté le long du vecteur normal $\vec{N}$, la convolution d'une cubemap revient à calculer la radiance moyenne totale de chaque direction $w_i$ dans l'hémisphère $\Omega$ orienté le long de $\vec{N}$.
-![[01_diffuse_irradiance-20230910-pbrdiff7.png]]
+![01_diffuse_irradiance-20230910-pbrdiff7.png](01_diffuse_irradiance-20230910-pbrdiff7.png)
 Heureusement, toute la configuration fastidieuse de ce chapitre n'est pas inutile puisque nous pouvons maintenant prendre directement la cubemap convertie, la convoluer dans un fragment shader, et capturer le résultat dans une nouvelle cubemap en utilisant un framebuffer qui rend dans les 6 directions de la face. Comme nous l'avons déjà fait pour convertir la map d'environnement équirectangulaire en cubemap, nous pouvons adopter exactement la même approche mais en utilisant un fragment shader différent :
 ```cpp
 #version 330 core
@@ -376,7 +376,7 @@ La map d'environnement étant la cubemap HDR convertie à partir de la carte d'e
 Il existe de nombreuses façons de convoluer la map d'environnement, mais pour ce chapitre, nous allons générer une quantité fixe de vecteurs d'échantillonnage pour chaque texel de la cubemap le long d'un hémisphère $\Omega$ orienté autour de la direction de l'échantillon et faire la moyenne des résultats. La quantité fixe de vecteurs d'échantillonnage sera uniformément répartie à l'intérieur de l'hémisphère. Notez qu'une intégrale est une fonction continue et que l'échantillonnage discret de sa fonction à partir d'un nombre fixe de vecteurs d'échantillonnage ne sera qu'une approximation. Plus le nombre de vecteurs d'échantillonnage est élevé, meilleure est l'approximation de l'intégrale.
 
 L'intégrale $\int$ de l'équation de réflectance tourne autour de l'angle solide $dw$, ce qui est assez difficile à traiter. Au lieu d'intégrer sur l'angle solide $dw$, nous intégrerons sur ses coordonnées sphériques équivalentes $\theta$ et $\phi$.
-![[01_diffuse_irradiance-20230910-pbrdiff8.png]]
+![01_diffuse_irradiance-20230910-pbrdiff8.png](01_diffuse_irradiance-20230910-pbrdiff8.png)
 Nous utilisons l'azimut polaire $\phi$ pour échantillonner autour de l'anneau de l'hémisphère entre $0$ et $2\pi$, et utilisons l'inclinaison zénithale $\theta$ entre $0$ et $12\pi$ pour échantillonner les anneaux croissants de l'hémisphère. Nous obtenons ainsi l'intégrale de réflectance mise à jour :
 $$
 L_o(p,\phi_o,\theta_o)
@@ -482,7 +482,7 @@ for (unsigned int i = 0; i < 6; ++i)
 glBindFramebuffer(GL_FRAMEBUFFER, 0);
 ```
 Après cette routine, nous devrions avoir une map d'irradiance pré-calculée que nous pouvons directement utiliser pour notre éclairage basé sur l'image diffuse. Pour voir si nous avons réussi à convoluer la map d'environnement, nous allons substituer la map d'environnement à la map d'irradiance en tant qu'échantillonneur d'environnement de la skybox :
-![[01_diffuse_irradiance-20230910-pbrdiff8-1.png]]
+![01_diffuse_irradiance-20230910-pbrdiff8-1.png](01_diffuse_irradiance-20230910-pbrdiff8-1.png)
 Si elle ressemble à une version très floue de la map de l'environnement, vous avez réussi à convoluer la map de l'environnement.
 
 ## PBR et éclairage par rayonnement indirect
@@ -506,7 +506,7 @@ vec3 diffuse    = irradiance * albedo;
 vec3 ambient    = (kD * diffuse) * ao; 
 ```
 Comme la lumière ambiante provient de toutes les directions à l'intérieur de l'hémisphère orienté autour de la normale $\vec{N}$, il n'y a pas de vecteur unique à mi-chemin pour déterminer la réponse de Fresnel. Pour continuer à simuler Fresnel, nous calculons le Fresnel à partir de l'angle entre la normale et le vecteur de vue. Cependant, nous avons utilisé précédemment le vecteur médian de la micro-surface, influencé par la rugosité de la surface, comme entrée de l'équation de Fresnel. Comme nous ne tenons actuellement pas compte de la rugosité, le taux de réflexion de la surface sera toujours relativement élevé. La lumière indirecte suit les mêmes propriétés que la lumière directe et nous nous attendons donc à ce que les surfaces plus rugueuses se reflètent moins fortement sur les bords de la surface. C'est pourquoi l'intensité de la réflexion indirecte de Fresnel semble faible sur les surfaces non métalliques rugueuses (légèrement exagérée à des fins de démonstration) :
-![[01_diffuse_irradiance-20230910-pbrdiff11.png]]
+![01_diffuse_irradiance-20230910-pbrdiff11.png](01_diffuse_irradiance-20230910-pbrdiff11.png)
  Nous pouvons résoudre ce problème en injectant un terme de rugosité dans l'équation de Fresnel-Schlick, comme l'a décrit [Sébastien Lagarde](https://seblagarde.wordpress.com/2011/08/17/hello-world/) :
 ```cpp
 vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
@@ -524,11 +524,11 @@ vec3 ambient    = (kD * diffuse) * ao;
 ```
 Comme vous pouvez le voir, le calcul de l'éclairage basé sur l'image est assez simple et ne nécessite qu'une seule recherche de texture cubemap ; la majeure partie du travail consiste à pré-calculer ou à convoluer la map d'irradiance.
 
-Si nous prenons la scène initiale du chapitre sur l'[[../02_lighting|éclairage PBR]], où chaque sphère a une valeur métallique croissante verticalement et une valeur de rugosité croissante horizontalement, et que nous ajoutons l'éclairage diffus basé sur l'image, cela ressemblera un peu à ceci :
-![[01_diffuse_irradiance-20230910-pbrdiff12.png]]
+Si nous prenons la scène initiale du chapitre sur l'[éclairage PBR](../02_lighting.md), où chaque sphère a une valeur métallique croissante verticalement et une valeur de rugosité croissante horizontalement, et que nous ajoutons l'éclairage diffus basé sur l'image, cela ressemblera un peu à ceci :
+![01_diffuse_irradiance-20230910-pbrdiff12.png](01_diffuse_irradiance-20230910-pbrdiff12.png)
 C'est encore un peu bizarre car les sphères les plus métalliques ont besoin d'une certaine forme de réflexion pour commencer à ressembler à des surfaces métalliques (car les surfaces métalliques ne reflètent pas la lumière diffuse) qui, pour l'instant, ne proviennent que (à peine) des sources lumineuses ponctuelles. Néanmoins, on peut déjà dire que les sphères se sentent plus à leur place dans l'environnement (surtout si vous passez d'une map d'environnement à l'autre) car la réponse de la surface réagit en fonction de l'éclairage ambiant de l'environnement.
 
-Vous pouvez trouver le code source complet des sujets abordés [ici](https://learnopengl.com/code_viewer_gh.php?code=src/6.pbr/2.1.2.ibl_irradiance/ibl_irradiance.cpp). Dans le [[prochain]] chapitre, nous ajouterons la partie spéculaire indirecte de l'intégrale de réflectance et nous verrons alors la puissance du PBR.
+Vous pouvez trouver le code source complet des sujets abordés [ici](https://learnopengl.com/code_viewer_gh.php?code=src/6.pbr/2.1.2.ibl_irradiance/ibl_irradiance.cpp). Dans le [prochain](prochain) chapitre, nous ajouterons la partie spéculaire indirecte de l'intégrale de réflectance et nous verrons alors la puissance du PBR.
 
 ## Lectures supplémentaires
  - [Coding Labs : Physically based rendering](http://www.codinglabs.net/article_physically_based_rendering.aspx) : une introduction au PBR et comment et pourquoi générer une map d'irradiance.

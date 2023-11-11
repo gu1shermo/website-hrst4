@@ -12,7 +12,7 @@ Lorsqu'une source lumineuse est éloignée, les rayons lumineux qui en provienne
   
 **Un bon exemple de source de lumière directionnelle est le soleil tel que nous le connaissons.** Le soleil n'est pas infiniment loin de nous, mais il est si loin que nous pouvons le percevoir comme étant infiniment loin dans les calculs d'éclairage.
 Tous les rayons lumineux provenant du soleil sont alors modélisés comme des rayons lumineux parallèles, comme le montre l'image suivante :
-![[lcaster1.png]]
+![lcaster1](lcaster1.png)
 Comme tous les rayons lumineux sont parallèles, la relation entre chaque objet et la position de la source lumineuse n'a pas d'importance puisque la direction de la lumière reste la même pour chaque objet de la scène. Comme le vecteur de direction de la lumière reste le même, les calculs d'éclairage seront similaires pour chaque objet de la scène.  
   
 Nous pouvons modéliser une telle lumière directionnelle en définissant un vecteur de direction de la lumière au lieu d'un vecteur de position. Les calculs du shader restent en grande partie les mêmes, sauf que cette fois nous utilisons directement le vecteur de `direction` de la lumière au lieu de calculer le vecteur `lightDir` en utilisant le vecteur de `position` de la lumière :   
@@ -64,14 +64,14 @@ else if(lightVector.w == 1.0)
   // do light calculations using the light's position (as in previous chapters)  
 ```
  Si vous compilez maintenant l'application et que vous parcourez la scène, vous aurez l'impression qu'une source de lumière semblable à un soleil éclaire tous les objets. Voyez-vous que les composantes diffuse et spéculaire réagissent toutes comme s'il y avait une source de lumière quelque part dans le ciel ? Cela ressemble à quelque chose comme ça : 
- ![[lcaster2.png]]
+ ![lcaster2](lcaster2.png)
 
 Vous trouverez le code source [ici](https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/5.1.light_casters_directional/light_casters_directional.cpp).
 
 ## Lumière ponctuelle (point light)
 Les lumières directionnelles sont parfaites pour les lumières globales qui éclairent toute la scène, mais nous voulons généralement aussi plusieurs lumières ponctuelles disséminées dans la scène. **Une lumière ponctuelle est une source de lumière ayant une position donnée quelque part dans le monde, qui éclaire dans toutes les directions et dont les rayons lumineux s'estompent avec la distance**. Les ampoules et les torches sont des projecteurs de lumière qui agissent comme des lumières ponctuelles.
 
-![[lcaster3.png]]
+![lcaster3](lcaster3.png)
 Dans les chapitres précédents, nous avons travaillé avec une lumière ponctuelle simpliste. Nous avions une source de lumière à une position donnée qui diffuse la lumière dans toutes les directions à partir de cette position. Cependant, la source de lumière que nous avons définie simulait des rayons lumineux qui ne s'estompaient jamais, ce qui donnait l'impression que la source de lumière était extrêmement puissante. Dans la plupart des applications 3D, nous aimerions simuler une source de lumière qui n'éclaire qu'une zone proche de la source de lumière et non l'ensemble de la scène.  
   
 Si vous ajoutez les 10 conteneurs à la scène d'éclairage des chapitres précédents, vous remarquerez que le conteneur situé tout au fond est éclairé avec la même intensité que le conteneur situé devant la lumière ; il n'y a pas encore de logique qui diminue la lumière en fonction de la distance. Nous voulons que le conteneur situé à l'arrière ne soit que légèrement éclairé par rapport aux conteneurs situés à proximité de la source lumineuse.
@@ -91,14 +91,14 @@ Ici, *d* représente la distance entre le fragment et la source lumineuse. Ensui
 - $K_q$ : Le terme quadratique est multiplié par le quadrant de la distance et définit une diminution quadratique de l'intensité de la source lumineuse. **Le terme quadratique est moins important que le terme linéaire lorsque la distance est faible, mais il devient beaucoup plus important lorsque la distance augmente.**
 
 En raison du terme quadratique, la lumière diminuera principalement de manière linéaire jusqu'à ce que la distance devienne suffisamment grande pour que le terme quadratique dépasse le terme linéaire et que l'intensité lumineuse diminue beaucoup plus rapidement. L'effet résultant est que la lumière est assez intense lorsqu'elle est proche, mais qu'elle perd rapidement sa luminosité sur la distance jusqu'à ce qu'elle finisse par perdre sa luminosité à un rythme plus lent. Le graphique suivant montre l'effet d'une telle atténuation sur une distance de 100 :
-![[lcaster4.png]]
+![lcaster4](lcaster4.png)
 Vous pouvez voir que la lumière a l'intensité la plus élevée lorsque la distance est faible, mais dès que la distance augmente, son intensité diminue de manière significative et atteint lentement une intensité de 0 à une distance d'environ 100. C'est exactement ce que nous voulons. 
 
 ### Choisir les bonnes valeurs
 Mais à quelles valeurs devons-nous fixer ces trois termes ? Le choix des bonnes valeurs dépend de nombreux facteurs : l'environnement, la distance à parcourir, le type de lumière, etc. Dans la plupart des cas, il s'agit simplement d'une question d'expérience et d'un ajustement modéré.
 Le tableau suivant montre quelques-unes des valeurs que ces termes pourraient prendre pour simuler une (sorte de) source lumineuse réaliste qui couvre un rayon (une distance) spécifique. La première colonne indique la distance que la lumière couvrira avec les termes donnés. Ces valeurs sont de bons points de départ pour la plupart des lumières, avec l'aimable autorisation du [wiki d'Ogre3D](http://www.ogre3d.org/tikiwiki/tiki-index.php?page=-Point+Light+Attenuation) : 
 
-![[lcaster5.png]]
+![lcaster5](lcaster5.png)
 
 Comme vous pouvez le constater, le terme constant $K_c$ est maintenu à $1.0$ dans tous les cas. Le terme linéaire $K_l$ est généralement assez petit pour couvrir des distances plus importantes et le terme quadratique $K_q$ est encore plus petit. Essayez d'expérimenter un peu avec ces valeurs pour voir leur effet dans votre implémentation. Dans notre environnement, une distance de 32 à 100 est généralement suffisante pour la plupart des lumières.
 
@@ -141,7 +141,7 @@ diffuse  *= attenuation;
 specular *= attenuation;   
 ```
  Si vous exécutez l'application, vous obtiendrez quelque chose comme ceci : 
- ![[lcaster6.png]]
+ ![lcaster6](lcaster6.png)
 Vous pouvez voir que, pour l'instant, seuls les conteneurs situés à l'avant sont éclairés, le conteneur le plus proche étant le plus lumineux. Les conteneurs situés à l'arrière ne sont pas éclairés du tout car ils sont trop éloignés de la source lumineuse. Vous pouvez trouver le code source de l'application [ici](https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/5.2.light_casters_point/light_casters_point.cpp).  
   
 Une lumière ponctuelle est donc une source lumineuse dont l'emplacement est configurable et dont l'atténuation est appliquée à ses calculs d'éclairage. Un type de lumière supplémentaire pour notre arsenal d'éclairage.
@@ -150,7 +150,7 @@ Une lumière ponctuelle est donc une source lumineuse dont l'emplacement est con
 Le dernier type de lumière dont nous allons parler est le spotlight. Un spotlight est une source lumineuse située quelque part dans l'environnement qui, au lieu d'envoyer des rayons lumineux dans toutes les directions, ne les envoie que dans une direction spécifique. Il en résulte que seuls les objets situés dans un certain rayon de la direction du projecteur sont éclairés et que tous les autres restent dans l'obscurité. Un bon exemple de projecteur serait un lampadaire ou une lampe de poche (ou encore une lampe torche).  
   
 Une spotlight dans OpenGL est représenté par une position dans le world space, une direction et un angle de coupure (*cutoff angle*) qui spécifie le rayon du spot. Pour chaque fragment, nous calculons si le fragment se trouve entre les directions de coupure du projecteur (donc dans son cône) et si c'est le cas, nous éclairons le fragment en conséquence. L'image suivante vous donne une idée du fonctionnement d'un projecteur :
-![[lcaster7.png]]
+![lcaster7](lcaster7.png)
 - `LightDir` : le vecteur pointant du fragment vers la source lumineuse.  
 - `SpotDir` : la direction vers laquelle pointe le spot.  
 - `Phi` ϕ : l'angle de coupure (*cutoff*) qui spécifie le rayon du spot. Tout ce qui se trouve en dehors de cet angle n'est pas éclairé par le spot.  
@@ -196,11 +196,11 @@ Nous commençons par calculer le produit scalaire entre le vecteur `lightDir` et
 Vous vous demandez peut-être pourquoi il y a un signe $>$ au lieu d'un signe $<$ dans la condition du if.
 Theta ne devrait-il pas être plus petit que la valeur de coupure de la lumière pour être à l'intérieur du projecteur ?
 C'est exact, mais n'oubliez pas que les valeurs d'angle sont représentées par des valeurs de cosinus et qu'un angle de 0 degré est représenté par la valeur de cosinus de $1.0$ tandis qu'un angle de 90 degrés est représenté par la valeur de cosinus de $0.0$, comme vous pouvez le voir ici :
-![[lcaster8.png]]
+![lcaster8](lcaster8.png)
 Vous pouvez maintenant voir que plus la valeur du cosinus est proche de $1.0$, plus l'angle est petit. On comprend maintenant pourquoi theta doit être plus grand que la valeur de coupure. La valeur de coupure est actuellement fixée au cosinus de $12.5$, qui est égal à $0.976$. Une valeur de cosinus thêta comprise entre $0.976$ et $1.0$ aurait pour effet d'éclairer le fragment comme s'il se trouvait à l'intérieur d'un projecteur.
 
 En exécutant l'application, on obtient un projecteur qui n'éclaire que les fragments se trouvant directement dans le cône du projecteur. Cela ressemblera à quelque chose comme ceci :
-![[lcaster9.png]]
+![lcaster9](lcaster9.png)
 
 
 Vous pouvez trouver le code source complet [ici](https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/5.3.light_casters_spot/light_casters_spot.cpp).
@@ -220,7 +220,7 @@ Ici, $\epsilon$ (epsilon) est la différence de cosinus entre le cône intérieu
 
 Il est un peu difficile de visualiser le fonctionnement de cette formule, alors essayons-la avec quelques exemples de valeurs :
 
-![[lcaster10.png]]
+![lcaster10](lcaster10.png)
 
 Comme vous pouvez le voir, nous interpolons essentiellement entre le cosinus extérieur et le cosinus intérieur sur la base de la valeur $\theta$.
 Si vous ne comprenez toujours pas ce qui se passe, ne vous inquiétez pas, vous pouvez simplement considérer la formule comme acquise et revenir ici lorsque vous serez plus âgé et plus sage.
@@ -239,7 +239,7 @@ specular *= intensity;
 Notez que nous utilisons la fonction `clamp` qui fixe son premier argument entre les valeurs $0.0$ et $1.0$. Cela permet de s'assurer que les valeurs d'intensité ne sortiront pas de la plage $[0, 1]$.
 
 Veillez à ajouter la valeur `outerCutOff` à la structure Light et à définir sa valeur uniforme dans l'application. Pour l'image suivante, un angle de cutoff interne de `12.5` et un angle de cutoff externe de `17.5` ont été utilisés :
-![[lcaster11.png]]
+![lcaster11](lcaster11.png)
 Ah, c'est beaucoup mieux. Jouez avec les angles de cutoff intérieur et extérieur et essayez de créer un projecteur qui réponde mieux à vos besoins. Vous pouvez trouver le code source de l'application [ici](https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/5.4.light_casters_spot_soft/light_casters_spot_soft.cpp).
 
 Ce type de lampe est parfait pour les jeux d'horreur et, combiné à des lumières directionnelles et ponctuelles, l'environnement commencera vraiment à s'illuminer.

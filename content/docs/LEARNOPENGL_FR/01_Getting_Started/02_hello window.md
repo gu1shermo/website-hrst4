@@ -112,7 +112,7 @@ glfwTerminate();
 return 0;
 ```
 Ceci nettoiera toutes les ressources et quittera correctement l'application. Essayez maintenant de compiler votre application et si tout s'est bien passé, vous devriez voir la sortie suivante : 
-![[img/window6.png]]
+![window6](img/window6.png)
 Si c'est une image noire très terne et ennuyeuse, c'est que vous avez bien fait les choses ! Si vous n'avez pas obtenu la bonne image ou si vous ne savez pas comment tout s'articule, consultez le code source complet [ici](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/1.1.hello_window/hello_window.cpp) (et si des couleurs différentes ont commencé à clignoter, continuez à lire).  
   
 Si vous avez des problèmes pour compiler l'application, assurez-vous d'abord que toutes les options de votre linker sont correctement réglées et que vous avez inclus les bons répertoires dans votre IDE (comme expliqué dans le chapitre précédent). Assurez-vous également que votre code est correct ; vous pouvez le vérifier en le comparant avec le code source complet.
@@ -166,7 +166,7 @@ Notez que nous spécifions également la couleur à utiliser pour effacer l'écr
 
 >Comme vous vous en souvenez peut-être dans le chapitre sur OpenGL, la fonction `glClearColor` **est une fonction de définition d'état** et `glClear` **est une fonction d'utilisation d'état en ce sens qu'elle utilise l'état actuel pour récupérer la couleur d'effacement.** 
 
-![[img/window7.png]]
+![window7](img/window7.png)
 Le code source complet de l'application est disponible [ici](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/1.2.hello_window_clear/hello_window_clear.cpp).
 
 Nous avons maintenant tout ce qu'il faut pour remplir la boucle de rendu avec de nombreux appels de rendu, mais c'est pour le prochain chapitre. Je pense que nous avons assez divagué ici. 

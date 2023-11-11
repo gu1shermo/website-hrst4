@@ -19,7 +19,7 @@ Vous ne savez probablement plus très bien ce qu'est un espace ou un système de
 
 ## L'image globale
 **Pour transformer les coordonnées d'un espace à l'autre, nous utiliserons plusieurs matrices de transformation, dont les plus importantes sont les matrices de modèle, de vue et de projection.** Les coordonnées de nos sommets commencent d'abord dans l'espace local en tant que coordonnées locales, puis sont transformées en coordonnées mondiales, coordonnées de vue, coordonnées de clip et enfin en coordonnées d'écran. L'image suivante illustre le processus et montre ce que fait chaque transformation :
-![[img/syscoord1.png]]
+![syscoord1](img/syscoord1.png)
 1. Les coordonnées locales sont les coordonnées de votre objet par rapport à son origine locale ; ce sont les coordonnées de départ de votre objet.  
 2. L'étape suivante consiste à transformer les coordonnées locales en coordonnées de l'espace mondial, c'est-à-dire en coordonnées par rapport à un monde plus vaste. Ces coordonnées sont relatives à une origine globale du monde, ainsi qu'à de nombreux autres objets également placés par rapport à l'origine de ce monde.  
 3. Ensuite, nous transformons les coordonnées mondiales en coordonnées de l'espace visuel de manière à ce que chaque coordonnée soit vue du point de vue de la caméra ou de l'observateur.  
@@ -63,7 +63,7 @@ La matrice de projection permettant de transformer les coordonnées de la vue en
 
 ## Projection orthographique
 Une matrice de projection orthographique définit une boîte de frustum cubique qui définit l'espace de clipping où chaque sommet situé à l'extérieur de cette boîte est exclu. Lors de la création d'une matrice de projection orthographique, nous spécifions la largeur, la hauteur et la longueur du frustum visible. Toutes les coordonnées à l'intérieur de ce tronc se retrouveront dans la plage NDC après avoir été transformées par sa matrice et ne seront donc pas clippées. Le frustum ressemble un peu à un conteneur :
-![[img/syscoord2.png]]
+![syscoord2](img/syscoord2.png)
 Le frustum définit les coordonnées visibles et est spécifié par une largeur, une hauteur et un plan proche et lointain. Toute coordonnée située devant le plan proche est coupée et il en va de même pour les coordonnées situées derrière le plan éloigné. Le frustum orthographique mappe directement toutes les coordonnées à l'intérieur du frustum en coordonnées normalisées du device sans aucun effet secondaire particulier puisqu'il ne touche pas à la composante $w$ du vecteur transformé ; si la composante $w$ reste égale à 1,0, la division de la perspective ne changera pas les coordonnées.
 Pour créer une matrice de projection orthographique, nous utilisons la fonction intégrée `glm::ortho` de GLM : 
 ```cpp
@@ -75,7 +75,7 @@ Une matrice de projection orthographique fait directement correspondre les coord
 
 ## Projection en perspective
 Si vous appréciez les graphismes de la *vie réelle*, vous remarquerez que les objets les plus éloignés paraissent beaucoup plus petits. Cet effet étrange s'appelle la **perspective**. La perspective est particulièrement visible lorsque l'on regarde le bout d'une autoroute ou d'une voie ferrée infinie, comme le montre l'image suivante :
-![[img/syscoord3.png]]
+![syscoord3](img/syscoord3.png)
 Comme vous pouvez le constater, grâce à la perspective, les lignes semblent coïncider à une distance suffisante. C'est exactement l'effet que la projection en perspective tente d'imiter, en utilisant une matrice de projection en perspective. La matrice de projection fait correspondre un frustum donné au clip space, mais manipule également la valeur $w$ de chaque coordonnée de sommet de telle sorte que plus une coordonnée de sommet est éloignée de l'observateur, plus la composante $w$ est élevée. Une fois que les coordonnées sont transformées en clipping space, elles sont comprises entre $-w$ et $w$ (tout ce qui se trouve en dehors de cette plage est écrêté). OpenGL exige que les coordonnées visibles se situent entre $-1.0$ et $1.0$ comme sortie finale du vertex shader, donc une fois que les coordonnées sont dans l'espace clip, la division de perspective est appliquée aux coordonnées de l'espace clip :
 $$
 out =
@@ -92,7 +92,7 @@ Une matrice de projection perspective peut être créée dans GLM comme suit :
 glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)width/(float)height, 0.1f, 100.0f);
 ```
 Ce que fait glm::perspective est de créer un grand frustum qui définit l'espace visible, tout ce qui se trouve en dehors du frustum ne se retrouvera pas dans le volume de l'espace de découpage et sera donc découpé. Un frustum de perspective peut être visualisé comme une boîte de forme non uniforme à partir de laquelle chaque coordonnée à l'intérieur de cette boîte sera mappée à un point dans l'espace de clipping. Une image d'un frustum de perspective est présentée ci-dessous :
-![[img/syscoord4.png]]
+![syscoord4](img/syscoord4.png)
 Son premier paramètre définit la valeur **fov**, qui signifie **field of view** (champ de vision) et définit la taille de l'espace de vision. **Pour une vue réaliste, il est généralement fixé à 45 degrés, mais pour des résultats différents, vous pouvez le fixer à une valeur plus élevée**.
 Le deuxième paramètre définit le rapport d'aspect (**aspect ratio**), qui est calculé en divisant la largeur de la fenêtre de visualisation par sa hauteur.
 Les troisième et quatrième paramètres définissent les plans proche et lointain du frustum. Nous fixons généralement la distance proche à $0.1$ et la distance lointaine à $100.0$. Tous les vertices situés entre les plans proche et lointain et à l'intérieur du frustum seront rendus.
@@ -100,7 +100,7 @@ Les troisième et quatrième paramètres définissent les plans proche et lointa
 > 	Lorsque la valeur proche de votre matrice de perspective est trop élevée (comme $10.0$), OpenGL coupe toutes les coordonnées proches de la caméra (entre $0.0$ et $10.0$), ce qui peut donner un résultat visuel que vous avez peut-être déjà vu dans des jeux vidéo où vous pouviez voir à travers certains objets lorsque vous vous déplaciez inconfortablement près d'eux.
 
 Lors de l'utilisation de la projection orthographique, chaque coordonnée de sommet est directement mappée dans l'espace clip sans aucune division de perspective fantaisiste (il y a toujours une division de perspective, mais la composante w n'est pas manipulée (elle reste à 1) et n'a donc pas d'effet). **Comme la projection orthographique n'utilise pas la projection en perspective, les objets plus éloignés ne semblent pas plus petits, ce qui produit un résultat visuel étrange. C'est pourquoi la projection orthographique est principalement utilisée pour les rendus 2D et pour certaines applications architecturales ou d'ingénierie où l'on préfère que les vertices ne soient pas déformés par la perspective**. Les applications comme Blender, qui sont utilisées pour la modélisation 3D, utilisent parfois la projection orthographique pour la modélisation, car elle représente plus précisément les dimensions de chaque objet. Vous trouverez ci-dessous une comparaison des deux méthodes de projection dans Blender :
-![[img/syscoord5.png]]
+![syscoord5](img/syscoord5.png)
 Vous pouvez constater qu'avec la projection en perspective, les sommets les plus éloignés apparaissent beaucoup plus petits, alors qu'avec la projection orthographique, chaque sommet a la même distance par rapport à l'utilisateur.
 
 ## La mise en place de l'ensemble
@@ -133,7 +133,7 @@ Parce que nous voulons nous déplacer vers l'arrière et qu'OpenGL est un systè
 
 >**Système main droite**
 	Par convention, OpenGL est un système main droite. Cela signifie que l'axe $x$  positif est à votre droite, l'axe $y$ positif est vers le haut et l'axe $z$ positif est vers l'arrière. Imaginez que votre écran est le centre des trois axes et que l'axe z positif traverse votre écran dans votre direction. Les axes sont dessinés comme suit :
-![[img/syscoord6.png]]
+![syscoord6](img/syscoord6.png)
 
 >Pour comprendre pourquoi on parle de droitier, procédez comme suit :   
 >
@@ -185,7 +185,7 @@ Maintenant que les coordonnées des sommets sont transformées par le modèle, l
 - Être affiché avec une perspective (il devrait être plus petit, plus ses sommets sont éloignés).
 
 Vérifions si le résultat répond effectivement à ces exigences :
-![[img/syscoord7.png]]
+![syscoord7](img/syscoord7.png)
 On a effectivement l'impression que le plan est un plan 3D qui repose sur un sol imaginaire. Si vous n'obtenez pas le même résultat, comparez votre code avec le [code source](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/6.1.coordinate_systems/coordinate_systems.cpp) complet.
 
 ## Plus de 3D
@@ -200,7 +200,7 @@ Ensuite, nous allons dessiner le cube en utilisant `glDrawArrays` (puisque nous 
 glDrawArrays(GL_TRIANGLES, 0, 36);
 ```
 Vous devriez obtenir quelque chose de similaire à ce qui suit : 
-![[video/syscoord_video1.mp4]]
+![syscoord_video1](video/syscoord_video1.mp4)
 
 Il ressemble légèrement à un cube, mais quelque chose ne va pas. Certains côtés du cube sont dessinés par-dessus d'autres côtés du cube. **Cela se produit parce que lorsqu'OpenGL dessine votre cube triangle par triangle, fragment par fragment, il écrase toute couleur de pixel qui aurait déjà été dessinée auparavant**. Comme OpenGL ne donne aucune garantie sur l'ordre des triangles rendus (au sein d'un même appel de dessin), certains triangles sont dessinés les uns sur les autres, même si l'un d'entre eux devrait clairement se trouver devant l'autre.
   
@@ -219,7 +219,7 @@ Puisque nous utilisons un buffer de profondeur, nous voulons également effacer 
 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 ```
  Exécutons à nouveau notre programme et voyons si OpenGL effectue maintenant des tests de profondeur :
- ![[video/syscoord_video2.mp4]]
+ ![syscoord_video2](video/syscoord_video2.mp4)
 Nous y voilà !  Un cube entièrement texturé avec des tests de profondeur appropriés qui tourne avec le temps. Consultez le code source [ici](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/6.2.coordinate_systems_depth/coordinate_systems_depth.cpp). 
 
 ## Plus de cubes!
@@ -255,5 +255,5 @@ for(unsigned int i = 0; i < 10; i++)
 }
 ```
 Ce bout de code mettra à jour la matrice du modèle à chaque fois qu'un nouveau cube sera dessiné, et ce 10 fois au total.  En ce moment, nous devrions voir un monde rempli de 10 cubes bizarrement tournés :
-![[img/syscoord8.png]]
+![syscoord8](img/syscoord8.png)
 Parfait !  On dirait que notre conteneur a trouvé des amis qui partagent les mêmes idées. Si vous êtes bloqué, comparez votre code avec le [code source](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/6.3.coordinate_systems_multiple/coordinate_systems_multiple.cpp). 

@@ -15,7 +15,7 @@ Ce que nous voulons, c'est un moyen de définir les couleurs diffuses d'un objet
 Tout cela devrait vous sembler familier et nous utilisons un tel système depuis un certain temps déjà. Cela ressemble aux textures dont nous avons longuement parlé dans l'un des chapitres précédents et c'est justement cela : une texture. **Nous utilisons simplement un nom différent pour le même principe sous-jacent : utiliser une image enroulée autour d'un objet que nous pouvons indexer pour obtenir des valeurs de couleur uniques par fragment.** Dans les scènes éclairées, on parle généralement de diffuse map (c'est ainsi que les artistes 3D les appelaient avant le PBR: Physical Bases Rendering), car une image de texture représente toutes les couleurs diffuses de l'objet.  
   
 Pour démontrer les maps diffuse, nous allons utiliser l'image suivante d'un conteneur en bois avec une bordure en acier :
-![[lmap1.png]]
+![lmap1](lmap1.png)
 L'utilisation d'une map de diffuse dans les shaders se fait exactement comme nous l'avons montré dans le chapitre sur les textures. Cette fois-ci, nous stockons la texture sous la forme d'un sampler2D à l'intérieur de la structure Material. Nous remplaçons le vecteur de couleur diffuse `vec3` défini précédemment par la diffuse map.
 
 Gardez à l'esprit que `sampler2D` est un type dit opaque, ce qui signifie que nous ne pouvons pas instancier ces types, mais seulement les définir en tant qu'uniformes. Si la structure est instanciée autrement qu'en tant qu'uniforme (comme un paramètre de fonction), GLSL peut générer des erreurs étranges ; la même chose s'applique donc à toute structure contenant de tels types opaques. 
@@ -67,14 +67,14 @@ glActiveTexture(GL_TEXTURE0);
 glBindTexture(GL_TEXTURE_2D, diffuseMap);
 ```
 En utilisant maintenant une diffuse map, nous obtenons à nouveau une augmentation considérable de détails et, cette fois, le conteneur commence vraiment à briller (littéralement). Votre conteneur doit maintenant ressembler à ceci : 
-![[lmap2.png]]
+![lmap2](lmap2.png)
 Le code source est disponible [ici](https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/4.1.lighting_maps_diffuse_map/lighting_maps_diffuse.cpp).
 
 ## Specular Maps
 Vous avez probablement remarqué que la surbrillance spéculaire est un peu étrange puisque l'objet est un conteneur composé principalement de bois et que le bois n'a pas de telles surbrillances spéculaires. Nous pouvons résoudre ce problème en réglant le matériau spéculaire de l'objet sur `vec3(0.0)`, mais cela signifierait que les bords en acier du conteneur cesseraient d'afficher des reflets spéculaires, alors que l'acier doit afficher des reflets spéculaires. Nous aimerions contrôler les parties de l'objet qui doivent présenter une surbrillance spéculaire d'intensité variable. Ce problème me semble familier. Coïncidence ? Je ne pense pas.  
   
 Nous pouvons également utiliser une texture map uniquement pour les reflets spéculaires. Cela signifie que nous devons générer une texture en noir et blanc (ou en couleurs si vous le souhaitez) qui définit les intensités spéculaires de chaque partie de l'objet. L'image suivante est un exemple de carte spéculaire : 
-![[lmap3.png]]
+![lmap3](lmap3.png)
 L'intensité du reflet spéculaire provient de la luminosité de chaque pixel de l'image. Chaque pixel de la carte spéculaire peut être affiché sous la forme d'un vecteur de couleur où le noir représente le vecteur de couleur `vec3(0,0)` et le gris le vecteur de couleur `vec3(0,5)` par exemple. Dans le fragment shader, nous échantillonnons la valeur de couleur correspondante et la multiplions par l'intensité spéculaire de la lumière. Plus un pixel est "blanc", plus le résultat de la multiplication est élevé et plus la composante spéculaire d'un objet est lumineuse.  
   
 **Étant donné que le conteneur est principalement constitué de bois, et que le bois en tant que matériau ne devrait pas avoir de reflets spéculaires, toute la partie en bois de la texture diffuse a été convertie en noir** : les parties noires n'ont pas de reflets spéculaires. **La bordure en acier du conteneur présente des intensités spéculaires variables**, **l'acier lui-même étant relativement sensible aux reflets spéculaires alors que les fissures ne le sont pas.**
@@ -111,7 +111,7 @@ L'utilisation d'une map de spéculaire permet de spécifier de manière extrême
 Si vous ne voulez pas être trop "mainstream", vous pouvez également utiliser les couleurs réelles dans la carte spéculaire pour définir non seulement l'intensité spéculaire de chaque fragment, mais aussi la couleur de la surbrillance spéculaire. **De manière réaliste, cependant, la couleur de la surbrillance spéculaire est principalement déterminée par la source lumineuse elle-même**, ce qui ne permettrait pas de générer des images réalistes (**c'est pourquoi les images sont généralement en noir et blanc : seule l'intensité nous intéresse**). 
 
 Si vous exécutez maintenant l'application, vous pouvez clairement voir que le matériau du conteneur ressemble maintenant étroitement à celui d'un véritable conteneur en bois avec des cadres en acier :
-![[lmap4.png]]
+![lmap4](lmap4.png)
 Vous pouvez trouver le code source complet de l'application [ici](https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/4.2.lighting_maps_specular_map/lighting_maps_specular.cpp).  
   
 En utilisant les maps de diffusion et de spéculaire, nous pouvons vraiment ajouter une quantité énorme de détails dans des objets relativement simples. Nous pouvons même ajouter plus de détails aux objets en utilisant d'autres maps de texture comme les normal maps/bump maps et/ou les reflection maps, mais c'est quelque chose que nous réserverons pour les chapitres suivants. Montrez votre conteneur à tous vos amis et à votre famille et réjouissez-vous du fait que notre conteneur peut un jour devenir encore plus beau qu'il ne l'est déjà ! 

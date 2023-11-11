@@ -28,7 +28,7 @@ La compilation de la bibliothèque à partir du code source garantit que la bibl
 CMake est un outil qui peut générer des fichiers de projet/solution au choix de l'utilisateur (par exemple Visual Studio, Code::Blocks, Eclipse) à partir d'une collection de fichiers de code source en utilisant des scripts CMake prédéfinis. Cela nous permet de générer un fichier de projet Visual Studio 2019 à partir du paquetage source de GLFW que nous pouvons utiliser pour compiler la bibliothèque. Tout d'abord, nous devons télécharger et installer CMake qui peut être téléchargé sur leur page de [téléchargement](http://www.cmake.org/cmake/resources/software.html).  
   
 Une fois CMake installé, vous pouvez choisir d'exécuter CMake à partir de la ligne de commande ou via leur interface graphique. Comme nous n'essayons pas de compliquer les choses, nous allons utiliser l'interface graphique. CMake nécessite un dossier de code source et un dossier de destination pour les binaires. Pour le dossier du code source, nous allons choisir le dossier racine du paquetage source GLFW téléchargé et pour le dossier de build, nous allons créer un nouveau répertoire build et sélectionner ce répertoire.
-![[img/window1.png]]
+![window1](img/window1.png)
 Une fois les dossiers source et destination définis, cliquez sur le bouton Configure pour que CMake puisse lire les paramètres requis et le code source. Nous devons ensuite choisir le générateur du projet et comme nous utilisons Visual Studio 2019, nous choisirons l'option Visual Studio 16 (**Visual Studio 2019 est également connu sous le nom de Visual Studio 16**). CMake affichera alors les options de construction possibles pour configurer la bibliothèque résultante. Nous pouvons les laisser à leurs valeurs par défaut et cliquer à nouveau sur Configure pour enregistrer les paramètres. Une fois les paramètres définis, nous cliquons sur Generate et les fichiers de projet résultants seront générés dans votre dossier de construction.
 
 ## Compilation
@@ -43,20 +43,20 @@ Une fois la bibliothèque générée, nous devons nous assurer que l'IDE sait o�
 
 ## Notre premier projet
 Tout d'abord, ouvrons Visual Studio et créons un nouveau projet. Choisissez C++ si plusieurs options sont proposées et prenez le projet vide (n'oubliez pas de donner un nom approprié à votre projet). Comme nous allons tout faire en 64 bits et que le projet est par défaut en 32 bits, nous devrons changer la liste déroulante en haut à côté de Debug de x86 à x64 :
-![[img/window2.png]]
+![window2](img/window2.png)
 Une fois cela fait, nous avons maintenant un espace de travail pour créer notre toute première application OpenGL ! 
 
 ## Linking (création de liens)
 Pour que le projet puisse utiliser GLFW, nous devons lier la bibliothèque à notre projet. Cela peut être fait en spécifiant que nous voulons utiliser `glfw3.lib` dans les paramètres de l'éditeur de liens, mais notre projet ne sait pas encore où trouver `glfw3.lib` puisque nous stockons nos bibliothèques tierces dans un répertoire différent. Nous devons donc d'abord ajouter ce répertoire au projet.
   
 Nous pouvons dire à l'IDE de prendre en compte ce répertoire lorsqu'il doit rechercher des fichiers de bibliothèque et d'inclusion. Cliquez avec le bouton droit de la souris sur le nom du projet dans l'explorateur de solutions et allez ensuite dans VC++ Directories comme le montre l'image ci-dessous :
-![[img/window3.png]]
+![window3](img/window3.png)
 À partir de là, vous pouvez ajouter vos propres répertoires pour indiquer au projet où chercher. Vous pouvez le faire en l'insérant manuellement dans le texte ou en cliquant sur la chaîne de caractères appropriée et en sélectionnant l'option `<Editer..>`. Procédez de la même manière pour les répertoires `Library` et `Include` : 
-![[img/window4.png]]
+![window4](img/window4.png)
 Ici, vous pouvez ajouter autant de répertoires supplémentaires que vous le souhaitez et à partir de ce moment, l'IDE recherchera également ces répertoires lors de la recherche de bibliothèques et de fichiers d'en-tête. Dès que votre dossier Include de GLFW est inclus, vous pourrez trouver tous les fichiers d'en-tête pour GLFW en incluant . Il en va de même pour les répertoires de bibliothèques.  
   
 Puisque VS peut maintenant trouver tous les fichiers nécessaires, nous pouvons enfin lier GLFW au projet en allant dans l'onglet `Linker` et `Input` :
-![[img/window5.png]]
+![window5](img/window5.png)
 Pour lier à une bibliothèque, il faut spécifier le nom de la bibliothèque à l'éditeur de liens. Puisque le nom de la bibliothèque est `glfw3.lib`, nous l'ajoutons au champ Dépendances supplémentaires (soit manuellement, soit en utilisant l'option ) et à partir de là, GLFW sera lié lors de la compilation. En plus de GLFW, nous devrions également ajouter une entrée de lien vers la bibliothèque OpenGL, mais cela peut différer d'un système d'exploitation à l'autre :
 
 ### Bibliothèque OpenGL sous Windows

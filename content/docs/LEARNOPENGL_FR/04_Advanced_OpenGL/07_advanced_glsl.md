@@ -30,7 +30,7 @@ void main()
 }  
 ```
 Le résultat est que les points que nous avons dessinés sont rendus plus grands au fur et à mesure que nous nous en éloignons :
-![[advanced_glsl_pointsize.png]]
+![advanced_glsl_pointsize](advanced_glsl_pointsize.png)
 Vous pouvez imaginer que la variation de la taille des points par vertex est intéressante pour des techniques telles que la génération de particules.
 
 #### `gl_VertexID`
@@ -58,7 +58,7 @@ void main()
 ```
 Comme la largeur de la fenêtre est égale à 800, chaque fois que la coordonnée x d'un pixel est inférieure à 400, il doit se trouver à gauche de la fenêtre et nous donnerons à ce fragment une couleur différente.
 
-![[advanced_glsl_fragcoord.png]]
+![advanced_glsl_fragcoord](advanced_glsl_fragcoord.png)
 
 
 Nous pouvons maintenant calculer deux résultats de fragment shader complètement différents et les afficher chacun d'un côté différent de la fenêtre. C'est idéal pour tester différentes techniques d'éclairage, par exemple.
@@ -85,7 +85,7 @@ void main()
 }  
 ```
 Si nous jetons un coup d'œil à l'intérieur du conteneur, nous constatons qu'une texture différente est utilisée.
-![[advanced_glsl_frontfacing.png]]
+![advanced_glsl_frontfacing](advanced_glsl_frontfacing.png)
 Notez que si vous avez activé l'élimination des faces, vous ne pourrez pas voir les faces à l'intérieur du conteneur et l'utilisation de `gl_FrontFacing` serait alors inutile.
 ### `gl_FragDepth`
 La variable d'entrée `gl_FragCoord` est une variable d'entrée qui nous permet de lire les coordonnées de l'espace-écran et d'obtenir la valeur de la profondeur du fragment actuel, mais il s'agit d'une variable en lecture seule. Nous ne pouvons pas influencer les coordonnées de l'espace-écran du fragment, **mais il est possible de définir la valeur de la profondeur du fragment**. GLSL nous donne une variable de sortie appelée `gl_FragDepth` que nous pouvons utiliser pour définir manuellement la valeur de profondeur du fragment dans le shader.
@@ -224,7 +224,7 @@ glBindBuffer(GL_UNIFORM_BUFFER, 0);
 Maintenant, chaque fois que nous voulons mettre à jour ou insérer des données dans le tampon, nous nous lions à `uboExampleBlock` et utilisons `glBufferSubData` pour mettre à jour sa mémoire. Nous n'avons à mettre à jour ce tampon uniforme qu'une seule fois, et tous les shaders qui utilisent ce tampon utilisent maintenant ses données mises à jour. Mais comment OpenGL sait-il quels tampons uniformes correspondent à quels blocs uniformes ?
 
 Dans le contexte OpenGL, il y a un certain nombre de points de liaison définis auxquels nous pouvons lier un tampon uniforme. Une fois que nous avons créé un tampon uniforme, nous le lions à l'un de ces points de liaison et nous lions également le bloc uniforme dans le shader au même point de liaison, les liant ainsi ensemble. Le diagramme suivant illustre ce processus :
-![[advanced_glsl_binding_points.png]]
+![advanced_glsl_binding_points](advanced_glsl_binding_points.png)
 
 Comme vous pouvez le voir, nous pouvons lier plusieurs tampons uniformes à différents points de liaison. Comme le shader A et le shader B ont tous deux un bloc uniforme lié au même point de liaison 0, leurs blocs uniformes partagent les mêmes données uniformes trouvées dans `uboMatrices` ; la condition étant que les deux shader définissent le même bloc uniforme Matrices.
 
@@ -331,7 +331,7 @@ glDrawArrays(GL_TRIANGLES, 0, 36);
 // ... draw Yellow Cube	
 ```
 Le seul uniforme que nous devons encore définir est l'uniforme du modèle. L'utilisation d'objets tampons uniformes dans un scénario comme celui-ci nous permet d'éviter un certain nombre d'appels d'uniformes par shader. Le résultat ressemble à ceci :
-![[advanced_glsl_uniform_buffer_objects.png]]
+![advanced_glsl_uniform_buffer_objects](advanced_glsl_uniform_buffer_objects.png)
 Chacun des cubes est déplacé d'un côté de la fenêtre par translation de la matrice du modèle et, grâce aux différents shaders de fragment, leurs couleurs diffèrent selon l'objet. Il s'agit d'un scénario relativement simple d'utilisation des objets tampons uniformes, mais toute grande application de rendu peut avoir des centaines de programmes de shaders actifs, et c'est là que les objets tampons uniformes commencent vraiment à briller.
 
 Vous pouvez trouver le code source complet de l'exemple d'application uniforme [ici](https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/8.advanced_glsl_ubo/advanced_glsl_ubo.cpp).
