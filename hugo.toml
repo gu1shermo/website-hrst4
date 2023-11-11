@@ -7,16 +7,21 @@ theme =  'PaperMod'
 [params]
 defaultTheme = "dark"
 disableThemeToggle = true
-# [[params.homeInfoParams]]
-# title = "Hi there wave dark theme"
-# content = "Can be Info, links, about... dark theme"
+[[params.profileMode]]
+enabled = true
+title = "<Title>"
+subtitle = "This is subtitle"
+imageUrl = "https://static.oceandraw.com/wp-content/uploads/2018/06/24145039/Hanabi-Ko-Koko.jpg"
+imageTitle = "<title of image as alt>"
+imageWidth = 120
+imageHeight = 120
 [[params.socialIcons]]
 name = "kofi"
-title = "<custom title> kofi"
+title = "<custom title>"
 url = "https://kofi.com"
 [[params.socialIcons]]
 name = "twitter"
-title = "<custom title> twitter"
+title = "<custom title>"
 url = "https://twitter.com"
 
 [module]
