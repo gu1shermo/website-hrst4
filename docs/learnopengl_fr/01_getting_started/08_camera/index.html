@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>hrst4&#39;s blog toml</title>
+<title>hrst4&#39;s blog</title>
 <meta name="keywords" content="cg, opengl, computer graphics, cpp">
 <meta name="description" content="Camera Dans le chapitre précédent, nous avons discuté de la matrice de vue et de la façon dont nous pouvons l&rsquo;utiliser pour nous déplacer dans la scène (nous avons un peu reculé). OpenGL n&rsquo;est pas familier avec le concept de caméra, mais nous pouvons essayer d&rsquo;en simuler une en déplaçant tous les objets de la scène dans le sens inverse, donnant l&rsquo;illusion que nous nous déplaçons.
 Dans ce chapitre, nous verrons comment mettre en place une caméra dans OpenGL.">
@@ -84,7 +84,7 @@ Dans ce chapitre, nous verrons comment mettre en place une caméra dans OpenGL."
   },
   "publisher": {
     "@type": "Organization",
-    "name": "hrst4's blog toml",
+    "name": "hrst4's blog",
     "logo": {
       "@type": "ImageObject",
       "url": "https://hrst4.xyz/favicon.ico"
@@ -95,38 +95,12 @@ Dans ce chapitre, nous verrons comment mettre en place une caméra dans OpenGL."
 </head>
 
 <body class=" dark" id="top">
-<script>
-    if (localStorage.getItem("pref-theme") === "light") {
-        document.body.classList.remove('dark')
-    }
-
-</script>
 
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://hrst4.xyz/" accesskey="h" title="hrst4&#39;s blog toml (Alt + H)">hrst4&#39;s blog toml</a>
+            <a href="https://hrst4.xyz/" accesskey="h" title="hrst4&#39;s blog (Alt + H)">hrst4&#39;s blog</a>
             <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
-                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                </button>
             </div>
         </div>
         <ul id="menu">
@@ -414,7 +388,7 @@ Nous pouvons contourner ce problème en définissant une variable globale <code>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2023 <a href="https://hrst4.xyz/">hrst4&#39;s blog toml</a></span>
+    <span>&copy; 2023 <a href="https://hrst4.xyz/">hrst4&#39;s blog</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
@@ -467,18 +441,6 @@ Nous pouvons contourner ce problème en définissant une variable globale <code>
             mybutton.style.opacity = "0";
         }
     };
-
-</script>
-<script>
-    document.getElementById("theme-toggle").addEventListener("click", () => {
-        if (document.body.className.includes("dark")) {
-            document.body.classList.remove('dark');
-            localStorage.setItem("pref-theme", 'light');
-        } else {
-            document.body.classList.add('dark');
-            localStorage.setItem("pref-theme", 'dark');
-        }
-    })
 
 </script>
 </body>
