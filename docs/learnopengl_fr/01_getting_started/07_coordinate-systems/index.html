@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>My New Hugo Site</title>
+<meta name="keywords" content="cg, opengl, computer graphics, cpp">
+<meta name="description" content="Systèmes de coordonnées Dans le dernier chapitre, nous avons appris comment utiliser les matrices à notre avantage en transformant tous les sommets avec des matrices de transformation. OpenGL s&rsquo;attend à ce que tous les sommets, que nous voulons rendre visibles, soient en coordonnées normalisées après chaque exécution du vertex shader. C&rsquo;est-à-dire que les coordonnées $x$, $y$ et $z$ de chaque sommet doivent être comprises entre $-1.0$ et $1.0$ ; les coordonnées en dehors de cette plage ne seront pas visibles.">
+<meta name="author" content="">
+<link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/07_coordinate-systems/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://hrst4.xyz/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://hrst4.xyz/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://hrst4.xyz/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://hrst4.xyz/apple-touch-icon.png">
+<link rel="mask-icon" href="https://hrst4.xyz/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="" />
+<meta property="og:description" content="Systèmes de coordonnées Dans le dernier chapitre, nous avons appris comment utiliser les matrices à notre avantage en transformant tous les sommets avec des matrices de transformation. OpenGL s&rsquo;attend à ce que tous les sommets, que nous voulons rendre visibles, soient en coordonnées normalisées après chaque exécution du vertex shader. C&rsquo;est-à-dire que les coordonnées $x$, $y$ et $z$ de chaque sommet doivent être comprises entre $-1.0$ et $1.0$ ; les coordonnées en dehors de cette plage ne seront pas visibles." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/07_coordinate-systems/" /><meta property="article:section" content="docs" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="Systèmes de coordonnées Dans le dernier chapitre, nous avons appris comment utiliser les matrices à notre avantage en transformant tous les sommets avec des matrices de transformation. OpenGL s&rsquo;attend à ce que tous les sommets, que nous voulons rendre visibles, soient en coordonnées normalisées après chaque exécution du vertex shader. C&rsquo;est-à-dire que les coordonnées $x$, $y$ et $z$ de chaque sommet doivent être comprises entre $-1.0$ et $1.0$ ; les coordonnées en dehors de cette plage ne seront pas visibles."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Docs",
+      "item": "https://hrst4.xyz/docs/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "",
+      "item": "https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/07_coordinate-systems/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "",
+  "name": "",
+  "description": "Systèmes de coordonnées Dans le dernier chapitre, nous avons appris comment utiliser les matrices à notre avantage en transformant tous les sommets avec des matrices de transformation. OpenGL s\u0026rsquo;attend à ce que tous les sommets, que nous voulons rendre visibles, soient en coordonnées normalisées après chaque exécution du vertex shader. C\u0026rsquo;est-à-dire que les coordonnées $x$, $y$ et $z$ de chaque sommet doivent être comprises entre $-1.0$ et $1.0$ ; les coordonnées en dehors de cette plage ne seront pas visibles.",
+  "keywords": [
+    "cg", "opengl", "computer graphics", "cpp"
+  ],
+  "articleBody": "Systèmes de coordonnées Dans le dernier chapitre, nous avons appris comment utiliser les matrices à notre avantage en transformant tous les sommets avec des matrices de transformation. OpenGL s’attend à ce que tous les sommets, que nous voulons rendre visibles, soient en coordonnées normalisées après chaque exécution du vertex shader. C’est-à-dire que les coordonnées $x$, $y$ et $z$ de chaque sommet doivent être comprises entre $-1.0$ et $1.0$ ; les coordonnées en dehors de cette plage ne seront pas visibles. Ce que nous faisons habituellement, c’est spécifier les coordonnées dans une plage (ou un espace) que nous déterminons nous-mêmes et, dans le vertex shader, transformer ces coordonnées en coordonnées normalisées (NDC: normalized device coordinates). Ces NDC sont ensuite transmises au rasterizer qui les transforme en coordonnées 2D/pixels sur votre écran.\nLa transformation des coordonnées en NDC s’effectue généralement étape par étape, en transformant les sommets d’un objet en plusieurs systèmes de coordonnées avant de les transformer en NDC. L’avantage de les transformer en plusieurs systèmes de coordonnées intermédiaires est que certaines opérations/calculs sont plus faciles dans certains systèmes de coordonnées, comme nous le verrons bientôt. Il existe au total 5 systèmes de coordonnées différents qui nous intéressent :\nEspace local (ou espace objet) (local space / object space) Espace mondial (world space) Espace de vue (ou espace de l’œil) (view space) Espace du clip (clip space) Espace de l’écran (screen space) Ce sont tous des états différents dans lesquels nos sommets seront transformés avant d’aboutir à des fragments.\nVous ne savez probablement plus très bien ce qu’est un espace ou un système de coordonnées. Nous allons donc les expliquer à un niveau plus élevé en montrant d’abord l’image globale et ce que chaque espace spécifique représente.\nL’image globale Pour transformer les coordonnées d’un espace à l’autre, nous utiliserons plusieurs matrices de transformation, dont les plus importantes sont les matrices de modèle, de vue et de projection. Les coordonnées de nos sommets commencent d’abord dans l’espace local en tant que coordonnées locales, puis sont transformées en coordonnées mondiales, coordonnées de vue, coordonnées de clip et enfin en coordonnées d’écran. L’image suivante illustre le processus et montre ce que fait chaque transformation : ![[img/syscoord1.png]]\nLes coordonnées locales sont les coordonnées de votre objet par rapport à son origine locale ; ce sont les coordonnées de départ de votre objet. L’étape suivante consiste à transformer les coordonnées locales en coordonnées de l’espace mondial, c’est-à-dire en coordonnées par rapport à un monde plus vaste. Ces coordonnées sont relatives à une origine globale du monde, ainsi qu’à de nombreux autres objets également placés par rapport à l’origine de ce monde. Ensuite, nous transformons les coordonnées mondiales en coordonnées de l’espace visuel de manière à ce que chaque coordonnée soit vue du point de vue de la caméra ou de l’observateur. Une fois que les coordonnées sont dans l’espace de vue, nous voulons les projeter en coordonnées de clip. Les coordonnées du clip sont traitées dans la plage -1.0 et 1.0 et déterminent les sommets qui se retrouveront à l’écran. La projection vers les coordonnées de l’espace-clip peut ajouter de la perspective si l’on utilise la projection en perspective. Enfin, nous transformons les coordonnées du clip en coordonnées d’écran par un processus appelé viewport transform qui transforme les coordonnées de -1.0 et 1.0 en coordonnées définies par glViewport. Les coordonnées résultantes sont ensuite envoyées au rasterizer pour les transformer en fragments. Vous avez probablement une petite idée de l’utilisation de chaque espace. La raison pour laquelle nous transformons nos sommets dans tous ces espaces différents est que certaines opérations ont plus de sens ou sont plus faciles à utiliser dans certains systèmes de coordonnées. Par exemple, lorsque vous modifiez votre objet, il est plus logique de le faire dans l’espace local, tandis que le calcul de certaines opérations sur l’objet par rapport à la position d’autres objets a plus de sens dans les coordonnées mondiales, et ainsi de suite. Si nous le voulons, nous pouvons définir une matrice de transformation qui va de l’espace local à l’espace de clip en une seule fois, mais cela nous laisse moins de flexibilité.\nNous examinerons chaque système de coordonnées plus en détail ci-dessous.\nLocal space L’espace local est l’espace de coordonnées qui est local à votre objet, c’est-à-dire l’endroit où votre objet commence. Imaginez que vous ayez créé votre cube dans un logiciel de modélisation (comme Blender). L’origine de votre cube se situe probablement à $(0,0,0)$, même si votre cube peut se retrouver à un autre endroit dans votre application finale. Tous les modèles que vous avez créés ont probablement pour position initiale $(0,0,0)$. Tous les sommets de votre modèle sont donc dans l’espace local : ils sont tous locaux à votre objet.\nLes sommets du conteneur que nous avons utilisé ont été spécifiés sous la forme de coordonnées comprises entre $-0.5$ et $0.5$, avec $0.0$ comme origine. Il s’agit de coordonnées locales.\nWorld space Si nous importions tous nos objets directement dans l’application, ils seraient probablement tous positionnés les uns dans les autres à l’origine du monde $(0,0,0)$, ce qui n’est pas ce que nous voulons. Nous voulons définir une position pour chaque objet afin de les positionner dans un monde plus vaste. Les coordonnées dans l’espace mondial sont exactement ce qu’elles semblent être : les coordonnées de tous vos sommets par rapport à un monde (un jeu par exemple). Il s’agit de l’espace de coordonnées dans lequel vous souhaitez que vos objets soient transformés de manière à ce qu’ils soient tous dispersés (de préférence de manière réaliste). Les coordonnées de votre objet sont transformées de l’espace local à l’espace mondial ; cette transformation est réalisée à l’aide de la matrice de modèle.\nLa matrice de modèle est une matrice de transformation qui traduit, met à l’échelle et/ou fait pivoter votre objet afin de le placer dans le monde à un endroit/orientation qui lui appartient. Imaginez que vous transformiez une maison en la mettant à l’échelle (elle était un peu trop grande dans l’espace local), en la translatant dans une ville de banlieue et en la faisant pivoter un peu vers la gauche sur l’axe des ordonnées afin qu’elle s’intègre parfaitement aux maisons voisines. Vous pouvez considérer la matrice du chapitre précédent pour positionner le conteneur dans toute la scène comme une sorte de matrice de modèle ; nous avons transformé les coordonnées locales du conteneur en un endroit différent de la scène/du monde.\nView space L’espace de vue est ce que l’on appelle généralement la caméra d’OpenGL (il est également connu sous le nom d’espace de caméra ou d’espace oculaire (eye space)). L’espace de vue est le résultat de la transformation des coordonnées de l’espace-monde en coordonnées qui sont en face de la vue de l’utilisateur. L’espace de vue est donc l’espace vu depuis le point de vue de la caméra. Pour ce faire, on utilise généralement une combinaison de translations et de rotations afin de translater/rotationner la scène de manière à ce que certains éléments soient transformés en face de la caméra. Ces transformations combinées sont généralement stockées dans une matrice de vue (view matrix) qui transforme les coordonnées du monde en espace de vue. Dans le prochain chapitre, nous verrons en détail comment créer une telle matrice de vue pour simuler une caméra.\nClip space À la fin de chaque exécution du vertex shader, OpenGL s’attend à ce que les coordonnées soient comprises dans une plage spécifique et toute coordonnée qui se trouve en dehors de cette plage est coupée. Les coordonnées qui sont coupées sont éliminées, de sorte que les coordonnées restantes se retrouveront sous forme de fragments visibles à l’écran. C’est également de là que vient le nom de clip space.\nComme il n’est pas vraiment intuitif de spécifier que toutes les coordonnées visibles sont comprises entre $-1.0$ et $1.0$, nous spécifions notre propre jeu de coordonnées pour travailler et les reconvertir en NDC comme OpenGL l’attend.\nPour transformer les coordonnées des vertex de la vue à l’espace-clip, nous définissons une matrice de projection qui spécifie une plage de coordonnées, par exemple $-1000$ et $1000$ dans chaque dimension. La matrice de projection convertit ensuite les coordonnées dans cet intervalle spécifié en coordonnées normalisées $(-1.0, 1.0)$ (pas directement, une étape appelée Division de la Perspective (perspective division) se situe entre les deux). Toutes les coordonnées situées en dehors de cette plage ne seront pas mappées entre $-1.0$ et $1.0$ et seront donc coupées. Avec cette plage que nous avons spécifiée dans la matrice de projection, une coordonnée de $(1250, 500, 750)$ ne serait pas visible, car la coordonnée x est hors de la plage et est donc convertie en une coordonnée supérieure à 1,0 dans le NDC et est donc coupée.\nNotez que si seule une partie d’une primitive, par exemple un triangle, se trouve en dehors du volume d’écrêtage (clipping volume), OpenGL reconstruira le triangle sous la forme d’un ou de plusieurs triangles pour qu’il s’inscrive dans l’espace d’écrêtage (clip space).\nCette boîte de visualisation (viewing box) créée par une matrice de projection est appelée frustum et chaque coordonnée qui se trouve à l’intérieur de ce frustum se retrouvera sur l’écran de l’utilisateur. L’ensemble du processus de conversion des coordonnées dans une plage spécifiée en coordonnées normalisées qui peuvent facilement être mises en correspondance avec les coordonnées 2D de l’espace de visualisation est appelé projection, car la matrice de projection projette les coordonnées 3D vers les coordonnées normalisées du device, faciles à mettre en correspondance avec les coordonnées 2D.\nUne fois que tous les sommets sont transformés en clip space, une dernière opération appelée division de la perspective est effectuée. Elle consiste à diviser les composantes $x$, $y$ et $z$ des vecteurs de position par la composante homogène $w$ du vecteur ; la division de la perspective est ce qui transforme les coordonnées de l’espace-clip 4D en coordonnées normalisées de l’appareil 3D. Cette étape est exécutée automatiquement à la fin de l’étape du vertex shader.\nC’est après cette étape que les coordonnées résultantes sont mappées en coordonnées d’écran (screen space) (en utilisant les paramètres de glViewport) et transformées en fragments.\nLa matrice de projection permettant de transformer les coordonnées de la vue en coordonnées du clip prend généralement deux formes différentes, chaque forme définissant son propre frustum. Nous pouvons créer une matrice de projection orthographique ou une matrice de projection en perspective.\nProjection orthographique Une matrice de projection orthographique définit une boîte de frustum cubique qui définit l’espace de clipping où chaque sommet situé à l’extérieur de cette boîte est exclu. Lors de la création d’une matrice de projection orthographique, nous spécifions la largeur, la hauteur et la longueur du frustum visible. Toutes les coordonnées à l’intérieur de ce tronc se retrouveront dans la plage NDC après avoir été transformées par sa matrice et ne seront donc pas clippées. Le frustum ressemble un peu à un conteneur : ![[img/syscoord2.png]] Le frustum définit les coordonnées visibles et est spécifié par une largeur, une hauteur et un plan proche et lointain. Toute coordonnée située devant le plan proche est coupée et il en va de même pour les coordonnées situées derrière le plan éloigné. Le frustum orthographique mappe directement toutes les coordonnées à l’intérieur du frustum en coordonnées normalisées du device sans aucun effet secondaire particulier puisqu’il ne touche pas à la composante $w$ du vecteur transformé ; si la composante $w$ reste égale à 1,0, la division de la perspective ne changera pas les coordonnées. Pour créer une matrice de projection orthographique, nous utilisons la fonction intégrée glm::ortho de GLM :\nglm::ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f); Les deux premiers paramètres spécifient les coordonnées gauche et droite du frustum et les troisième et quatrième paramètres spécifient les parties inférieure et supérieure du frustum. Avec ces quatre points, nous avons défini la taille des plans proche et lointain et les cinquième et sixième paramètres définissent ensuite les distances entre les plans proche et lointain. Cette matrice de projection spécifique transforme toutes les coordonnées comprises entre ces valeurs $x$, $y$ et $z$ en coordonnées normalisées du device.\nUne matrice de projection orthographique fait directement correspondre les coordonnées au plan 2D qu’est votre écran, mais en réalité une projection directe produit des résultats irréalistes puisque la projection ne tient pas compte de la perspective. La matrice de projection perspective corrige ce problème pour nous.\nProjection en perspective Si vous appréciez les graphismes de la vie réelle, vous remarquerez que les objets les plus éloignés paraissent beaucoup plus petits. Cet effet étrange s’appelle la perspective. La perspective est particulièrement visible lorsque l’on regarde le bout d’une autoroute ou d’une voie ferrée infinie, comme le montre l’image suivante : ![[img/syscoord3.png]] Comme vous pouvez le constater, grâce à la perspective, les lignes semblent coïncider à une distance suffisante. C’est exactement l’effet que la projection en perspective tente d’imiter, en utilisant une matrice de projection en perspective. La matrice de projection fait correspondre un frustum donné au clip space, mais manipule également la valeur $w$ de chaque coordonnée de sommet de telle sorte que plus une coordonnée de sommet est éloignée de l’observateur, plus la composante $w$ est élevée. Une fois que les coordonnées sont transformées en clipping space, elles sont comprises entre $-w$ et $w$ (tout ce qui se trouve en dehors de cette plage est écrêté). OpenGL exige que les coordonnées visibles se situent entre $-1.0$ et $1.0$ comme sortie finale du vertex shader, donc une fois que les coordonnées sont dans l’espace clip, la division de perspective est appliquée aux coordonnées de l’espace clip : $$ out = \\begin{pmatrix} x/w\\ y/w\\ z/w \\end{pmatrix} $$ Chaque composante de la coordonnée du sommet est divisée par sa composante $w$, ce qui donne des coordonnées de sommet d’autant plus petites que le sommet est éloigné de l’observateur. C’est une autre raison pour laquelle la composante $w$ est importante, puisqu’elle nous aide dans la projection en perspective. Les coordonnées résultantes sont alors dans l’espace normalisé du device. Si vous souhaitez savoir comment les matrices de projection orthographique et perspective sont calculées (et que les mathématiques ne vous effraient pas trop), je vous recommande cet excellent article de Songho.\nUne matrice de projection perspective peut être créée dans GLM comme suit :\nglm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)width/(float)height, 0.1f, 100.0f); Ce que fait glm::perspective est de créer un grand frustum qui définit l’espace visible, tout ce qui se trouve en dehors du frustum ne se retrouvera pas dans le volume de l’espace de découpage et sera donc découpé. Un frustum de perspective peut être visualisé comme une boîte de forme non uniforme à partir de laquelle chaque coordonnée à l’intérieur de cette boîte sera mappée à un point dans l’espace de clipping. Une image d’un frustum de perspective est présentée ci-dessous : ![[img/syscoord4.png]] Son premier paramètre définit la valeur fov, qui signifie field of view (champ de vision) et définit la taille de l’espace de vision. Pour une vue réaliste, il est généralement fixé à 45 degrés, mais pour des résultats différents, vous pouvez le fixer à une valeur plus élevée. Le deuxième paramètre définit le rapport d’aspect (aspect ratio), qui est calculé en divisant la largeur de la fenêtre de visualisation par sa hauteur. Les troisième et quatrième paramètres définissent les plans proche et lointain du frustum. Nous fixons généralement la distance proche à $0.1$ et la distance lointaine à $100.0$. Tous les vertices situés entre les plans proche et lointain et à l’intérieur du frustum seront rendus.\nLorsque la valeur proche de votre matrice de perspective est trop élevée (comme $10.0$), OpenGL coupe toutes les coordonnées proches de la caméra (entre $0.0$ et $10.0$), ce qui peut donner un résultat visuel que vous avez peut-être déjà vu dans des jeux vidéo où vous pouviez voir à travers certains objets lorsque vous vous déplaciez inconfortablement près d’eux.\nLors de l’utilisation de la projection orthographique, chaque coordonnée de sommet est directement mappée dans l’espace clip sans aucune division de perspective fantaisiste (il y a toujours une division de perspective, mais la composante w n’est pas manipulée (elle reste à 1) et n’a donc pas d’effet). Comme la projection orthographique n’utilise pas la projection en perspective, les objets plus éloignés ne semblent pas plus petits, ce qui produit un résultat visuel étrange. C’est pourquoi la projection orthographique est principalement utilisée pour les rendus 2D et pour certaines applications architecturales ou d’ingénierie où l’on préfère que les vertices ne soient pas déformés par la perspective. Les applications comme Blender, qui sont utilisées pour la modélisation 3D, utilisent parfois la projection orthographique pour la modélisation, car elle représente plus précisément les dimensions de chaque objet. Vous trouverez ci-dessous une comparaison des deux méthodes de projection dans Blender : ![[img/syscoord5.png]] Vous pouvez constater qu’avec la projection en perspective, les sommets les plus éloignés apparaissent beaucoup plus petits, alors qu’avec la projection orthographique, chaque sommet a la même distance par rapport à l’utilisateur.\nLa mise en place de l’ensemble Nous créons une matrice de transformation pour chacune des étapes susmentionnées : modèle, vue et matrice de projection. Les coordonnées d’un sommet sont ensuite transformées en coordonnées de clip comme suit : $$ V_{clip}=M_{projection}⋅M_{view}⋅M_{model}⋅V_{local} $$ Notez que l’ordre de multiplication de la matrice est inversé (rappelez-vous que nous devons lire la multiplication de la matrice de droite à gauche). Le vertex résultant doit alors être assigné à gl_Position dans le vertex shader et OpenGL effectuera alors automatiquement la division de la perspective et le clipping.\nEt ensuite ?\nLa sortie du vertex shader nécessite que les coordonnées soient dans l’espace-clip, ce que nous venons de faire avec les matrices de transformation. OpenGL effectue ensuite une division de perspective sur les coordonnées de l’espace-clip pour les transformer en coordonnées normalisées de l’appareil. OpenGL utilise ensuite les paramètres de glViewPort pour mapper les coordonnées normalisées du device en coordonnées d’écran où chaque coordonnée correspond à un point de l’écran (dans notre cas, un écran 800x600). Ce processus est appelé transformation du point de vue (viewport transform).\nIl s’agit d’un sujet difficile à comprendre, donc si vous n’êtes pas encore sûr de l’utilisation de chaque espace, ne vous inquiétez pas. Vous verrez ci-dessous comment utiliser ces espaces de coordonnées à bon escient et d’autres exemples suivront dans les chapitres suivants.\nPasser à la 3D Maintenant que nous savons comment transformer des coordonnées 3D en coordonnées 2D, nous pouvons commencer à rendre de vrais objets 3D au lieu du plan 2D boiteux que nous avons montré jusqu’à présent.\nPour commencer à dessiner en 3D, nous allons d’abord créer une matrice de modèle. La matrice de modèle consiste en des translations, des mises à l’échelle et/ou des rotations que nous souhaitons appliquer pour transformer tous les sommets de l’objet dans l’espace monde global. Transformons un peu notre plan en le faisant pivoter sur l’axe des x pour qu’il ait l’air d’être posé sur le sol. La matrice du modèle ressemble alors à ceci :\nglm::mat4 model = glm::mat4(1.0f); model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f)); En multipliant les coordonnées des sommets par cette matrice de modèle, nous transformons les coordonnées des sommets en coordonnées mondiales. Notre plan qui est légèrement sur le sol représente donc le plan dans le monde global. Ensuite, nous devons créer une matrice de vue. Nous voulons nous déplacer légèrement en arrière dans la scène pour que l’objet devienne visible (alors que dans l’espace mondial, nous sommes situés à l’origine (0,0,0)). Pour vous déplacer dans la scène, pensez à ce qui suit :\nDéplacer une caméra vers l’arrière revient à déplacer toute la scène vers l’avant. C’est exactement ce que fait une matrice de vue, nous déplaçons la scène entière à l’inverse de l’endroit où nous voulons que la caméra se déplace. Parce que nous voulons nous déplacer vers l’arrière et qu’OpenGL est un système droitier, nous devons nous déplacer dans l’axe positif $z$. Nous le faisons en translatant la scène vers l’arrière. Pour ce faire, nous translatons la scène vers l’axe z négatif. Cela donne l’impression que nous nous déplaçons en arrière.\nSystème main droite Par convention, OpenGL est un système main droite. Cela signifie que l’axe $x$ positif est à votre droite, l’axe $y$ positif est vers le haut et l’axe $z$ positif est vers l’arrière. Imaginez que votre écran est le centre des trois axes et que l’axe z positif traverse votre écran dans votre direction. Les axes sont dessinés comme suit : ![[img/syscoord6.png]]\nPour comprendre pourquoi on parle de droitier, procédez comme suit :\n- Tendez votre bras droit le long de l'axe positif des y, la main en haut. - Laissez votre pouce pointer vers la droite. - Laissez votre index pointer vers le haut. - Pliez ensuite votre majeur vers le bas à 90 degrés. Si vous avez bien fait, votre pouce devrait pointer vers l’axe x positif, votre doigt pointé vers l’axe y positif et votre majeur vers l’axe z positif. Si vous faites la même chose avec votre bras gauche, vous verrez que l’axe z est inversé. C’est ce que l’on appelle un système main gauche, couramment utilisé par DirectX. Notez qu’en coordonnées normalisées, OpenGL utilise en fait un système main gauche (la matrice de projection modifie la position de la main).\nNous verrons plus en détail comment se déplacer dans la scène dans le prochain chapitre. Pour l’instant, la matrice de vue ressemble à ceci :\nglm::mat4 view = glm::mat4(1.0f); // note that we're translating the scene in the reverse direction of where we want to move view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); La dernière chose que nous devons définir est la matrice de projection. Nous voulons utiliser la projection en perspective pour notre scène, nous allons donc déclarer la matrice de projection comme ceci :\nglm::mat4 projection; projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f); Maintenant que nous avons créé les matrices de transformation, nous devons les passer à nos shaders. Tout d’abord, déclarons les matrices de transformation en tant qu’uniformes dans le vertex shader et multiplions-les avec les coordonnées des vertex :\n#version 330 core layout (location = 0) in vec3 aPos; ... uniform mat4 model; uniform mat4 view; uniform mat4 projection; void main() { // note that we read the multiplication from right to left gl_Position = projection * view * model * vec4(aPos, 1.0); ... } Nous devons également envoyer les matrices au shader (cela se fait généralement à chaque image car les matrices de transformation ont tendance à changer beaucoup) :\nint modelLoc = glGetUniformLocation(ourShader.ID, \"model\"); glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model)); ... // same for View Matrix and Projection Matrix Maintenant que les coordonnées des sommets sont transformées par le modèle, la vue et la matrice de projection, l’objet final devrait être :\nincliné vers l’arrière par rapport au sol. Un peu plus éloigné de nous. Être affiché avec une perspective (il devrait être plus petit, plus ses sommets sont éloignés). Vérifions si le résultat répond effectivement à ces exigences : ![[img/syscoord7.png]] On a effectivement l’impression que le plan est un plan 3D qui repose sur un sol imaginaire. Si vous n’obtenez pas le même résultat, comparez votre code avec le code source complet.\nPlus de 3D Jusqu’à présent, nous avons travaillé avec un plan 2D, même dans un espace 3D. Prenons donc la route de l’aventure et étendons notre plan 2D à un cube 3D. Pour rendre un cube, nous avons besoin d’un total de 36 sommets (6 faces * 2 triangles * 3 sommets chacun). 36 sommets, c’est beaucoup à résumer, vous pouvez donc les récupérer ici.\nPour le plaisir, nous allons laisser le cube tourner dans le temps :\nmodel = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f)); Ensuite, nous allons dessiner le cube en utilisant glDrawArrays (puisque nous n’avons pas spécifié d’indices), mais cette fois-ci avec un nombre de 36 sommets.\nglDrawArrays(GL_TRIANGLES, 0, 36); Vous devriez obtenir quelque chose de similaire à ce qui suit : ![[video/syscoord_video1.mp4]]\nIl ressemble légèrement à un cube, mais quelque chose ne va pas. Certains côtés du cube sont dessinés par-dessus d’autres côtés du cube. Cela se produit parce que lorsqu’OpenGL dessine votre cube triangle par triangle, fragment par fragment, il écrase toute couleur de pixel qui aurait déjà été dessinée auparavant. Comme OpenGL ne donne aucune garantie sur l’ordre des triangles rendus (au sein d’un même appel de dessin), certains triangles sont dessinés les uns sur les autres, même si l’un d’entre eux devrait clairement se trouver devant l’autre.\nHeureusement, OpenGL stocke les informations de profondeur dans un tampon appelé z-buffer qui permet à OpenGL de décider quand dessiner sur un pixel et quand ne pas le faire. En utilisant le z-buffer, nous pouvons configurer OpenGL pour qu’il effectue un test de profondeur.\nZ-buffer OpenGL stocke toutes ses informations de profondeur dans un z-buffer, également connu sous le nom de tampon de profondeur (depth buffer). GLFW crée automatiquement un tel buffer pour vous (tout comme il a un color buffer qui stocke les couleurs de l’image de sortie). La profondeur est stockée dans chaque fragment (en tant que valeur z du fragment) et chaque fois que le fragment veut sortir sa couleur, OpenGL compare ses valeurs de profondeur avec le z-buffer. Si le fragment courant est derrière l’autre fragment, il est rejeté, sinon il est écrasé. Ce processus est appelé test de profondeur (depth testing) et est effectué automatiquement par OpenGL.\nCependant, si nous voulons nous assurer qu’OpenGL effectue effectivement le test de profondeur, nous devons d’abord dire à OpenGL que nous voulons activer le test de profondeur ; il est désactivé par défaut. Nous pouvons activer le test de profondeur en utilisant glEnable. Les fonctions glEnable et glDisable nous permettent d’activer/désactiver certaines fonctionnalités d’OpenGL. Cette fonctionnalité est alors activée/désactivée jusqu’à ce qu’un autre appel soit effectué pour la désactiver/activer. Pour l’instant, nous voulons activer le test de profondeur en activant GL_DEPTH_TEST :\nglEnable(GL_DEPTH_TEST); Puisque nous utilisons un buffer de profondeur, nous voulons également effacer le buffer de profondeur avant chaque itération de rendu (sinon les informations de profondeur de l’image précédente restent dans le tampon). Tout comme pour le buffer de couleur, nous pouvons effacer le buffer de profondeur en spécifiant le bit DEPTH_BUFFER_BIT dans la fonction glClear:\nglClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); Exécutons à nouveau notre programme et voyons si OpenGL effectue maintenant des tests de profondeur : ![[video/syscoord_video2.mp4]] Nous y voilà ! Un cube entièrement texturé avec des tests de profondeur appropriés qui tourne avec le temps. Consultez le code source ici.\nPlus de cubes! Supposons que nous voulions afficher 10 de nos cubes à l’écran. Chaque cube aura la même apparence mais ne différera que par son emplacement dans le monde, avec une rotation différente pour chacun d’entre eux. La disposition graphique du cube étant déjà définie, nous n’avons pas besoin de modifier nos tampons ou nos tableaux d’attributs lors du rendu d’autres objets. La seule chose que nous devons changer pour chaque objet est sa matrice de modèle où nous transformons les cubes dans le monde.\nTout d’abord, définissons un vecteur de translation pour chaque cube qui spécifie sa position dans l’espace mondial. Nous allons définir 10 positions de cubes dans un tableau glm::vec3 :\nglm::vec3 cubePositions[] = { glm::vec3( 0.0f, 0.0f, 0.0f), glm::vec3( 2.0f, 5.0f, -15.0f), glm::vec3(-1.5f, -2.2f, -2.5f), glm::vec3(-3.8f, -2.0f, -12.3f), glm::vec3( 2.4f, -0.4f, -3.5f), glm::vec3(-1.7f, 3.0f, -7.5f), glm::vec3( 1.3f, -2.0f, -2.5f), glm::vec3( 1.5f, 2.0f, -2.5f), glm::vec3( 1.5f, 0.2f, -1.5f), glm::vec3(-1.3f, 1.0f, -1.5f) }; Maintenant, dans la boucle de rendu, nous voulons appeler glDrawArrays 10 fois, mais cette fois-ci en envoyant une matrice de modèle différente au vertex shader à chaque fois avant d’envoyer l’appel de dessin. Nous allons créer une petite boucle dans la boucle de rendu qui rendra notre objet 10 fois avec une matrice de modèle différente à chaque fois. Notez que nous ajoutons également une petite rotation unique à chaque conteneur.\nglBindVertexArray(VAO); for(unsigned int i = 0; i \u003c 10; i++) { glm::mat4 model = glm::mat4(1.0f); model = glm::translate(model, cubePositions[i]); float angle = 20.0f * i; model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f)); ourShader.setMat4(\"model\", model); glDrawArrays(GL_TRIANGLES, 0, 36); } Ce bout de code mettra à jour la matrice du modèle à chaque fois qu’un nouveau cube sera dessiné, et ce 10 fois au total. En ce moment, nous devrions voir un monde rempli de 10 cubes bizarrement tournés : ![[img/syscoord8.png]] Parfait ! On dirait que notre conteneur a trouvé des amis qui partagent les mêmes idées. Si vous êtes bloqué, comparez votre code avec le code source.\n",
+  "wordCount" : "4718",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/07_coordinate-systems/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://hrst4.xyz/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://hrst4.xyz/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      
+    </h1>
+    <div class="post-meta">
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="systèmes-de-coordonnées">Systèmes de coordonnées<a hidden class="anchor" aria-hidden="true" href="#systèmes-de-coordonnées">#</a></h1>
+<p>Dans le dernier chapitre, nous avons appris comment utiliser les matrices à notre avantage en transformant tous les sommets avec des matrices de transformation. OpenGL s&rsquo;attend à ce que tous les sommets, que nous voulons rendre visibles, soient en coordonnées normalisées après chaque exécution du vertex shader. C&rsquo;est-à-dire que les coordonnées $x$, $y$ et $z$ de chaque sommet doivent être comprises entre $-1.0$ et $1.0$ ; les coordonnées en dehors de cette plage ne seront pas visibles. Ce que nous faisons habituellement, c&rsquo;est spécifier les coordonnées dans une plage (ou un espace) que nous déterminons nous-mêmes et, dans le vertex shader, transformer ces coordonnées en coordonnées normalisées (NDC: normalized device coordinates). Ces NDC sont ensuite transmises au rasterizer qui les transforme en coordonnées 2D/pixels sur votre écran.</p>
+<p>La transformation des coordonnées en NDC s&rsquo;effectue généralement étape par étape, en transformant les sommets d&rsquo;un objet en plusieurs systèmes de coordonnées avant de les transformer en NDC. <strong>L&rsquo;avantage de les transformer en plusieurs systèmes de coordonnées intermédiaires est que certaines opérations/calculs sont plus faciles dans certains systèmes de coordonnées</strong>, comme nous le verrons bientôt. Il existe au total 5 systèmes de coordonnées différents qui nous intéressent :</p>
+<ul>
+<li>Espace local (ou espace objet) (local space / object space)</li>
+<li>Espace mondial  (world space)</li>
+<li>Espace de vue (ou espace de l&rsquo;œil)  (view space)</li>
+<li>Espace du clip  (clip space)</li>
+<li>Espace de l&rsquo;écran  (screen space)</li>
+</ul>
+<p>Ce sont tous des états différents dans lesquels nos sommets seront transformés avant d&rsquo;aboutir à des fragments.</p>
+<p>Vous ne savez probablement plus très bien ce qu&rsquo;est un espace ou un système de coordonnées. Nous allons donc les expliquer à un niveau plus élevé en montrant d&rsquo;abord l&rsquo;image globale et ce que chaque espace spécifique représente.</p>
+<h2 id="limage-globale">L&rsquo;image globale<a hidden class="anchor" aria-hidden="true" href="#limage-globale">#</a></h2>
+<p><strong>Pour transformer les coordonnées d&rsquo;un espace à l&rsquo;autre, nous utiliserons plusieurs matrices de transformation, dont les plus importantes sont les matrices de modèle, de vue et de projection.</strong> Les coordonnées de nos sommets commencent d&rsquo;abord dans l&rsquo;espace local en tant que coordonnées locales, puis sont transformées en coordonnées mondiales, coordonnées de vue, coordonnées de clip et enfin en coordonnées d&rsquo;écran. L&rsquo;image suivante illustre le processus et montre ce que fait chaque transformation :
+![[img/syscoord1.png]]</p>
+<ol>
+<li>Les coordonnées locales sont les coordonnées de votre objet par rapport à son origine locale ; ce sont les coordonnées de départ de votre objet.</li>
+<li>L&rsquo;étape suivante consiste à transformer les coordonnées locales en coordonnées de l&rsquo;espace mondial, c&rsquo;est-à-dire en coordonnées par rapport à un monde plus vaste. Ces coordonnées sont relatives à une origine globale du monde, ainsi qu&rsquo;à de nombreux autres objets également placés par rapport à l&rsquo;origine de ce monde.</li>
+<li>Ensuite, nous transformons les coordonnées mondiales en coordonnées de l&rsquo;espace visuel de manière à ce que chaque coordonnée soit vue du point de vue de la caméra ou de l&rsquo;observateur.</li>
+<li>Une fois que les coordonnées sont dans l&rsquo;espace de vue, nous voulons les projeter en coordonnées de clip. Les coordonnées du clip sont traitées dans la plage <code>-1.0</code> et <code>1.0</code> et déterminent les sommets qui se retrouveront à l&rsquo;écran. <strong>La projection vers les coordonnées de l&rsquo;espace-clip peut ajouter de la perspective si l&rsquo;on utilise la projection en perspective.</strong></li>
+<li>Enfin, nous transformons les coordonnées du clip en coordonnées d&rsquo;écran par un processus appelé <strong>viewport transform</strong> qui transforme les coordonnées de <code>-1.0</code> et <code>1.0</code> en coordonnées définies par <code>glViewport</code>. <strong>Les coordonnées résultantes sont ensuite envoyées au rasterizer pour les transformer en fragments.</strong></li>
+</ol>
+<p>Vous avez probablement une petite idée de l&rsquo;utilisation de chaque espace. <strong>La raison pour laquelle nous transformons nos sommets dans tous ces espaces différents est que certaines opérations ont plus de sens ou sont plus faciles à utiliser dans certains systèmes de coordonnées.</strong> <strong>Par exemple, lorsque vous modifiez votre objet, il est plus logique de le faire dans l&rsquo;espace local, tandis que le calcul de certaines opérations sur l&rsquo;objet par rapport à la position d&rsquo;autres objets a plus de sens dans les coordonnées mondiales, et ainsi de suite.</strong> Si nous le voulons, nous pouvons définir une matrice de transformation qui va de l&rsquo;espace local à l&rsquo;espace de clip en une seule fois, mais cela nous laisse moins de flexibilité.</p>
+<p>Nous examinerons chaque système de coordonnées plus en détail ci-dessous.</p>
+<h2 id="local-space">Local space<a hidden class="anchor" aria-hidden="true" href="#local-space">#</a></h2>
+<p>L&rsquo;espace local est l&rsquo;espace de coordonnées qui est local à votre objet, c&rsquo;est-à-dire l&rsquo;endroit où votre objet commence. Imaginez que vous ayez créé votre cube dans un logiciel de modélisation (comme Blender). L&rsquo;origine de votre cube se situe probablement à $(0,0,0)$, même si votre cube peut se retrouver à un autre endroit dans votre application finale. Tous les modèles que vous avez créés ont probablement pour position initiale $(0,0,0)$. <strong>Tous les sommets de votre modèle sont donc dans l&rsquo;espace local : ils sont tous locaux à votre objet.</strong></p>
+<p>Les sommets du conteneur que nous avons utilisé ont été spécifiés sous la forme de coordonnées comprises entre $-0.5$ et $0.5$, avec $0.0$ comme origine. Il s&rsquo;agit de coordonnées locales.</p>
+<h2 id="world-space">World space<a hidden class="anchor" aria-hidden="true" href="#world-space">#</a></h2>
+<p>Si nous importions tous nos objets directement dans l&rsquo;application, ils seraient probablement tous positionnés les uns dans les autres à l&rsquo;origine du monde $(0,0,0)$, ce qui n&rsquo;est pas ce que nous voulons. Nous voulons définir une position pour chaque objet afin de les positionner dans un monde plus vaste. Les coordonnées dans l&rsquo;espace mondial sont exactement ce qu&rsquo;elles semblent être : les coordonnées de tous vos sommets par rapport à un monde (un jeu par exemple). Il s&rsquo;agit de l&rsquo;espace de coordonnées dans lequel vous souhaitez que vos objets soient transformés de manière à ce qu&rsquo;ils soient tous dispersés (de préférence de manière réaliste). <strong>Les coordonnées de votre objet sont transformées de l&rsquo;espace local à l&rsquo;espace mondial ; cette transformation est réalisée à l&rsquo;aide de la matrice de modèle.</strong></p>
+<p><strong>La matrice de modèle est une matrice de transformation qui traduit, met à l&rsquo;échelle et/ou fait pivoter votre objet afin de le placer dans le monde à un endroit/orientation qui lui appartient.</strong> Imaginez que vous transformiez une maison en la mettant à l&rsquo;échelle (elle était un peu trop grande dans l&rsquo;espace local), en la translatant dans une ville de banlieue et en la faisant pivoter un peu vers la gauche sur l&rsquo;axe des ordonnées afin qu&rsquo;elle s&rsquo;intègre parfaitement aux maisons voisines. Vous pouvez considérer la matrice du chapitre précédent pour positionner le conteneur dans toute la scène comme une sorte de matrice de modèle ; nous avons transformé les coordonnées locales du conteneur en un endroit différent de la scène/du monde.</p>
+<h2 id="view-space">View space<a hidden class="anchor" aria-hidden="true" href="#view-space">#</a></h2>
+<p>L&rsquo;espace de vue est ce que l&rsquo;on appelle généralement la caméra d&rsquo;OpenGL (il est également connu sous le nom d&rsquo;espace de caméra ou d&rsquo;espace oculaire (eye space)). L&rsquo;espace de vue est le résultat de la transformation des coordonnées de l&rsquo;espace-monde en coordonnées qui sont en face de la vue de l&rsquo;utilisateur. L&rsquo;espace de vue est donc l&rsquo;espace vu depuis le point de vue de la caméra.
+Pour ce faire, on utilise généralement une combinaison de translations et de rotations afin de translater/rotationner la scène de manière à ce que certains éléments soient transformés en face de la caméra. <strong>Ces transformations combinées sont généralement stockées dans une matrice de vue (view matrix) qui transforme les coordonnées du monde en espace de vue.</strong> Dans le prochain chapitre, nous verrons en détail comment créer une telle matrice de vue pour simuler une caméra.</p>
+<h2 id="clip-space">Clip space<a hidden class="anchor" aria-hidden="true" href="#clip-space">#</a></h2>
+<p><strong>À la fin de chaque exécution du vertex shader, OpenGL s&rsquo;attend à ce que les coordonnées soient comprises dans une plage spécifique et toute coordonnée qui se trouve en dehors de cette plage est coupée</strong>. Les coordonnées qui sont coupées sont éliminées, de sorte que les coordonnées restantes se retrouveront sous forme de fragments visibles à l&rsquo;écran. C&rsquo;est également de là que vient le nom de clip space.</p>
+<p>Comme il n&rsquo;est pas vraiment intuitif de spécifier que toutes les coordonnées visibles sont comprises entre $-1.0$ et $1.0$, nous spécifions notre propre jeu de coordonnées pour travailler et les reconvertir en NDC comme OpenGL l&rsquo;attend.</p>
+<p><strong>Pour transformer les coordonnées des vertex de la vue à l&rsquo;espace-clip, nous définissons une matrice de projection qui spécifie une plage de coordonnées</strong>, par exemple $-1000$ et $1000$ dans chaque dimension. <strong>La matrice de projection convertit ensuite les coordonnées dans cet intervalle spécifié en coordonnées normalisées $(-1.0, 1.0)$</strong> (pas directement, une étape appelée Division de la Perspective (perspective division) se situe entre les deux). Toutes les coordonnées situées en dehors de cette plage ne seront pas mappées entre $-1.0$ et $1.0$ et seront donc coupées. Avec cette plage que nous avons spécifiée dans la matrice de projection, une coordonnée de $(1250, 500, 750)$ ne serait pas visible, car la coordonnée x est hors de la plage et est donc convertie en une coordonnée supérieure à 1,0 dans le NDC et est donc coupée.</p>
+<blockquote>
+<p>Notez que si seule une partie d&rsquo;une primitive, par exemple un triangle, se trouve en dehors du volume d&rsquo;écrêtage (clipping volume), OpenGL reconstruira le triangle sous la forme d&rsquo;un ou de plusieurs triangles pour qu&rsquo;il s&rsquo;inscrive dans l&rsquo;espace d&rsquo;écrêtage (clip space).</p>
+</blockquote>
+<p><strong>Cette boîte de visualisation (viewing box) créée par une matrice de projection est appelée frustum et chaque coordonnée qui se trouve à l&rsquo;intérieur de ce frustum se retrouvera sur l&rsquo;écran de l&rsquo;utilisateur</strong>. L&rsquo;ensemble du processus de conversion des coordonnées dans une plage spécifiée en coordonnées normalisées qui peuvent facilement être mises en correspondance avec les coordonnées 2D de l&rsquo;espace de visualisation est appelé <strong>projection</strong>, car <strong>la matrice de projection projette les coordonnées 3D vers les coordonnées normalisées du device, faciles à mettre en correspondance avec les coordonnées 2D.</strong></p>
+<p>Une fois que tous les sommets sont transformés en clip space, une dernière opération appelée <strong>division de la perspective</strong> est effectuée. <strong>Elle consiste à diviser les composantes $x$, $y$ et $z$ des vecteurs de position par la composante homogène $w$ du vecteur ; la division de la perspective est ce qui transforme les coordonnées de l&rsquo;espace-clip 4D en coordonnées normalisées de l&rsquo;appareil 3D. Cette étape est exécutée automatiquement à la fin de l&rsquo;étape du vertex shader.</strong></p>
+<p>C&rsquo;est après cette étape que les coordonnées résultantes sont mappées en coordonnées d&rsquo;écran (screen space) (en utilisant les paramètres de <code>glViewport</code>) et transformées en fragments.</p>
+<p>La matrice de projection permettant de transformer les coordonnées de la vue en coordonnées du clip prend généralement deux formes différentes, chaque forme définissant son propre frustum. Nous pouvons créer une matrice de projection <strong>orthographique</strong> ou une matrice de projection en <strong>perspective</strong>.</p>
+<h2 id="projection-orthographique">Projection orthographique<a hidden class="anchor" aria-hidden="true" href="#projection-orthographique">#</a></h2>
+<p>Une matrice de projection orthographique définit une boîte de frustum cubique qui définit l&rsquo;espace de clipping où chaque sommet situé à l&rsquo;extérieur de cette boîte est exclu. Lors de la création d&rsquo;une matrice de projection orthographique, nous spécifions la largeur, la hauteur et la longueur du frustum visible. Toutes les coordonnées à l&rsquo;intérieur de ce tronc se retrouveront dans la plage NDC après avoir été transformées par sa matrice et ne seront donc pas clippées. Le frustum ressemble un peu à un conteneur :
+![[img/syscoord2.png]]
+Le frustum définit les coordonnées visibles et est spécifié par une largeur, une hauteur et un plan proche et lointain. Toute coordonnée située devant le plan proche est coupée et il en va de même pour les coordonnées situées derrière le plan éloigné. Le frustum orthographique mappe directement toutes les coordonnées à l&rsquo;intérieur du frustum en coordonnées normalisées du device sans aucun effet secondaire particulier puisqu&rsquo;il ne touche pas à la composante $w$ du vecteur transformé ; si la composante $w$ reste égale à 1,0, la division de la perspective ne changera pas les coordonnées.
+Pour créer une matrice de projection orthographique, nous utilisons la fonction intégrée <code>glm::ortho</code> de GLM :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>ortho(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">800.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">600.0f</span>, <span style="color:#ae81ff">0.1f</span>, <span style="color:#ae81ff">100.0f</span>);
+</span></span></code></pre></div><p>Les deux premiers paramètres spécifient les coordonnées gauche et droite du frustum et les troisième et quatrième paramètres spécifient les parties inférieure et supérieure du frustum. Avec ces quatre points, nous avons défini la taille des plans proche et lointain et les cinquième et sixième paramètres définissent ensuite les distances entre les plans proche et lointain. Cette matrice de projection spécifique transforme toutes les coordonnées comprises entre ces valeurs $x$, $y$ et $z$ en coordonnées normalisées du device.</p>
+<p>Une matrice de projection orthographique fait directement correspondre les coordonnées au plan 2D qu&rsquo;est votre écran, mais en réalité une projection directe produit des résultats irréalistes puisque la projection ne tient pas compte de la perspective. La matrice de projection perspective corrige ce problème pour nous.</p>
+<h2 id="projection-en-perspective">Projection en perspective<a hidden class="anchor" aria-hidden="true" href="#projection-en-perspective">#</a></h2>
+<p>Si vous appréciez les graphismes de la <em>vie réelle</em>, vous remarquerez que les objets les plus éloignés paraissent beaucoup plus petits. Cet effet étrange s&rsquo;appelle la <strong>perspective</strong>. La perspective est particulièrement visible lorsque l&rsquo;on regarde le bout d&rsquo;une autoroute ou d&rsquo;une voie ferrée infinie, comme le montre l&rsquo;image suivante :
+![[img/syscoord3.png]]
+Comme vous pouvez le constater, grâce à la perspective, les lignes semblent coïncider à une distance suffisante. C&rsquo;est exactement l&rsquo;effet que la projection en perspective tente d&rsquo;imiter, en utilisant une matrice de projection en perspective. La matrice de projection fait correspondre un frustum donné au clip space, mais manipule également la valeur $w$ de chaque coordonnée de sommet de telle sorte que plus une coordonnée de sommet est éloignée de l&rsquo;observateur, plus la composante $w$ est élevée. Une fois que les coordonnées sont transformées en clipping space, elles sont comprises entre $-w$ et $w$ (tout ce qui se trouve en dehors de cette plage est écrêté). OpenGL exige que les coordonnées visibles se situent entre $-1.0$ et $1.0$ comme sortie finale du vertex shader, donc une fois que les coordonnées sont dans l&rsquo;espace clip, la division de perspective est appliquée aux coordonnées de l&rsquo;espace clip :
+$$
+out =
+\begin{pmatrix}
+x/w\
+y/w\
+z/w
+\end{pmatrix}
+$$
+Chaque composante de la coordonnée du sommet est divisée par sa composante $w$, ce qui donne des coordonnées de sommet d&rsquo;autant plus petites que le sommet est éloigné de l&rsquo;observateur. <strong>C&rsquo;est une autre raison pour laquelle la composante $w$ est importante, puisqu&rsquo;elle nous aide dans la projection en perspective</strong>. Les coordonnées résultantes sont alors dans l&rsquo;espace normalisé du device. Si vous souhaitez savoir comment les matrices de projection orthographique et perspective sont calculées (et que les mathématiques ne vous effraient pas trop), je vous recommande cet <a href="http://www.songho.ca/opengl/gl_projectionmatrix.html">excellent article</a> de Songho.</p>
+<p>Une matrice de projection perspective peut être créée dans GLM comme suit :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>mat4 proj <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>perspective(glm<span style="color:#f92672">::</span>radians(<span style="color:#ae81ff">45.0f</span>), (<span style="color:#66d9ef">float</span>)width<span style="color:#f92672">/</span>(<span style="color:#66d9ef">float</span>)height, <span style="color:#ae81ff">0.1f</span>, <span style="color:#ae81ff">100.0f</span>);
+</span></span></code></pre></div><p>Ce que fait glm::perspective est de créer un grand frustum qui définit l&rsquo;espace visible, tout ce qui se trouve en dehors du frustum ne se retrouvera pas dans le volume de l&rsquo;espace de découpage et sera donc découpé. Un frustum de perspective peut être visualisé comme une boîte de forme non uniforme à partir de laquelle chaque coordonnée à l&rsquo;intérieur de cette boîte sera mappée à un point dans l&rsquo;espace de clipping. Une image d&rsquo;un frustum de perspective est présentée ci-dessous :
+![[img/syscoord4.png]]
+Son premier paramètre définit la valeur <strong>fov</strong>, qui signifie <strong>field of view</strong> (champ de vision) et définit la taille de l&rsquo;espace de vision. <strong>Pour une vue réaliste, il est généralement fixé à 45 degrés, mais pour des résultats différents, vous pouvez le fixer à une valeur plus élevée</strong>.
+Le deuxième paramètre définit le rapport d&rsquo;aspect (<strong>aspect ratio</strong>), qui est calculé en divisant la largeur de la fenêtre de visualisation par sa hauteur.
+Les troisième et quatrième paramètres définissent les plans proche et lointain du frustum. Nous fixons généralement la distance proche à $0.1$ et la distance lointaine à $100.0$. Tous les vertices situés entre les plans proche et lointain et à l&rsquo;intérieur du frustum seront rendus.</p>
+<blockquote>
+<p>Lorsque la valeur proche de votre matrice de perspective est trop élevée (comme $10.0$), OpenGL coupe toutes les coordonnées proches de la caméra (entre $0.0$ et $10.0$), ce qui peut donner un résultat visuel que vous avez peut-être déjà vu dans des jeux vidéo où vous pouviez voir à travers certains objets lorsque vous vous déplaciez inconfortablement près d&rsquo;eux.</p>
+</blockquote>
+<p>Lors de l&rsquo;utilisation de la projection orthographique, chaque coordonnée de sommet est directement mappée dans l&rsquo;espace clip sans aucune division de perspective fantaisiste (il y a toujours une division de perspective, mais la composante w n&rsquo;est pas manipulée (elle reste à 1) et n&rsquo;a donc pas d&rsquo;effet). <strong>Comme la projection orthographique n&rsquo;utilise pas la projection en perspective, les objets plus éloignés ne semblent pas plus petits, ce qui produit un résultat visuel étrange. C&rsquo;est pourquoi la projection orthographique est principalement utilisée pour les rendus 2D et pour certaines applications architecturales ou d&rsquo;ingénierie où l&rsquo;on préfère que les vertices ne soient pas déformés par la perspective</strong>. Les applications comme Blender, qui sont utilisées pour la modélisation 3D, utilisent parfois la projection orthographique pour la modélisation, car elle représente plus précisément les dimensions de chaque objet. Vous trouverez ci-dessous une comparaison des deux méthodes de projection dans Blender :
+![[img/syscoord5.png]]
+Vous pouvez constater qu&rsquo;avec la projection en perspective, les sommets les plus éloignés apparaissent beaucoup plus petits, alors qu&rsquo;avec la projection orthographique, chaque sommet a la même distance par rapport à l&rsquo;utilisateur.</p>
+<h2 id="la-mise-en-place-de-lensemble">La mise en place de l&rsquo;ensemble<a hidden class="anchor" aria-hidden="true" href="#la-mise-en-place-de-lensemble">#</a></h2>
+<p>Nous créons une matrice de transformation pour chacune des étapes susmentionnées : modèle, vue et matrice de projection. Les coordonnées d&rsquo;un sommet sont ensuite transformées en coordonnées de clip comme suit :
+$$
+V_{clip}=M_{projection}⋅M_{view}⋅M_{model}⋅V_{local}
+$$
+Notez que l&rsquo;ordre de multiplication de la matrice est inversé (rappelez-vous que nous devons lire la multiplication de la matrice de droite à gauche). Le vertex résultant doit alors être assigné à <code>gl_Position</code> dans le vertex shader et OpenGL effectuera alors automatiquement la division de la perspective et le clipping.</p>
+<blockquote>
+<p><strong>Et ensuite ?</strong><br>
+La sortie du vertex shader nécessite que les coordonnées soient dans l&rsquo;espace-clip, ce que nous venons de faire avec les matrices de transformation. OpenGL effectue ensuite une division de perspective sur les coordonnées de l&rsquo;espace-clip pour les transformer en coordonnées normalisées de l&rsquo;appareil. OpenGL utilise ensuite les paramètres de <code>glViewPort</code> pour mapper les coordonnées normalisées du device en coordonnées d&rsquo;écran où chaque coordonnée correspond à un point de l&rsquo;écran (dans notre cas, un écran 800x600). Ce processus est appelé transformation du point de vue (viewport transform).</p>
+</blockquote>
+<p>Il s&rsquo;agit d&rsquo;un sujet difficile à comprendre, donc si vous n&rsquo;êtes pas encore sûr de l&rsquo;utilisation de chaque espace, ne vous inquiétez pas. Vous verrez ci-dessous comment utiliser ces espaces de coordonnées à bon escient et d&rsquo;autres exemples suivront dans les chapitres suivants.</p>
+<h2 id="passer-à-la-3d">Passer à la 3D<a hidden class="anchor" aria-hidden="true" href="#passer-à-la-3d">#</a></h2>
+<p>Maintenant que nous savons comment transformer des coordonnées 3D en coordonnées 2D, nous pouvons commencer à rendre de vrais objets 3D au lieu du plan 2D boiteux que nous avons montré jusqu&rsquo;à présent.</p>
+<p>Pour commencer à dessiner en 3D, nous allons d&rsquo;abord créer une matrice de modèle. <strong>La matrice de modèle consiste en des translations, des mises à l&rsquo;échelle et/ou des rotations que nous souhaitons appliquer pour transformer tous les sommets de l&rsquo;objet dans l&rsquo;espace monde global.</strong> Transformons un peu notre plan en le faisant pivoter sur l&rsquo;axe des x pour qu&rsquo;il ait l&rsquo;air d&rsquo;être posé sur le sol. La matrice du modèle ressemble alors à ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>mat4 model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>mat4(<span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>rotate(model, glm<span style="color:#f92672">::</span>radians(<span style="color:#f92672">-</span><span style="color:#ae81ff">55.0f</span>), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>)); 
+</span></span></code></pre></div><p>En multipliant les coordonnées des sommets par cette matrice de modèle, nous transformons les coordonnées des sommets en coordonnées mondiales. Notre plan qui est légèrement sur le sol représente donc le plan dans le monde global.
+Ensuite, nous devons créer une matrice de vue. Nous voulons nous déplacer légèrement en arrière dans la scène pour que l&rsquo;objet devienne visible (alors que dans l&rsquo;espace mondial, nous sommes situés à l&rsquo;origine <code>(0,0,0)</code>). Pour vous déplacer dans la scène, pensez à ce qui suit :</p>
+<ul>
+<li><strong>Déplacer une caméra vers l&rsquo;arrière revient à déplacer toute la scène vers l&rsquo;avant.</strong></li>
+</ul>
+<p>C&rsquo;est exactement ce que fait une matrice de vue, nous déplaçons la scène entière à l&rsquo;inverse de l&rsquo;endroit où nous voulons que la caméra se déplace.  <br>
+Parce que nous voulons nous déplacer vers l&rsquo;arrière et qu&rsquo;OpenGL est un système droitier, <strong>nous devons nous déplacer dans l&rsquo;axe positif $z$</strong>. Nous le faisons en translatant la scène vers l&rsquo;arrière. Pour ce faire, nous translatons la scène vers l&rsquo;axe z négatif. Cela donne l&rsquo;impression que nous nous déplaçons en arrière.</p>
+<blockquote>
+<p><strong>Système main droite</strong>
+Par convention, OpenGL est un système main droite. Cela signifie que l&rsquo;axe $x$  positif est à votre droite, l&rsquo;axe $y$ positif est vers le haut et l&rsquo;axe $z$ positif est vers l&rsquo;arrière. Imaginez que votre écran est le centre des trois axes et que l&rsquo;axe z positif traverse votre écran dans votre direction. Les axes sont dessinés comme suit :
+![[img/syscoord6.png]]</p>
+</blockquote>
+<blockquote>
+<p>Pour comprendre pourquoi on parle de droitier, procédez comme suit :</p>
+</blockquote>
+<pre><code>- Tendez votre bras droit le long de l'axe positif des y, la main en haut.  
+- Laissez votre pouce pointer vers la droite.  
+- Laissez votre index pointer vers le haut.  
+- Pliez ensuite votre majeur vers le bas à 90 degrés.  
+</code></pre>
+<blockquote>
+<p>Si vous avez bien fait, votre pouce devrait pointer vers l&rsquo;axe x positif, votre doigt pointé vers l&rsquo;axe y positif et votre majeur vers l&rsquo;axe z positif. Si vous faites la même chose avec votre bras gauche, vous verrez que l&rsquo;axe z est inversé. C&rsquo;est ce que l&rsquo;on appelle un système main gauche, couramment utilisé par DirectX. <strong>Notez qu&rsquo;en coordonnées normalisées, OpenGL utilise en fait un système main gauche (la matrice de projection modifie la position de la main).</strong></p>
+</blockquote>
+<p>Nous verrons plus en détail comment se déplacer dans la scène dans le prochain chapitre. Pour l&rsquo;instant, la matrice de vue ressemble à ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>mat4 view <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>mat4(<span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// note that we&#39;re translating the scene in the reverse direction of where we want to move
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>view <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>translate(view, glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">3.0f</span>)); 
+</span></span></code></pre></div><p>La dernière chose que nous devons définir est la matrice de projection. Nous voulons utiliser la projection en perspective pour notre scène, nous allons donc déclarer la matrice de projection comme ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>mat4 projection;
+</span></span><span style="display:flex;"><span>projection <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>perspective(glm<span style="color:#f92672">::</span>radians(<span style="color:#ae81ff">45.0f</span>), <span style="color:#ae81ff">800.0f</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">600.0f</span>, <span style="color:#ae81ff">0.1f</span>, <span style="color:#ae81ff">100.0f</span>);
+</span></span></code></pre></div><p>Maintenant que nous avons créé les matrices de transformation, nous devons les passer à nos shaders. Tout d&rsquo;abord, déclarons les matrices de transformation en tant qu&rsquo;uniformes dans le vertex shader et multiplions-les avec les coordonnées des vertex :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec3 aPos;
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>uniform mat4 model;
+</span></span><span style="display:flex;"><span>uniform mat4 view;
+</span></span><span style="display:flex;"><span>uniform mat4 projection;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// note that we read the multiplication from right to left
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    gl_Position <span style="color:#f92672">=</span> projection <span style="color:#f92672">*</span> view <span style="color:#f92672">*</span> model <span style="color:#f92672">*</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Nous devons également envoyer les matrices au shader (cela se fait généralement à chaque image car les matrices de transformation ont tendance à changer beaucoup) :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> modelLoc <span style="color:#f92672">=</span> glGetUniformLocation(ourShader.ID, <span style="color:#e6db74">&#34;model&#34;</span>);
+</span></span><span style="display:flex;"><span>glUniformMatrix4fv(modelLoc, <span style="color:#ae81ff">1</span>, GL_FALSE, glm<span style="color:#f92672">::</span>value_ptr(model));
+</span></span><span style="display:flex;"><span>... <span style="color:#75715e">// same for View Matrix and Projection Matrix
+</span></span></span></code></pre></div><p>Maintenant que les coordonnées des sommets sont transformées par le modèle, la vue et la matrice de projection, l&rsquo;objet final devrait être :</p>
+<ul>
+<li>incliné vers l&rsquo;arrière par rapport au sol.</li>
+<li>Un peu plus éloigné de nous.</li>
+<li>Être affiché avec une perspective (il devrait être plus petit, plus ses sommets sont éloignés).</li>
+</ul>
+<p>Vérifions si le résultat répond effectivement à ces exigences :
+![[img/syscoord7.png]]
+On a effectivement l&rsquo;impression que le plan est un plan 3D qui repose sur un sol imaginaire. Si vous n&rsquo;obtenez pas le même résultat, comparez votre code avec le <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/6.1.coordinate_systems/coordinate_systems.cpp">code source</a> complet.</p>
+<h2 id="plus-de-3d">Plus de 3D<a hidden class="anchor" aria-hidden="true" href="#plus-de-3d">#</a></h2>
+<p>Jusqu&rsquo;à présent, nous avons travaillé avec un plan 2D, même dans un espace 3D. Prenons donc la route de l&rsquo;aventure et étendons notre plan 2D à un cube 3D. Pour rendre un cube, nous avons besoin d&rsquo;un total de 36 sommets (6 faces * 2 triangles * 3 sommets chacun). 36 sommets, c&rsquo;est beaucoup à résumer, vous pouvez donc les récupérer <a href="https://learnopengl.com/code_viewer.php?code=getting-started/cube_vertices">ici</a>.</p>
+<p>Pour le plaisir, nous allons laisser le cube tourner dans le temps :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>rotate(model, (<span style="color:#66d9ef">float</span>)glfwGetTime() <span style="color:#f92672">*</span> glm<span style="color:#f92672">::</span>radians(<span style="color:#ae81ff">50.0f</span>), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>));  
+</span></span></code></pre></div><p>Ensuite, nous allons dessiner le cube en utilisant <code>glDrawArrays</code> (puisque nous n&rsquo;avons pas spécifié d&rsquo;indices), mais cette fois-ci avec un nombre de 36 sommets.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glDrawArrays(GL_TRIANGLES, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">36</span>);
+</span></span></code></pre></div><p>Vous devriez obtenir quelque chose de similaire à ce qui suit :
+![[video/syscoord_video1.mp4]]</p>
+<p>Il ressemble légèrement à un cube, mais quelque chose ne va pas. Certains côtés du cube sont dessinés par-dessus d&rsquo;autres côtés du cube. <strong>Cela se produit parce que lorsqu&rsquo;OpenGL dessine votre cube triangle par triangle, fragment par fragment, il écrase toute couleur de pixel qui aurait déjà été dessinée auparavant</strong>. Comme OpenGL ne donne aucune garantie sur l&rsquo;ordre des triangles rendus (au sein d&rsquo;un même appel de dessin), certains triangles sont dessinés les uns sur les autres, même si l&rsquo;un d&rsquo;entre eux devrait clairement se trouver devant l&rsquo;autre.</p>
+<p>Heureusement, <strong>OpenGL stocke les informations de profondeur dans un tampon appelé <strong>z-buffer</strong> qui permet à OpenGL de décider quand dessiner sur un pixel et quand ne pas le faire</strong>. En utilisant le z-buffer, nous pouvons configurer OpenGL pour qu&rsquo;il effectue un test de profondeur.</p>
+<h3 id="z-buffer">Z-buffer<a hidden class="anchor" aria-hidden="true" href="#z-buffer">#</a></h3>
+<p>OpenGL stocke toutes ses informations de profondeur dans un z-buffer, également connu sous le nom de tampon de profondeur (depth buffer). GLFW crée automatiquement un tel buffer pour vous (tout comme il a un color buffer qui stocke les couleurs de l&rsquo;image de sortie). La profondeur est stockée dans chaque fragment (en tant que valeur z du fragment) et chaque fois que le fragment veut sortir sa couleur, OpenGL compare ses valeurs de profondeur avec le z-buffer. Si le fragment courant est derrière l&rsquo;autre fragment, il est rejeté, sinon il est écrasé. Ce processus est appelé test de profondeur (depth testing) et est effectué automatiquement par OpenGL.</p>
+<p>Cependant, si nous voulons nous assurer qu&rsquo;OpenGL effectue effectivement le test de profondeur, nous devons d&rsquo;abord dire à OpenGL que nous voulons activer le test de profondeur ; il est désactivé par défaut. Nous pouvons activer le test de profondeur en utilisant <code>glEnable</code>. Les fonctions <code>glEnable</code> et <code>glDisable</code> nous permettent d&rsquo;activer/désactiver certaines fonctionnalités d&rsquo;OpenGL. Cette fonctionnalité est alors activée/désactivée jusqu&rsquo;à ce qu&rsquo;un autre appel soit effectué pour la désactiver/activer. Pour l&rsquo;instant, nous voulons activer le test de profondeur en activant <code>GL_DEPTH_TEST</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glEnable(GL_DEPTH_TEST);  
+</span></span></code></pre></div><p>Puisque nous utilisons un buffer de profondeur, nous voulons également effacer le buffer de profondeur avant chaque itération de rendu (sinon les informations de profondeur de l&rsquo;image précédente restent dans le tampon).  Tout comme pour le buffer de couleur, nous pouvons effacer le buffer de profondeur en spécifiant le bit <code>DEPTH_BUFFER_BIT</code> dans la fonction <code>glClear</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glClear(GL_COLOR_BUFFER_BIT <span style="color:#f92672">|</span> GL_DEPTH_BUFFER_BIT);
+</span></span></code></pre></div><p>Exécutons à nouveau notre programme et voyons si OpenGL effectue maintenant des tests de profondeur :
+![[video/syscoord_video2.mp4]]
+Nous y voilà !  Un cube entièrement texturé avec des tests de profondeur appropriés qui tourne avec le temps. Consultez le code source <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/6.2.coordinate_systems_depth/coordinate_systems_depth.cpp">ici</a>.</p>
+<h2 id="plus-de-cubes">Plus de cubes!<a hidden class="anchor" aria-hidden="true" href="#plus-de-cubes">#</a></h2>
+<p>Supposons que nous voulions afficher 10 de nos cubes à l&rsquo;écran. <strong>Chaque cube aura la même apparence mais ne différera que par son emplacement dans le monde, avec une rotation différente pour chacun d&rsquo;entre eux</strong>. La disposition graphique du cube étant déjà définie, nous n&rsquo;avons pas besoin de modifier nos tampons ou nos tableaux d&rsquo;attributs lors du rendu d&rsquo;autres objets. <strong>La seule chose que nous devons changer pour chaque objet est sa matrice de modèle où nous transformons les cubes dans le monde</strong>.</p>
+<p>Tout d&rsquo;abord, définissons un vecteur de translation pour chaque cube qui spécifie sa position dans l&rsquo;espace mondial. Nous allons définir 10 positions de cubes dans un tableau <code>glm::vec3</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 cubePositions[] <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">0.0f</span>), 
+</span></span><span style="display:flex;"><span>    glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">2.0f</span>,  <span style="color:#ae81ff">5.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">15.0f</span>), 
+</span></span><span style="display:flex;"><span>    glm<span style="color:#f92672">::</span>vec3(<span style="color:#f92672">-</span><span style="color:#ae81ff">1.5f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">2.2f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">2.5f</span>),  
+</span></span><span style="display:flex;"><span>    glm<span style="color:#f92672">::</span>vec3(<span style="color:#f92672">-</span><span style="color:#ae81ff">3.8f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">2.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">12.3f</span>),  
+</span></span><span style="display:flex;"><span>    glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">2.4f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.4f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">3.5f</span>),  
+</span></span><span style="display:flex;"><span>    glm<span style="color:#f92672">::</span>vec3(<span style="color:#f92672">-</span><span style="color:#ae81ff">1.7f</span>,  <span style="color:#ae81ff">3.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">7.5f</span>),  
+</span></span><span style="display:flex;"><span>    glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">1.3f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">2.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">2.5f</span>),  
+</span></span><span style="display:flex;"><span>    glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">1.5f</span>,  <span style="color:#ae81ff">2.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">2.5f</span>), 
+</span></span><span style="display:flex;"><span>    glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">1.5f</span>,  <span style="color:#ae81ff">0.2f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1.5f</span>), 
+</span></span><span style="display:flex;"><span>    glm<span style="color:#f92672">::</span>vec3(<span style="color:#f92672">-</span><span style="color:#ae81ff">1.3f</span>,  <span style="color:#ae81ff">1.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1.5f</span>)  
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p><strong>Maintenant, dans la boucle de rendu, nous voulons appeler <code>glDrawArrays</code> 10 fois, mais cette fois-ci en envoyant une matrice de modèle différente au vertex shader à chaque fois avant d&rsquo;envoyer l&rsquo;appel de dessin</strong>. Nous allons créer une petite boucle dans la boucle de rendu qui rendra notre objet 10 fois avec une matrice de modèle différente à chaque fois. Notez que nous ajoutons également une petite rotation unique à chaque conteneur.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glBindVertexArray(VAO);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">10</span>; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    glm<span style="color:#f92672">::</span>mat4 model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>mat4(<span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>translate(model, cubePositions[i]);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> angle <span style="color:#f92672">=</span> <span style="color:#ae81ff">20.0f</span> <span style="color:#f92672">*</span> i; 
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>rotate(model, glm<span style="color:#f92672">::</span>radians(angle), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.3f</span>, <span style="color:#ae81ff">0.5f</span>));
+</span></span><span style="display:flex;"><span>    ourShader.setMat4(<span style="color:#e6db74">&#34;model&#34;</span>, model);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    glDrawArrays(GL_TRIANGLES, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">36</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Ce bout de code mettra à jour la matrice du modèle à chaque fois qu&rsquo;un nouveau cube sera dessiné, et ce 10 fois au total.  En ce moment, nous devrions voir un monde rempli de 10 cubes bizarrement tournés :
+![[img/syscoord8.png]]
+Parfait !  On dirait que notre conteneur a trouvé des amis qui partagent les mêmes idées. Si vous êtes bloqué, comparez votre code avec le <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/6.3.coordinate_systems_multiple/coordinate_systems_multiple.cpp">code source</a>.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://hrst4.xyz/tags/cg/">cg</a></li>
+      <li><a href="https://hrst4.xyz/tags/opengl/">opengl</a></li>
+      <li><a href="https://hrst4.xyz/tags/computer-graphics/">computer graphics</a></li>
+      <li><a href="https://hrst4.xyz/tags/cpp/">cpp</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://hrst4.xyz/">My New Hugo Site</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

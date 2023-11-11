@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>My New Hugo Site</title>
+<meta name="keywords" content="cg, opengl, computer graphics, cpp">
+<meta name="description" content="Camera Dans le chapitre précédent, nous avons discuté de la matrice de vue et de la façon dont nous pouvons l&rsquo;utiliser pour nous déplacer dans la scène (nous avons un peu reculé). OpenGL n&rsquo;est pas familier avec le concept de caméra, mais nous pouvons essayer d&rsquo;en simuler une en déplaçant tous les objets de la scène dans le sens inverse, donnant l&rsquo;illusion que nous nous déplaçons.
+Dans ce chapitre, nous verrons comment mettre en place une caméra dans OpenGL.">
+<meta name="author" content="">
+<link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/08_camera/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://hrst4.xyz/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://hrst4.xyz/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://hrst4.xyz/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://hrst4.xyz/apple-touch-icon.png">
+<link rel="mask-icon" href="https://hrst4.xyz/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="" />
+<meta property="og:description" content="Camera Dans le chapitre précédent, nous avons discuté de la matrice de vue et de la façon dont nous pouvons l&rsquo;utiliser pour nous déplacer dans la scène (nous avons un peu reculé). OpenGL n&rsquo;est pas familier avec le concept de caméra, mais nous pouvons essayer d&rsquo;en simuler une en déplaçant tous les objets de la scène dans le sens inverse, donnant l&rsquo;illusion que nous nous déplaçons.
+Dans ce chapitre, nous verrons comment mettre en place une caméra dans OpenGL." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/08_camera/" /><meta property="article:section" content="docs" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="Camera Dans le chapitre précédent, nous avons discuté de la matrice de vue et de la façon dont nous pouvons l&rsquo;utiliser pour nous déplacer dans la scène (nous avons un peu reculé). OpenGL n&rsquo;est pas familier avec le concept de caméra, mais nous pouvons essayer d&rsquo;en simuler une en déplaçant tous les objets de la scène dans le sens inverse, donnant l&rsquo;illusion que nous nous déplaçons.
+Dans ce chapitre, nous verrons comment mettre en place une caméra dans OpenGL."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Docs",
+      "item": "https://hrst4.xyz/docs/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "",
+      "item": "https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/08_camera/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "",
+  "name": "",
+  "description": "Camera Dans le chapitre précédent, nous avons discuté de la matrice de vue et de la façon dont nous pouvons l\u0026rsquo;utiliser pour nous déplacer dans la scène (nous avons un peu reculé). OpenGL n\u0026rsquo;est pas familier avec le concept de caméra, mais nous pouvons essayer d\u0026rsquo;en simuler une en déplaçant tous les objets de la scène dans le sens inverse, donnant l\u0026rsquo;illusion que nous nous déplaçons.\nDans ce chapitre, nous verrons comment mettre en place une caméra dans OpenGL.",
+  "keywords": [
+    "cg", "opengl", "computer graphics", "cpp"
+  ],
+  "articleBody": "Camera Dans le chapitre précédent, nous avons discuté de la matrice de vue et de la façon dont nous pouvons l’utiliser pour nous déplacer dans la scène (nous avons un peu reculé). OpenGL n’est pas familier avec le concept de caméra, mais nous pouvons essayer d’en simuler une en déplaçant tous les objets de la scène dans le sens inverse, donnant l’illusion que nous nous déplaçons.\nDans ce chapitre, nous verrons comment mettre en place une caméra dans OpenGL. Nous parlerons d’une caméra de type “fly” qui vous permet de vous déplacer librement dans une scène 3D. Nous aborderons également les entrées clavier et souris et terminerons par une classe de caméra personnalisée.\nCamera / view space Lorsque nous parlons de l’espace caméra/vue, nous parlons de toutes les coordonnées des sommets vues du point de vue de la caméra en tant qu’origine de la scène : la matrice de vue transforme toutes les coordonnées du monde en coordonnées de vue qui sont relatives à la position et à la direction de la caméra. Pour définir une caméra, nous avons besoin de sa position dans l’espace monde, de la direction vers laquelle elle regarde, d’un vecteur pointant vers la droite et d’un vecteur pointant vers le haut à partir de la caméra. Un lecteur attentif remarquera que nous allons en fait créer un système de coordonnées avec 3 axes unitaires perpendiculaires, la position de la caméra étant l’origine. ![[img/camera1.png]]\nPosition de la caméra Obtenir la position de la caméra est facile. La position de la caméra est un vecteur dans l’espace monde qui pointe vers la position de la caméra. Nous plaçons la caméra à la même position que dans le chapitre précédent :\nglm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f); N’oubliez pas que l’axe $z$ positif traverse l’écran vers vous. Si nous voulons que la caméra recule, nous nous déplaçons le long de l’axe $z$ positif.\nDirection de la caméra Le vecteur suivant requis est la direction de la caméra, c’est-à-dire la direction vers laquelle elle pointe. Pour l’instant, nous laissons la caméra pointer vers l’origine de notre scène : $(0,0,0)$. Vous vous souvenez que si l’on soustrait deux vecteurs l’un de l’autre, on obtient un vecteur qui est la différence de ces deux vecteurs ? En soustrayant le vecteur de position de la caméra du vecteur d’origine de la scène, on obtient donc le vecteur de direction souhaité. Pour le système de coordonnées de la matrice de vue, nous voulons que son axe z soit positif et parce que par convention (dans OpenGL) la caméra pointe vers l’axe z négatif, nous voulons annuler le vecteur de direction. Si nous inversons l’ordre de soustraction, nous obtenons un vecteur pointant vers l’axe z positif de la caméra :\nglm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f); glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget); Le vecteur de direction du nom n’est pas le nom le mieux choisi, puisqu’il pointe en fait dans la direction inverse de ce qu’il vise.\nAxe droite (right axis) Le vecteur suivant dont nous avons besoin est un vecteur vers la droite qui représente l’axe $x$ positif de l’espace de la caméra. Pour obtenir le vecteur vers la droite, nous utilisons une petite astuce en spécifiant d’abord un vecteur qui pointe vers le haut (dans l’espace monde). Nous effectuons ensuite un produit vectoriel sur le vecteur qui pointe vers le haut et le vecteur de direction de l’étape précédente. Comme le résultat d’un produit vectoriel est un vecteur perpendiculaire aux deux vecteurs, nous obtiendrons un vecteur qui pointe dans la direction de l’axe $x$ positif (si nous inversions l’ordre du produit en croix, nous obtiendrions un vecteur qui pointe dans la direction de l’axe $x$ négatif) :\nglm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f); glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection)); Axe vers le haut (up axis) Maintenant que nous disposons du vecteur de l’axe des $x$ et du vecteur de l’axe des $z$, il est relativement facile de retrouver le vecteur qui pointe vers l’axe positif des $y$ de la caméra : nous prenons le produit vectoriel du vecteur vers la droite et du vecteur de la direction :\nglm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight); À l’aide du produit vectoriel et de quelques astuces, nous avons pu créer tous les vecteurs qui forment l’espace vue/caméra.Pour les lecteurs plus enclins aux mathématiques, ce processus est connu sous le nom de processus de Gram-Schmidt en algèbre linéaire. En utilisant ces vecteurs de caméra, nous pouvons maintenant créer une matrice LookAt qui s’avère très utile pour créer une caméra.\nLookAt (matrice) L’avantage des matrices est que si vous définissez un espace de coordonnées à l’aide de 3 axes perpendiculaires (ou non linéaires), vous pouvez créer une matrice avec ces 3 axes plus un vecteur de translation et vous pouvez transformer n’importe quel vecteur dans cet espace de coordonnées en le multipliant avec cette matrice. C’est exactement ce que fait la matrice LookAt et maintenant que nous avons 3 axes perpendiculaires et un vecteur de position pour définir l’espace de la caméra, nous pouvons créer notre propre matrice LookAt : $$ LookAt \\begin{bmatrix} R_x \u0026 R_y \u0026 R_z \u0026 0 \\ U_x \u0026 U_y \u0026 U_z \u0026 0 \\ D_x \u0026 D_y \u0026 D_z \u0026 0 \\ 0 \u0026 0 \u0026 0 \u0026 1 \\ \\end{bmatrix} \\cdot \\begin{bmatrix} 1 \u0026 0 \u0026 0 \u0026 -P_x \\ 0 \u0026 1 \u0026 0 \u0026 -P_y \\ 0 \u0026 0 \u0026 1 \u0026 -P_z \\ 0 \u0026 0 \u0026 0 \u0026 1 \\ \\end{bmatrix} $$ Où $R$ est le vecteur qui pointe vers la droite, $U$ est le vecteur qui point vers le haut, $D$ est le vecteur de direction et $P$ est le vecteur de position de la caméra. Notez que les parties rotation (matrice gauche) et translation (matrice droite) sont inversées (transposées et opposées respectivement) puisque nous voulons faire pivoter et translater le monde dans la direction opposée à celle où nous voulons que la caméra se déplace. L’utilisation de cette matrice LookAt comme matrice de vue transforme effectivement toutes les coordonnées du monde dans l’espace de vue que nous venons de définir. La matrice LookAt fait alors exactement ce qu’elle dit : elle crée une matrice de vue qui regarde une cible donnée. Heureusement pour nous, le GLM fait déjà tout ce travail pour nous. Il nous suffit de spécifier la position de la caméra, la position de la cible et un vecteur qui représente le vecteur qui pointe vers le haut dans l’espace monde (le vecteur vers me haut que nous avons utilisé pour calculer le vecteur qui pointe vers la droite). GLM crée ensuite la matrice LookAt que nous pouvons utiliser comme matrice de vue :\nglm::mat4 view; view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); La fonction glm::LookAt nécessite respectivement un vecteur de position, un vecteur de cible et un vecteur qui pointe vers le haut (up vector). Cet exemple crée une matrice de vue identique à celle que nous avons créée dans le chapitre précédent.\nAvant d’aborder l’entrée utilisateur, nous allons d’abord nous amuser un peu en faisant tourner la caméra autour de notre scène.Nous gardons la cible de la scène à $(0,0,0)$. Nous utilisons un peu de trigonométrie pour créer des coordonnées $x$ et $z$ à chaque image qui représentent un point sur un cercle et nous les utiliserons pour la position de la caméra. En recalculant les coordonnées $x$ et $y$ au fil du temps, nous parcourons tous les points d’un cercle et la caméra tourne donc autour de la scène. Nous agrandissons ce cercle d’un rayon prédéfini et créons une nouvelle matrice de vue à chaque image en utilisant la fonction $glfwGetTime$ de GLFW :\nconst float radius = 10.0f; float camX = sin(glfwGetTime()) * radius; float camZ = cos(glfwGetTime()) * radius; glm::mat4 view; view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0)); Si vous exécutez ce code, vous devriez obtenir quelque chose comme ceci : ![[video/camera_video1.mp4]] Avec ce petit bout de code, la caméra tourne autour de la scène au fil du temps. N’hésitez pas à expérimenter avec les paramètres de rayon et de position/direction pour vous faire une idée du fonctionnement de cette matrice LookAt. Consultez également le code source si vous êtes bloqué.\nSe déplacer avec la caméra Faire tourner la caméra autour d’une scène est amusant, mais il est encore plus amusant de faire tous les mouvements nous-mêmes ! Tout d’abord, nous devons mettre en place un système de caméra, il est donc utile de définir quelques variables de caméra au début de notre programme :\nglm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f); glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f); glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f); La fonction LookAt devient alors:\nview = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); Tout d’abord, nous définissons la position de la caméra en fonction du paramètre cameraPos défini précédemment. La direction est la position actuelle + le vecteur de direction que nous venons de définir. Cela permet de s’assurer que, quel que soit notre mouvement, la caméra continue de regarder dans la direction cible. Jouons un peu avec ces variables en mettant à jour le vecteur cameraPos lorsque nous appuyons sur certaines touches.\nNous avons déjà défini une fonction processInput pour gérer les entrées clavier de GLFW, alors ajoutons quelques commandes supplémentaires : void processInput(GLFWwindow *window) { ... const float cameraSpeed = 0.05f; // adjust accordingly if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) cameraPos += cameraSpeed * cameraFront; if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) cameraPos -= cameraSpeed * cameraFront; if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed; if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed; } Chaque fois que nous appuyons sur l’une des touches WASD, la position de la caméra est mise à jour en conséquence. Si nous voulons avancer ou reculer, nous ajoutons ou soustrayons le vecteur de direction du vecteur de position à l’échelle d’une certaine valeur de vitesse. Si nous voulons nous déplacer latéralement, nous effectuons un produit vectoriel pour créer un vecteur vers la droite et nous nous déplaçons le long du vecteur droit en conséquence. Cela permet d’obtenir l’effet familier de strafe lors de l’utilisation de la caméra.\nNotez que nous normalisons le vecteur vers la droite résultant. Si nous ne normalisions pas ce vecteur, le produit vectoriel résultant pourrait renvoyer des vecteurs de tailles différentes en fonction de la variable cameraFront. Si nous ne normalisions pas le vecteur, nous nous déplacerions lentement ou rapidement en fonction de l’orientation de la caméra au lieu d’avoir une vitesse de déplacement constante.\nÀ ce stade, vous devriez déjà être en mesure de déplacer la caméra, bien qu’à une vitesse spécifique au système, vous devrez peut-être ajuster cameraSpeed.\nRapidité du mouvement (movement speed) Actuellement, nous utilisons une valeur constante pour la vitesse de déplacement lorsque l’on se déplace dans la scène. En théorie, cela semble correct, mais en pratique, les machines des utilisateurs ont des puissances de traitement différentes et il en résulte que certaines personnes sont capables de rendre beaucoup plus d’images que d’autres chaque seconde. Lorsqu’un utilisateur rend plus d’images qu’un autre, il appelle processInput plus souvent. Il en résulte que certaines personnes se déplacent très rapidement et d’autres très lentement, en fonction de leur configuration. Lorsque vous livrez votre application, vous voulez vous assurer qu’elle fonctionne de la même manière sur tous les types de matériel.\nLes applications graphiques et les jeux gardent généralement la trace d’une variable deltatime qui stocke le temps qu’il a fallu pour rendre la dernière image. Nous multiplions ensuite toutes les vitesses par cette valeur deltaTime. Ainsi, lorsque le deltaTime d’une image est élevé, ce qui signifie que la dernière image a pris plus de temps que la moyenne, la vitesse de cette image sera également un peu plus élevée afin d’équilibrer le tout. Avec cette approche, peu importe que vous ayez un ordinateur très rapide ou très lent, la vitesse de la caméra sera équilibrée en conséquence, de sorte que chaque utilisateur aura la même expérience.\nPour calculer la valeur deltaTime, nous gardons la trace de 2 variables globales :\nfloat deltaTime = 0.0f;\t// Time between current frame and last frame float lastFrame = 0.0f; // Time of last frame Pour chaque image, nous calculons la nouvelle valeur deltaTime en vue d’une utilisation ultérieure :\nfloat currentFrame = glfwGetTime(); deltaTime = currentFrame - lastFrame; lastFrame = currentFrame; Maintenant que nous avons le deltaTime, nous pouvons le prendre en compte dans le calcul des vitesses :\nvoid processInput(GLFWwindow *window) { float cameraSpeed = 2.5f * deltaTime; [...] } Puisque nous utilisons deltaTime, la caméra se déplacera à une vitesse constante de $2.5$ unités par seconde. Avec la section précédente, nous devrions maintenant avoir un système de caméra beaucoup plus fluide et cohérent pour se déplacer dans la scène : ![[video/camera_video2.mp4]] Et maintenant, nous avons une caméra qui se déplace et regarde aussi rapidement quel que soit le système. Encore une fois, consultez le code source si vous êtes bloqué. Nous verrons que la valeur deltaTime revient fréquemment avec tout ce qui concerne le mouvement.\nRegarder autour de soi Le fait de n’utiliser que les touches du clavier pour se déplacer n’est pas très intéressant. D’autant plus que l’on ne peut pas se retourner, ce qui rend les mouvements assez restreints. C’est là que la souris entre en jeu !\nPour regarder autour de la scène, nous devons changer le vecteur cameraFront en fonction de l’entrée de la souris. Cependant, changer le vecteur de direction en fonction des rotations de la souris est un peu compliqué et nécessite un peu de trigonométrie. Si vous ne comprenez pas la trigonométrie, ne vous inquiétez pas, vous pouvez simplement passer aux sections de code et les coller dans votre code ; vous pourrez toujours revenir plus tard si vous voulez en savoir plus.\nAngles d’Euler Les angles d’Euler sont trois valeurs qui peuvent représenter n’importe quelle rotation en 3D. Ils ont été définis par Leonhard Euler dans les années 1700. Il existe trois angles d’Euler : le tangage (pitch), le lacet (yaw) et le roulis (roll). L’image suivante leur donne une signification visuelle : ![[img/camera2.png]] Le tangage (pitch) est l’angle qui indique à quel point nous regardons vers le haut ou vers le bas, comme le montre la première image. La deuxième image montre la valeur de lacet (yaw) qui représente l’ampleur de notre regard vers la gauche ou vers la droite. L’angle de roulis (roll) représente l’ampleur du mouvement de roulis, comme c’est souvent le cas pour les caméras des vols spatiaux. Chacun des angles d’Euler est représenté par une valeur unique et la combinaison des trois permet de calculer n’importe quel vecteur de rotation en 3D.\nPour notre système de caméra, seules les valeurs de lacet et de tangage nous intéressent, nous ne parlerons donc pas ici de la valeur de roulis. Étant donné une valeur de tangage et une valeur de lacet, nous pouvons les convertir en un vecteur 3D qui représente un nouveau vecteur de direction. Le processus de conversion des valeurs de lacet et de tangage en un vecteur de direction nécessite un peu de trigonométrie, et nous commençons par un cas de base :\nCommençons par un petit rappel et vérifions le cas général du triangle droit (avec un côté à un angle de 90 degrés) : ![[img/camera3.png]] Si nous définissons l’hypoténuse comme étant de longueur 1, nous savons, grâce à la trigonométrie (soh cah toa), que la longueur du côté adjacent est $cos x/h=cos x/1=cos x$ et que la longueur du côté opposé est $sin y/h=sin y/1=sin y$.\nCela nous donne des formules générales pour calculer la longueur des côtés $x$ et $y$ des triangles rectangles, en fonction de l’angle donné. Utilisons ces formules pour calculer les composantes du vecteur directionnel.\nImaginons ce même triangle, mais en le regardant d’un point de vue supérieur, les côtés adjacents et opposés étant parallèles aux axes $x$ et $z$ de la scène (comme si l’on regardait vers le bas sur l’axe $y$). ![[img/camera4.png]] Si l’on considère que l’angle de lacet est l’angle dans le sens inverse des aiguilles d’une montre à partir du côté $x$, on peut voir que la longueur du côté $x$ est liée à $cos(yaw)$. De même, la longueur du côté $z$ est liée à $sin(yaw)$.\nSi nous prenons ces connaissances et une valeur de lacet donnée, nous pouvons les utiliser pour créer un vecteur de direction de la caméra :\nglm::vec3 direction; direction.x = cos(glm::radians(yaw)); // Note that we convert the angle to radians first direction.z = sin(glm::radians(yaw)); Cela permet d’obtenir un vecteur de direction 3D à partir d’une valeur de lacet, mais le tangage doit également être pris en compte. Regardons maintenant le côté de l’axe des $y$ comme si nous étions assis sur le plan $XZ$ : ![[img/camera5.png]] De même, ce triangle nous permet de constater que la composante $y$ de la direction est égale à $sin(pitch)$ :\ndirection.y = sin(glm::radians(pitch)); Cependant, à partir du triangle de tangage, nous pouvons également voir que les côtés $xz$ sont influencés par $cos(pitch)$, nous devons donc nous assurer que cela fait également partie du vecteur de direction. En tenant compte de ces éléments, nous obtenons le vecteur directionnel final traduit à partir des angles d’Euler de lacet et de tangage :\ndirection.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch)); direction.y = sin(glm::radians(pitch)); direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch)); Cela nous donne une formule pour convertir les valeurs de lacet et de tangage en un vecteur de direction tridimensionnel que nous pouvons utiliser pour regarder autour de nous.\nNous avons configuré l’univers de la scène de manière à ce que tout soit positionné dans la direction de l’axe z négatif. Cependant, si nous regardons le triangle de lacet $x$ et $z$, nous voyons qu’un $θ$ de $0$ fait que le vecteur de direction de la caméra pointe vers l’axe $x$ positif. Pour s’assurer que la caméra pointe par défaut vers l’axe $z$ négatif, nous pouvons donner au mouvement de lacet une valeur par défaut de 90 degrés dans le sens des aiguilles d’une montre. Les degrés positifs entraînent une rotation dans le sens inverse des aiguilles d’une montre, c’est pourquoi nous définissons la valeur de lacet par défaut à :\nyaw = -90.0f; Vous vous êtes probablement déjà posé la question : comment définir et modifier ces valeurs de lacet et de tangage ?\nMouse input (entrée souris) Les valeurs de lacet et de tangage sont obtenues à partir du mouvement de la souris (ou du contrôleur/joystick), le mouvement horizontal de la souris affectant le lacet et le mouvement vertical de la souris affectant le tangage. L’idée est de stocker les positions de la souris de la dernière image et de calculer dans l’image actuelle l’ampleur de la variation des valeurs de la souris. Plus la différence horizontale ou verticale est importante, plus nous mettons à jour la valeur de tangage ou de lacet et donc plus la caméra doit se déplacer.\nTout d’abord, nous allons indiquer à GLFW qu’il doit cacher le curseur et le capturer. Capturer un curseur signifie qu’une fois que l’application a le focus, le curseur de la souris reste au centre de la fenêtre (à moins que l’application ne perde le focus ou ne soit quittée). Pour ce faire, il suffit d’un simple appel à la configuration :\nglfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); Après cet appel, chaque fois que nous déplacerons la souris, elle ne sera pas visible et ne devrait pas quitter la fenêtre. C’est parfait pour un système de caméra FPS.\nPour calculer les valeurs de tangage et de lacet, nous devons dire à GLFW d’écouter les événements de mouvement de la souris. Pour ce faire, nous créons une fonction de rappel avec le prototype suivant :\nvoid mouse_callback(GLFWwindow* window, double xpos, double ypos); Ici, xpos et ypos représentent les positions actuelles de la souris. Dès que nous enregistrons la fonction de callback auprès de GLFW à chaque fois que la souris se déplace, la fonction mouse_callback est appelée :\nglfwSetCursorPosCallback(window, mouse_callback); Lorsque l’on gère l’entrée de la souris pour une caméra de type fly, il y a plusieurs étapes à suivre avant de pouvoir calculer complètement le vecteur de direction de la caméra :\nCalculer le décalage de la souris depuis la dernière image. Ajouter les valeurs de décalage aux valeurs de lacet et de tangage de la caméra. Ajouter des contraintes aux valeurs de tangage minimum/maximum. Calculer le vecteur de direction. La première étape consiste à calculer le décalage de la souris depuis la dernière image. Nous devons d’abord stocker les dernières positions de la souris dans l’application, que nous initialisons pour être au centre de l’écran (la taille de l’écran est de 800 par 600) initialement :\nfloat lastX = 400, lastY = 300; Ensuite, dans la fonction callback de la souris, nous calculons le décalage entre la dernière image et l’image actuelle :\nfloat xoffset = xpos - lastX; float yoffset = lastY - ypos; // reversed since y-coordinates range from bottom to top lastX = xpos; lastY = ypos; const float sensitivity = 0.1f; xoffset *= sensitivity; yoffset *= sensitivity; Notez que nous multiplions les valeurs de décalage par une valeur de sensibilité. Si nous omettons cette multiplication, le mouvement de la souris sera beaucoup trop fort ; jouez avec la valeur de sensibilité à votre convenance.\nEnsuite, nous ajoutons les valeurs de décalage aux valeurs de tangage et de lacet déclarées globalement :\nyaw += xoffset; pitch += yoffset; Dans la troisième étape, nous aimerions ajouter quelques contraintes à la caméra afin que les utilisateurs ne puissent pas faire des mouvements de caméra bizarres (cela provoque également un retournement de LookAt dès que le vecteur de direction est parallèle à la direction du monde vers le haut). Le pitch doit être contraint de manière à ce que les utilisateurs ne puissent pas regarder plus haut que 89 degrés (à 90 degrés, nous obtenons le LookAt flip) et également pas en dessous de -89 degrés. Cela garantit que l’utilisateur pourra regarder vers le ciel ou vers ses pieds, mais pas plus loin. Les contraintes fonctionnent en remplaçant la valeur d’Euler par sa valeur de contrainte chaque fois qu’elle enfreint la contrainte :\nif(pitch \u003e 89.0f) pitch = 89.0f; if(pitch \u003c -89.0f) pitch = -89.0f; Notez que nous ne fixons aucune contrainte sur la valeur de lacet puisque nous ne voulons pas contraindre l’utilisateur à une rotation horizontale. Cependant, il est tout aussi facile d’ajouter une contrainte sur la valeur de lacet si vous le souhaitez.\nLa quatrième et dernière étape consiste à calculer le vecteur de direction actuel en utilisant la formule de la section précédente :\nglm::vec3 direction; direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch)); direction.y = sin(glm::radians(pitch)); direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch)); cameraFront = glm::normalize(direction); Ce vecteur de direction calculé contient alors toutes les rotations calculées à partir du mouvement de la souris. Comme le vecteur cameraFront est déjà inclus dans la fonction lookAt de glm, nous sommes prêts à partir.\nSi vous exécutez maintenant le code, vous remarquerez que la caméra fait un grand saut soudain lorsque la fenêtre reçoit pour la première fois le focus du curseur de votre souris. La cause de ce saut soudain est que dès que votre curseur entre dans la fenêtre, la fonction de callback de la souris est appelée avec une position xpos et ypos égale à l’emplacement à partir duquel votre souris est entrée dans l’écran. Cette position est souvent très éloignée du centre de l’écran, ce qui entraîne des décalages importants et donc un saut de mouvement important. Nous pouvons contourner ce problème en définissant une variable globale bool pour vérifier si c’est la première fois que nous recevons une entrée de souris. Si c’est la première fois, nous mettons à jour les positions initiales de la souris avec les nouvelles valeurs xpos et ypos. Les mouvements de souris résultants utiliseront alors les coordonnées de position de la souris nouvellement saisies pour calculer les décalages :\nif (firstMouse) // initially set to true { lastX = xpos; lastY = ypos; firstMouse = false; } Le code final devient alors :\nvoid mouse_callback(GLFWwindow* window, double xpos, double ypos) { if (firstMouse) { lastX = xpos; lastY = ypos; firstMouse = false; } float xoffset = xpos - lastX; float yoffset = lastY - ypos; lastX = xpos; lastY = ypos; float sensitivity = 0.1f; xoffset *= sensitivity; yoffset *= sensitivity; yaw += xoffset; pitch += yoffset; if(pitch \u003e 89.0f) pitch = 89.0f; if(pitch \u003c -89.0f) pitch = -89.0f; glm::vec3 direction; direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch)); direction.y = sin(glm::radians(pitch)); direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch)); cameraFront = glm::normalize(direction); } Zoom Pour compléter le système de caméra, nous allons également implémenter une interface de zoom. Dans le chapitre précédent, nous avons dit que le champ de vision (fov: field of view) définit en grande partie ce que nous pouvons voir de la scène. Lorsque le champ de vision se réduit, l’espace projeté de la scène se réduit. Cet espace plus petit est projeté sur le même NDC, ce qui donne l’illusion d’un zoom avant. Pour effectuer un zoom avant, nous allons utiliser la molette de la souris. Comme pour le mouvement de la souris et la saisie au clavier, nous disposons d’une fonction de callback pour le scroll de la souris :\nvoid scroll_callback(GLFWwindow* window, double xoffset, double yoffset) { fov -= (float)yoffset; if (fov \u003c 1.0f) fov = 1.0f; if (fov \u003e 45.0f) fov = 45.0f; } Lors du scrolling, la valeur yoffset nous indique la quantité de scroll vertical. Lorsque la fonction scroll_callback est appelée, nous modifions le contenu de la variable fov déclarée globalement. Puisque 45.0 est la valeur par défaut de fov, nous voulons contraindre le niveau de zoom entre 1.0 et 45.0.\nNous devons maintenant charger la matrice de projection perspective vers le GPU à chaque image, mais cette fois avec la variable fov comme champ de vision :\nprojection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f); Enfin, n’oubliez pas d’enregistrer la fonction de callback du scroll :\nglfwSetScrollCallback(window, scroll_callback); Et voilà. Nous avons mis en place un système de caméra simple qui permet de se déplacer librement dans un environnement 3D. ![[video/camera_video3.mp4]]\nN’hésitez pas à expérimenter un peu et, si vous êtes bloqué, comparez votre code avec le code source.\nClasse Camera Dans les prochains chapitres, nous utiliserons toujours une caméra pour regarder facilement les scènes et voir les résultats sous tous les angles. Cependant, comme le code de la caméra peut prendre beaucoup de place dans chaque chapitre, nous allons nous abstraire un peu de ses détails et créer notre propre objet caméra qui fait la plupart du travail pour nous avec quelques petits extras sympathiques. Contrairement au chapitre sur les shaders, nous ne vous guiderons pas dans la création de la classe caméra, mais nous vous fournirons le code source (entièrement commenté) si vous souhaitez en connaître les rouages.\nComme pour l’objet Shader, nous définissons la classe caméra entièrement dans un seul fichier d’en-tête. Vous pouvez trouver la classe caméra ici ; vous devriez être en mesure de comprendre le code après ce chapitre. Il est conseillé d’essayer au moins une fois la classe comme exemple de la façon dont vous pouvez créer votre propre système de caméra.\nLe système de caméra que nous avons introduit est une caméra de type “fly” qui convient à la plupart des usages et fonctionne bien avec les angles d’Euler, mais soyez prudent lorsque vous créez des systèmes de caméra différents comme une caméra FPS, ou une caméra de simulation de vol. Chaque système de caméra a ses propres astuces et bizarreries, alors assurez-vous de vous renseigner à leur sujet. Par exemple, cette caméra de vol ne permet pas des valeurs de tangage supérieures ou égales à 90 degrés et un vecteur statique vers le haut de (0,1,0) ne fonctionne pas lorsque nous prenons en compte les valeurs de roulis.\nLa version mise à jour du code source utilisant le nouvel objet caméra est disponible ici.\n",
+  "wordCount" : "4649",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/08_camera/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://hrst4.xyz/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://hrst4.xyz/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      
+    </h1>
+    <div class="post-meta">
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="camera">Camera<a hidden class="anchor" aria-hidden="true" href="#camera">#</a></h1>
+<p>Dans le chapitre précédent, nous avons discuté de la matrice de vue et de la façon dont nous pouvons l&rsquo;utiliser pour nous déplacer dans la scène (nous avons un peu reculé). <strong>OpenGL n&rsquo;est pas familier avec le concept de caméra, mais nous pouvons essayer d&rsquo;en simuler une en déplaçant tous les objets de la scène dans le sens inverse, donnant l&rsquo;illusion que nous nous déplaçons.</strong></p>
+<p>Dans ce chapitre, nous verrons comment mettre en place une caméra dans OpenGL. Nous parlerons d&rsquo;une caméra de type &ldquo;<strong>fly</strong>&rdquo; qui vous permet de vous déplacer librement dans une scène 3D. Nous aborderons également les entrées clavier et souris et terminerons par une classe de caméra personnalisée.</p>
+<h2 id="camera--view-space">Camera / view space<a hidden class="anchor" aria-hidden="true" href="#camera--view-space">#</a></h2>
+<p><strong>Lorsque nous parlons de l&rsquo;espace caméra/vue, nous parlons de toutes les coordonnées des sommets vues du point de vue de la caméra en tant qu&rsquo;origine de la scène</strong> : la matrice de vue transforme toutes les coordonnées du monde en coordonnées de vue qui sont relatives à la position et à la direction de la caméra.
+<strong>Pour définir une caméra, nous avons besoin de sa position dans l&rsquo;espace monde, de la direction vers laquelle elle regarde, d&rsquo;un vecteur pointant vers la droite et d&rsquo;un vecteur pointant vers le haut à partir de la caméra</strong>. Un lecteur attentif remarquera que nous allons en fait créer <strong>un système de coordonnées avec 3 axes unitaires perpendiculaires, la position de la caméra étant l&rsquo;origine.</strong>
+![[img/camera1.png]]</p>
+<h3 id="position-de-la-caméra">Position de la caméra<a hidden class="anchor" aria-hidden="true" href="#position-de-la-caméra">#</a></h3>
+<p>Obtenir la position de la caméra est facile. La position de la caméra est un vecteur dans l&rsquo;espace monde qui pointe vers la position de la caméra. Nous plaçons la caméra à la même position que dans le chapitre précédent :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 cameraPos <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">3.0f</span>);  
+</span></span></code></pre></div><blockquote>
+<p>N&rsquo;oubliez pas que l&rsquo;axe $z$ positif traverse l&rsquo;écran vers vous. Si nous voulons que la caméra recule, nous nous déplaçons le long de l&rsquo;axe $z$ positif.</p>
+</blockquote>
+<h3 id="direction-de-la-caméra">Direction de la caméra<a hidden class="anchor" aria-hidden="true" href="#direction-de-la-caméra">#</a></h3>
+<p>Le vecteur suivant requis est la <strong>direction</strong> de la caméra, c&rsquo;est-à-dire <strong>la direction vers laquelle elle pointe</strong>. Pour l&rsquo;instant, nous laissons la caméra pointer vers l&rsquo;origine de notre scène : $(0,0,0)$. Vous vous souvenez que <strong>si l&rsquo;on soustrait deux vecteurs l&rsquo;un de l&rsquo;autre, on obtient un vecteur qui est la différence de ces deux vecteurs</strong> ? <strong>En soustrayant le vecteur de position de la caméra du vecteur d&rsquo;origine de la scène, on obtient donc le vecteur de direction souhaité.</strong> Pour le système de coordonnées de la matrice de vue, nous voulons que son axe z soit positif et parce que par convention (dans OpenGL) la caméra pointe vers l&rsquo;axe z négatif, nous voulons annuler le vecteur de direction. <strong>Si nous inversons l&rsquo;ordre de soustraction, nous obtenons un vecteur pointant vers l&rsquo;axe z positif de la caméra</strong> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 cameraTarget <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>);
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 cameraDirection <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>normalize(cameraPos <span style="color:#f92672">-</span> cameraTarget);
+</span></span></code></pre></div><blockquote>
+<p>Le vecteur de direction du nom n&rsquo;est pas le nom le mieux choisi, puisqu&rsquo;il pointe en fait dans la direction inverse de ce qu&rsquo;il vise.</p>
+</blockquote>
+<h3 id="axe-droite-right-axis">Axe droite (right axis)<a hidden class="anchor" aria-hidden="true" href="#axe-droite-right-axis">#</a></h3>
+<p>Le vecteur suivant dont nous avons besoin est un vecteur vers la droite qui représente l&rsquo;axe $x$ positif de l&rsquo;espace de la caméra. Pour obtenir le vecteur vers la droite, nous utilisons une petite astuce en spécifiant d&rsquo;abord un vecteur qui pointe vers le haut (dans l&rsquo;espace monde). Nous effectuons ensuite un produit vectoriel sur le vecteur qui pointe vers le haut et le vecteur de direction de l&rsquo;étape précédente. Comme le résultat d&rsquo;un produit vectoriel est un vecteur perpendiculaire aux deux vecteurs, nous obtiendrons un vecteur qui pointe dans la direction de l&rsquo;axe $x$ positif (si nous inversions l&rsquo;ordre du produit en croix, nous obtiendrions un vecteur qui pointe dans la direction de l&rsquo;axe $x$ négatif) :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 up <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>); 
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 cameraRight <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>normalize(glm<span style="color:#f92672">::</span>cross(up, cameraDirection));
+</span></span></code></pre></div><h3 id="axe-vers-le-haut-up-axis">Axe vers le haut (up axis)<a hidden class="anchor" aria-hidden="true" href="#axe-vers-le-haut-up-axis">#</a></h3>
+<p>Maintenant que nous disposons du vecteur de l&rsquo;axe des $x$ et du vecteur de l&rsquo;axe des $z$, il est relativement facile de retrouver le vecteur qui pointe vers l&rsquo;axe positif des $y$ de la caméra : nous prenons le produit vectoriel du vecteur vers la droite et du vecteur de la direction :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 cameraUp <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>cross(cameraDirection, cameraRight);
+</span></span></code></pre></div><p>À l&rsquo;aide du produit vectoriel et de quelques astuces, nous avons pu créer tous les vecteurs qui forment l&rsquo;espace vue/caméra.Pour les lecteurs plus enclins aux mathématiques, ce processus est connu sous le nom de <strong>processus de <a href="http://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process">Gram-Schmidt</a></strong> en algèbre linéaire. En utilisant ces vecteurs de caméra, nous pouvons maintenant créer une matrice <code>LookAt</code> qui s&rsquo;avère très utile pour créer une caméra.</p>
+<h3 id="lookat-matrice">LookAt (matrice)<a hidden class="anchor" aria-hidden="true" href="#lookat-matrice">#</a></h3>
+<h1 id="lookat"><strong>L&rsquo;avantage des matrices est que si vous définissez un espace de coordonnées à l&rsquo;aide de 3 axes perpendiculaires (ou non linéaires), vous pouvez créer une matrice avec ces 3 axes plus un vecteur de translation et vous pouvez transformer n&rsquo;importe quel vecteur dans cet espace de coordonnées en le multipliant avec cette matrice</strong>. C&rsquo;est exactement ce que fait la matrice <code>LookAt</code> et maintenant que nous avons 3 axes perpendiculaires et un vecteur de position pour définir l&rsquo;espace de la caméra, nous pouvons créer notre propre matrice <code>LookAt</code> :
+$$
+LookAt</h1>
+<p>\begin{bmatrix}
+R_x &amp; R_y &amp; R_z &amp; 0 \
+U_x &amp; U_y &amp; U_z &amp; 0 \
+D_x &amp; D_y &amp; D_z &amp; 0 \
+0 &amp; 0 &amp; 0 &amp; 1 \
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+1 &amp; 0 &amp; 0 &amp; -P_x \
+0 &amp; 1 &amp; 0 &amp; -P_y \
+0 &amp; 0 &amp; 1 &amp; -P_z \
+0 &amp; 0 &amp; 0 &amp; 1 \
+\end{bmatrix}
+$$
+Où $R$ est le vecteur qui pointe vers la droite, $U$ est le vecteur qui point vers le haut, $D$ est le vecteur de direction et $P$ est le vecteur de position de la caméra. <strong>Notez que les parties rotation (matrice gauche) et translation (matrice droite) sont inversées (transposées et opposées respectivement) puisque nous voulons faire pivoter et translater le monde dans la direction opposée à celle où nous voulons que la caméra se déplace.</strong>
+L&rsquo;utilisation de cette matrice <code>LookAt</code> comme matrice de vue transforme effectivement toutes les coordonnées du monde dans l&rsquo;espace de vue que nous venons de définir. <strong>La matrice <code>LookAt</code> fait alors exactement ce qu&rsquo;elle dit : elle crée une matrice de vue qui regarde une cible donnée.</strong>
+<strong>Heureusement pour nous, le GLM fait déjà tout ce travail pour nous</strong>. Il nous suffit de spécifier la position de la caméra, la position de la cible et un vecteur qui représente le vecteur qui pointe vers le haut dans l&rsquo;espace monde (le vecteur vers me haut que nous avons utilisé pour calculer le vecteur qui pointe vers la droite). GLM crée ensuite la matrice <code>LookAt</code> que nous pouvons utiliser comme matrice de vue :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>mat4 view;
+</span></span><span style="display:flex;"><span>view <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>lookAt(glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">3.0f</span>), 
+</span></span><span style="display:flex;"><span>  		   glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>), 
+</span></span><span style="display:flex;"><span>  		   glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>));
+</span></span></code></pre></div><p>La fonction <code>glm::LookAt</code> nécessite respectivement un vecteur de position, un vecteur de cible et un vecteur qui pointe vers le haut (up vector). Cet exemple crée une matrice de vue identique à celle que nous avons créée dans le chapitre précédent.</p>
+<p>Avant d&rsquo;aborder l&rsquo;entrée utilisateur, nous allons d&rsquo;abord nous amuser un peu en faisant tourner la caméra autour de notre scène.Nous gardons la cible de la scène à $(0,0,0)$. Nous utilisons un peu de trigonométrie pour créer des coordonnées $x$ et $z$ à chaque image qui représentent un point sur un cercle et nous les utiliserons pour la position de la caméra. En recalculant les coordonnées $x$ et $y$ au fil du temps, nous parcourons tous les points d&rsquo;un cercle et la caméra tourne donc autour de la scène. Nous agrandissons ce cercle d&rsquo;un rayon prédéfini et créons une nouvelle matrice de vue à chaque image en utilisant la fonction $glfwGetTime$ de GLFW :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> radius <span style="color:#f92672">=</span> <span style="color:#ae81ff">10.0f</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> camX <span style="color:#f92672">=</span> sin(glfwGetTime()) <span style="color:#f92672">*</span> radius;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> camZ <span style="color:#f92672">=</span> cos(glfwGetTime()) <span style="color:#f92672">*</span> radius;
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>mat4 view;
+</span></span><span style="display:flex;"><span>view <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>lookAt(glm<span style="color:#f92672">::</span>vec3(camX, <span style="color:#ae81ff">0.0</span>, camZ), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>)); 
+</span></span></code></pre></div><p>Si vous exécutez ce code, vous devriez obtenir quelque chose comme ceci :
+![[video/camera_video1.mp4]]
+Avec ce petit bout de code, la caméra tourne autour de la scène au fil du temps. N&rsquo;hésitez pas à expérimenter avec les paramètres de rayon et de position/direction pour vous faire une idée du fonctionnement de cette matrice <code>LookAt</code>. Consultez également le <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/7.1.camera_circle/camera_circle.cpp">code source</a> si vous êtes bloqué.</p>
+<h2 id="se-déplacer-avec-la-caméra">Se déplacer avec la caméra<a hidden class="anchor" aria-hidden="true" href="#se-déplacer-avec-la-caméra">#</a></h2>
+<p>Faire tourner la caméra autour d&rsquo;une scène est amusant, mais il est encore plus amusant de faire tous les mouvements nous-mêmes ! Tout d&rsquo;abord, nous devons mettre en place un système de caméra, il est donc utile de définir quelques variables de caméra au début de notre programme :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 cameraPos   <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">3.0f</span>);
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 cameraFront <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 cameraUp    <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>,  <span style="color:#ae81ff">0.0f</span>);
+</span></span></code></pre></div><p>La fonction <code>LookAt</code> devient alors:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>view <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>lookAt(cameraPos, cameraPos <span style="color:#f92672">+</span> cameraFront, cameraUp);
+</span></span></code></pre></div><p>Tout d&rsquo;abord, nous définissons la position de la caméra en fonction du paramètre cameraPos défini précédemment. La direction est la position actuelle + le vecteur de direction que nous venons de définir. Cela permet de s&rsquo;assurer que, quel que soit notre mouvement, la caméra continue de regarder dans la direction cible. Jouons un peu avec ces variables en mettant à jour le vecteur <code>cameraPos</code> lorsque nous appuyons sur certaines touches.</p>
+<p>Nous avons déjà défini une fonction <code>processInput</code> pour gérer les entrées clavier de GLFW, alors ajoutons quelques commandes supplémentaires : </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">processInput</span>(GLFWwindow <span style="color:#f92672">*</span>window)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> cameraSpeed <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.05f</span>; <span style="color:#75715e">// adjust accordingly
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (glfwGetKey(window, GLFW_KEY_W) <span style="color:#f92672">==</span> GLFW_PRESS)
+</span></span><span style="display:flex;"><span>        cameraPos <span style="color:#f92672">+=</span> cameraSpeed <span style="color:#f92672">*</span> cameraFront;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (glfwGetKey(window, GLFW_KEY_S) <span style="color:#f92672">==</span> GLFW_PRESS)
+</span></span><span style="display:flex;"><span>        cameraPos <span style="color:#f92672">-=</span> cameraSpeed <span style="color:#f92672">*</span> cameraFront;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (glfwGetKey(window, GLFW_KEY_A) <span style="color:#f92672">==</span> GLFW_PRESS)
+</span></span><span style="display:flex;"><span>        cameraPos <span style="color:#f92672">-=</span> glm<span style="color:#f92672">::</span>normalize(glm<span style="color:#f92672">::</span>cross(cameraFront, cameraUp)) <span style="color:#f92672">*</span> cameraSpeed;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (glfwGetKey(window, GLFW_KEY_D) <span style="color:#f92672">==</span> GLFW_PRESS)
+</span></span><span style="display:flex;"><span>        cameraPos <span style="color:#f92672">+=</span> glm<span style="color:#f92672">::</span>normalize(glm<span style="color:#f92672">::</span>cross(cameraFront, cameraUp)) <span style="color:#f92672">*</span> cameraSpeed;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Chaque fois que nous appuyons sur l&rsquo;une des touches <strong>WASD</strong>, la position de la caméra est mise à jour en conséquence. Si nous voulons avancer ou reculer, nous ajoutons ou soustrayons le vecteur de direction du vecteur de position à l&rsquo;échelle d&rsquo;une certaine valeur de vitesse. Si nous voulons nous déplacer latéralement, nous effectuons un produit vectoriel pour créer un vecteur vers la droite et nous nous déplaçons le long du vecteur droit en conséquence. Cela permet d&rsquo;obtenir l&rsquo;effet familier de <strong>strafe</strong> lors de l&rsquo;utilisation de la caméra.</p>
+<blockquote>
+<p>Notez que nous normalisons le vecteur vers la droite résultant. Si nous ne normalisions pas ce vecteur, le produit vectoriel résultant pourrait renvoyer des vecteurs de tailles différentes en fonction de la variable <code>cameraFront</code>. <strong>Si nous ne normalisions pas le vecteur, nous nous déplacerions lentement ou rapidement en fonction de l&rsquo;orientation de la caméra au lieu d&rsquo;avoir une vitesse de déplacement constante.</strong></p>
+</blockquote>
+<p>À ce stade, vous devriez déjà être en mesure de déplacer la caméra, bien qu&rsquo;à une vitesse spécifique au système, vous devrez peut-être ajuster <code>cameraSpeed</code>.</p>
+<h2 id="rapidité-du-mouvement-movement-speed">Rapidité du mouvement (movement speed)<a hidden class="anchor" aria-hidden="true" href="#rapidité-du-mouvement-movement-speed">#</a></h2>
+<p>Actuellement, nous utilisons une valeur constante pour la vitesse de déplacement lorsque l&rsquo;on se déplace dans la scène. En théorie, cela semble correct, mais <strong>en pratique, les machines des utilisateurs ont des puissances de traitement différentes et il en résulte que certaines personnes sont capables de rendre beaucoup plus d&rsquo;images que d&rsquo;autres chaque seconde</strong>. Lorsqu&rsquo;un utilisateur rend plus d&rsquo;images qu&rsquo;un autre, il appelle <code>processInput</code> plus souvent. <strong>Il en résulte que certaines personnes se déplacent très rapidement et d&rsquo;autres très lentement, en fonction de leur configuration</strong>. Lorsque vous livrez votre application, vous voulez vous assurer qu&rsquo;elle fonctionne de la même manière sur tous les types de matériel.</p>
+<p>Les applications graphiques et les jeux gardent généralement la trace d&rsquo;une variable <code>deltatime</code> qui stocke le temps qu&rsquo;il a fallu pour rendre la dernière image. Nous multiplions ensuite toutes les vitesses par cette valeur <code>deltaTime</code>. Ainsi, lorsque le <code>deltaTime</code> d&rsquo;une image est élevé, ce qui signifie que la dernière image a pris plus de temps que la moyenne, la vitesse de cette image sera également un peu plus élevée afin d&rsquo;équilibrer le tout. Avec cette approche, peu importe que vous ayez un ordinateur très rapide ou très lent, la vitesse de la caméra sera équilibrée en conséquence, de sorte que chaque utilisateur aura la même expérience.</p>
+<p>Pour calculer la valeur <code>deltaTime</code>, nous gardons la trace de 2 variables globales :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> deltaTime <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0f</span>;	<span style="color:#75715e">// Time between current frame and last frame
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">float</span> lastFrame <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0f</span>; <span style="color:#75715e">// Time of last frame
+</span></span></span></code></pre></div><p>Pour chaque image, nous calculons la nouvelle valeur <code>deltaTime</code> en vue d&rsquo;une utilisation ultérieure :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> currentFrame <span style="color:#f92672">=</span> glfwGetTime();
+</span></span><span style="display:flex;"><span>deltaTime <span style="color:#f92672">=</span> currentFrame <span style="color:#f92672">-</span> lastFrame;
+</span></span><span style="display:flex;"><span>lastFrame <span style="color:#f92672">=</span> currentFrame;  
+</span></span></code></pre></div><p>Maintenant que nous avons le <code>deltaTime</code>, nous pouvons le prendre en compte dans le calcul des vitesses :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">processInput</span>(GLFWwindow <span style="color:#f92672">*</span>window)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> cameraSpeed <span style="color:#f92672">=</span> <span style="color:#ae81ff">2.5f</span> <span style="color:#f92672">*</span> deltaTime;
+</span></span><span style="display:flex;"><span>    [...]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Puisque nous utilisons <code>deltaTime</code>, la caméra se déplacera à une vitesse constante de $2.5$ unités par seconde. Avec la section précédente, nous devrions maintenant avoir un système de caméra beaucoup plus fluide et cohérent pour se déplacer dans la scène :
+![[video/camera_video2.mp4]]
+Et maintenant, nous avons une caméra qui se déplace et regarde aussi rapidement quel que soit le système. Encore une fois, consultez le <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/7.2.camera_keyboard_dt/camera_keyboard_dt.cpp">code source</a> si vous êtes bloqué. Nous verrons que la valeur <code>deltaTime</code> revient fréquemment avec tout ce qui concerne le mouvement.</p>
+<h2 id="regarder-autour-de-soi">Regarder autour de soi<a hidden class="anchor" aria-hidden="true" href="#regarder-autour-de-soi">#</a></h2>
+<p>Le fait de n&rsquo;utiliser que les touches du clavier pour se déplacer n&rsquo;est pas très intéressant. D&rsquo;autant plus que l&rsquo;on ne peut pas se retourner, ce qui rend les mouvements assez restreints. <strong>C&rsquo;est là que la souris entre en jeu !</strong></p>
+<p>Pour regarder autour de la scène, nous devons changer le vecteur <code>cameraFront</code> en fonction de l&rsquo;entrée de la souris. Cependant, changer le vecteur de direction en fonction des rotations de la souris est un peu compliqué et nécessite un peu de trigonométrie. Si vous ne comprenez pas la trigonométrie, ne vous inquiétez pas, vous pouvez simplement passer aux sections de code et les coller dans votre code ; vous pourrez toujours revenir plus tard si vous voulez en savoir plus.</p>
+<h3 id="angles-deuler">Angles d&rsquo;Euler<a hidden class="anchor" aria-hidden="true" href="#angles-deuler">#</a></h3>
+<p><strong>Les angles d&rsquo;Euler sont trois valeurs qui peuvent représenter n&rsquo;importe quelle rotation en 3D</strong>. Ils ont été définis par Leonhard Euler dans les années 1700. <strong>Il existe trois angles d&rsquo;Euler : le tangage (pitch), le lacet (yaw) et le roulis (roll)</strong>. L&rsquo;image suivante leur donne une signification visuelle :
+![[img/camera2.png]]
+Le tangage (pitch) est l&rsquo;angle qui indique à quel point nous regardons vers le haut ou vers le bas, comme le montre la première image.
+La deuxième image montre la valeur de lacet (yaw) qui représente l&rsquo;ampleur de notre regard vers la gauche ou vers la droite.
+L&rsquo;angle de roulis (roll) représente l&rsquo;ampleur du mouvement de roulis, comme c&rsquo;est souvent le cas pour les caméras des vols spatiaux.
+<strong>Chacun des angles d&rsquo;Euler est représenté par une valeur unique et la combinaison des trois permet de calculer n&rsquo;importe quel vecteur de rotation en 3D.</strong></p>
+<p><strong>Pour notre système de caméra, seules les valeurs de lacet et de tangage nous intéressent, nous ne parlerons donc pas ici de la valeur de roulis.</strong> <strong>Étant donné une valeur de tangage et une valeur de lacet, nous pouvons les convertir en un vecteur 3D qui représente un nouveau vecteur de direction.</strong> Le processus de conversion des valeurs de lacet et de tangage en un vecteur de direction nécessite un peu de trigonométrie, et nous commençons par un cas de base :</p>
+<p>Commençons par un petit rappel et vérifions le cas général du triangle droit (avec un côté à un angle de 90 degrés) :
+![[img/camera3.png]]
+Si nous définissons l&rsquo;hypoténuse comme étant de longueur 1, nous savons, grâce à la trigonométrie (soh cah toa), que <strong>la longueur du côté adjacent est $cos x/h=cos x/1=cos x$ et que la longueur du côté opposé est $sin y/h=sin y/1=sin y$.</strong></p>
+<p>Cela nous donne des formules générales pour calculer la longueur des côtés $x$ et $y$ des triangles rectangles, en fonction de l&rsquo;angle donné. Utilisons ces formules pour calculer les composantes du vecteur directionnel.</p>
+<p>Imaginons ce même triangle, mais en le regardant d&rsquo;un point de vue supérieur, les côtés adjacents et opposés étant parallèles aux axes $x$ et $z$ de la scène (comme si l&rsquo;on regardait vers le bas sur l&rsquo;axe $y$).
+![[img/camera4.png]]
+Si l&rsquo;on considère que l&rsquo;angle de lacet est l&rsquo;angle dans le sens inverse des aiguilles d&rsquo;une montre à partir du côté $x$, on peut voir que la longueur du côté $x$ est liée à $cos(yaw)$. De même, la longueur du côté $z$ est liée à $sin(yaw)$.</p>
+<p>Si nous prenons ces connaissances et une valeur de lacet donnée, nous pouvons les utiliser pour créer un vecteur de direction de la caméra :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 direction;
+</span></span><span style="display:flex;"><span>direction.x <span style="color:#f92672">=</span> cos(glm<span style="color:#f92672">::</span>radians(yaw)); <span style="color:#75715e">// Note that we convert the angle to radians first
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>direction.z <span style="color:#f92672">=</span> sin(glm<span style="color:#f92672">::</span>radians(yaw));
+</span></span></code></pre></div><p>Cela permet d&rsquo;obtenir un vecteur de direction 3D à partir d&rsquo;une valeur de lacet, mais le tangage doit également être pris en compte. Regardons maintenant le côté de l&rsquo;axe des $y$ comme si nous étions assis sur le plan $XZ$ :
+![[img/camera5.png]]
+De même, ce triangle nous permet de constater que la composante $y$ de la direction est égale à $sin(pitch)$ :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>direction.y <span style="color:#f92672">=</span> sin(glm<span style="color:#f92672">::</span>radians(pitch));  
+</span></span></code></pre></div><p>Cependant, à partir du triangle de tangage, nous pouvons également voir que les côtés $xz$ sont influencés par $cos(pitch)$, nous devons donc nous assurer que cela fait également partie du vecteur de direction. En tenant compte de ces éléments, nous obtenons le vecteur directionnel final traduit à partir des angles d&rsquo;Euler de lacet et de tangage :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>direction.x <span style="color:#f92672">=</span> cos(glm<span style="color:#f92672">::</span>radians(yaw)) <span style="color:#f92672">*</span> cos(glm<span style="color:#f92672">::</span>radians(pitch));
+</span></span><span style="display:flex;"><span>direction.y <span style="color:#f92672">=</span> sin(glm<span style="color:#f92672">::</span>radians(pitch));
+</span></span><span style="display:flex;"><span>direction.z <span style="color:#f92672">=</span> sin(glm<span style="color:#f92672">::</span>radians(yaw)) <span style="color:#f92672">*</span> cos(glm<span style="color:#f92672">::</span>radians(pitch));
+</span></span></code></pre></div><p>Cela nous donne une formule pour convertir les valeurs de lacet et de tangage en un vecteur de direction tridimensionnel que nous pouvons utiliser pour regarder autour de nous.</p>
+<p>Nous avons configuré l&rsquo;univers de la scène de manière à ce que tout soit positionné dans la direction de l&rsquo;axe z négatif. Cependant, si nous regardons le triangle de lacet $x$ et $z$, nous voyons qu&rsquo;un $θ$ de $0$ fait que le vecteur de direction de la caméra pointe vers l&rsquo;axe $x$ positif. <strong>Pour s&rsquo;assurer que la caméra pointe par défaut vers l&rsquo;axe $z$ négatif, nous pouvons donner au mouvement de lacet une valeur par défaut de 90 degrés dans le sens des aiguilles d&rsquo;une montre</strong>. Les degrés positifs entraînent une rotation dans le sens inverse des aiguilles d&rsquo;une montre, c&rsquo;est pourquoi nous définissons la valeur de lacet par défaut à :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>yaw <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">90.0f</span>;
+</span></span></code></pre></div><p>Vous vous êtes probablement déjà posé la question : comment définir et modifier ces valeurs de lacet et de tangage ?</p>
+<h3 id="mouse-input-entrée-souris">Mouse input (entrée souris)<a hidden class="anchor" aria-hidden="true" href="#mouse-input-entrée-souris">#</a></h3>
+<p>Les valeurs de lacet et de tangage sont obtenues à partir du mouvement de la souris (ou du contrôleur/joystick), le mouvement horizontal de la souris affectant le lacet et le mouvement vertical de la souris affectant le tangage. L&rsquo;idée est de stocker les positions de la souris de la dernière image et de calculer dans l&rsquo;image actuelle l&rsquo;ampleur de la variation des valeurs de la souris. Plus la différence horizontale ou verticale est importante, plus nous mettons à jour la valeur de tangage ou de lacet et donc plus la caméra doit se déplacer.</p>
+<p>Tout d&rsquo;abord, nous allons indiquer à GLFW qu&rsquo;il doit cacher le curseur et le capturer. <strong>Capturer un curseur signifie qu&rsquo;une fois que l&rsquo;application a le focus, le curseur de la souris reste au centre de la fenêtre</strong> (à moins que l&rsquo;application ne perde le focus ou ne soit quittée). Pour ce faire, il suffit d&rsquo;un simple appel à la configuration :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
+</span></span></code></pre></div><p>Après cet appel, chaque fois que nous déplacerons la souris, elle ne sera pas visible et ne devrait pas quitter la fenêtre. C&rsquo;est parfait pour un système de caméra FPS.</p>
+<p>Pour calculer les valeurs de tangage et de lacet, nous devons dire à GLFW d&rsquo;écouter les événements de mouvement de la souris. Pour ce faire, nous créons une fonction de rappel avec le prototype suivant :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">mouse_callback</span>(GLFWwindow<span style="color:#f92672">*</span> window, <span style="color:#66d9ef">double</span> xpos, <span style="color:#66d9ef">double</span> ypos);
+</span></span></code></pre></div><p>Ici, <code>xpos</code> et <code>ypos</code> représentent les positions actuelles de la souris. Dès que nous enregistrons la fonction de callback auprès de GLFW à chaque fois que la souris se déplace, la fonction <code>mouse_callback</code> est appelée :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glfwSetCursorPosCallback(window, mouse_callback);  
+</span></span></code></pre></div><p>Lorsque l&rsquo;on gère l&rsquo;entrée de la souris pour une caméra de type fly, il y a plusieurs étapes à suivre avant de pouvoir calculer complètement le vecteur de direction de la caméra :</p>
+<ol>
+<li>Calculer le décalage de la souris depuis la dernière image.</li>
+<li>Ajouter les valeurs de décalage aux valeurs de lacet et de tangage de la caméra.</li>
+<li>Ajouter des contraintes aux valeurs de tangage minimum/maximum.</li>
+<li>Calculer le vecteur de direction.</li>
+</ol>
+<p>La première étape consiste à calculer le décalage de la souris depuis la dernière image. Nous devons d&rsquo;abord stocker les dernières positions de la souris dans l&rsquo;application, que nous initialisons pour être au centre de l&rsquo;écran (la taille de l&rsquo;écran est de <code>800</code> par <code>600</code>) initialement :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> lastX <span style="color:#f92672">=</span> <span style="color:#ae81ff">400</span>, lastY <span style="color:#f92672">=</span> <span style="color:#ae81ff">300</span>;
+</span></span></code></pre></div><p>Ensuite, dans la fonction callback de la souris, nous calculons le décalage entre la dernière image et l&rsquo;image actuelle :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> xoffset <span style="color:#f92672">=</span> xpos <span style="color:#f92672">-</span> lastX;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> yoffset <span style="color:#f92672">=</span> lastY <span style="color:#f92672">-</span> ypos; <span style="color:#75715e">// reversed since y-coordinates range from bottom to top
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>lastX <span style="color:#f92672">=</span> xpos;
+</span></span><span style="display:flex;"><span>lastY <span style="color:#f92672">=</span> ypos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> sensitivity <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1f</span>;
+</span></span><span style="display:flex;"><span>xoffset <span style="color:#f92672">*=</span> sensitivity;
+</span></span><span style="display:flex;"><span>yoffset <span style="color:#f92672">*=</span> sensitivity;
+</span></span></code></pre></div><p>Notez que nous multiplions les valeurs de décalage par une valeur de sensibilité. Si nous omettons cette multiplication, le mouvement de la souris sera beaucoup trop fort ; jouez avec la valeur de sensibilité à votre convenance.</p>
+<p>Ensuite, nous ajoutons les valeurs de décalage aux valeurs de tangage et de lacet déclarées globalement :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>yaw   <span style="color:#f92672">+=</span> xoffset;
+</span></span><span style="display:flex;"><span>pitch <span style="color:#f92672">+=</span> yoffset;  
+</span></span></code></pre></div><p>Dans la troisième étape, nous aimerions ajouter quelques contraintes à la caméra afin que les utilisateurs ne puissent pas faire des mouvements de caméra bizarres (cela provoque également un retournement de <code>LookAt</code> dès que le vecteur de direction est parallèle à la direction du monde vers le haut). Le pitch doit être contraint de manière à ce que les utilisateurs ne puissent pas regarder plus haut que 89 degrés (à 90 degrés, nous obtenons le <code>LookAt</code> flip) et également pas en dessous de -89 degrés. Cela garantit que l&rsquo;utilisateur pourra regarder vers le ciel ou vers ses pieds, mais pas plus loin. Les contraintes fonctionnent en remplaçant la valeur d&rsquo;Euler par sa valeur de contrainte chaque fois qu&rsquo;elle enfreint la contrainte :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(pitch <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">89.0f</span>)
+</span></span><span style="display:flex;"><span>  pitch <span style="color:#f92672">=</span>  <span style="color:#ae81ff">89.0f</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(pitch <span style="color:#f92672">&lt;</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">89.0f</span>)
+</span></span><span style="display:flex;"><span>  pitch <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">89.0f</span>;
+</span></span></code></pre></div><p>Notez que nous ne fixons aucune contrainte sur la valeur de lacet puisque nous ne voulons pas contraindre l&rsquo;utilisateur à une rotation horizontale. Cependant, il est tout aussi facile d&rsquo;ajouter une contrainte sur la valeur de lacet si vous le souhaitez.</p>
+<p>La quatrième et dernière étape consiste à calculer le vecteur de direction actuel en utilisant la formule de la section précédente :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 direction;
+</span></span><span style="display:flex;"><span>direction.x <span style="color:#f92672">=</span> cos(glm<span style="color:#f92672">::</span>radians(yaw)) <span style="color:#f92672">*</span> cos(glm<span style="color:#f92672">::</span>radians(pitch));
+</span></span><span style="display:flex;"><span>direction.y <span style="color:#f92672">=</span> sin(glm<span style="color:#f92672">::</span>radians(pitch));
+</span></span><span style="display:flex;"><span>direction.z <span style="color:#f92672">=</span> sin(glm<span style="color:#f92672">::</span>radians(yaw)) <span style="color:#f92672">*</span> cos(glm<span style="color:#f92672">::</span>radians(pitch));
+</span></span><span style="display:flex;"><span>cameraFront <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>normalize(direction);
+</span></span></code></pre></div><p>Ce vecteur de direction calculé contient alors toutes les rotations calculées à partir du mouvement de la souris. Comme le vecteur <code>cameraFront</code> est déjà inclus dans la fonction <code>lookAt</code> de <strong>glm</strong>, nous sommes prêts à partir.</p>
+<p>Si vous exécutez maintenant le code, vous remarquerez que la caméra fait un grand saut soudain lorsque la fenêtre reçoit pour la première fois le focus du curseur de votre souris. <strong>La cause de ce saut soudain est que dès que votre curseur entre dans la fenêtre, la fonction de callback de la souris est appelée avec une position <code>xpos</code> et <code>ypos</code> égale à l&rsquo;emplacement à partir duquel votre souris est entrée dans l&rsquo;écran</strong>. Cette position est souvent très éloignée du centre de l&rsquo;écran, ce qui entraîne des décalages importants et donc un saut de mouvement important.
+Nous pouvons contourner ce problème en définissant une variable globale <code>bool</code> pour vérifier si c&rsquo;est la première fois que nous recevons une entrée de souris. Si c&rsquo;est la première fois, nous mettons à jour les positions initiales de la souris avec les nouvelles valeurs <code>xpos</code> et <code>ypos</code>. Les mouvements de souris résultants utiliseront alors les coordonnées de position de la souris nouvellement saisies pour calculer les décalages :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (firstMouse) <span style="color:#75715e">// initially set to true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>{
+</span></span><span style="display:flex;"><span>    lastX <span style="color:#f92672">=</span> xpos;
+</span></span><span style="display:flex;"><span>    lastY <span style="color:#f92672">=</span> ypos;
+</span></span><span style="display:flex;"><span>    firstMouse <span style="color:#f92672">=</span> false;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Le code final devient alors :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">mouse_callback</span>(GLFWwindow<span style="color:#f92672">*</span> window, <span style="color:#66d9ef">double</span> xpos, <span style="color:#66d9ef">double</span> ypos)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (firstMouse)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        lastX <span style="color:#f92672">=</span> xpos;
+</span></span><span style="display:flex;"><span>        lastY <span style="color:#f92672">=</span> ypos;
+</span></span><span style="display:flex;"><span>        firstMouse <span style="color:#f92672">=</span> false;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> xoffset <span style="color:#f92672">=</span> xpos <span style="color:#f92672">-</span> lastX;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> yoffset <span style="color:#f92672">=</span> lastY <span style="color:#f92672">-</span> ypos; 
+</span></span><span style="display:flex;"><span>    lastX <span style="color:#f92672">=</span> xpos;
+</span></span><span style="display:flex;"><span>    lastY <span style="color:#f92672">=</span> ypos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> sensitivity <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1f</span>;
+</span></span><span style="display:flex;"><span>    xoffset <span style="color:#f92672">*=</span> sensitivity;
+</span></span><span style="display:flex;"><span>    yoffset <span style="color:#f92672">*=</span> sensitivity;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    yaw   <span style="color:#f92672">+=</span> xoffset;
+</span></span><span style="display:flex;"><span>    pitch <span style="color:#f92672">+=</span> yoffset;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(pitch <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">89.0f</span>)
+</span></span><span style="display:flex;"><span>        pitch <span style="color:#f92672">=</span> <span style="color:#ae81ff">89.0f</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(pitch <span style="color:#f92672">&lt;</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">89.0f</span>)
+</span></span><span style="display:flex;"><span>        pitch <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">89.0f</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    glm<span style="color:#f92672">::</span>vec3 direction;
+</span></span><span style="display:flex;"><span>    direction.x <span style="color:#f92672">=</span> cos(glm<span style="color:#f92672">::</span>radians(yaw)) <span style="color:#f92672">*</span> cos(glm<span style="color:#f92672">::</span>radians(pitch));
+</span></span><span style="display:flex;"><span>    direction.y <span style="color:#f92672">=</span> sin(glm<span style="color:#f92672">::</span>radians(pitch));
+</span></span><span style="display:flex;"><span>    direction.z <span style="color:#f92672">=</span> sin(glm<span style="color:#f92672">::</span>radians(yaw)) <span style="color:#f92672">*</span> cos(glm<span style="color:#f92672">::</span>radians(pitch));
+</span></span><span style="display:flex;"><span>    cameraFront <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>normalize(direction);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><h3 id="zoom">Zoom<a hidden class="anchor" aria-hidden="true" href="#zoom">#</a></h3>
+<p>Pour compléter le système de caméra, nous allons également implémenter une interface de zoom. Dans le chapitre précédent, nous avons dit que le champ de vision (fov: field of view) définit en grande partie ce que nous pouvons voir de la scène. Lorsque le champ de vision se réduit, l&rsquo;espace projeté de la scène se réduit. Cet espace plus petit est projeté sur le même NDC, ce qui donne l&rsquo;illusion d&rsquo;un zoom avant. Pour effectuer un zoom avant, nous allons utiliser la molette de la souris. Comme pour le mouvement de la souris et la saisie au clavier, nous disposons d&rsquo;une fonction de callback pour le scroll de la souris :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">scroll_callback</span>(GLFWwindow<span style="color:#f92672">*</span> window, <span style="color:#66d9ef">double</span> xoffset, <span style="color:#66d9ef">double</span> yoffset)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    fov <span style="color:#f92672">-=</span> (<span style="color:#66d9ef">float</span>)yoffset;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (fov <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1.0f</span>)
+</span></span><span style="display:flex;"><span>        fov <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0f</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (fov <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">45.0f</span>)
+</span></span><span style="display:flex;"><span>        fov <span style="color:#f92672">=</span> <span style="color:#ae81ff">45.0f</span>; 
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Lors du scrolling, la valeur <code>yoffset</code> nous indique la quantité de scroll vertical. Lorsque la fonction <code>scroll_callback</code> est appelée, nous modifions le contenu de la variable <code>fov</code> déclarée globalement. Puisque <code>45.0</code> est la valeur par défaut de <code>fov</code>, nous voulons contraindre le niveau de zoom entre <code>1.0</code> et <code>45.0</code>.</p>
+<p>Nous devons maintenant charger la matrice de projection perspective vers le GPU à chaque image, mais cette fois avec la variable <code>fov</code> comme champ de vision :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>projection <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>perspective(glm<span style="color:#f92672">::</span>radians(fov), <span style="color:#ae81ff">800.0f</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">600.0f</span>, <span style="color:#ae81ff">0.1f</span>, <span style="color:#ae81ff">100.0f</span>); 
+</span></span></code></pre></div><p>Enfin, n&rsquo;oubliez pas d&rsquo;enregistrer la fonction de callback du scroll :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glfwSetScrollCallback(window, scroll_callback); 
+</span></span></code></pre></div><p>Et voilà. Nous avons mis en place un système de caméra simple qui permet de se déplacer librement dans un environnement 3D.
+![[video/camera_video3.mp4]]</p>
+<p>N&rsquo;hésitez pas à expérimenter un peu et, si vous êtes bloqué, comparez votre code avec le <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/7.3.camera_mouse_zoom/camera_mouse_zoom.cpp">code source</a>.</p>
+<h2 id="classe-camera">Classe Camera<a hidden class="anchor" aria-hidden="true" href="#classe-camera">#</a></h2>
+<p>Dans les prochains chapitres, nous utiliserons toujours une caméra pour regarder facilement les scènes et voir les résultats sous tous les angles. Cependant, <strong>comme le code de la caméra peut prendre beaucoup de place dans chaque chapitre, nous allons nous abstraire un peu de ses détails et créer notre propre objet caméra qui fait la plupart du travail pour nous avec quelques petits extras sympathiques</strong>. Contrairement au chapitre sur les shaders, nous ne vous guiderons pas dans la création de la classe caméra, mais nous vous fournirons le code source (entièrement commenté) si vous souhaitez en connaître les rouages.</p>
+<p>Comme pour l&rsquo;objet Shader, nous définissons la classe caméra entièrement dans un seul fichier d&rsquo;en-tête. Vous pouvez trouver la classe caméra <a href="https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/camera.h">ici</a> ; vous devriez être en mesure de comprendre le code après ce chapitre. Il est conseillé d&rsquo;essayer au moins une fois la classe comme exemple de la façon dont vous pouvez créer votre propre système de caméra.</p>
+<blockquote>
+<p>Le système de caméra que nous avons introduit est une caméra de type &ldquo;fly&rdquo; qui convient à la plupart des usages et fonctionne bien avec les angles d&rsquo;Euler, <strong>mais soyez prudent lorsque vous créez des systèmes de caméra différents comme une caméra FPS, ou une caméra de simulation de vol.</strong> <strong>Chaque système de caméra a ses propres astuces et bizarreries, alors assurez-vous de vous renseigner à leur sujet</strong>. Par exemple, cette caméra de vol ne permet pas des valeurs de tangage supérieures ou égales à 90 degrés et un vecteur statique vers le haut de (0,1,0) ne fonctionne pas lorsque nous prenons en compte les valeurs de roulis.</p>
+</blockquote>
+<p>La version mise à jour du code source utilisant le nouvel objet caméra est disponible <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/7.4.camera_class/camera_class.cpp">ici</a>.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://hrst4.xyz/tags/cg/">cg</a></li>
+      <li><a href="https://hrst4.xyz/tags/opengl/">opengl</a></li>
+      <li><a href="https://hrst4.xyz/tags/computer-graphics/">computer graphics</a></li>
+      <li><a href="https://hrst4.xyz/tags/cpp/">cpp</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://hrst4.xyz/">My New Hugo Site</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

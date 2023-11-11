@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>My New Hugo Site</title>
+<meta name="keywords" content="cg, opengl, computer graphics, cpp">
+<meta name="description" content="Glossaire Vecteur de couleur : un vecteur représentant la plupart des couleurs du monde réel par une combinaison des composantes rouge, verte et bleue (abrégé en RGB). La couleur d&rsquo;un objet est la composante de couleur réfléchie que l&rsquo;objet n&rsquo;a pas absorbée. Modèle d&rsquo;éclairage Phong : modèle d&rsquo;approximation de l&rsquo;éclairage du monde réel par le calcul d&rsquo;une composante ambiante, diffuse et spéculaire. Éclairage ambiant : approximation de l&rsquo;éclairage global en donnant à chaque objet une petite luminosité afin que les objets ne soient pas complètement sombres s&rsquo;ils ne sont pas directement éclairés.">
+<meta name="author" content="">
+<link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/02_lighting/glossary/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://hrst4.xyz/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://hrst4.xyz/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://hrst4.xyz/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://hrst4.xyz/apple-touch-icon.png">
+<link rel="mask-icon" href="https://hrst4.xyz/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="" />
+<meta property="og:description" content="Glossaire Vecteur de couleur : un vecteur représentant la plupart des couleurs du monde réel par une combinaison des composantes rouge, verte et bleue (abrégé en RGB). La couleur d&rsquo;un objet est la composante de couleur réfléchie que l&rsquo;objet n&rsquo;a pas absorbée. Modèle d&rsquo;éclairage Phong : modèle d&rsquo;approximation de l&rsquo;éclairage du monde réel par le calcul d&rsquo;une composante ambiante, diffuse et spéculaire. Éclairage ambiant : approximation de l&rsquo;éclairage global en donnant à chaque objet une petite luminosité afin que les objets ne soient pas complètement sombres s&rsquo;ils ne sont pas directement éclairés." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/02_lighting/glossary/" /><meta property="article:section" content="docs" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="Glossaire Vecteur de couleur : un vecteur représentant la plupart des couleurs du monde réel par une combinaison des composantes rouge, verte et bleue (abrégé en RGB). La couleur d&rsquo;un objet est la composante de couleur réfléchie que l&rsquo;objet n&rsquo;a pas absorbée. Modèle d&rsquo;éclairage Phong : modèle d&rsquo;approximation de l&rsquo;éclairage du monde réel par le calcul d&rsquo;une composante ambiante, diffuse et spéculaire. Éclairage ambiant : approximation de l&rsquo;éclairage global en donnant à chaque objet une petite luminosité afin que les objets ne soient pas complètement sombres s&rsquo;ils ne sont pas directement éclairés."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Docs",
+      "item": "https://hrst4.xyz/docs/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "",
+      "item": "https://hrst4.xyz/docs/learnopengl_fr/02_lighting/glossary/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "",
+  "name": "",
+  "description": "Glossaire Vecteur de couleur : un vecteur représentant la plupart des couleurs du monde réel par une combinaison des composantes rouge, verte et bleue (abrégé en RGB). La couleur d\u0026rsquo;un objet est la composante de couleur réfléchie que l\u0026rsquo;objet n\u0026rsquo;a pas absorbée. Modèle d\u0026rsquo;éclairage Phong : modèle d\u0026rsquo;approximation de l\u0026rsquo;éclairage du monde réel par le calcul d\u0026rsquo;une composante ambiante, diffuse et spéculaire. Éclairage ambiant : approximation de l\u0026rsquo;éclairage global en donnant à chaque objet une petite luminosité afin que les objets ne soient pas complètement sombres s\u0026rsquo;ils ne sont pas directement éclairés.",
+  "keywords": [
+    "cg", "opengl", "computer graphics", "cpp"
+  ],
+  "articleBody": "Glossaire Vecteur de couleur : un vecteur représentant la plupart des couleurs du monde réel par une combinaison des composantes rouge, verte et bleue (abrégé en RGB). La couleur d’un objet est la composante de couleur réfléchie que l’objet n’a pas absorbée. Modèle d’éclairage Phong : modèle d’approximation de l’éclairage du monde réel par le calcul d’une composante ambiante, diffuse et spéculaire. Éclairage ambiant : approximation de l’éclairage global en donnant à chaque objet une petite luminosité afin que les objets ne soient pas complètement sombres s’ils ne sont pas directement éclairés. Éclairage diffus : l’éclairage devient plus fort au fur et à mesure qu’un sommet/fragment est aligné avec une source de lumière. Utilise les vecteurs normaux pour calculer les angles. Vecteur normal : vecteur unitaire perpendiculaire à une surface. Matrice normale : une matrice 3x3 qui est la matrice du modèle (ou de la vue du modèle) sans translation. Elle est également modifiée de telle manière (inverse-transposition) qu’elle maintient les vecteurs normaux orientés dans la bonne direction lors de l’application d’une mise à l’échelle non uniforme. Sinon, les vecteurs normaux sont déformés lors de l’utilisation d’une mise à l’échelle non uniforme. Éclairage spéculaire : définit un éclairage spéculaire plus l’observateur regarde la réflexion d’une source de lumière sur une surface. Il est basé sur la direction de l’observateur, la direction de la lumière et une valeur de brillance qui définit la quantité de diffusion de la lumière. Phong shading : le modèle d’éclairage Phong appliqué dans le fragment shader. Gouraud shading : le modèle d’éclairage Phong appliqué dans le vertex shader. Produit des artefacts perceptibles lors de l’utilisation d’un petit nombre de sommets. Gagne en efficacité pour une perte de qualité visuelle. GLSL struct : une structure de type C qui agit comme un conteneur pour les variables du shader. Principalement utilisée pour organiser les entrées, les sorties et les uniformes. Material : la couleur ambiante, diffuse et spéculaire qu’un objet reflète. Elles définissent les couleurs d’un objet. Light (properties) : l’intensité ambiante, diffuse et spéculaire d’une lumière.Ces propriétés peuvent prendre n’importe quelle valeur de couleur et définissent la couleur/l’intensité d’une source de lumière pour chaque composant Phong spécifique. Diffuse map : une image de texture qui définit la couleur diffuse par fragment. Specular map : une image de texture qui définit l’intensité/couleur spéculaire par fragment.Permet d’obtenir des reflets spéculaires uniquement sur certaines zones d’un objet. Directional light : une source de lumière avec seulement une direction. Elle est modélisée comme étant à une distance infinie, ce qui a pour effet que tous ses rayons lumineux semblent parallèles et que son vecteur de direction reste le même sur toute la scène. Lumière ponctuelle (point light): une source de lumière située à un endroit précis de la scène et dont la lumière s’estompe avec la distance. Atténuation : processus de réduction de l’intensité de la lumière sur la distance, utilisé pour les lumières ponctuelles et les projecteurs. Spotlight : source de lumière définie par un cône dans une direction spécifique. Flashlight : une spotlight placé du point de vue de l’observateur. GLSL uniform array : un tableau de valeurs uniformes. Il fonctionne comme un tableau C, sauf qu’il ne peut pas être alloué dynamiquement. ",
+  "wordCount" : "534",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://hrst4.xyz/docs/learnopengl_fr/02_lighting/glossary/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://hrst4.xyz/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://hrst4.xyz/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      
+    </h1>
+    <div class="post-meta">
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="glossaire">Glossaire<a hidden class="anchor" aria-hidden="true" href="#glossaire">#</a></h1>
+<ul>
+<li>Vecteur de couleur : un vecteur représentant la plupart des couleurs du monde réel par une combinaison des composantes rouge, verte et bleue (abrégé en <code>RGB</code>). La couleur d&rsquo;un objet est la composante de couleur réfléchie que l&rsquo;objet n&rsquo;a pas absorbée.</li>
+<li>Modèle d&rsquo;éclairage Phong : modèle d&rsquo;approximation de l&rsquo;éclairage du monde réel par le calcul d&rsquo;une composante ambiante, diffuse et spéculaire.</li>
+<li>Éclairage ambiant : approximation de l&rsquo;éclairage global en donnant à chaque objet une petite luminosité afin que les objets ne soient pas complètement sombres s&rsquo;ils ne sont pas directement éclairés.</li>
+<li>Éclairage diffus : l&rsquo;éclairage devient plus fort au fur et à mesure qu&rsquo;un sommet/fragment est aligné avec une source de lumière. Utilise les vecteurs normaux pour calculer les angles.</li>
+<li>Vecteur normal : vecteur unitaire perpendiculaire à une surface.</li>
+<li>Matrice normale : une matrice 3x3 qui est la matrice du modèle (ou de la vue du modèle) sans translation. Elle est également modifiée de telle manière (inverse-transposition) qu&rsquo;elle maintient les vecteurs normaux orientés dans la bonne direction lors de l&rsquo;application d&rsquo;une mise à l&rsquo;échelle non uniforme. Sinon, les vecteurs normaux sont déformés lors de l&rsquo;utilisation d&rsquo;une mise à l&rsquo;échelle non uniforme.</li>
+<li>Éclairage spéculaire : définit un éclairage spéculaire plus l&rsquo;observateur regarde la réflexion d&rsquo;une source de lumière sur une surface. Il est basé sur la direction de l&rsquo;observateur, la direction de la lumière et une valeur de brillance qui définit la quantité de diffusion de la lumière.</li>
+<li>Phong shading : le modèle d&rsquo;éclairage Phong appliqué dans le fragment shader.</li>
+<li>Gouraud shading : le modèle d&rsquo;éclairage Phong appliqué dans le vertex shader. Produit des artefacts perceptibles lors de l&rsquo;utilisation d&rsquo;un petit nombre de sommets. Gagne en efficacité pour une perte de qualité visuelle.</li>
+<li>GLSL struct : une structure de type C qui agit comme un conteneur pour les variables du shader. Principalement utilisée pour organiser les entrées, les sorties et les uniformes.</li>
+<li>Material : la couleur ambiante, diffuse et spéculaire qu&rsquo;un objet reflète. Elles définissent les couleurs d&rsquo;un objet.</li>
+<li>Light (properties) : l&rsquo;intensité ambiante, diffuse et spéculaire d&rsquo;une lumière.Ces propriétés peuvent prendre n&rsquo;importe quelle valeur de couleur et définissent la couleur/l&rsquo;intensité d&rsquo;une source de lumière pour chaque composant Phong spécifique.</li>
+<li>Diffuse map : une image de texture qui définit la couleur diffuse par fragment.</li>
+<li>Specular map : une image de texture qui définit l&rsquo;intensité/couleur spéculaire par fragment.Permet d&rsquo;obtenir des reflets spéculaires uniquement sur certaines zones d&rsquo;un objet.</li>
+<li>Directional light : une source de lumière avec seulement une direction. Elle est modélisée comme étant à une distance infinie, ce qui a pour effet que tous ses rayons lumineux semblent parallèles et que son vecteur de direction reste le même sur toute la scène.</li>
+<li>Lumière ponctuelle (point light): une source de lumière située à un endroit précis de la scène et dont la lumière s&rsquo;estompe avec la distance.</li>
+<li>Atténuation : processus de réduction de l&rsquo;intensité de la lumière sur la distance, utilisé pour les lumières ponctuelles et les projecteurs.</li>
+<li>Spotlight : source de lumière définie par un cône dans une direction spécifique.</li>
+<li>Flashlight : une spotlight placé du point de vue de l&rsquo;observateur.</li>
+<li>GLSL uniform array : un tableau de valeurs uniformes. Il fonctionne comme un tableau C, sauf qu&rsquo;il ne peut pas être alloué dynamiquement.</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://hrst4.xyz/tags/cg/">cg</a></li>
+      <li><a href="https://hrst4.xyz/tags/opengl/">opengl</a></li>
+      <li><a href="https://hrst4.xyz/tags/computer-graphics/">computer graphics</a></li>
+      <li><a href="https://hrst4.xyz/tags/cpp/">cpp</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://hrst4.xyz/">My New Hugo Site</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

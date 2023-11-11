@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>My New Hugo Site</title>
+<meta name="keywords" content="">
+<meta name="description" content="Bloom Les sources lumineuses vives et les régions très éclairées sont souvent difficiles à faire comprendre à l&rsquo;observateur, car la plage d&rsquo;intensité d&rsquo;un moniteur est limitée. L&rsquo;un des moyens de distinguer les sources lumineuses vives sur un moniteur consiste à les faire briller ; la lumière s&rsquo;étend alors autour de la source lumineuse. Cela donne au spectateur l&rsquo;illusion que ces sources lumineuses ou ces zones lumineuses sont intensément lumineuses.
+Cet effet de brillance/lueur (bleeding) est obtenu grâce à un effet de post-traitement appelé Bloom.">
+<meta name="author" content="">
+<link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/06_bloom/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://hrst4.xyz/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://hrst4.xyz/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://hrst4.xyz/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://hrst4.xyz/apple-touch-icon.png">
+<link rel="mask-icon" href="https://hrst4.xyz/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="" />
+<meta property="og:description" content="Bloom Les sources lumineuses vives et les régions très éclairées sont souvent difficiles à faire comprendre à l&rsquo;observateur, car la plage d&rsquo;intensité d&rsquo;un moniteur est limitée. L&rsquo;un des moyens de distinguer les sources lumineuses vives sur un moniteur consiste à les faire briller ; la lumière s&rsquo;étend alors autour de la source lumineuse. Cela donne au spectateur l&rsquo;illusion que ces sources lumineuses ou ces zones lumineuses sont intensément lumineuses.
+Cet effet de brillance/lueur (bleeding) est obtenu grâce à un effet de post-traitement appelé Bloom." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/06_bloom/" /><meta property="article:section" content="docs" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="Bloom Les sources lumineuses vives et les régions très éclairées sont souvent difficiles à faire comprendre à l&rsquo;observateur, car la plage d&rsquo;intensité d&rsquo;un moniteur est limitée. L&rsquo;un des moyens de distinguer les sources lumineuses vives sur un moniteur consiste à les faire briller ; la lumière s&rsquo;étend alors autour de la source lumineuse. Cela donne au spectateur l&rsquo;illusion que ces sources lumineuses ou ces zones lumineuses sont intensément lumineuses.
+Cet effet de brillance/lueur (bleeding) est obtenu grâce à un effet de post-traitement appelé Bloom."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Docs",
+      "item": "https://hrst4.xyz/docs/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "",
+      "item": "https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/06_bloom/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "",
+  "name": "",
+  "description": "Bloom Les sources lumineuses vives et les régions très éclairées sont souvent difficiles à faire comprendre à l\u0026rsquo;observateur, car la plage d\u0026rsquo;intensité d\u0026rsquo;un moniteur est limitée. L\u0026rsquo;un des moyens de distinguer les sources lumineuses vives sur un moniteur consiste à les faire briller ; la lumière s\u0026rsquo;étend alors autour de la source lumineuse. Cela donne au spectateur l\u0026rsquo;illusion que ces sources lumineuses ou ces zones lumineuses sont intensément lumineuses.\nCet effet de brillance/lueur (bleeding) est obtenu grâce à un effet de post-traitement appelé Bloom.",
+  "keywords": [
+    
+  ],
+  "articleBody": "Bloom Les sources lumineuses vives et les régions très éclairées sont souvent difficiles à faire comprendre à l’observateur, car la plage d’intensité d’un moniteur est limitée. L’un des moyens de distinguer les sources lumineuses vives sur un moniteur consiste à les faire briller ; la lumière s’étend alors autour de la source lumineuse. Cela donne au spectateur l’illusion que ces sources lumineuses ou ces zones lumineuses sont intensément lumineuses.\nCet effet de brillance/lueur (bleeding) est obtenu grâce à un effet de post-traitement appelé Bloom. Le bloom donne à toutes les zones fortement éclairées d’une scène un effet de brillance. Vous trouverez ci-dessous un exemple de scène avec et sans effet de lueur (avec l’aimable autorisation d’Epic Games) : ![[06_bloom-20230903-bloom1.png]] Le Bloom donne des indications visuelles notables sur la luminosité des objets. Lorsqu’il est utilisé de manière subtile (ce que certains jeux ne font absolument pas), le Bloom augmente de manière significative l’éclairage de votre scène et permet une large gamme d’effets dramatiques.\nLe Bloom fonctionne mieux en combinaison avec le rendu HDR. On croit souvent à tort que le HDR est la même chose que Bloom, car de nombreuses personnes utilisent ces termes de manière interchangeable. Il s’agit pourtant de techniques complètement différentes utilisées à des fins différentes. Il est possible de mettre en œuvre le Bloom avec des framebuffers par défaut d’une précision de 8 bits, tout comme il est possible d’utiliser HDR sans l’effet Bloom. C’est simplement que le HDR rend la mise en œuvre de Bloom plus efficace (comme nous le verrons plus tard).\nPour mettre en œuvre l’effet Bloom, nous effectuons le rendu d’une scène éclairée comme d’habitude et nous extrayons à la fois le tampon de couleurs HDR de la scène et une image de la scène dont seules les zones lumineuses sont visibles. Cette image de luminosité extraite est ensuite floutée et le résultat est ajouté à l’image originale de la scène HDR.\nIllustrons ce processus étape par étape. Nous rendons une scène remplie de 4 sources lumineuses, visualisées sous forme de cubes colorés. Les cubes lumineux colorés ont des valeurs de luminosité comprises entre $1.5$ et $15.0$. Si nous effectuons le rendu dans un tampon de couleurs HDR, la scène se présente comme suit : ![[06_bloom-20230903-bloom2.png]] Nous prenons cette texture tampon couleur HDR et extrayons tous les fragments qui dépassent une certaine luminosité. Nous obtenons ainsi une image qui ne montre que les régions de couleur vive dont l’intensité des fragments dépasse un certain seuil : ![[06_bloom-20230903-bloom3.png]] Nous prenons ensuite cette texture de luminosité seuillée et nous rendons le résultat flou. L’intensité de l’effet d’efflorescence (?) est largement déterminée par la portée et l’intensité du filtre de flou utilisé. ![[06_bloom-20230903-bloom4.png]] La texture floue qui en résulte est utilisée pour obtenir l’effet de lueur ou de brillance de la lumière. Cette texture floue est ajoutée à la texture originale de la scène HDR. Comme les régions lumineuses sont étendues en largeur et en hauteur grâce au filtre flou, les régions lumineuses de la scène paraissent rayonnantes ou saignent (?) de lumière.\n![[06_bloom-20230903-bloom5.png]] Le Bloom n’est pas une technique compliquée en soi, mais il est difficile de l’utiliser à bon escient. La qualité visuelle est en grande partie déterminée par la qualité et le type de filtre de flou utilisé pour estomper les zones de luminosité extraites. Le simple fait de modifier le filtre de flou peut changer radicalement la qualité de l’effet Bloom.\nEn suivant ces étapes, nous obtenons l’effet de post-traitement Bloom. L’image suivante résume brièvement les étapes nécessaires à la mise en œuvre de l’effet Bloom : ![[06_bloom-20230903-bloom6.png]] La première étape consiste à extraire toutes les couleurs vives d’une scène en fonction d’un certain seuil. Voyons d’abord ce qu’il en est.\nExtraire les couleurs vives La première étape consiste à extraire deux images d’une scène rendue. Nous pourrions rendre la scène deux fois, en effectuant le rendu dans un framebuffer différent avec des shaders différents, mais nous pouvons également utiliser une petite astuce appelée Multiple Render Targets (MRT) qui nous permet de spécifier plus d’une sortie de shader de fragment ; cela nous donne la possibilité d’extraire les deux premières images en une seule passe de rendu. En spécifiant un spécificateur d’emplacement de mise en page avant la sortie d’un shader de fragment, nous pouvons contrôler le tampon de couleur dans lequel le shader de fragment écrit :\nlayout (location = 0) out vec4 FragColor; layout (location = 1) out vec4 BrightColor; Cela ne fonctionne que si nous disposons de plusieurs tampons sur lesquels écrire. Pour pouvoir utiliser plusieurs sorties de fragment shader, nous avons besoin de plusieurs tampons de couleur attachés à l’objet framebuffer actuellement lié. Vous vous souvenez peut-être du chapitre sur les framebuffers qui nous permet de spécifier un numéro d’attachement de couleur lors de la liaison d’une texture en tant que tampon de couleur d’un framebuffer. Jusqu’à présent, nous avons toujours utilisé GL_COLOR_ATTACHMENT0, mais en utilisant également GL_COLOR_ATTACHMENT1, nous pouvons avoir deux tampons de couleur attachés à un objet framebuffer :\n// set up floating point framebuffer to render scene to unsigned int hdrFBO; glGenFramebuffers(1, \u0026hdrFBO); glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO); unsigned int colorBuffers[2]; glGenTextures(2, colorBuffers); for (unsigned int i = 0; i \u003c 2; i++) { glBindTexture(GL_TEXTURE_2D, colorBuffers[i]); glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL ); glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // attach texture to framebuffer glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, colorBuffers[i], 0 ); } Nous devons explicitement indiquer à OpenGL que nous effectuons le rendu vers plusieurs tampons de couleurs via glDrawBuffers. OpenGL, par défaut, n’effectue le rendu que sur la première couleur du framebuffer, ignorant toutes les autres. Nous pouvons le faire en passant un tableau d’enums d’attachement de couleur que nous aimerions rendre dans les opérations suivantes :\nunsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 }; glDrawBuffers(2, attachments); Lors du rendu dans ce framebuffer, chaque fois qu’un fragment shader utilise le layout location specifier, le tampon de couleur correspondant est utilisé pour le rendu du fragment. C’est une bonne chose, car cela nous évite une passe de rendu supplémentaire pour extraire les régions lumineuses, puisque nous pouvons maintenant les extraire directement du fragment à rendre :\n#version 330 core layout (location = 0) out vec4 FragColor; layout (location = 1) out vec4 BrightColor; [...] void main() { [...] // first do normal lighting calculations and output results FragColor = vec4(lighting, 1.0); // check whether fragment output is higher than threshold, if so output as brightness color float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722)); if(brightness \u003e 1.0) BrightColor = vec4(FragColor.rgb, 1.0); else BrightColor = vec4(0.0, 0.0, 0.0, 1.0); } Ici, nous calculons d’abord l’éclairage comme d’habitude et le transmettons à la variable de sortie FragColor du premier shader de fragment. Ensuite, nous utilisons ce qui est actuellement stocké dans FragColor pour déterminer si sa luminosité dépasse un certain seuil. Nous calculons la luminosité d’un fragment en le transformant correctement en niveaux de gris (en prenant le produit scalaire des deux vecteurs, nous multiplions chaque composant individuel des deux vecteurs et ajoutons les résultats ensemble). Si la luminosité dépasse un certain seuil, nous envoyons la couleur dans le second tampon de couleur. Nous procédons de la même manière pour les cubes de lumière.\nCela montre également pourquoi Bloom fonctionne incroyablement bien avec le rendu HDR. Étant donné que nous effectuons le rendu en plage dynamique élevée, les valeurs de couleur peuvent dépasser $1.0$, ce qui nous permet de spécifier un seuil de luminosité en dehors de la plage par défaut, ce qui nous donne beaucoup plus de contrôle sur ce qui est considéré comme lumineux. Sans HDR, nous devrions définir un seuil inférieur à $1.0$, ce qui est toujours possible, mais les régions sont beaucoup plus rapidement considérées comme lumineuses. Cela conduit parfois à ce que l’effet de lueur devienne trop dominant (pensez à la neige blanche qui brille, par exemple).\nAvec ces deux tampons de couleur, nous avons une image de la scène normale et une image des régions lumineuses extraites, le tout généré en une seule passe de rendu.\n![[06_bloom-20230903-bloom7.png]] Avec une image des régions lumineuses extraites, nous devons maintenant flouter l’image. Nous pouvons le faire avec un simple filtre en boîte (?) comme nous l’avons fait dans la section post-traitement du chapitre sur les framebuffers, mais nous préférons utiliser un filtre de flou plus avancé (et plus esthétique) appelé flou gaussien.\nFlou gaussien Dans le chapitre sur le flou du post-traitement, nous avons pris la moyenne de tous les pixels environnants d’une image. Bien que cette méthode permette d’obtenir un flou facile, elle ne donne pas les meilleurs résultats. Un flou gaussien est basé sur la courbe gaussienne qui est communément décrite comme une courbe en forme de cloche donnant des valeurs élevées près de son centre qui s’estompent progressivement avec la distance. La courbe de Gauss peut être représentée mathématiquement sous différentes formes, mais elle a généralement la forme suivante : ![[06_bloom-20230903-bloom8.png]] Comme la courbe gaussienne présente une zone plus large près de son centre, l’utilisation de ses valeurs en tant que poids pour rendre une image floue donne des résultats plus naturels, car les échantillons proches ont une plus grande priorité. Si, par exemple, nous échantillonnons une boîte de $32x32$ autour d’un fragment, nous utilisons des poids progressivement plus petits à mesure que la distance au fragment augmente ; cela donne un flou meilleur et plus réaliste, connu sous le nom de flou gaussien.\nPour mettre en œuvre un filtre de flou gaussien, nous avons besoin d’une boîte bidimensionnelle de poids que nous pouvons obtenir à partir d’une équation de courbe gaussienne bidimensionnelle. Le problème de cette approche est qu’elle devient rapidement très gourmande en performances. Prenons par exemple un kernel de flou de 32 par 32, cela nous obligerait à échantillonner une texture un total de 1024 fois pour chaque fragment !\nHeureusement pour nous, l’équation de Gauss possède une propriété très intéressante qui nous permet de séparer l’équation bidimensionnelle en deux équations unidimensionnelles plus petites : l’une qui décrit les poids horizontaux et l’autre qui décrit les poids verticaux. Nous commençons par effectuer un flou horizontal avec les poids horizontaux sur la texture de la scène, puis nous effectuons un flou vertical sur la texture résultante. Grâce à cette propriété, les résultats sont exactement les mêmes, mais cette fois-ci, nous économisons une quantité incroyable de performances puisque nous n’avons plus qu’à faire 32 + 32 échantillons au lieu de 1024 ! C’est ce qu’on appelle le flou gaussien à deux passages.\n![[06_bloom-20230903-bloom9.png]] Cela signifie que nous devons flouter une image au moins deux fois et cela fonctionne mieux avec l’utilisation d’objets framebuffer. Pour le flou gaussien à deux passages, nous allons implémenter des framebuffers ping-pong. Il s’agit d’une paire de framebuffers où nous effectuons le rendu et échangeons, un nombre donné de fois, le tampon de couleur de l’autre framebuffer dans le tampon de couleur du framebuffer actuel avec un effet de shader alternatif. En fait, nous changeons continuellement le framebuffer dans lequel nous effectuons le rendu et la texture avec laquelle nous dessinons. Cela nous permet d’abord de flouter la texture de la scène dans le premier framebuffer, puis de flouter le tampon de couleur du premier framebuffer dans le second framebuffer, puis le tampon de couleur du second framebuffer dans le premier, et ainsi de suite.\nAvant de nous pencher sur les framebuffers, examinons d’abord le fragment shader du flou gaussien :\n#version 330 core out vec4 FragColor; in vec2 TexCoords; uniform sampler2D image; uniform bool horizontal; uniform float weight[5] = float[] (0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216); void main() { vec2 tex_offset = 1.0 / textureSize(image, 0); // gets size of single texel vec3 result = texture(image, TexCoords).rgb * weight[0]; // current fragment's contribution if(horizontal) { for(int i = 1; i \u003c 5; ++i) { result += texture(image, TexCoords + vec2(tex_offset.x * i, 0.0)).rgb * weight[i]; result += texture(image, TexCoords - vec2(tex_offset.x * i, 0.0)).rgb * weight[i]; } } else { for(int i = 1; i \u003c 5; ++i) { result += texture(image, TexCoords + vec2(0.0, tex_offset.y * i)).rgb * weight[i]; result += texture(image, TexCoords - vec2(0.0, tex_offset.y * i)).rgb * weight[i]; } } FragColor = vec4(result, 1.0); } Ici, nous prenons un échantillon relativement petit de poids gaussiens que nous utilisons chacun pour attribuer un poids spécifique aux échantillons horizontaux ou verticaux autour du fragment actuel. Vous pouvez voir que nous divisons le filtre de flou en une section horizontale et une section verticale en fonction de la valeur que nous avons fixée pour l’uniforme horizontal. Nous basons la distance de décalage sur la taille exacte d’un texel obtenue par la division de $1.0$ sur la taille de la texture (un vec2 de textureSize).\nPour rendre une image floue, nous créons deux framebuffers de base, chacun avec seulement une texture de tampon de couleur :\nunsigned int pingpongFBO[2]; unsigned int pingpongBuffer[2]; glGenFramebuffers(2, pingpongFBO); glGenTextures(2, pingpongBuffer); for (unsigned int i = 0; i \u003c 2; i++) { glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[i]); glBindTexture(GL_TEXTURE_2D, pingpongBuffer[i]); glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL ); glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongBuffer[i], 0 ); } Ensuite, après avoir obtenu une texture HDR et une texture de luminosité extraite, nous remplissons d’abord l’un des framebuffers ping-pong avec la texture de luminosité, puis nous floutons l’image 10 fois (5 fois horizontalement et 5 fois verticalement) :\nbool horizontal = true, first_iteration = true; int amount = 10; shaderBlur.use(); for (unsigned int i = 0; i \u003c amount; i++) { glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]); shaderBlur.setInt(\"horizontal\", horizontal); glBindTexture( GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : pingpongBuffers[!horizontal] ); RenderQuad(); horizontal = !horizontal; if (first_iteration) first_iteration = false; } glBindFramebuffer(GL_FRAMEBUFFER, 0); À chaque itération, nous lions l’un des deux framebuffers selon que nous voulons flouter horizontalement ou verticalement, et nous lions le tampon de couleur de l’autre framebuffer en tant que texture à flouter. Lors de la première itération, nous lions spécifiquement la texture que nous souhaitons rendre floue (brightnessTexture), car les deux tampons de couleur seraient alors vides. En répétant ce processus 10 fois, l’image de luminosité se retrouve avec un flou gaussien complet qui a été répété 5 fois. Cette construction nous permet de flouter n’importe quelle image aussi souvent que nous le souhaitons ; plus le nombre d’itérations de flou gaussien est élevé, plus le flou est prononcé.\nEn floutant 5 fois la texture de luminosité extraite, nous obtenons une image correctement floutée de toutes les régions lumineuses d’une scène.\n![[06_bloom-20230903-blur10.png]] La dernière étape pour compléter l’effet Bloom consiste à combiner cette texture de luminosité floue avec la texture HDR de la scène originale.\nCombiner (mélanger) les 2 textures Avec la texture HDR de la scène et une texture de luminosité floue de la scène, il suffit de combiner les deux pour obtenir le fameux effet Bloom ou glow. Dans le fragment shader final (largement similaire à celui que nous avons utilisé dans le chapitre HDR), nous mélangeons les deux textures de manière additive :\n#version 330 core out vec4 FragColor; in vec2 TexCoords; uniform sampler2D scene; uniform sampler2D bloomBlur; uniform float exposure; void main() { const float gamma = 2.2; vec3 hdrColor = texture(scene, TexCoords).rgb; vec3 bloomColor = texture(bloomBlur, TexCoords).rgb; hdrColor += bloomColor; // additive blending // tone mapping vec3 result = vec3(1.0) - exp(-hdrColor * exposure); // also gamma correct while we're at it result = pow(result, vec3(1.0 / gamma)); FragColor = vec4(result, 1.0); } Il est intéressant de noter que nous ajoutons l’effet Bloom avant d’appliquer le tone mapping. De cette façon, la luminosité ajoutée par l’effet Bloom est également transformée en douceur en plage LDR, ce qui permet d’obtenir un meilleur éclairage relatif.\nAvec les deux textures ajoutées ensemble, toutes les zones lumineuses de notre scène bénéficient maintenant d’un effet d’éclat approprié : ![[06_bloom-20230903-bloom11.png]] Les cubes colorés apparaissent maintenant beaucoup plus lumineux et donnent une meilleure illusion d’objets émettant de la lumière. Il s’agit d’une scène relativement simple et l’effet Bloom n’est donc pas très impressionnant, mais dans des scènes bien éclairées, il peut faire une différence significative lorsqu’il est correctement configuré. Vous pouvez trouver le code source de cette démo simple ici.\nPour ce chapitre, nous avons utilisé un filtre de flou gaussien relativement simple dans lequel nous ne prenons que 5 échantillons dans chaque direction. En prenant plus d’échantillons sur un plus grand rayon ou en répétant le filtre de flou un nombre supplémentaire de fois, nous pouvons améliorer l’effet de flou. La qualité du flou étant directement liée à la qualité de l’effet de Bloom, l’amélioration de l’étape de flou peut apporter une amélioration significative. Certaines de ces améliorations combinent des filtres de flou avec des noyaux de flou de taille variable ou utilisent plusieurs courbes gaussiennes pour combiner sélectivement les poids. Les ressources supplémentaires de Kalogirou et Epic Games expliquent comment améliorer de manière significative l’effet Bloom en améliorant le flou gaussien.\nRessources supplémentaires Efficient Gaussian Blur with linear sampling : décrit très bien le flou gaussien et comment améliorer ses performances en utilisant l’échantillonnage de texture bilinéaire d’OpenGL. Bloom Post Process Effect : article d’Epic Games sur l’amélioration de l’effet Bloom en combinant plusieurs courbes gaussiennes pour ses poids. How to do good Bloom for HDR rendering : article de Kalogirou qui décrit comment améliorer l’effet Bloom en utilisant une meilleure méthode de flou gaussien. ",
+  "wordCount" : "2885",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/06_bloom/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://hrst4.xyz/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://hrst4.xyz/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      
+    </h1>
+    <div class="post-meta">
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="bloom">Bloom<a hidden class="anchor" aria-hidden="true" href="#bloom">#</a></h1>
+<p>Les sources lumineuses vives et les régions très éclairées sont souvent difficiles à faire comprendre à l&rsquo;observateur, car la plage d&rsquo;intensité d&rsquo;un moniteur est limitée. L&rsquo;un des moyens de distinguer les sources lumineuses vives sur un moniteur consiste à les faire briller ; la lumière s&rsquo;étend alors autour de la source lumineuse. Cela donne au spectateur l&rsquo;illusion que ces sources lumineuses ou ces zones lumineuses sont intensément lumineuses.</p>
+<p>Cet effet de brillance/lueur (bleeding) est obtenu grâce à un effet de post-traitement appelé <strong>Bloom</strong>. Le bloom donne à toutes les zones fortement éclairées d&rsquo;une scène un effet de brillance. Vous trouverez ci-dessous un exemple de scène avec et sans effet de lueur (avec l&rsquo;aimable autorisation d&rsquo;Epic Games) :
+![[06_bloom-20230903-bloom1.png]]
+Le Bloom donne des indications visuelles notables sur la luminosité des objets. Lorsqu&rsquo;il est utilisé de manière subtile (ce que certains jeux ne font absolument pas), le Bloom augmente de manière significative l&rsquo;éclairage de votre scène et permet une large gamme d&rsquo;effets dramatiques.</p>
+<p><strong>Le Bloom fonctionne mieux en combinaison avec le rendu HDR</strong>. On croit souvent à tort que le HDR est la même chose que Bloom, car de nombreuses personnes utilisent ces termes de manière interchangeable. Il s&rsquo;agit pourtant de techniques complètement différentes utilisées à des fins différentes. Il est possible de mettre en œuvre le Bloom avec des framebuffers par défaut d&rsquo;une précision de 8 bits, tout comme il est possible d&rsquo;utiliser HDR sans l&rsquo;effet Bloom. <strong>C&rsquo;est simplement que le HDR rend la mise en œuvre de Bloom plus efficace (comme nous le verrons plus tard).</strong></p>
+<p>Pour mettre en œuvre l&rsquo;effet Bloom, nous effectuons le rendu d&rsquo;une scène éclairée comme d&rsquo;habitude et nous extrayons à la fois le tampon de couleurs HDR de la scène et une image de la scène dont seules les zones lumineuses sont visibles. Cette image de luminosité extraite est ensuite floutée et le résultat est ajouté à l&rsquo;image originale de la scène HDR.</p>
+<p>Illustrons ce processus étape par étape. Nous rendons une scène remplie de 4 sources lumineuses, visualisées sous forme de cubes colorés. Les cubes lumineux colorés ont des valeurs de luminosité comprises entre $1.5$ et $15.0$. Si nous effectuons le rendu dans un tampon de couleurs HDR, la scène se présente comme suit :
+![[06_bloom-20230903-bloom2.png]]
+Nous prenons cette texture tampon couleur HDR et extrayons tous les fragments qui dépassent une certaine luminosité. Nous obtenons ainsi une image qui ne montre que les régions de couleur vive dont l&rsquo;intensité des fragments dépasse un certain seuil :
+![[06_bloom-20230903-bloom3.png]]
+Nous prenons ensuite cette texture de luminosité seuillée et nous rendons le résultat flou. L&rsquo;intensité de l&rsquo;effet d&rsquo;efflorescence (?) est largement déterminée par la portée et l&rsquo;intensité du filtre de flou utilisé.
+![[06_bloom-20230903-bloom4.png]]
+La texture floue qui en résulte est utilisée pour obtenir l&rsquo;effet de lueur ou de brillance de la lumière. <strong>Cette texture floue est ajoutée à la texture originale de la scène HDR</strong>. <strong>Comme les régions lumineuses sont étendues en largeur et en hauteur grâce au filtre flou, les régions lumineuses de la scène paraissent rayonnantes ou saignent (?) de lumière.</strong></p>
+<p>![[06_bloom-20230903-bloom5.png]]
+Le Bloom n&rsquo;est pas une technique compliquée en soi, mais il est difficile de l&rsquo;utiliser à bon escient. La qualité visuelle est en grande partie déterminée par la qualité et le type de filtre de flou utilisé pour estomper les zones de luminosité extraites. Le simple fait de modifier le filtre de flou peut changer radicalement la qualité de l&rsquo;effet Bloom.</p>
+<p>En suivant ces étapes, nous obtenons l&rsquo;effet de post-traitement Bloom. L&rsquo;image suivante résume brièvement les étapes nécessaires à la mise en œuvre de l&rsquo;effet Bloom :
+![[06_bloom-20230903-bloom6.png]]
+La première étape consiste à extraire toutes les couleurs vives d&rsquo;une scène en fonction d&rsquo;un certain seuil. Voyons d&rsquo;abord ce qu&rsquo;il en est.</p>
+<h2 id="extraire-les-couleurs-vives">Extraire les couleurs vives<a hidden class="anchor" aria-hidden="true" href="#extraire-les-couleurs-vives">#</a></h2>
+<p>La première étape consiste à extraire deux images d&rsquo;une scène rendue. Nous pourrions rendre la scène deux fois, en effectuant le rendu dans un framebuffer différent avec des shaders différents, mais nous pouvons également utiliser une petite astuce appelée <strong>Multiple Render Targets (MRT)</strong> qui nous permet de spécifier plus d&rsquo;une sortie de shader de fragment ; <strong>cela nous donne la possibilité d&rsquo;extraire les deux premières images en une seule passe de rendu</strong>. En spécifiant un spécificateur d&rsquo;emplacement de mise en page avant la sortie d&rsquo;un shader de fragment, nous pouvons contrôler le tampon de couleur dans lequel le shader de fragment écrit :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) out vec4 FragColor;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>) out vec4 BrightColor; 
+</span></span></code></pre></div><p>Cela ne fonctionne que si nous disposons de plusieurs tampons sur lesquels écrire. Pour pouvoir utiliser plusieurs sorties de fragment shader, nous avons besoin de plusieurs tampons de couleur attachés à l&rsquo;objet framebuffer actuellement lié. Vous vous souvenez peut-être du chapitre sur les framebuffers qui nous permet de spécifier un numéro d&rsquo;attachement de couleur lors de la liaison d&rsquo;une texture en tant que tampon de couleur d&rsquo;un framebuffer. Jusqu&rsquo;à présent, nous avons toujours utilisé <code>GL_COLOR_ATTACHMENT0</code>, mais en utilisant également <code>GL_COLOR_ATTACHMENT1</code>, nous pouvons avoir deux tampons de couleur attachés à un objet framebuffer :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// set up floating point framebuffer to render scene to
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> hdrFBO;
+</span></span><span style="display:flex;"><span>glGenFramebuffers(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>hdrFBO);
+</span></span><span style="display:flex;"><span>glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> colorBuffers[<span style="color:#ae81ff">2</span>];
+</span></span><span style="display:flex;"><span>glGenTextures(<span style="color:#ae81ff">2</span>, colorBuffers);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">2</span>; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    glBindTexture(GL_TEXTURE_2D, colorBuffers[i]);
+</span></span><span style="display:flex;"><span>    glTexImage2D(
+</span></span><span style="display:flex;"><span>        GL_TEXTURE_2D, <span style="color:#ae81ff">0</span>, GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, <span style="color:#ae81ff">0</span>, GL_RGBA, GL_FLOAT, NULL
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+</span></span><span style="display:flex;"><span>    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+</span></span><span style="display:flex;"><span>    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// attach texture to framebuffer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    glFramebufferTexture2D(
+</span></span><span style="display:flex;"><span>        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 <span style="color:#f92672">+</span> i, GL_TEXTURE_2D, colorBuffers[i], <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Nous devons explicitement indiquer à OpenGL que nous effectuons le rendu vers plusieurs tampons de couleurs via <code>glDrawBuffers</code>. OpenGL, par défaut, n&rsquo;effectue le rendu que sur la première couleur du framebuffer, ignorant toutes les autres. Nous pouvons le faire en passant un tableau d&rsquo;enums d&rsquo;attachement de couleur que nous aimerions rendre dans les opérations suivantes :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> attachments[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+</span></span><span style="display:flex;"><span>glDrawBuffers(<span style="color:#ae81ff">2</span>, attachments);  
+</span></span></code></pre></div><p>Lors du rendu dans ce framebuffer, chaque fois qu&rsquo;un fragment shader utilise le layout location specifier, le tampon de couleur correspondant est utilisé pour le rendu du fragment. C&rsquo;est une bonne chose, car cela nous évite une passe de rendu supplémentaire pour extraire les régions lumineuses, puisque nous pouvons maintenant les extraire directement du fragment à rendre :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) out vec4 FragColor;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>) out vec4 BrightColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>[...]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> main()
+</span></span><span style="display:flex;"><span>{            
+</span></span><span style="display:flex;"><span>    [...] <span style="color:#75715e">// first do normal lighting calculations and output results
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    FragColor <span style="color:#f92672">=</span> vec4(lighting, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// check whether fragment output is higher than threshold, if so output as brightness color
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> brightness <span style="color:#f92672">=</span> dot(FragColor.rgb, vec3(<span style="color:#ae81ff">0.2126</span>, <span style="color:#ae81ff">0.7152</span>, <span style="color:#ae81ff">0.0722</span>));
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(brightness <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1.0</span>)
+</span></span><span style="display:flex;"><span>        BrightColor <span style="color:#f92672">=</span> vec4(FragColor.rgb, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        BrightColor <span style="color:#f92672">=</span> vec4(<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Ici, nous calculons d&rsquo;abord l&rsquo;éclairage comme d&rsquo;habitude et le transmettons à la variable de sortie <code>FragColor</code> du premier shader de fragment. Ensuite, nous utilisons ce qui est actuellement stocké dans <code>FragColor</code> pour déterminer si sa luminosité dépasse un certain seuil. Nous calculons la luminosité d&rsquo;un fragment en le transformant correctement en niveaux de gris (en prenant le produit scalaire des deux vecteurs, nous multiplions chaque composant individuel des deux vecteurs et ajoutons les résultats ensemble). Si la luminosité dépasse un certain seuil, nous envoyons la couleur dans le second tampon de couleur. Nous procédons de la même manière pour les cubes de lumière.</p>
+<p>Cela montre également pourquoi Bloom fonctionne incroyablement bien avec le rendu HDR. Étant donné que nous effectuons le rendu en plage dynamique élevée, les valeurs de couleur peuvent dépasser $1.0$, ce qui nous permet de spécifier un seuil de luminosité en dehors de la plage par défaut, ce qui nous donne beaucoup plus de contrôle sur ce qui est considéré comme lumineux. Sans HDR, nous devrions définir un seuil inférieur à $1.0$, ce qui est toujours possible, mais les régions sont beaucoup plus rapidement considérées comme lumineuses. Cela conduit parfois à ce que l&rsquo;effet de lueur devienne trop dominant (pensez à la neige blanche qui brille, par exemple).</p>
+<p>Avec ces deux tampons de couleur, nous avons une image de la scène normale et une image des régions lumineuses extraites, le tout généré en une seule passe de rendu.</p>
+<p>![[06_bloom-20230903-bloom7.png]]
+Avec une image des régions lumineuses extraites, nous devons maintenant flouter l&rsquo;image. Nous pouvons le faire avec un simple filtre en boîte (?) comme nous l&rsquo;avons fait dans la section post-traitement du chapitre sur les framebuffers, mais nous préférons utiliser un filtre de flou plus avancé (et plus esthétique) appelé <strong>flou gaussien</strong>.</p>
+<h2 id="flou-gaussien">Flou gaussien<a hidden class="anchor" aria-hidden="true" href="#flou-gaussien">#</a></h2>
+<p>Dans le chapitre sur le flou du post-traitement, nous avons pris la moyenne de tous les pixels environnants d&rsquo;une image. Bien que cette méthode permette d&rsquo;obtenir un flou facile, elle ne donne pas les meilleurs résultats. <strong>Un flou gaussien est basé sur la courbe gaussienne qui est communément décrite comme une courbe en forme de cloche donnant des valeurs élevées près de son centre qui s&rsquo;estompent progressivement avec la distance. La courbe de Gauss peut être représentée mathématiquement sous différentes formes, mais elle a généralement la forme suivante :</strong>
+![[06_bloom-20230903-bloom8.png]]
+Comme la courbe gaussienne présente une zone plus large près de son centre, l&rsquo;utilisation de ses valeurs en tant que poids pour rendre une image floue donne des résultats plus naturels, car les échantillons proches ont une plus grande priorité. Si, par exemple, nous échantillonnons une boîte de $32x32$ autour d&rsquo;un fragment, nous utilisons des poids progressivement plus petits à mesure que la distance au fragment augmente ; cela donne un flou meilleur et plus réaliste, connu sous le nom de flou gaussien.</p>
+<p>Pour mettre en œuvre un filtre de flou gaussien, nous avons besoin d&rsquo;une boîte bidimensionnelle de poids que nous pouvons obtenir à partir d&rsquo;une équation de courbe gaussienne bidimensionnelle. Le problème de cette approche est qu&rsquo;elle devient rapidement très gourmande en performances. Prenons par exemple un kernel de flou de 32 par 32, cela nous obligerait à échantillonner une texture un total de 1024 fois pour chaque fragment !</p>
+<p>Heureusement pour nous, <strong>l&rsquo;équation de Gauss possède une propriété très intéressante qui nous permet de séparer l&rsquo;équation bidimensionnelle en deux équations unidimensionnelles plus petites : l&rsquo;une qui décrit les poids horizontaux et l&rsquo;autre qui décrit les poids verticaux</strong>. Nous commençons par effectuer un flou horizontal avec les poids horizontaux sur la texture de la scène, puis nous effectuons un flou vertical sur la texture résultante. <strong>Grâce à cette propriété, les résultats sont exactement les mêmes, mais cette fois-ci, nous économisons une quantité incroyable de performances puisque nous n&rsquo;avons plus qu&rsquo;à faire 32 + 32 échantillons au lieu de 1024 ! C&rsquo;est ce qu&rsquo;on appelle le flou gaussien à deux passages.</strong></p>
+<p>![[06_bloom-20230903-bloom9.png]]
+Cela signifie que nous devons flouter une image au moins deux fois et cela fonctionne mieux avec l&rsquo;utilisation d&rsquo;objets framebuffer. Pour le flou gaussien à deux passages, nous allons implémenter des <strong>framebuffers ping-pong</strong>. Il s&rsquo;agit d&rsquo;une paire de framebuffers où nous effectuons le rendu et échangeons, un nombre donné de fois, le tampon de couleur de l&rsquo;autre framebuffer dans le tampon de couleur du framebuffer actuel avec un effet de shader alternatif. En fait, nous changeons continuellement le framebuffer dans lequel nous effectuons le rendu et la texture avec laquelle nous dessinons. Cela nous permet d&rsquo;abord de flouter la texture de la scène dans le premier framebuffer, puis de flouter le tampon de couleur du premier framebuffer dans le second framebuffer, puis le tampon de couleur du second framebuffer dans le premier, et ainsi de suite.</p>
+<p>Avant de nous pencher sur les framebuffers, examinons d&rsquo;abord le fragment shader du flou gaussien :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>in vec2 TexCoords;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform sampler2D image;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>uniform <span style="color:#66d9ef">bool</span> horizontal;
+</span></span><span style="display:flex;"><span>uniform <span style="color:#66d9ef">float</span> weight[<span style="color:#ae81ff">5</span>] <span style="color:#f92672">=</span> <span style="color:#66d9ef">float</span>[] (<span style="color:#ae81ff">0.227027</span>, <span style="color:#ae81ff">0.1945946</span>, <span style="color:#ae81ff">0.1216216</span>, <span style="color:#ae81ff">0.054054</span>, <span style="color:#ae81ff">0.016216</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{             
+</span></span><span style="display:flex;"><span>    vec2 tex_offset <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">/</span> textureSize(image, <span style="color:#ae81ff">0</span>); <span style="color:#75715e">// gets size of single texel
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 result <span style="color:#f92672">=</span> texture(image, TexCoords).rgb <span style="color:#f92672">*</span> weight[<span style="color:#ae81ff">0</span>]; <span style="color:#75715e">// current fragment&#39;s contribution
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span>(horizontal)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">5</span>; <span style="color:#f92672">++</span>i)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            result <span style="color:#f92672">+=</span> texture(image, TexCoords <span style="color:#f92672">+</span> vec2(tex_offset.x <span style="color:#f92672">*</span> i, <span style="color:#ae81ff">0.0</span>)).rgb <span style="color:#f92672">*</span> weight[i];
+</span></span><span style="display:flex;"><span>            result <span style="color:#f92672">+=</span> texture(image, TexCoords <span style="color:#f92672">-</span> vec2(tex_offset.x <span style="color:#f92672">*</span> i, <span style="color:#ae81ff">0.0</span>)).rgb <span style="color:#f92672">*</span> weight[i];
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">5</span>; <span style="color:#f92672">++</span>i)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            result <span style="color:#f92672">+=</span> texture(image, TexCoords <span style="color:#f92672">+</span> vec2(<span style="color:#ae81ff">0.0</span>, tex_offset.y <span style="color:#f92672">*</span> i)).rgb <span style="color:#f92672">*</span> weight[i];
+</span></span><span style="display:flex;"><span>            result <span style="color:#f92672">+=</span> texture(image, TexCoords <span style="color:#f92672">-</span> vec2(<span style="color:#ae81ff">0.0</span>, tex_offset.y <span style="color:#f92672">*</span> i)).rgb <span style="color:#f92672">*</span> weight[i];
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(result, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Ici, nous prenons un échantillon relativement petit de poids gaussiens que nous utilisons chacun pour attribuer un poids spécifique aux échantillons horizontaux ou verticaux autour du fragment actuel. Vous pouvez voir que nous divisons le filtre de flou en une section horizontale et une section verticale en fonction de la valeur que nous avons fixée pour l&rsquo;uniforme horizontal. Nous basons la distance de décalage sur la taille exacte d&rsquo;un texel obtenue par la division de $1.0$ sur la taille de la texture (un <code>vec2</code> de <code>textureSize</code>).</p>
+<p>Pour rendre une image floue, nous créons deux framebuffers de base, chacun avec seulement une texture de tampon de couleur :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> pingpongFBO[<span style="color:#ae81ff">2</span>];
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> pingpongBuffer[<span style="color:#ae81ff">2</span>];
+</span></span><span style="display:flex;"><span>glGenFramebuffers(<span style="color:#ae81ff">2</span>, pingpongFBO);
+</span></span><span style="display:flex;"><span>glGenTextures(<span style="color:#ae81ff">2</span>, pingpongBuffer);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">2</span>; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[i]);
+</span></span><span style="display:flex;"><span>    glBindTexture(GL_TEXTURE_2D, pingpongBuffer[i]);
+</span></span><span style="display:flex;"><span>    glTexImage2D(
+</span></span><span style="display:flex;"><span>        GL_TEXTURE_2D, <span style="color:#ae81ff">0</span>, GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, <span style="color:#ae81ff">0</span>, GL_RGBA, GL_FLOAT, NULL
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+</span></span><span style="display:flex;"><span>    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+</span></span><span style="display:flex;"><span>    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>    glFramebufferTexture2D(
+</span></span><span style="display:flex;"><span>        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongBuffer[i], <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Ensuite, après avoir obtenu une texture HDR et une texture de luminosité extraite, nous remplissons d&rsquo;abord l&rsquo;un des framebuffers ping-pong avec la texture de luminosité, puis nous floutons l&rsquo;image 10 fois (5 fois horizontalement et 5 fois verticalement) :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> horizontal <span style="color:#f92672">=</span> true, first_iteration <span style="color:#f92672">=</span> true;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> amount <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>;
+</span></span><span style="display:flex;"><span>shaderBlur.use();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> amount; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]); 
+</span></span><span style="display:flex;"><span>    shaderBlur.setInt(<span style="color:#e6db74">&#34;horizontal&#34;</span>, horizontal);
+</span></span><span style="display:flex;"><span>    glBindTexture(
+</span></span><span style="display:flex;"><span>        GL_TEXTURE_2D, first_iteration <span style="color:#f92672">?</span> colorBuffers[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">:</span> pingpongBuffers[<span style="color:#f92672">!</span>horizontal]
+</span></span><span style="display:flex;"><span>    ); 
+</span></span><span style="display:flex;"><span>    RenderQuad();
+</span></span><span style="display:flex;"><span>    horizontal <span style="color:#f92672">=</span> <span style="color:#f92672">!</span>horizontal;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (first_iteration)
+</span></span><span style="display:flex;"><span>        first_iteration <span style="color:#f92672">=</span> false;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>glBindFramebuffer(GL_FRAMEBUFFER, <span style="color:#ae81ff">0</span>); 
+</span></span></code></pre></div><p>À chaque itération, nous lions l&rsquo;un des deux framebuffers selon que nous voulons flouter horizontalement ou verticalement, et nous lions le tampon de couleur de l&rsquo;autre framebuffer en tant que texture à flouter. Lors de la première itération, nous lions spécifiquement la texture que nous souhaitons rendre floue (<code>brightnessTexture</code>), car les deux tampons de couleur seraient alors vides. En répétant ce processus 10 fois, l&rsquo;image de luminosité se retrouve avec un flou gaussien complet qui a été répété 5 fois. Cette construction nous permet de flouter n&rsquo;importe quelle image aussi souvent que nous le souhaitons ; plus le nombre d&rsquo;itérations de flou gaussien est élevé, plus le flou est prononcé.</p>
+<p>En floutant 5 fois la texture de luminosité extraite, nous obtenons une image correctement floutée de toutes les régions lumineuses d&rsquo;une scène.</p>
+<p>![[06_bloom-20230903-blur10.png]]
+La dernière étape pour compléter l&rsquo;effet Bloom consiste à combiner cette texture de luminosité floue avec la texture HDR de la scène originale.</p>
+<h2 id="combiner-mélanger-les-2-textures">Combiner (mélanger) les 2 textures<a hidden class="anchor" aria-hidden="true" href="#combiner-mélanger-les-2-textures">#</a></h2>
+<p>Avec la texture HDR de la scène et une texture de luminosité floue de la scène, il suffit de combiner les deux pour obtenir le fameux effet <strong>Bloom</strong> ou <strong>glow</strong>. Dans le fragment shader final (largement similaire à celui que nous avons utilisé dans le chapitre HDR), nous mélangeons les deux textures de manière additive :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>in vec2 TexCoords;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform sampler2D scene;
+</span></span><span style="display:flex;"><span>uniform sampler2D bloomBlur;
+</span></span><span style="display:flex;"><span>uniform <span style="color:#66d9ef">float</span> exposure;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{             
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> gamma <span style="color:#f92672">=</span> <span style="color:#ae81ff">2.2</span>;
+</span></span><span style="display:flex;"><span>    vec3 hdrColor <span style="color:#f92672">=</span> texture(scene, TexCoords).rgb;      
+</span></span><span style="display:flex;"><span>    vec3 bloomColor <span style="color:#f92672">=</span> texture(bloomBlur, TexCoords).rgb;
+</span></span><span style="display:flex;"><span>    hdrColor <span style="color:#f92672">+=</span> bloomColor; <span style="color:#75715e">// additive blending
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// tone mapping
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 result <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">1.0</span>) <span style="color:#f92672">-</span> exp(<span style="color:#f92672">-</span>hdrColor <span style="color:#f92672">*</span> exposure);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// also gamma correct while we&#39;re at it       
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    result <span style="color:#f92672">=</span> pow(result, vec3(<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">/</span> gamma));
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(result, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Il est intéressant de noter que nous ajoutons l&rsquo;effet Bloom avant d&rsquo;appliquer le tone mapping. De cette façon, la luminosité ajoutée par l&rsquo;effet Bloom est également transformée en douceur en plage LDR, ce qui permet d&rsquo;obtenir un meilleur éclairage relatif.</p>
+<p>Avec les deux textures ajoutées ensemble, toutes les zones lumineuses de notre scène bénéficient maintenant d&rsquo;un effet d&rsquo;éclat approprié :
+![[06_bloom-20230903-bloom11.png]]
+Les cubes colorés apparaissent maintenant beaucoup plus lumineux et donnent une meilleure illusion d&rsquo;objets émettant de la lumière. Il s&rsquo;agit d&rsquo;une scène relativement simple et l&rsquo;effet Bloom n&rsquo;est donc pas très impressionnant, mais dans des scènes bien éclairées, il peut faire une différence significative lorsqu&rsquo;il est correctement configuré. Vous pouvez trouver le code source de cette démo simple <a href="https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/7.bloom/bloom.cpp">ici</a>.</p>
+<p>Pour ce chapitre, nous avons utilisé un filtre de flou gaussien relativement simple dans lequel nous ne prenons que 5 échantillons dans chaque direction. En prenant plus d&rsquo;échantillons sur un plus grand rayon ou en répétant le filtre de flou un nombre supplémentaire de fois, nous pouvons améliorer l&rsquo;effet de flou. La qualité du flou étant directement liée à la qualité de l&rsquo;effet de Bloom, l&rsquo;amélioration de l&rsquo;étape de flou peut apporter une amélioration significative. Certaines de ces améliorations combinent des filtres de flou avec des noyaux de flou de taille variable ou utilisent plusieurs courbes gaussiennes pour combiner sélectivement les poids. Les ressources supplémentaires de Kalogirou et Epic Games expliquent comment améliorer de manière significative l&rsquo;effet Bloom en améliorant le flou gaussien.</p>
+<h1 id="ressources-supplémentaires">Ressources supplémentaires<a hidden class="anchor" aria-hidden="true" href="#ressources-supplémentaires">#</a></h1>
+<ul>
+<li><a href="http://rastergrid.com/blog/2010/09/efficient-gaussian-blur-with-linear-sampling/">Efficient Gaussian Blur with linear sampling</a> : décrit très bien le flou gaussien et comment améliorer ses performances en utilisant l&rsquo;échantillonnage de texture bilinéaire d&rsquo;OpenGL.</li>
+<li><a href="https://udk-legacy.unrealengine.com/udk/Three/Bloom.html">Bloom Post Process Effect</a> : article d&rsquo;Epic Games sur l&rsquo;amélioration de l&rsquo;effet Bloom en combinant plusieurs courbes gaussiennes pour ses poids.</li>
+<li><a href="http://kalogirou.net/2006/05/20/how-to-do-good-bloom-for-hdr-rendering/">How to do good Bloom for HDR rendering</a> : article de Kalogirou qui décrit comment améliorer l&rsquo;effet Bloom en utilisant une meilleure méthode de flou gaussien.</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://hrst4.xyz/">My New Hugo Site</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>My New Hugo Site</title>
+<meta name="keywords" content="cg, opengl, computer graphics, cpp">
+<meta name="description" content="Shaders Comme mentionné dans le chapitre [[03_hello triangle]], les shaders sont de petits programmes qui reposent sur le GPU. Ces programmes sont exécutés pour chaque section spécifique du pipeline graphique. En gros, les shaders ne sont rien d&rsquo;autre que des programmes qui transforment les entrées en sorties. Les shaders sont également des programmes très isolés dans la mesure où ils ne sont pas autorisés à communiquer entre eux ; la seule communication qu&rsquo;ils ont se fait par le biais de leurs entrées et sorties.">
+<meta name="author" content="">
+<link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/04_shaders/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://hrst4.xyz/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://hrst4.xyz/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://hrst4.xyz/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://hrst4.xyz/apple-touch-icon.png">
+<link rel="mask-icon" href="https://hrst4.xyz/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="" />
+<meta property="og:description" content="Shaders Comme mentionné dans le chapitre [[03_hello triangle]], les shaders sont de petits programmes qui reposent sur le GPU. Ces programmes sont exécutés pour chaque section spécifique du pipeline graphique. En gros, les shaders ne sont rien d&rsquo;autre que des programmes qui transforment les entrées en sorties. Les shaders sont également des programmes très isolés dans la mesure où ils ne sont pas autorisés à communiquer entre eux ; la seule communication qu&rsquo;ils ont se fait par le biais de leurs entrées et sorties." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/04_shaders/" /><meta property="article:section" content="docs" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="Shaders Comme mentionné dans le chapitre [[03_hello triangle]], les shaders sont de petits programmes qui reposent sur le GPU. Ces programmes sont exécutés pour chaque section spécifique du pipeline graphique. En gros, les shaders ne sont rien d&rsquo;autre que des programmes qui transforment les entrées en sorties. Les shaders sont également des programmes très isolés dans la mesure où ils ne sont pas autorisés à communiquer entre eux ; la seule communication qu&rsquo;ils ont se fait par le biais de leurs entrées et sorties."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Docs",
+      "item": "https://hrst4.xyz/docs/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "",
+      "item": "https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/04_shaders/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "",
+  "name": "",
+  "description": "Shaders Comme mentionné dans le chapitre [[03_hello triangle]], les shaders sont de petits programmes qui reposent sur le GPU. Ces programmes sont exécutés pour chaque section spécifique du pipeline graphique. En gros, les shaders ne sont rien d\u0026rsquo;autre que des programmes qui transforment les entrées en sorties. Les shaders sont également des programmes très isolés dans la mesure où ils ne sont pas autorisés à communiquer entre eux ; la seule communication qu\u0026rsquo;ils ont se fait par le biais de leurs entrées et sorties.",
+  "keywords": [
+    "cg", "opengl", "computer graphics", "cpp"
+  ],
+  "articleBody": "Shaders Comme mentionné dans le chapitre [[03_hello triangle]], les shaders sont de petits programmes qui reposent sur le GPU. Ces programmes sont exécutés pour chaque section spécifique du pipeline graphique. En gros, les shaders ne sont rien d’autre que des programmes qui transforment les entrées en sorties. Les shaders sont également des programmes très isolés dans la mesure où ils ne sont pas autorisés à communiquer entre eux ; la seule communication qu’ils ont se fait par le biais de leurs entrées et sorties.\nDans le chapitre précédent, nous avons brièvement abordé la question des shaders et la manière de les utiliser correctement. Nous allons maintenant expliquer les shaders, et plus particulièrement le langage shader d’OpenGL, d’une manière plus générale.\nGLSL Les shaders sont écrits dans le langage de type C GLSL. GLSL est conçu pour être utilisé avec des graphiques et contient des fonctionnalités utiles spécifiquement destinées à la manipulation de vecteurs et de matrices.\nLes shaders commencent toujours par une déclaration de version, suivie d’une liste de variables d’entrée et de sortie, d’uniformes et de leur fonction principale. Le point d’entrée de chaque shader se situe au niveau de sa fonction principale, où nous traitons toutes les variables d’entrée et affichons les résultats dans les variables de sortie. Ne vous inquiétez pas si vous ne savez pas ce que sont les uniformes, nous y reviendrons bientôt.\nUn shader a typiquement la structure suivante :\n#version version_number in type in_variable_name; in type in_variable_name; out type out_variable_name; uniform type uniform_name; void main() { // process input(s) and do some weird graphics stuff ... // output processed stuff to output variable out_variable_name = weird_stuff_we_processed; } Lorsque nous parlons spécifiquement du vertex shader, chaque variable d’entrée est également connue sous le nom d’attribut de vertex. Le nombre maximum d’attributs de vertex que nous sommes autorisés à déclarer est limité par le matériel. OpenGL garantit qu’il y a toujours au moins 16 attributs de vertex à 4 composantes disponibles, mais certains matériels peuvent en autoriser plus, ce que vous pouvez récupérer en interrogeant GL_MAX_VERTEX_ATTRIBS :\nint nrAttributes; glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, \u0026nrAttributes); std::cout \u003c\u003c \"Maximum nr of vertex attributes supported: \" \u003c\u003c nrAttributes \u003c\u003c std::endl; Cette méthode permet souvent d’obtenir un minimum de 16, ce qui est largement suffisant pour la plupart des cas.\nTypes Comme tout autre langage de programmation, GLSL dispose de types de données permettant de spécifier le type de variable avec lequel on souhaite travailler. GLSL possède la plupart des types de base par défaut que nous connaissons dans des langages comme le C : int, float, double, uint et bool. GLSL propose également deux types de conteneurs que nous utiliserons beaucoup, à savoir les vecteurs et les matrices. Nous aborderons les matrices dans un chapitre ultérieur.\nVecteurs Un vecteur en GLSL est un conteneur à 2, 3 ou 4 composants pour n’importe lequel des types de base mentionnés ci-dessus. Ils peuvent prendre la forme suivante (n représente le nombre de composants) :\nvecn : le vecteur par défaut de n flottants. bvecn : un vecteur de n booléens. ivecn : un vecteur de n entiers. uvecn : un vecteur de n entiers non signés. dvecn : un vecteur de n composantes doubles. La plupart du temps, nous utiliserons le vecn de base, car les flottants suffisent pour la plupart de nos besoins.\nLes composantes d’un vecteur sont accessibles via vec.x où x est la première composante du vecteur. Vous pouvez utiliser .x, .y, .z et .w pour accéder à leur première, deuxième, troisième et quatrième composante respectivement. GLSL vous permet également d’utiliser rgba pour les couleurs ou stpq pour les coordonnées de texture, en accédant aux mêmes composantes.\nLe type de données vectoriel permet une sélection intéressante et flexible des composantes, appelée “swizzling”. Le swizzling nous permet d’utiliser une syntaxe comme celle-ci :\nvec2 someVec; vec4 differentVec = someVec.xyxx; vec3 anotherVec = differentVec.zyw; vec4 otherVec = someVec.xxxx + anotherVec.yxzy; Vous pouvez utiliser n’importe quelle combinaison de 4 lettres au maximum pour créer un nouveau vecteur (du même type) tant que le vecteur original possède ces composantes ; il n’est pas permis d’accéder à la composante .z d’un vec2 par exemple. Nous pouvons également passer des vecteurs en tant qu’arguments à différents appels de constructeurs de vecteurs, ce qui réduit le nombre d’arguments requis :\nvec2 vect = vec2(0.5, 0.7); vec4 result = vec4(vect, 0.0, 0.0); vec4 otherResult = vec4(result.xyz, 1.0); Les vecteurs sont donc un type de données flexible que nous pouvons utiliser pour toutes sortes d’entrées et de sorties. Tout au long du livre, vous trouverez de nombreux exemples de la manière dont nous pouvons gérer les vecteurs de manière créative.\nIns and outs (entrées et sorties) Les shaders sont de jolis petits programmes en soi, mais ils font partie d’un tout et c’est pour cette raison que nous voulons avoir des entrées et des sorties sur les shaders individuels afin de pouvoir déplacer des choses. GLSL a défini les mots-clés in et out spécifiquement dans ce but. Chaque shader peut spécifier des entrées et des sorties à l’aide de ces mots-clés et chaque fois qu’une variable de sortie correspond à une variable d’entrée de l’étape suivante du shader, elle est transmise. Les vertex shaders et les fragment shaders diffèrent quelque peu.\nLe vertex shader doit recevoir une certaine forme d’entrée, sinon il serait assez inefficace. Le vertex shader diffère dans son entrée, en ce sens qu’il reçoit son entrée directement à partir des données du vertex. Pour définir comment les données de sommets sont organisées, nous spécifions les variables d’entrée avec des métadonnées d’emplacement afin de pouvoir configurer les attributs de sommets sur l’unité centrale (CPU). Nous avons vu cela dans le chapitre précédent sous le nom de layout (location = 0). Le vertex shader nécessite donc une spécification de disposition supplémentaire pour ses entrées afin que nous puissions le lier aux données de sommets.\nIl est également possible d’omettre le spécificateur de disposition (layout = 0) et de demander l’emplacement des attributs dans votre code OpenGL via glGetAttribLocation, mais je préfère les définir dans le vertex shader. C’est plus facile à comprendre et cela vous épargne (ainsi qu’à OpenGL) un peu de travail.\nL’autre exception est que le fragment shader nécessite une variable de sortie de couleur vec4, puisque le fragment shader a besoin de générer une couleur de sortie finale. Si vous ne spécifiez pas de couleur de sortie dans votre fragment shader, la sortie du buffer de couleur pour ces fragments sera indéfinie (ce qui signifie généralement qu’OpenGL les rendra en noir ou en blanc).\nAinsi, si nous voulons envoyer des données d’un shader à l’autre, nous devons déclarer une sortie dans le shader d’envoi et une entrée similaire dans le shader de réception. Lorsque les types et les noms sont identiques des deux côtés, OpenGL liera ces variables ensemble et il sera alors possible d’envoyer des données entre les shaders (ce qui est fait lors de la liaison d’un objet de programme). Pour vous montrer comment cela fonctionne en pratique, nous allons modifier les shaders du chapitre précédent pour laisser le vertex shader décider de la couleur pour le fragment shader.\nVertex shader\n#version 330 core layout (location = 0) in vec3 aPos; // the position variable has attribute position 0 out vec4 vertexColor; // specify a color output to the fragment shader void main() { gl_Position = vec4(aPos, 1.0); // see how we directly give a vec3 to vec4's constructor vertexColor = vec4(0.5, 0.0, 0.0, 1.0); // set the output variable to a dark-red color } Fragment shader\n#version 330 core out vec4 FragColor; in vec4 vertexColor; // the input variable from the vertex shader (same name and same type) void main() { FragColor = vertexColor; } Vous pouvez voir que nous avons déclaré une variable vertexColor en tant que sortie vec4 que nous avons définie dans le vertex shader et que nous déclarons une entrée vertexColor similaire dans le fragment shader. Comme elles ont toutes deux le même type et le même nom, la variable vertexColor dans le fragment shader est liée à la variable vertexColor dans le vertex shader. Étant donné que nous avons défini une couleur rouge foncé dans le vertex shader, les fragments résultants devraient également être rouge foncé. L’image suivante montre le résultat : ![[img/shader1.png]] Nous y voilà ! Nous venons de réussir à envoyer une valeur du vertex shader au fragment shader. Mettons un peu de piment et voyons si nous pouvons envoyer une couleur de notre application au fragment shader !\nUniforms Les uniformes sont un autre moyen de transmettre les données de notre application sur le processeur aux shaders sur le GPU. Les uniformes sont toutefois légèrement différents des attributs de vertex. Tout d’abord, les uniformes sont globaux. Globaux, ce qui signifie qu’une variable uniforme est unique par objet du programme de shaders, et qu’elle est accessible à partir de n’importe quel shader à n’importe quelle étape du programme de shaders. Deuxièmement, quelle que soit la valeur de l’uniforme, les uniformes conservent leur valeur jusqu’à ce qu’ils soient réinitialisés ou mis à jour.\nPour déclarer un uniforme en GLSL, il suffit d’ajouter le mot-clé uniform à un shader avec un type et un nom. A partir de là, nous pouvons utiliser l’uniforme nouvellement déclaré dans le shader. Voyons si cette fois-ci nous pouvons définir la couleur du triangle par le biais d’un uniforme :\n#version 330 core out vec4 FragColor; uniform vec4 ourColor; // we set this variable in the OpenGL code. void main() { FragColor = ourColor; } Nous avons déclaré un uniforme vec4 ourColor dans le fragment shader et défini la couleur de sortie du fragment en fonction du contenu de cette valeur uniforme. Comme les uniformes sont des variables globales, nous pouvons les définir dans n’importe quelle étape du shader. Il n’est donc pas nécessaire de repasser par le vertex shader pour transmettre quelque chose au fragment shader. Nous n’utilisons pas cet uniforme dans le vertex shader, il n’est donc pas nécessaire de le définir ici.\nSi vous déclarez un uniforme qui n’est utilisé nulle part dans votre code GLSL, le compilateur supprimera silencieusement la variable de la version compilée, ce qui est la cause de plusieurs erreurs frustrantes ; gardez cela à l’esprit !\nL’uniforme est actuellement vide ; nous n’avons pas encore ajouté de données à l’uniforme, alors essayons de le faire. Nous devons d’abord trouver l’index/l’emplacement de l’attribut uniform dans notre shader. Une fois que nous avons l’index/l’emplacement de l’uniforme, nous pouvons mettre à jour ses valeurs. Au lieu de passer une seule couleur au fragment shader, nous allons pimenter les choses en changeant progressivement de couleur au fil du temps :\nfloat timeValue = glfwGetTime(); float greenValue = (sin(timeValue) / 2.0f) + 0.5f; // [0,1] int vertexColorLocation = glGetUniformLocation(shaderProgram, \"ourColor\"); glUseProgram(shaderProgram); glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f); Tout d’abord, nous récupérons le temps d’exécution en secondes via glfwGetTime(). Ensuite, nous faisons varier la couleur entre 0,0 et 1,0 à l’aide de la fonction sin et nous stockons le résultat dans greenValue.\nNous demandons ensuite l’emplacement de l’uniforme ourColor à l’aide de glGetUniformLocation. Nous fournissons le programme du shader et le nom de l’uniforme (dont nous voulons récupérer l’emplacement) à la fonction de requête. Si glGetUniformLocation renvoie -1, cela signifie qu’il n’a pas pu trouver l’emplacement. Enfin, nous pouvons définir la valeur de l’uniforme à l’aide de la fonction glUniform4f. Notez que la recherche de l’emplacement de l’uniforme n’exige pas que vous utilisiez d’abord le programme de shader, mais la mise à jour d’un uniforme exige que vous utilisiez d’abord le programme (en appelant glUseProgram), parce qu’il définit l’uniforme sur le programme de shader actuellement actif.\nParce qu’OpenGL est à la base une bibliothèque C, il n’a pas de support natif pour la surcharge des fonctions, donc chaque fois qu’une fonction peut être appelée avec différents types, OpenGL définit de nouvelles fonctions pour chaque type requis ; glUniform est un parfait exemple de ceci. La fonction requiert un postfixe spécifique pour le type d’uniforme que vous souhaitez définir. Quelques-uns des postfixes possibles sont :\nf : la fonction attend un float comme valeur. i : la fonction attend un int comme valeur. ui : la fonction attend un unsigned int comme valeur. 3f : la fonction attend 3 float comme valeur. fv : la fonction attend un vecteur/rayon float comme valeur. Lorsque vous voulez configurer une option d’OpenGL, choisissez simplement la fonction surchargée qui correspond à votre type. Dans notre cas, nous voulons définir 4 flottants de l’uniforme individuellement, donc nous passons nos données via glUniform4f (notez que nous aurions aussi pu utiliser la version fv). Maintenant que nous savons comment définir les valeurs des variables uniformes, nous pouvons les utiliser pour le rendu. Si nous voulons que la couleur change progressivement, nous devons mettre à jour cette variable uniforme à chaque image, sinon le triangle conserverait une seule couleur unie si nous ne la définissions qu’une seule fois. Nous calculons donc la valeur verte et mettons à jour l’uniforme à chaque itération de rendu :\nwhile(!glfwWindowShouldClose(window)) { // input processInput(window); // render // clear the colorbuffer glClearColor(0.2f, 0.3f, 0.3f, 1.0f); glClear(GL_COLOR_BUFFER_BIT); // be sure to activate the shader glUseProgram(shaderProgram); // update the uniform color float timeValue = glfwGetTime(); float greenValue = sin(timeValue) / 2.0f + 0.5f; int vertexColorLocation = glGetUniformLocation(shaderProgram, \"ourColor\"); glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f); // now render the triangle glBindVertexArray(VAO); glDrawArrays(GL_TRIANGLES, 0, 3); // swap buffers and poll IO events glfwSwapBuffers(window); glfwPollEvents(); } Le code est une adaptation relativement simple du code précédent. Cette fois, nous mettons à jour une valeur uniforme à chaque image avant de dessiner le triangle. Si vous mettez à jour l’uniforme correctement, vous devriez voir la couleur de votre triangle passer progressivement du vert au noir, puis au vert.\n![[video/shaders.mp4]] Consultez le code source ici si vous êtes bloqué.\nComme vous pouvez le voir, les uniformes sont un outil utile pour définir des attributs qui peuvent changer à chaque image, ou pour échanger des données entre votre application et vos shaders, mais que faire si nous voulons définir une couleur pour chaque vertex ? Dans ce cas, nous devrions déclarer autant d’uniformes que de sommets. Une meilleure solution serait d’inclure plus de données dans les attributs des vertex, ce que nous allons faire maintenant.\nPlus d’attributs! Nous avons vu dans le chapitre précédent comment remplir un VBO, configurer des pointeurs d’attributs de vertex et stocker le tout dans un VAO. Cette fois, nous voulons également ajouter des données de couleur aux données de vertex. Nous allons ajouter des données de couleur sous la forme de 3 flottants au tableau des vertex. Nous attribuons une couleur rouge, verte et bleue à chacun des coins de notre triangle :\nfloat vertices[] = { // positions // colors 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f // top }; Puisque nous avons maintenant plus de données à envoyer au vertex shader, il est nécessaire d’ajuster le vertex shader pour qu’il reçoive également notre valeur de couleur en tant qu’entrée d’attribut de vertex. Notez que nous avons fixé l’emplacement de l’attribut aColor à 1 à l’aide du spécificateur d’agencement :\n#version 330 core layout (location = 0) in vec3 aPos; // the position variable has attribute position 0 layout (location = 1) in vec3 aColor; // the color variable has attribute position 1 out vec3 ourColor; // output a color to the fragment shader void main() { gl_Position = vec4(aPos, 1.0); ourColor = aColor; // set ourColor to the input color we got from the vertex data } Puisque nous n’utilisons plus d’uniforme pour la couleur du fragment, mais que nous utilisons maintenant la variable de sortie ourColor, nous devrons également modifier le shader du fragment :\n#version 330 core out vec4 FragColor; in vec3 ourColor; void main() { FragColor = vec4(ourColor, 1.0); } Comme nous avons ajouté un autre attribut de sommet et mis à jour la mémoire du VBO, nous devons reconfigurer les pointeurs d’attributs de sommet. Les données mises à jour dans la mémoire du VBO ressemblent maintenant à ceci : ![[img/shader2.png]] En connaissant la disposition actuelle, nous pouvons mettre à jour le format des vertex avec glVertexAttribPointer :\n// position attribute glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); glEnableVertexAttribArray(0); // color attribute glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float))); glEnableVertexAttribArray(1); Les premiers arguments de glVertexAttribPointer sont relativement simples. Cette fois, nous configurons l’attribut vertex sur l’emplacement d’attribut 1. Les valeurs de couleur ont une taille de 3 flottants et nous ne normalisons pas les valeurs.\nComme nous avons maintenant deux attributs de vertex, nous devons recalculer la valeur de stride. Pour obtenir la valeur d’attribut suivante (par exemple, la composante x suivante du vecteur de position) dans le tableau de données, nous devons déplacer 6 flottants vers la droite, trois pour les valeurs de position et trois pour les valeurs de couleur. Cela nous donne une valeur de stride de 6 fois la taille d’un flottant en octets (= 24 octets). Cette fois-ci, nous devons également spécifier un décalage (offset). Pour chaque sommet, l’attribut de sommet de position est le premier, nous déclarons donc un décalage de 0. L’attribut de couleur commence après les données de position, le décalage est donc de 3 * sizeof(float) en octets (= 12 octets).\nL’exécution de l’application devrait donner l’image suivante : ![[img/shader3.png]] Consultez le code source ici si vous êtes bloqué.\nL’image n’est peut-être pas exactement ce à quoi vous vous attendez, car nous n’avons fourni que 3 couleurs, et non la vaste palette de couleurs que nous voyons actuellement. Tout ceci est le résultat de ce que l’on appelle l’interpolation de fragments dans le fragment shader. Lors du rendu d’un triangle, l’étape de rastérisation produit généralement beaucoup plus de fragments que de vertices spécifiés à l’origine. Le rasterizer détermine alors les positions de chacun de ces fragments en fonction de leur emplacement sur la forme du triangle. Sur la base de ces positions, il interpole toutes les variables d’entrée du fragment shader. Disons par exemple que nous avons une ligne dont le point supérieur a une couleur verte et le point inférieur une couleur bleue. Si le fragment shader est exécuté sur un fragment situé à 70 % de la ligne, l’attribut d’entrée de couleur résultant sera une combinaison linéaire de vert et de bleu ; pour être plus précis : 30 % de bleu et 70 % de vert.\nC’est exactement ce qui s’est passé pour le triangle. Nous avons 3 sommets et donc 3 couleurs, et à en juger par les pixels du triangle, il contient probablement environ 50000 fragments, où le fragment shader a interpolé les couleurs parmi ces pixels. Si vous regardez bien les couleurs, vous verrez que tout est logique : du rouge au bleu, on passe d’abord au violet, puis au bleu. L’interpolation de fragments est appliquée à tous les attributs d’entrée du fragment shader.\nNotre propre classe de shaders L’écriture, la compilation et la gestion des shaders peuvent être assez lourdes. Pour terminer sur le sujet des shaders, nous allons nous simplifier la vie en construisant une classe de shaders qui lit les shaders sur le disque, les compile et les lie, vérifie les erreurs et est facile à utiliser. Cela vous donne également une idée de la manière dont nous pouvons encapsuler certaines des connaissances que nous avons acquises jusqu’à présent dans des objets abstraits utiles.\nNous allons créer la classe shader entièrement dans un fichier d’en-tête, principalement à des fins d’apprentissage et de portabilité. Commençons par ajouter les includes nécessaires et par définir la structure de la classe :\n#ifndef SHADER_H #define SHADER_H #include // include glad to get all the required OpenGL headers #include #include #include #include class Shader { public: // the program ID unsigned int ID; // constructor reads and builds the shader Shader(const char* vertexPath, const char* fragmentPath); // use/activate the shader void use(); // utility uniform functions void setBool(const std::string \u0026name, bool value) const; void setInt(const std::string \u0026name, int value) const; void setFloat(const std::string \u0026name, float value) const; }; #endif Nous avons utilisé plusieurs directives de préprocesseur en haut du fichier d’en-tête. L’utilisation de ces petites lignes de code informe votre compilateur de n’inclure et de ne compiler que ce fichier d’en-tête s’il n’a pas encore été inclus, même si plusieurs fichiers incluent l’en-tête du shader. Cela permet d’éviter les conflits d’édition de liens.\nLa classe shader contient l’ID du programme shader. Son constructeur requiert les chemins d’accès au code source du vertex et du fragment shader respectivement, que nous pouvons stocker sur le disque sous la forme de simples fichiers texte. Pour ajouter un petit plus, nous avons également ajouté plusieurs fonctions utilitaires pour nous faciliter un peu la vie : use active le programme shader, et tous les set... interrogent un emplacement uniforme et fixe sa valeur.\nLire depuis un fichier Nous utilisons des flux de fichiers C++ pour lire le contenu du fichier dans plusieurs objets de type chaîne de caractères :\nShader(const char* vertexPath, const char* fragmentPath) { // 1. retrieve the vertex/fragment source code from filePath std::string vertexCode; std::string fragmentCode; std::ifstream vShaderFile; std::ifstream fShaderFile; // ensure ifstream objects can throw exceptions: vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit); fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit); try { // open files vShaderFile.open(vertexPath); fShaderFile.open(fragmentPath); std::stringstream vShaderStream, fShaderStream; // read file's buffer contents into streams vShaderStream \u003c\u003c vShaderFile.rdbuf(); fShaderStream \u003c\u003c fShaderFile.rdbuf();\t// close file handlers vShaderFile.close(); fShaderFile.close(); // convert stream into string vertexCode = vShaderStream.str(); fragmentCode = fShaderStream.str();\t} catch(std::ifstream::failure e) { std::cout \u003c\u003c \"ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ\" \u003c\u003c std::endl; } const char* vShaderCode = vertexCode.c_str(); const char* fShaderCode = fragmentCode.c_str(); [...] Ensuite, nous devons compiler et lier les shaders. Notez que nous vérifions également si la compilation/liaison a échoué et si c’est le cas, nous affichons les erreurs de compilation. Ceci est extrêmement utile lors du débogage (vous aurez besoin de ces journaux d’erreurs un jour ou l’autre) :\n// 2. compile shaders unsigned int vertex, fragment; int success; char infoLog[512]; // vertex Shader vertex = glCreateShader(GL_VERTEX_SHADER); glShaderSource(vertex, 1, \u0026vShaderCode, NULL); glCompileShader(vertex); // print compile errors if any glGetShaderiv(vertex, GL_COMPILE_STATUS, \u0026success); if(!success) { glGetShaderInfoLog(vertex, 512, NULL, infoLog); std::cout \u003c\u003c \"ERROR::SHADER::VERTEX::COMPILATION_FAILED\\n\" \u003c\u003c infoLog \u003c\u003c std::endl; }; // similiar for Fragment Shader [...] // shader Program ID = glCreateProgram(); glAttachShader(ID, vertex); glAttachShader(ID, fragment); glLinkProgram(ID); // print linking errors if any glGetProgramiv(ID, GL_LINK_STATUS, \u0026success); if(!success) { glGetProgramInfoLog(ID, 512, NULL, infoLog); std::cout \u003c\u003c \"ERROR::SHADER::PROGRAM::LINKING_FAILED\\n\" \u003c\u003c infoLog \u003c\u003c std::endl; } // delete the shaders as they're linked into our program now and no longer necessary glDeleteShader(vertex); glDeleteShader(fragment); La fonction use est simple :\nvoid use() { glUseProgram(ID); } De même pour les fonctions set:\nvoid setBool(const std::string \u0026name, bool value) const { glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value); } void setInt(const std::string \u0026name, int value) const { glUniform1i(glGetUniformLocation(ID, name.c_str()), value); } void setFloat(const std::string \u0026name, float value) const { glUniform1f(glGetUniformLocation(ID, name.c_str()), value); } Et voilà, une [classe de shader] (https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/shader_s.h) terminée. L’utilisation de la classe de shaders est assez simple ; nous créons un objet shader une fois et à partir de là, nous commençons simplement à l’utiliser :\nShader ourShader(\"path/to/shaders/shader.vs\", \"path/to/shaders/shader.fs\"); [...] while(...) { ourShader.use(); ourShader.setFloat(\"someUniform\", 1.0f); DrawStuff(); } Ici, nous avons stocké le code source du vertex et du fragment shader dans deux fichiers appelés shader.vs et shader.fs. Vous êtes libre de nommer vos fichiers de shaders comme vous le souhaitez ; personnellement, je trouve les extensions .vs et .fs assez intuitives.\nVous pouvez trouver le code source ici en utilisant notre classe de shaders nouvellement créée. Notez que vous pouvez cliquer sur les chemins des fichiers de shaders pour trouver le code source des shaders.\n",
+  "wordCount" : "3937",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/04_shaders/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://hrst4.xyz/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://hrst4.xyz/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      
+    </h1>
+    <div class="post-meta">
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="shaders">Shaders<a hidden class="anchor" aria-hidden="true" href="#shaders">#</a></h1>
+<p>Comme mentionné dans le chapitre [[03_hello triangle]], les shaders sont de petits programmes qui reposent sur le GPU. Ces programmes sont exécutés pour chaque section spécifique du pipeline graphique. <strong>En gros, les shaders ne sont rien d&rsquo;autre que des programmes qui transforment les entrées en sorties. Les shaders sont également des programmes très isolés dans la mesure où ils ne sont pas autorisés à communiquer entre eux ; la seule communication qu&rsquo;ils ont se fait par le biais de leurs entrées et sorties.</strong></p>
+<p>Dans le chapitre précédent, nous avons brièvement abordé la question des shaders et la manière de les utiliser correctement. Nous allons maintenant expliquer les shaders, et plus particulièrement le langage shader d&rsquo;OpenGL, d&rsquo;une manière plus générale.</p>
+<h2 id="glsl">GLSL<a hidden class="anchor" aria-hidden="true" href="#glsl">#</a></h2>
+<p>Les shaders sont écrits dans le langage de type C GLSL. <strong>GLSL est conçu pour être utilisé avec des graphiques et contient des fonctionnalités utiles spécifiquement destinées à la manipulation de vecteurs et de matrices.</strong></p>
+<p>Les shaders commencent toujours par une déclaration de version, suivie d&rsquo;une liste de variables d&rsquo;entrée et de sortie, d&rsquo;uniformes et de leur fonction principale. Le point d&rsquo;entrée de chaque shader se situe au niveau de sa fonction principale, où nous traitons toutes les variables d&rsquo;entrée et affichons les résultats dans les variables de sortie. Ne vous inquiétez pas si vous ne savez pas ce que sont les uniformes, nous y reviendrons bientôt.</p>
+<p>Un shader a typiquement la structure suivante :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version version_number
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>in type in_variable_name;
+</span></span><span style="display:flex;"><span>in type in_variable_name;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>out type out_variable_name;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>uniform type uniform_name;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// process input(s) and do some weird graphics stuff
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  ...
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// output processed stuff to output variable
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  out_variable_name <span style="color:#f92672">=</span> weird_stuff_we_processed;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Lorsque nous parlons spécifiquement du vertex shader, chaque variable d&rsquo;entrée est également connue sous le nom d&rsquo;attribut de vertex. Le nombre maximum d&rsquo;attributs de vertex que nous sommes autorisés à déclarer est limité par le matériel. OpenGL garantit qu&rsquo;il y a toujours au moins 16 attributs de vertex à 4 composantes disponibles, mais certains matériels peuvent en autoriser plus, ce que vous pouvez récupérer en interrogeant <code>GL_MAX_VERTEX_ATTRIBS</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> nrAttributes;
+</span></span><span style="display:flex;"><span>glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, <span style="color:#f92672">&amp;</span>nrAttributes);
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Maximum nr of vertex attributes supported: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> nrAttributes <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span></code></pre></div><p>Cette méthode permet souvent d&rsquo;obtenir un minimum de 16, ce qui est largement suffisant pour la plupart des cas.</p>
+<h2 id="types">Types<a hidden class="anchor" aria-hidden="true" href="#types">#</a></h2>
+<p>Comme tout autre langage de programmation, GLSL dispose de types de données permettant de spécifier le type de variable avec lequel on souhaite travailler. GLSL possède la plupart des types de base par défaut que nous connaissons dans des langages comme le C : int, float, double, uint et bool. GLSL propose également deux types de conteneurs que nous utiliserons beaucoup, à savoir les <strong>vecteurs</strong> et les <strong>matrices</strong>. Nous aborderons les matrices dans un chapitre ultérieur.</p>
+<h3 id="vecteurs">Vecteurs<a hidden class="anchor" aria-hidden="true" href="#vecteurs">#</a></h3>
+<p>Un vecteur en GLSL est un conteneur à 2, 3 ou 4 composants pour n&rsquo;importe lequel des types de base mentionnés ci-dessus. Ils peuvent prendre la forme suivante (<code>n</code> représente le nombre de composants) :</p>
+<ul>
+<li><code>vecn</code> : le vecteur par défaut de <code>n</code> flottants.</li>
+<li><code>bvecn</code> : un vecteur de <code>n</code> booléens.</li>
+<li><code>ivecn</code> : un vecteur de <code>n</code> entiers.</li>
+<li><code>uvecn</code> : un vecteur de <code>n</code> entiers non signés.</li>
+<li><code>dvecn</code> : un vecteur de <code>n</code> composantes doubles.</li>
+</ul>
+<p>La plupart du temps, nous utiliserons le <code>vecn</code> de base, car les flottants suffisent pour la plupart de nos besoins.</p>
+<p>Les composantes d&rsquo;un vecteur sont accessibles via <code>vec.x</code> où x est la première composante du vecteur. Vous pouvez utiliser <code>.x</code>,<code> .y</code>, <code>.z</code> et <code>.w</code> pour accéder à leur première, deuxième, troisième et quatrième composante respectivement. GLSL vous permet également d&rsquo;utiliser <code>rgba</code> pour les couleurs ou <code>stpq</code> pour les coordonnées de texture, en accédant aux mêmes composantes.</p>
+<p>Le type de données vectoriel permet une sélection intéressante et flexible des composantes, appelée &ldquo;<strong>swizzling</strong>&rdquo;. Le swizzling nous permet d&rsquo;utiliser une syntaxe comme celle-ci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec2 someVec;
+</span></span><span style="display:flex;"><span>vec4 differentVec <span style="color:#f92672">=</span> someVec.xyxx;
+</span></span><span style="display:flex;"><span>vec3 anotherVec <span style="color:#f92672">=</span> differentVec.zyw;
+</span></span><span style="display:flex;"><span>vec4 otherVec <span style="color:#f92672">=</span> someVec.xxxx <span style="color:#f92672">+</span> anotherVec.yxzy;
+</span></span></code></pre></div><p>Vous pouvez utiliser n&rsquo;importe quelle combinaison de 4 lettres au maximum pour créer un nouveau vecteur (du même type) tant que le vecteur original possède ces composantes ; il n&rsquo;est pas permis d&rsquo;accéder à la composante <code>.z</code> d&rsquo;un <code>vec2</code> par exemple. Nous pouvons également passer des vecteurs en tant qu&rsquo;arguments à différents appels de constructeurs de vecteurs, ce qui réduit le nombre d&rsquo;arguments requis :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec2 vect <span style="color:#f92672">=</span> vec2(<span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">0.7</span>);
+</span></span><span style="display:flex;"><span>vec4 result <span style="color:#f92672">=</span> vec4(vect, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>vec4 otherResult <span style="color:#f92672">=</span> vec4(result.xyz, <span style="color:#ae81ff">1.0</span>);
+</span></span></code></pre></div><p>Les vecteurs sont donc un type de données flexible que nous pouvons utiliser pour toutes sortes d&rsquo;entrées et de sorties. Tout au long du livre, vous trouverez de nombreux exemples de la manière dont nous pouvons gérer les vecteurs de manière créative.</p>
+<h2 id="ins-and-outs-entrées-et-sorties">Ins and outs (entrées et sorties)<a hidden class="anchor" aria-hidden="true" href="#ins-and-outs-entrées-et-sorties">#</a></h2>
+<p>Les shaders sont de jolis petits programmes en soi, mais ils font partie d&rsquo;un tout et c&rsquo;est pour cette raison que nous voulons avoir des entrées et des sorties sur les shaders individuels afin de pouvoir déplacer des choses. GLSL a défini les mots-clés <code>in</code> et <code>out</code> spécifiquement dans ce but. Chaque shader peut spécifier des entrées et des sorties à l&rsquo;aide de ces mots-clés et chaque fois qu&rsquo;une variable de sortie correspond à une variable d&rsquo;entrée de l&rsquo;étape suivante du shader, elle est transmise. Les vertex shaders et les fragment shaders diffèrent quelque peu.</p>
+<p><strong>Le vertex shader doit recevoir une certaine forme d&rsquo;entrée, sinon il serait assez inefficace</strong>. Le vertex shader diffère dans son entrée, en ce sens qu&rsquo;il reçoit son entrée directement à partir des données du vertex.
+Pour définir comment les données de sommets sont organisées, nous spécifions les variables d&rsquo;entrée avec des métadonnées d&rsquo;emplacement afin de pouvoir configurer les attributs de sommets sur l&rsquo;unité centrale (CPU). Nous avons vu cela dans le chapitre précédent sous le nom de <code>layout (location = 0)</code>. Le vertex shader nécessite donc une spécification de disposition supplémentaire pour ses entrées afin que nous puissions le lier aux données de sommets.</p>
+<blockquote>
+<p>Il est également possible d&rsquo;omettre le spécificateur de disposition <code>(layout = 0)</code> et de demander l&rsquo;emplacement des attributs dans votre code OpenGL via <code>glGetAttribLocation</code>, mais je préfère les définir dans le vertex shader. C&rsquo;est plus facile à comprendre et cela vous épargne (ainsi qu&rsquo;à OpenGL) un peu de travail.</p>
+</blockquote>
+<p>L&rsquo;autre exception est que le fragment shader nécessite une variable de sortie de couleur <code>vec4</code>, puisque le fragment shader a besoin de générer une couleur de sortie finale. Si vous ne spécifiez pas de couleur de sortie dans votre fragment shader, la sortie du buffer de couleur pour ces fragments sera indéfinie (ce qui signifie généralement qu&rsquo;OpenGL les rendra en noir ou en blanc).</p>
+<p>Ainsi, <strong>si nous voulons envoyer des données d&rsquo;un shader à l&rsquo;autre, nous devons déclarer une sortie dans le shader d&rsquo;envoi et une entrée similaire dans le shader de réception</strong>. Lorsque les types et les noms sont identiques des deux côtés, OpenGL liera ces variables ensemble et il sera alors possible d&rsquo;envoyer des données entre les shaders (ce qui est fait lors de la liaison d&rsquo;un objet de programme). Pour vous montrer comment cela fonctionne en pratique, nous allons modifier les shaders du chapitre précédent pour laisser le vertex shader décider de la couleur pour le fragment shader.</p>
+<p><strong>Vertex shader</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec3 aPos; <span style="color:#75715e">// the position variable has attribute position 0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  
+</span></span><span style="display:flex;"><span>out vec4 vertexColor; <span style="color:#75715e">// specify a color output to the fragment shader
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>); <span style="color:#75715e">// see how we directly give a vec3 to vec4&#39;s constructor
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vertexColor <span style="color:#f92672">=</span> vec4(<span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>); <span style="color:#75715e">// set the output variable to a dark-red color
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p><strong>Fragment shader</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>in vec4 vertexColor; <span style="color:#75715e">// the input variable from the vertex shader (same name and same type)  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vertexColor;
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>Vous pouvez voir que nous avons déclaré une variable <code>vertexColor</code> en tant que sortie <code>vec4</code> que nous avons définie dans le vertex shader et que nous déclarons une entrée <code>vertexColor</code> similaire dans le fragment shader. Comme elles ont toutes deux le même type et le même nom, la variable <code>vertexColor</code> dans le fragment shader est liée à la variable <code>vertexColor</code> dans le vertex shader. Étant donné que nous avons défini une couleur rouge foncé dans le vertex shader, les fragments résultants devraient également être rouge foncé. L&rsquo;image suivante montre le résultat :
+![[img/shader1.png]]
+Nous y voilà ! Nous venons de réussir à envoyer une valeur du vertex shader au fragment shader. Mettons un peu de piment et voyons si nous pouvons envoyer une couleur de notre application au fragment shader !</p>
+<h2 id="uniforms">Uniforms<a hidden class="anchor" aria-hidden="true" href="#uniforms">#</a></h2>
+<p>Les uniformes sont un autre moyen de transmettre les données de notre application sur le processeur aux shaders sur le GPU. Les uniformes sont toutefois légèrement différents des attributs de vertex. Tout d&rsquo;abord, les uniformes sont globaux. Globaux, ce qui signifie qu&rsquo;une variable uniforme est unique par objet du programme de shaders, et qu&rsquo;elle est accessible à partir de n&rsquo;importe quel shader à n&rsquo;importe quelle étape du programme de shaders. Deuxièmement, quelle que soit la valeur de l&rsquo;uniforme, les uniformes conservent leur valeur jusqu&rsquo;à ce qu&rsquo;ils soient réinitialisés ou mis à jour.</p>
+<p>Pour déclarer un uniforme en GLSL, il suffit d&rsquo;ajouter le mot-clé <code>uniform</code> à un shader avec un type et un nom. A partir de là, nous pouvons utiliser l&rsquo;uniforme nouvellement déclaré dans le shader. Voyons si cette fois-ci nous pouvons définir la couleur du triangle par le biais d&rsquo;un uniforme :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>uniform vec4 ourColor; <span style="color:#75715e">// we set this variable in the OpenGL code.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> ourColor;
+</span></span><span style="display:flex;"><span>}   
+</span></span></code></pre></div><p>Nous avons déclaré un uniforme <code>vec4 ourColor</code> dans le fragment shader et défini la couleur de sortie du fragment en fonction du contenu de cette valeur uniforme. Comme les uniformes sont des variables globales, nous pouvons les définir dans n&rsquo;importe quelle étape du shader. Il n&rsquo;est donc pas nécessaire de repasser par le vertex shader pour transmettre quelque chose au fragment shader. Nous n&rsquo;utilisons pas cet uniforme dans le vertex shader, il n&rsquo;est donc pas nécessaire de le définir ici.</p>
+<blockquote>
+<p>Si vous déclarez un uniforme qui n&rsquo;est utilisé nulle part dans votre code GLSL, le compilateur supprimera silencieusement la variable de la version compilée, ce qui est la cause de plusieurs erreurs frustrantes ; gardez cela à l&rsquo;esprit !</p>
+</blockquote>
+<p>L&rsquo;uniforme est actuellement vide ; nous n&rsquo;avons pas encore ajouté de données à l&rsquo;uniforme, alors essayons de le faire. Nous devons d&rsquo;abord trouver l&rsquo;index/l&rsquo;emplacement de l&rsquo;attribut uniform dans notre shader. Une fois que nous avons l&rsquo;index/l&rsquo;emplacement de l&rsquo;uniforme, nous pouvons mettre à jour ses valeurs. Au lieu de passer une seule couleur au fragment shader, nous allons pimenter les choses en changeant progressivement de couleur au fil du temps :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> timeValue <span style="color:#f92672">=</span> glfwGetTime();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> greenValue <span style="color:#f92672">=</span> (sin(timeValue) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2.0f</span>) <span style="color:#f92672">+</span> <span style="color:#ae81ff">0.5f</span>; <span style="color:#75715e">// [0,1]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> vertexColorLocation <span style="color:#f92672">=</span> glGetUniformLocation(shaderProgram, <span style="color:#e6db74">&#34;ourColor&#34;</span>);
+</span></span><span style="display:flex;"><span>glUseProgram(shaderProgram);
+</span></span><span style="display:flex;"><span>glUniform4f(vertexColorLocation, <span style="color:#ae81ff">0.0f</span>, greenValue, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>);
+</span></span></code></pre></div><p>Tout d&rsquo;abord, nous récupérons le temps d&rsquo;exécution en secondes via <code>glfwGetTime()</code>. Ensuite, nous faisons varier la couleur entre 0,0 et 1,0 à l&rsquo;aide de la fonction <code>sin</code> et nous stockons le résultat dans <code>greenValue</code>.</p>
+<p>Nous demandons ensuite l&rsquo;emplacement de l&rsquo;uniforme <code>ourColor</code> à l&rsquo;aide de <code>glGetUniformLocation</code>. Nous fournissons le programme du shader et le nom de l&rsquo;uniforme (dont nous voulons récupérer l&rsquo;emplacement) à la fonction de requête. Si <code>glGetUniformLocation</code> renvoie -1, cela signifie qu&rsquo;il n&rsquo;a pas pu trouver l&rsquo;emplacement. Enfin, nous pouvons définir la valeur de l&rsquo;uniforme à l&rsquo;aide de la fonction <code>glUniform4f</code>. Notez que la recherche de l&rsquo;emplacement de l&rsquo;uniforme n&rsquo;exige pas que vous utilisiez d&rsquo;abord le programme de shader, mais la mise à jour d&rsquo;un uniforme exige que vous utilisiez d&rsquo;abord le programme (en appelant <code>glUseProgram</code>), parce qu&rsquo;il définit l&rsquo;uniforme sur le programme de shader actuellement actif.</p>
+<blockquote>
+<p>Parce qu&rsquo;OpenGL est à la base une bibliothèque C, il n&rsquo;a pas de support natif pour la surcharge des fonctions, donc chaque fois qu&rsquo;une fonction peut être appelée avec différents types, OpenGL définit de nouvelles fonctions pour chaque type requis ; <code>glUniform</code> est un parfait exemple de ceci. La fonction requiert un postfixe spécifique pour le type d&rsquo;uniforme que vous souhaitez définir. Quelques-uns des postfixes possibles sont :</p>
+<ul>
+<li><code>f</code> : la fonction attend un <code>float</code> comme valeur.</li>
+<li><code>i</code> : la fonction attend un <code>int</code> comme valeur.</li>
+<li><code>ui</code> : la fonction attend un <code>unsigned int</code> comme valeur.</li>
+<li><code>3f</code> : la fonction attend 3 <code>float</code> comme valeur.</li>
+<li><code>fv</code> : la fonction attend un vecteur/rayon <code>float</code> comme valeur.
+Lorsque vous voulez configurer une option d&rsquo;OpenGL, choisissez simplement la fonction surchargée qui correspond à votre type. Dans notre cas, nous voulons définir 4 flottants de l&rsquo;uniforme individuellement, donc nous passons nos données via <code>glUniform4f</code> (notez que nous aurions aussi pu utiliser la version <code>fv</code>).</li>
+</ul>
+</blockquote>
+<p>Maintenant que nous savons comment définir les valeurs des variables uniformes, nous pouvons les utiliser pour le rendu. Si nous voulons que la couleur change progressivement, nous devons mettre à jour cette variable uniforme à chaque image, sinon le triangle conserverait une seule couleur unie si nous ne la définissions qu&rsquo;une seule fois. Nous calculons donc la valeur verte et mettons à jour l&rsquo;uniforme à chaque itération de rendu :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">while</span>(<span style="color:#f92672">!</span>glfwWindowShouldClose(window))
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// input
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    processInput(window);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// render
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// clear the colorbuffer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    glClearColor(<span style="color:#ae81ff">0.2f</span>, <span style="color:#ae81ff">0.3f</span>, <span style="color:#ae81ff">0.3f</span>, <span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>    glClear(GL_COLOR_BUFFER_BIT);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// be sure to activate the shader
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    glUseProgram(shaderProgram);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// update the uniform color
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> timeValue <span style="color:#f92672">=</span> glfwGetTime();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> greenValue <span style="color:#f92672">=</span> sin(timeValue) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2.0f</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">0.5f</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> vertexColorLocation <span style="color:#f92672">=</span> glGetUniformLocation(shaderProgram, <span style="color:#e6db74">&#34;ourColor&#34;</span>);
+</span></span><span style="display:flex;"><span>    glUniform4f(vertexColorLocation, <span style="color:#ae81ff">0.0f</span>, greenValue, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// now render the triangle
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    glBindVertexArray(VAO);
+</span></span><span style="display:flex;"><span>    glDrawArrays(GL_TRIANGLES, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// swap buffers and poll IO events
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    glfwSwapBuffers(window);
+</span></span><span style="display:flex;"><span>    glfwPollEvents();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Le code est une adaptation relativement simple du code précédent. Cette fois, nous mettons à jour une valeur uniforme à chaque image avant de dessiner le triangle. Si vous mettez à jour l&rsquo;uniforme correctement, vous devriez voir la couleur de votre triangle passer progressivement du vert au noir, puis au vert.</p>
+<p>![[video/shaders.mp4]]
+Consultez le code source <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/3.1.shaders_uniform/shaders_uniform.cpp">ici</a> si vous êtes bloqué.</p>
+<p>Comme vous pouvez le voir, les uniformes sont un outil utile pour définir des attributs qui peuvent changer à chaque image, ou pour échanger des données entre votre application et vos shaders, mais que faire si nous voulons définir une couleur pour chaque vertex ? Dans ce cas, nous devrions déclarer autant d&rsquo;uniformes que de sommets. Une meilleure solution serait d&rsquo;inclure plus de données dans les attributs des vertex, ce que nous allons faire maintenant.</p>
+<h2 id="plus-dattributs">Plus d&rsquo;attributs!<a hidden class="anchor" aria-hidden="true" href="#plus-dattributs">#</a></h2>
+<p>Nous avons vu dans le chapitre précédent comment remplir un VBO, configurer des pointeurs d&rsquo;attributs de vertex et stocker le tout dans un VAO. Cette fois, nous voulons également ajouter des données de couleur aux données de vertex. Nous allons ajouter des données de couleur sous la forme de 3 flottants au tableau des vertex. Nous attribuons une couleur rouge, verte et bleue à chacun des coins de notre triangle :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> vertices[] <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// positions         // colors
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     <span style="color:#ae81ff">0.5f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>,   <span style="color:#75715e">// bottom right
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">-</span><span style="color:#ae81ff">0.5f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>,   <span style="color:#75715e">// bottom left
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     <span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>    <span style="color:#75715e">// top 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>};    
+</span></span></code></pre></div><p>Puisque nous avons maintenant plus de données à envoyer au vertex shader, il est nécessaire d&rsquo;ajuster le vertex shader pour qu&rsquo;il reçoive également notre valeur de couleur en tant qu&rsquo;entrée d&rsquo;attribut de vertex. Notez que nous avons fixé l&rsquo;emplacement de l&rsquo;attribut <code>aColor</code> à 1 à l&rsquo;aide du spécificateur d&rsquo;agencement :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec3 aPos;   <span style="color:#75715e">// the position variable has attribute position 0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>) in vec3 aColor; <span style="color:#75715e">// the color variable has attribute position 1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  
+</span></span><span style="display:flex;"><span>out vec3 ourColor; <span style="color:#75715e">// output a color to the fragment shader
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>    ourColor <span style="color:#f92672">=</span> aColor; <span style="color:#75715e">// set ourColor to the input color we got from the vertex data
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}  
+</span></span></code></pre></div><p>Puisque nous n&rsquo;utilisons plus d&rsquo;uniforme pour la couleur du fragment, mais que nous utilisons maintenant la variable de sortie <code>ourColor</code>, nous devrons également modifier le shader du fragment :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;  
+</span></span><span style="display:flex;"><span>in vec3 ourColor;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(ourColor, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Comme nous avons ajouté un autre attribut de sommet et mis à jour la mémoire du VBO, nous devons reconfigurer les pointeurs d&rsquo;attributs de sommet. Les données mises à jour dans la mémoire du VBO ressemblent maintenant à ceci :
+![[img/shader2.png]]
+En connaissant la disposition actuelle, nous pouvons mettre à jour le format des vertex avec <code>glVertexAttribPointer</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// position attribute
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glVertexAttribPointer(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>, GL_FLOAT, GL_FALSE, <span style="color:#ae81ff">6</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>), (<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>)<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>glEnableVertexAttribArray(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// color attribute
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glVertexAttribPointer(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, GL_FLOAT, GL_FALSE, <span style="color:#ae81ff">6</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>), (<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>)(<span style="color:#ae81ff">3</span><span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>)));
+</span></span><span style="display:flex;"><span>glEnableVertexAttribArray(<span style="color:#ae81ff">1</span>);
+</span></span></code></pre></div><p>Les premiers arguments de <code>glVertexAttribPointer</code> sont relativement simples. Cette fois, nous configurons l&rsquo;attribut vertex sur l&rsquo;emplacement d&rsquo;attribut 1. Les valeurs de couleur ont une taille de 3 flottants et nous ne normalisons pas les valeurs.</p>
+<p><strong>Comme nous avons maintenant deux attributs de vertex, nous devons recalculer la valeur de stride</strong>. Pour obtenir la valeur d&rsquo;attribut suivante (par exemple, la composante x suivante du vecteur de position) dans le tableau de données, nous devons déplacer 6 flottants vers la droite, trois pour les valeurs de position et trois pour les valeurs de couleur. Cela nous donne une valeur de stride de 6 fois la taille d&rsquo;un flottant en octets (= 24 octets).
+<strong>Cette fois-ci, nous devons également spécifier un décalage (offset)</strong>. Pour chaque sommet, l&rsquo;attribut de sommet de position est le premier, nous déclarons donc un décalage de 0. L&rsquo;attribut de couleur commence après les données de position, le décalage est donc de 3 * sizeof(float) en octets (= 12 octets).</p>
+<p>L&rsquo;exécution de l&rsquo;application devrait donner l&rsquo;image suivante :
+![[img/shader3.png]]
+Consultez le code source <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/3.2.shaders_interpolation/shaders_interpolation.cpp">ici</a> si vous êtes bloqué.</p>
+<p>L&rsquo;image n&rsquo;est peut-être pas exactement ce à quoi vous vous attendez, car nous n&rsquo;avons fourni que 3 couleurs, et non la vaste palette de couleurs que nous voyons actuellement. Tout ceci est le résultat de ce que l&rsquo;on appelle <strong>l&rsquo;interpolation de fragments</strong> dans le fragment shader. Lors du rendu d&rsquo;un triangle, l&rsquo;étape de <strong>rastérisation</strong> produit généralement beaucoup plus de fragments que de vertices spécifiés à l&rsquo;origine. Le rasterizer détermine alors les positions de chacun de ces fragments en fonction de leur emplacement sur la forme du triangle.
+Sur la base de ces positions, il interpole toutes les variables d&rsquo;entrée du fragment shader. Disons par exemple que nous avons une ligne dont le point supérieur a une couleur verte et le point inférieur une couleur bleue. Si le fragment shader est exécuté sur un fragment situé à 70 % de la ligne, l&rsquo;attribut d&rsquo;entrée de couleur résultant sera une combinaison linéaire de vert et de bleu ; pour être plus précis : 30 % de bleu et 70 % de vert.</p>
+<p>C&rsquo;est exactement ce qui s&rsquo;est passé pour le triangle. Nous avons 3 sommets et donc 3 couleurs, et à en juger par les pixels du triangle, il contient probablement environ 50000 fragments, où le fragment shader a interpolé les couleurs parmi ces pixels. Si vous regardez bien les couleurs, vous verrez que tout est logique : du rouge au bleu, on passe d&rsquo;abord au violet, puis au bleu. <strong>L&rsquo;interpolation de fragments est appliquée à tous les attributs d&rsquo;entrée du fragment shader</strong>.</p>
+<h2 id="notre-propre-classe-de-shaders">Notre propre classe de shaders<a hidden class="anchor" aria-hidden="true" href="#notre-propre-classe-de-shaders">#</a></h2>
+<p>L&rsquo;écriture, la compilation et la gestion des shaders peuvent être assez lourdes. Pour terminer sur le sujet des shaders, nous allons nous simplifier la vie en construisant une classe de shaders qui lit les shaders sur le disque, les compile et les lie, vérifie les erreurs et est facile à utiliser. Cela vous donne également une idée de la manière dont nous pouvons encapsuler certaines des connaissances que nous avons acquises jusqu&rsquo;à présent dans des objets abstraits utiles.</p>
+<p>Nous allons créer la classe shader entièrement dans un fichier d&rsquo;en-tête, principalement à des fins d&rsquo;apprentissage et de portabilité. Commençons par ajouter les includes nécessaires et par définir la structure de la classe :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#ifndef SHADER_H
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define SHADER_H
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;glad/glad.h&gt; // include glad to get all the required OpenGL headers</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;string&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;fstream&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;sstream&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Shader</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// the program ID
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> ID;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// constructor reads and builds the shader
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    Shader(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> vertexPath, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> fragmentPath);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// use/activate the shader
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">use</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// utility uniform functions
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setBool</span>(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>name, <span style="color:#66d9ef">bool</span> value) <span style="color:#66d9ef">const</span>;  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setInt</span>(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>name, <span style="color:#66d9ef">int</span> value) <span style="color:#66d9ef">const</span>;   
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setFloat</span>(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>name, <span style="color:#66d9ef">float</span> value) <span style="color:#66d9ef">const</span>;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif
+</span></span></span></code></pre></div><blockquote>
+<p>Nous avons utilisé plusieurs directives de préprocesseur en haut du fichier d&rsquo;en-tête. L&rsquo;utilisation de ces petites lignes de code informe votre compilateur de n&rsquo;inclure et de ne compiler que ce fichier d&rsquo;en-tête s&rsquo;il n&rsquo;a pas encore été inclus, même si plusieurs fichiers incluent l&rsquo;en-tête du shader. Cela permet d&rsquo;éviter les conflits d&rsquo;édition de liens.</p>
+</blockquote>
+<p>La classe shader contient l&rsquo;ID du programme shader. Son constructeur requiert les chemins d&rsquo;accès au code source du vertex et du fragment shader respectivement, que nous pouvons stocker sur le disque sous la forme de simples fichiers texte. Pour ajouter un petit plus, nous avons également ajouté plusieurs fonctions utilitaires pour nous faciliter un peu la vie : use active le programme shader, et tous les <code>set...</code> interrogent un emplacement uniforme et fixe sa valeur.</p>
+<h3 id="lire-depuis-un-fichier">Lire depuis un fichier<a hidden class="anchor" aria-hidden="true" href="#lire-depuis-un-fichier">#</a></h3>
+<p>Nous utilisons des flux de fichiers C++ pour lire le contenu du fichier dans plusieurs objets de type chaîne de caractères :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>Shader(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> vertexPath, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> fragmentPath)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 1. retrieve the vertex/fragment source code from filePath
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    std<span style="color:#f92672">::</span>string vertexCode;
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>string fragmentCode;
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>ifstream vShaderFile;
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>ifstream fShaderFile;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ensure ifstream objects can throw exceptions:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vShaderFile.exceptions (std<span style="color:#f92672">::</span>ifstream<span style="color:#f92672">::</span>failbit <span style="color:#f92672">|</span> std<span style="color:#f92672">::</span>ifstream<span style="color:#f92672">::</span>badbit);
+</span></span><span style="display:flex;"><span>    fShaderFile.exceptions (std<span style="color:#f92672">::</span>ifstream<span style="color:#f92672">::</span>failbit <span style="color:#f92672">|</span> std<span style="color:#f92672">::</span>ifstream<span style="color:#f92672">::</span>badbit);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> 
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// open files
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        vShaderFile.open(vertexPath);
+</span></span><span style="display:flex;"><span>        fShaderFile.open(fragmentPath);
+</span></span><span style="display:flex;"><span>        std<span style="color:#f92672">::</span>stringstream vShaderStream, fShaderStream;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// read file&#39;s buffer contents into streams
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        vShaderStream <span style="color:#f92672">&lt;&lt;</span> vShaderFile.rdbuf();
+</span></span><span style="display:flex;"><span>        fShaderStream <span style="color:#f92672">&lt;&lt;</span> fShaderFile.rdbuf();		
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// close file handlers
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        vShaderFile.close();
+</span></span><span style="display:flex;"><span>        fShaderFile.close();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// convert stream into string
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        vertexCode   <span style="color:#f92672">=</span> vShaderStream.str();
+</span></span><span style="display:flex;"><span>        fragmentCode <span style="color:#f92672">=</span> fShaderStream.str();		
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span>(std<span style="color:#f92672">::</span>ifstream<span style="color:#f92672">::</span>failure e)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> vShaderCode <span style="color:#f92672">=</span> vertexCode.c_str();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> fShaderCode <span style="color:#f92672">=</span> fragmentCode.c_str();
+</span></span><span style="display:flex;"><span>    [...]
+</span></span></code></pre></div><p>Ensuite, nous devons compiler et lier les shaders. Notez que nous vérifions également si la compilation/liaison a échoué et si c&rsquo;est le cas, nous affichons les erreurs de compilation. Ceci est extrêmement utile lors du débogage (vous aurez besoin de ces journaux d&rsquo;erreurs un jour ou l&rsquo;autre) :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// 2. compile shaders
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> vertex, fragment;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> success;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">char</span> infoLog[<span style="color:#ae81ff">512</span>];
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// vertex Shader
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>vertex <span style="color:#f92672">=</span> glCreateShader(GL_VERTEX_SHADER);
+</span></span><span style="display:flex;"><span>glShaderSource(vertex, <span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>vShaderCode, NULL);
+</span></span><span style="display:flex;"><span>glCompileShader(vertex);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// print compile errors if any
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glGetShaderiv(vertex, GL_COMPILE_STATUS, <span style="color:#f92672">&amp;</span>success);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>success)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    glGetShaderInfoLog(vertex, <span style="color:#ae81ff">512</span>, NULL, infoLog);
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;ERROR::SHADER::VERTEX::COMPILATION_FAILED</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">&lt;&lt;</span> infoLog <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// similiar for Fragment Shader
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>[...]
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// shader Program
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>ID <span style="color:#f92672">=</span> glCreateProgram();
+</span></span><span style="display:flex;"><span>glAttachShader(ID, vertex);
+</span></span><span style="display:flex;"><span>glAttachShader(ID, fragment);
+</span></span><span style="display:flex;"><span>glLinkProgram(ID);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// print linking errors if any
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glGetProgramiv(ID, GL_LINK_STATUS, <span style="color:#f92672">&amp;</span>success);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>success)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    glGetProgramInfoLog(ID, <span style="color:#ae81ff">512</span>, NULL, infoLog);
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;ERROR::SHADER::PROGRAM::LINKING_FAILED</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">&lt;&lt;</span> infoLog <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// delete the shaders as they&#39;re linked into our program now and no longer necessary
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glDeleteShader(vertex);
+</span></span><span style="display:flex;"><span>glDeleteShader(fragment);
+</span></span></code></pre></div><p>La fonction <code>use</code> est simple :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">use</span>() 
+</span></span><span style="display:flex;"><span>{ 
+</span></span><span style="display:flex;"><span>    glUseProgram(ID);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>De même pour les fonctions <code>set</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setBool</span>(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>name, <span style="color:#66d9ef">bool</span> value) <span style="color:#66d9ef">const</span>
+</span></span><span style="display:flex;"><span>{         
+</span></span><span style="display:flex;"><span>    glUniform1i(glGetUniformLocation(ID, name.c_str()), (<span style="color:#66d9ef">int</span>)value); 
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setInt</span>(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>name, <span style="color:#66d9ef">int</span> value) <span style="color:#66d9ef">const</span>
+</span></span><span style="display:flex;"><span>{ 
+</span></span><span style="display:flex;"><span>    glUniform1i(glGetUniformLocation(ID, name.c_str()), value); 
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setFloat</span>(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>name, <span style="color:#66d9ef">float</span> value) <span style="color:#66d9ef">const</span>
+</span></span><span style="display:flex;"><span>{ 
+</span></span><span style="display:flex;"><span>    glUniform1f(glGetUniformLocation(ID, name.c_str()), value); 
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>Et voilà, une [classe de shader] (<a href="https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/shader_s.h">https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/shader_s.h</a>) terminée. L&rsquo;utilisation de la classe de shaders est assez simple ; nous créons un objet shader une fois et à partir de là, nous commençons simplement à l&rsquo;utiliser :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>Shader <span style="color:#a6e22e">ourShader</span>(<span style="color:#e6db74">&#34;path/to/shaders/shader.vs&#34;</span>, <span style="color:#e6db74">&#34;path/to/shaders/shader.fs&#34;</span>);
+</span></span><span style="display:flex;"><span>[...]
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span>(...)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ourShader.use();
+</span></span><span style="display:flex;"><span>    ourShader.setFloat(<span style="color:#e6db74">&#34;someUniform&#34;</span>, <span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>    DrawStuff();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Ici, nous avons stocké le code source du vertex et du fragment shader dans deux fichiers appelés <code>shader.vs</code> et <code>shader.fs</code>. Vous êtes libre de nommer vos fichiers de shaders comme vous le souhaitez ; personnellement, je trouve les extensions <code>.vs</code> et <code>.fs</code> assez intuitives.</p>
+<p>Vous pouvez trouver le code source <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/3.3.shaders_class/shaders_class.cpp">ici</a> en utilisant notre <a href="https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/shader_s.h">classe de shaders</a> nouvellement créée. Notez que vous pouvez cliquer sur les chemins des fichiers de shaders pour trouver le code source des shaders.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://hrst4.xyz/tags/cg/">cg</a></li>
+      <li><a href="https://hrst4.xyz/tags/opengl/">opengl</a></li>
+      <li><a href="https://hrst4.xyz/tags/computer-graphics/">computer graphics</a></li>
+      <li><a href="https://hrst4.xyz/tags/cpp/">cpp</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://hrst4.xyz/">My New Hugo Site</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

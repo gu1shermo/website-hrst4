@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>My New Hugo Site</title>
+<meta name="keywords" content="cg, opengl, computer graphics, cpp">
+<meta name="description" content="Plusieurs lumières Dans les chapitres précédents, nous avons beaucoup appris sur l&rsquo;éclairage en OpenGL. Nous avons découvert l&rsquo;ombrage Phong (Phong shading), les matériaux, les maps d&rsquo;éclairage et les différents types de projecteurs de lumière. Dans ce chapitre, nous allons combiner toutes les connaissances acquises précédemment en créant une scène entièrement éclairée avec 6 sources de lumière actives. Nous allons simuler une lumière semblable à celle du soleil comme source de lumière directionnelle, 4 lumières ponctuelles dispersées dans la scène et nous ajouterons également une lampe de poche.">
+<meta name="author" content="">
+<link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/02_lighting/05_multiple-lights/multiple-lights/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://hrst4.xyz/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://hrst4.xyz/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://hrst4.xyz/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://hrst4.xyz/apple-touch-icon.png">
+<link rel="mask-icon" href="https://hrst4.xyz/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="" />
+<meta property="og:description" content="Plusieurs lumières Dans les chapitres précédents, nous avons beaucoup appris sur l&rsquo;éclairage en OpenGL. Nous avons découvert l&rsquo;ombrage Phong (Phong shading), les matériaux, les maps d&rsquo;éclairage et les différents types de projecteurs de lumière. Dans ce chapitre, nous allons combiner toutes les connaissances acquises précédemment en créant une scène entièrement éclairée avec 6 sources de lumière actives. Nous allons simuler une lumière semblable à celle du soleil comme source de lumière directionnelle, 4 lumières ponctuelles dispersées dans la scène et nous ajouterons également une lampe de poche." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/02_lighting/05_multiple-lights/multiple-lights/" /><meta property="article:section" content="docs" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="Plusieurs lumières Dans les chapitres précédents, nous avons beaucoup appris sur l&rsquo;éclairage en OpenGL. Nous avons découvert l&rsquo;ombrage Phong (Phong shading), les matériaux, les maps d&rsquo;éclairage et les différents types de projecteurs de lumière. Dans ce chapitre, nous allons combiner toutes les connaissances acquises précédemment en créant une scène entièrement éclairée avec 6 sources de lumière actives. Nous allons simuler une lumière semblable à celle du soleil comme source de lumière directionnelle, 4 lumières ponctuelles dispersées dans la scène et nous ajouterons également une lampe de poche."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Docs",
+      "item": "https://hrst4.xyz/docs/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "",
+      "item": "https://hrst4.xyz/docs/learnopengl_fr/02_lighting/05_multiple-lights/multiple-lights/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "",
+  "name": "",
+  "description": "Plusieurs lumières Dans les chapitres précédents, nous avons beaucoup appris sur l\u0026rsquo;éclairage en OpenGL. Nous avons découvert l\u0026rsquo;ombrage Phong (Phong shading), les matériaux, les maps d\u0026rsquo;éclairage et les différents types de projecteurs de lumière. Dans ce chapitre, nous allons combiner toutes les connaissances acquises précédemment en créant une scène entièrement éclairée avec 6 sources de lumière actives. Nous allons simuler une lumière semblable à celle du soleil comme source de lumière directionnelle, 4 lumières ponctuelles dispersées dans la scène et nous ajouterons également une lampe de poche.",
+  "keywords": [
+    "cg", "opengl", "computer graphics", "cpp"
+  ],
+  "articleBody": "Plusieurs lumières Dans les chapitres précédents, nous avons beaucoup appris sur l’éclairage en OpenGL. Nous avons découvert l’ombrage Phong (Phong shading), les matériaux, les maps d’éclairage et les différents types de projecteurs de lumière. Dans ce chapitre, nous allons combiner toutes les connaissances acquises précédemment en créant une scène entièrement éclairée avec 6 sources de lumière actives. Nous allons simuler une lumière semblable à celle du soleil comme source de lumière directionnelle, 4 lumières ponctuelles dispersées dans la scène et nous ajouterons également une lampe de poche.\nPour utiliser plus d’une source de lumière dans la scène, nous voulons encapsuler les calculs d’éclairage dans des fonctions GLSL. La raison en est que le code devient rapidement désagréable lorsque nous effectuons des calculs d’éclairage avec plusieurs types de lumière, chacun nécessitant des calculs différents. Si nous devions effectuer tous ces calculs dans la seule fonction principale, le code deviendrait rapidement difficile à comprendre.\nLes fonctions en GLSL sont exactement comme les fonctions C. Nous avons un nom de fonction, un retour, un nom de fichier et un nom d’utilisateur. Nous avons un nom de fonction, un type de retour et nous devons déclarer un prototype au début du fichier de code si la fonction n’a pas encore été déclarée avant la fonction principale. Nous allons créer une fonction différente pour chaque type de lumière : les lumières directionnelles, les lumières ponctuelles et les projecteurs.\nLorsque l’on utilise plusieurs lumières dans une scène, l’approche est généralement la suivante : nous avons un seul vecteur de couleur qui représente la couleur de sortie du fragment. Pour chaque lumière, la contribution de la lumière au fragment est ajoutée à ce vecteur de couleur de sortie. Ainsi, chaque lumière de la scène calculera son impact individuel et contribuera à la couleur de sortie finale. Une structure générale pourrait ressembler à ceci :\nout vec4 FragColor; void main() { // define an output color value vec3 output = vec3(0.0); // add the directional light's contribution to the output output += someFunctionToCalculateDirectionalLight(); // do the same for all point lights for(int i = 0; i \u003c nr_of_point_lights; i++) output += someFunctionToCalculatePointLight(); // and add others lights as well (like spotlights) output += someFunctionToCalculateSpotLight(); FragColor = vec4(output, 1.0); } Le code réel sera probablement différent selon l’implémentation, mais la structure générale reste la même. Nous définissons plusieurs fonctions qui calculent l’impact de chaque source lumineuse et ajoutent la couleur résultante à un vecteur de couleur de sortie. Si, par exemple, deux sources lumineuses sont proches du fragment, leur contribution combinée se traduira par un fragment plus lumineux que le fragment éclairé par une seule source lumineuse.\nLumière directionnelle Nous voulons définir une fonction dans le fragment shader qui calcule la contribution d’une lumière directionnelle sur le fragment correspondant : une fonction qui prend quelques paramètres et renvoie la couleur de l’éclairage directionnel calculé.\nTout d’abord, nous devons définir les variables nécessaires dont nous avons minimalement besoin pour une source de lumière directionnelle. Nous pouvons stocker les variables dans une structure appelée DirLight et la définir comme un uniforme. Les variables de la structure devraient vous être familières grâce au chapitre précédent :\nstruct DirLight { vec3 direction; vec3 ambient; vec3 diffuse; vec3 specular; }; uniform DirLight dirLight; Nous pouvons ensuite transmettre l’uniforme dirLight à une fonction avec le prototype suivant :\nvec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir); Just like C and C++, when we want to call a function (in this case inside the main function) the function should be defined somewhere before the caller’s line number. In this case we’d prefer to define the functions below the main function so this requirement doesn’t hold. Therefore we declare the function’s prototypes somewhere above the main function, just like we would in C.\nYou can see that the function requires a DirLight struct and two other vectors required for its computation. If you successfully completed the previous chapter then the content of this function should come as no surprise:\nvec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) { vec3 lightDir = normalize(-light.direction); // diffuse shading float diff = max(dot(normal, lightDir), 0.0); // specular shading vec3 reflectDir = reflect(-lightDir, normal); float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess); // combine results vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords)); vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords)); vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords)); return (ambient + diffuse + specular); } Nous avons essentiellement copié le code du chapitre précédent et utilisé les vecteurs donnés comme arguments de la fonction pour calculer le vecteur de contribution de la lumière directionnelle. Les contributions ambiante, diffuse et spéculaire résultantes sont ensuite renvoyées sous la forme d’un seul vecteur de couleur.\nLumière ponctuelle (point light) Comme pour les lumières directionnelles, nous voulons également définir une fonction qui calcule la contribution d’une lumière ponctuelle sur le fragment donné, y compris son atténuation. Tout comme pour les lumières directionnelles, nous voulons définir une structure qui spécifie toutes les variables requises pour une lumière ponctuelle :\nstruct PointLight { vec3 position; float constant; float linear; float quadratic; vec3 ambient; vec3 diffuse; vec3 specular; }; #define NR_POINT_LIGHTS 4 uniform PointLight pointLights[NR_POINT_LIGHTS]; Comme vous pouvez le voir, nous avons utilisé une directive de pré-processeur en GLSL pour définir le nombre de lumières ponctuelles que nous voulons avoir dans notre scène. Nous utilisons ensuite cette constante NR_POINT_LIGHTS pour créer un tableau de structures PointLight. Les tableaux en GLSL sont comme les tableaux en C et peuvent être créés en utilisant deux crochets. Pour l’instant, nous avons 4 structures PointLight à remplir avec des données.\nLe prototype de la fonction PointLight est le suivant :\nvec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir); La fonction prend toutes les données dont elle a besoin comme arguments et renvoie un vec3 qui représente la contribution de la couleur de ce point lumineux spécifique sur le fragment. Une fois de plus, un copier-coller intelligent permet d’obtenir la fonction suivante :\nvec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) { vec3 lightDir = normalize(light.position - fragPos); // diffuse shading float diff = max(dot(normal, lightDir), 0.0); // specular shading vec3 reflectDir = reflect(-lightDir, normal); float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess); // attenuation float distance = length(light.position - fragPos); float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance)); // combine results vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords)); vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords)); vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords)); ambient *= attenuation; diffuse *= attenuation; specular *= attenuation; return (ambient + diffuse + specular); } L’abstraction de cette fonctionnalité dans une fonction comme celle-ci présente l’avantage de nous permettre de calculer facilement l’éclairage de plusieurs lumières ponctuelles sans avoir besoin de dupliquer le code. Dans la fonction principale, nous créons simplement une boucle qui itère sur le tableau des lumières ponctuelles et qui appelle CalcPointLight pour chaque lumière ponctuelle.\nTout assembler ensemble Maintenant que nous avons défini une fonction pour les lumières directionnelles et une fonction pour les lumières ponctuelles, nous pouvons tout regrouper dans la fonction principale.\nvoid main() { // properties vec3 norm = normalize(Normal); vec3 viewDir = normalize(viewPos - FragPos); // phase 1: Directional lighting vec3 result = CalcDirLight(dirLight, norm, viewDir); // phase 2: Point lights for(int i = 0; i \u003c NR_POINT_LIGHTS; i++) result += CalcPointLight(pointLights[i], norm, FragPos, viewDir); // phase 3: Spot light //result += CalcSpotLight(spotLight, norm, FragPos, viewDir); FragColor = vec4(result, 1.0); } Chaque type de lumière ajoute sa contribution à la couleur de sortie résultante jusqu’à ce que toutes les sources de lumière soient traitées. La couleur résultante contient l’impact de la couleur de toutes les sources lumineuses de la scène combinées. Nous laissons la fonction CalcSpotLight en guise d’exercice pour le lecteur.\nIl y a beaucoup de calculs dupliqués dans cette approche, répartis sur les fonctions de type lumière (par exemple, le calcul du vecteur de réflexion, les termes diffus et spéculaire, et l’échantillonnage des textures matérielles), il y a donc de la place pour l’optimisation ici.\nDéfinir les uniformes pour la structure de lumière directionnelle ne devrait pas être trop difficile, mais vous vous demandez peut-être comment définir les valeurs uniformes des lumières ponctuelles puisque l’uniforme de la lumière ponctuelle est en fait un tableau de structs PointLight. Nous n’avons jamais abordé ce sujet auparavant.\nHeureusement pour nous, ce n’est pas trop compliqué. La définition des valeurs uniformes d’un tableau de structures fonctionne de la même manière que la définition des uniformes d’une seule structure, bien que cette fois-ci nous devions également définir l’index approprié lors de l’interrogation de l’emplacement de l’uniforme :\nlightingShader.setFloat(\"pointLights[0].constant\", 1.0f); Ici, nous indexons la première structure PointLight dans le tableau pointLights et nous récupérons en interne l’emplacement de sa variable constante, que nous fixons à $1.0$.\nN’oublions pas que nous devons également définir un vecteur de position pour chacune des 4 lumières ponctuelles, alors répartissons-les un peu dans la scène. Nous allons définir un autre tableau glm::vec3 contenant les positions des lumières ponctuelles :\nglm::vec3 pointLightPositions[] = { glm::vec3( 0.7f, 0.2f, 2.0f), glm::vec3( 2.3f, -3.3f, -4.0f), glm::vec3(-4.0f, 2.0f, -12.0f), glm::vec3( 0.0f, 0.0f, -3.0f) }; Nous indexons ensuite la structure PointLight correspondante à partir du tableau pointLights et définissons son attribut de position comme l’une des positions que nous venons de définir. Veillez également à dessiner 4 cubes de lumière au lieu d’un seul. Créez simplement une matrice de modèle différente pour chacun des objets de lumière, comme nous l’avons fait pour les conteneurs.\nSi vous utilisez également une lampe de poche, le résultat de toutes les lumières combinées ressemble à ceci : ![[mlight1.png]] Comme vous pouvez le voir, il semble y avoir une forme de lumière globale (comme un soleil) quelque part dans le ciel, nous avons 4 lumières dispersées dans la scène et une lampe de poche est visible du point de vue du joueur. Ça a l’air plutôt sympa, non ?\nVous pouvez trouver le code source complet de l’application finale ici.\nL’image montre toutes les sources de lumière définies avec les propriétés de lumière par défaut que nous avons utilisées dans les chapitres précédents, mais si vous jouez avec ces valeurs, vous pouvez obtenir des résultats assez intéressants. Les artistes et les concepteurs de niveaux modifient généralement toutes ces variables d’éclairage dans un grand éditeur pour s’assurer que l’éclairage correspond à l’environnement. En utilisant notre environnement simple, vous pouvez déjà créer des visuels assez intéressants simplement en modifiant les attributs des lumières : ![[mlight2.png]]\nNous avons également modifié la couleur de la lumière pour qu’elle reflète mieux l’éclairage. Vous pouvez voir qu’en ajustant simplement certains paramètres d’éclairage, vous pouvez créer des atmosphères complètement différentes.\nVous devriez maintenant avoir une bonne compréhension de l’éclairage dans OpenGL. Avec les connaissances acquises jusqu’à présent, nous pouvons déjà créer des environnements et des atmosphères intéressants et visuellement riches. Essayez de jouer avec les différentes valeurs pour créer vos propres atmosphères.\n",
+  "wordCount" : "1815",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://hrst4.xyz/docs/learnopengl_fr/02_lighting/05_multiple-lights/multiple-lights/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://hrst4.xyz/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://hrst4.xyz/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      
+    </h1>
+    <div class="post-meta">
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="plusieurs-lumières">Plusieurs lumières<a hidden class="anchor" aria-hidden="true" href="#plusieurs-lumières">#</a></h1>
+<p>Dans les chapitres précédents, nous avons beaucoup appris sur l&rsquo;éclairage en OpenGL. Nous avons découvert l&rsquo;ombrage Phong (<em>Phong shading</em>), les matériaux, les maps d&rsquo;éclairage et les différents types de projecteurs de lumière. Dans ce chapitre, nous allons combiner toutes les connaissances acquises précédemment en créant une scène entièrement éclairée avec 6 sources de lumière actives. Nous allons simuler une lumière semblable à celle du soleil comme source de lumière directionnelle, 4 lumières ponctuelles dispersées dans la scène et nous ajouterons également une lampe de poche.</p>
+<p>Pour utiliser plus d&rsquo;une source de lumière dans la scène, nous voulons encapsuler les calculs d&rsquo;éclairage dans des fonctions GLSL. La raison en est que le code devient rapidement désagréable lorsque nous effectuons des calculs d&rsquo;éclairage avec plusieurs types de lumière, chacun nécessitant des calculs différents. Si nous devions effectuer tous ces calculs dans la seule fonction principale, le code deviendrait rapidement difficile à comprendre.</p>
+<p>Les fonctions en GLSL sont exactement comme les fonctions C. Nous avons un nom de fonction, un retour, un nom de fichier et un nom d&rsquo;utilisateur. Nous avons un nom de fonction, un type de retour et nous devons déclarer un prototype au début du fichier de code si la fonction n&rsquo;a pas encore été déclarée avant la fonction principale. Nous allons créer une fonction différente pour chaque type de lumière : les lumières directionnelles, les lumières ponctuelles et les projecteurs.</p>
+<p>Lorsque l&rsquo;on utilise plusieurs lumières dans une scène, l&rsquo;approche est généralement la suivante : nous avons un seul vecteur de couleur qui représente la couleur de sortie du fragment. Pour chaque lumière, la contribution de la lumière au fragment est ajoutée à ce vecteur de couleur de sortie. Ainsi, chaque lumière de la scène calculera son impact individuel et contribuera à la couleur de sortie finale. Une structure générale pourrait ressembler à ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// define an output color value
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  vec3 output <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// add the directional light&#39;s contribution to the output
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  output <span style="color:#f92672">+=</span> someFunctionToCalculateDirectionalLight();
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// do the same for all point lights
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> nr_of_point_lights; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>  	output <span style="color:#f92672">+=</span> someFunctionToCalculatePointLight();
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// and add others lights as well (like spotlights)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  output <span style="color:#f92672">+=</span> someFunctionToCalculateSpotLight();
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  FragColor <span style="color:#f92672">=</span> vec4(output, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Le code réel sera probablement différent selon l&rsquo;implémentation, mais la structure générale reste la même. Nous définissons plusieurs fonctions qui calculent l&rsquo;impact de chaque source lumineuse et ajoutent la couleur résultante à un vecteur de couleur de sortie. Si, par exemple, deux sources lumineuses sont proches du fragment, leur contribution combinée se traduira par un fragment plus lumineux que le fragment éclairé par une seule source lumineuse.</p>
+<h1 id="lumière-directionnelle">Lumière directionnelle<a hidden class="anchor" aria-hidden="true" href="#lumière-directionnelle">#</a></h1>
+<p>Nous voulons définir une fonction dans le fragment shader qui calcule la contribution d&rsquo;une lumière directionnelle sur le fragment correspondant : une fonction qui prend quelques paramètres et renvoie la couleur de l&rsquo;éclairage directionnel calculé.</p>
+<p>Tout d&rsquo;abord, nous devons définir les variables nécessaires dont nous avons minimalement besoin pour une source de lumière directionnelle. Nous pouvons stocker les variables dans une structure appelée <code>DirLight</code> et la définir comme un uniforme. Les variables de la structure devraient vous être familières grâce au chapitre précédent :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">DirLight</span> {
+</span></span><span style="display:flex;"><span>    vec3 direction;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    vec3 ambient;
+</span></span><span style="display:flex;"><span>    vec3 diffuse;
+</span></span><span style="display:flex;"><span>    vec3 specular;
+</span></span><span style="display:flex;"><span>};  
+</span></span><span style="display:flex;"><span>uniform DirLight dirLight;
+</span></span></code></pre></div><p>Nous pouvons ensuite transmettre l&rsquo;uniforme <code>dirLight</code> à une fonction avec le prototype suivant :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 <span style="color:#a6e22e">CalcDirLight</span>(DirLight light, vec3 normal, vec3 viewDir);  
+</span></span></code></pre></div><p>Just like C and C++, when we want to call a function (in this case inside the main function) the function should be defined somewhere before the caller&rsquo;s line number. In this case we&rsquo;d prefer to define the functions below the main function so this requirement doesn&rsquo;t hold. Therefore we declare the function&rsquo;s prototypes somewhere above the main function, just like we would in C.</p>
+<p>You can see that the function requires a <code>DirLight</code> struct and two other vectors required for its computation. If you successfully completed the previous chapter then the content of this function should come as no surprise:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 <span style="color:#a6e22e">CalcDirLight</span>(DirLight light, vec3 normal, vec3 viewDir)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    vec3 lightDir <span style="color:#f92672">=</span> normalize(<span style="color:#f92672">-</span>light.direction);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// diffuse shading
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> diff <span style="color:#f92672">=</span> max(dot(normal, lightDir), <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// specular shading
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 reflectDir <span style="color:#f92672">=</span> reflect(<span style="color:#f92672">-</span>lightDir, normal);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> spec <span style="color:#f92672">=</span> pow(max(dot(viewDir, reflectDir), <span style="color:#ae81ff">0.0</span>), material.shininess);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// combine results
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 ambient  <span style="color:#f92672">=</span> light.ambient  <span style="color:#f92672">*</span> vec3(texture(material.diffuse, TexCoords));
+</span></span><span style="display:flex;"><span>    vec3 diffuse  <span style="color:#f92672">=</span> light.diffuse  <span style="color:#f92672">*</span> diff <span style="color:#f92672">*</span> vec3(texture(material.diffuse, TexCoords));
+</span></span><span style="display:flex;"><span>    vec3 specular <span style="color:#f92672">=</span> light.specular <span style="color:#f92672">*</span> spec <span style="color:#f92672">*</span> vec3(texture(material.specular, TexCoords));
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> (ambient <span style="color:#f92672">+</span> diffuse <span style="color:#f92672">+</span> specular);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Nous avons essentiellement copié le code du chapitre précédent et utilisé les vecteurs donnés comme arguments de la fonction pour calculer le vecteur de contribution de la lumière directionnelle. Les contributions ambiante, diffuse et spéculaire résultantes sont ensuite renvoyées sous la forme d&rsquo;un seul vecteur de couleur.</p>
+<h1 id="lumière-ponctuelle-point-light">Lumière ponctuelle (point light)<a hidden class="anchor" aria-hidden="true" href="#lumière-ponctuelle-point-light">#</a></h1>
+<p>Comme pour les lumières directionnelles, nous voulons également définir une fonction qui calcule la contribution d&rsquo;une lumière ponctuelle sur le fragment donné, y compris son atténuation. Tout comme pour les lumières directionnelles, nous voulons définir une structure qui spécifie toutes les variables requises pour une lumière ponctuelle :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">PointLight</span> {    
+</span></span><span style="display:flex;"><span>    vec3 position;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> constant;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> linear;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> quadratic;  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    vec3 ambient;
+</span></span><span style="display:flex;"><span>    vec3 diffuse;
+</span></span><span style="display:flex;"><span>    vec3 specular;
+</span></span><span style="display:flex;"><span>};  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define NR_POINT_LIGHTS 4  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>uniform PointLight pointLights[NR_POINT_LIGHTS];
+</span></span></code></pre></div><p>Comme vous pouvez le voir, nous avons utilisé une directive de pré-processeur en GLSL pour définir le nombre de lumières ponctuelles que nous voulons avoir dans notre scène. Nous utilisons ensuite cette constante <code>NR_POINT_LIGHTS</code> pour créer un tableau de structures <code>PointLight</code>. Les tableaux en GLSL sont comme les tableaux en C et peuvent être créés en utilisant deux crochets. Pour l&rsquo;instant, nous avons 4 structures <code>PointLight</code> à remplir avec des données.</p>
+<p>Le prototype de la fonction <code>PointLight</code> est le suivant :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 <span style="color:#a6e22e">CalcPointLight</span>(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);  
+</span></span></code></pre></div><p>La fonction prend toutes les données dont elle a besoin comme arguments et renvoie un <code>vec3</code> qui représente la contribution de la couleur de ce point lumineux spécifique sur le fragment. Une fois de plus, un copier-coller intelligent permet d&rsquo;obtenir la fonction suivante :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 <span style="color:#a6e22e">CalcPointLight</span>(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    vec3 lightDir <span style="color:#f92672">=</span> normalize(light.position <span style="color:#f92672">-</span> fragPos);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// diffuse shading
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> diff <span style="color:#f92672">=</span> max(dot(normal, lightDir), <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// specular shading
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 reflectDir <span style="color:#f92672">=</span> reflect(<span style="color:#f92672">-</span>lightDir, normal);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> spec <span style="color:#f92672">=</span> pow(max(dot(viewDir, reflectDir), <span style="color:#ae81ff">0.0</span>), material.shininess);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// attenuation
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> distance    <span style="color:#f92672">=</span> length(light.position <span style="color:#f92672">-</span> fragPos);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> attenuation <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">/</span> (light.constant <span style="color:#f92672">+</span> light.linear <span style="color:#f92672">*</span> distance <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>  			     light.quadratic <span style="color:#f92672">*</span> (distance <span style="color:#f92672">*</span> distance));    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// combine results
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 ambient  <span style="color:#f92672">=</span> light.ambient  <span style="color:#f92672">*</span> vec3(texture(material.diffuse, TexCoords));
+</span></span><span style="display:flex;"><span>    vec3 diffuse  <span style="color:#f92672">=</span> light.diffuse  <span style="color:#f92672">*</span> diff <span style="color:#f92672">*</span> vec3(texture(material.diffuse, TexCoords));
+</span></span><span style="display:flex;"><span>    vec3 specular <span style="color:#f92672">=</span> light.specular <span style="color:#f92672">*</span> spec <span style="color:#f92672">*</span> vec3(texture(material.specular, TexCoords));
+</span></span><span style="display:flex;"><span>    ambient  <span style="color:#f92672">*=</span> attenuation;
+</span></span><span style="display:flex;"><span>    diffuse  <span style="color:#f92672">*=</span> attenuation;
+</span></span><span style="display:flex;"><span>    specular <span style="color:#f92672">*=</span> attenuation;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> (ambient <span style="color:#f92672">+</span> diffuse <span style="color:#f92672">+</span> specular);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>L&rsquo;abstraction de cette fonctionnalité dans une fonction comme celle-ci présente l&rsquo;avantage de nous permettre de calculer facilement l&rsquo;éclairage de plusieurs lumières ponctuelles sans avoir besoin de dupliquer le code. Dans la fonction principale, nous créons simplement une boucle qui itère sur le tableau des lumières ponctuelles et qui appelle <code>CalcPointLight</code> pour chaque lumière ponctuelle.</p>
+<h1 id="tout-assembler-ensemble">Tout assembler ensemble<a hidden class="anchor" aria-hidden="true" href="#tout-assembler-ensemble">#</a></h1>
+<p>Maintenant que nous avons défini une fonction pour les lumières directionnelles et une fonction pour les lumières ponctuelles, nous pouvons tout regrouper dans la fonction principale.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// properties
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 norm <span style="color:#f92672">=</span> normalize(Normal);
+</span></span><span style="display:flex;"><span>    vec3 viewDir <span style="color:#f92672">=</span> normalize(viewPos <span style="color:#f92672">-</span> FragPos);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// phase 1: Directional lighting
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 result <span style="color:#f92672">=</span> CalcDirLight(dirLight, norm, viewDir);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// phase 2: Point lights
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> NR_POINT_LIGHTS; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>        result <span style="color:#f92672">+=</span> CalcPointLight(pointLights[i], norm, FragPos, viewDir);    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// phase 3: Spot light
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//result += CalcSpotLight(spotLight, norm, FragPos, viewDir);    
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(result, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Chaque type de lumière ajoute sa contribution à la couleur de sortie résultante jusqu&rsquo;à ce que toutes les sources de lumière soient traitées. La couleur résultante contient l&rsquo;impact de la couleur de toutes les sources lumineuses de la scène combinées. Nous laissons la fonction <code>CalcSpotLight</code> en guise d&rsquo;exercice pour le lecteur.</p>
+<p>Il y a beaucoup de calculs dupliqués dans cette approche, répartis sur les fonctions de type lumière (par exemple, le calcul du vecteur de réflexion, les termes diffus et spéculaire, et l&rsquo;échantillonnage des textures matérielles), il y a donc de la place pour l&rsquo;optimisation ici.</p>
+<p>Définir les uniformes pour la structure de lumière directionnelle ne devrait pas être trop difficile, mais vous vous demandez peut-être comment définir les valeurs uniformes des lumières ponctuelles puisque l&rsquo;uniforme de la lumière ponctuelle est en fait un tableau de structs <code>PointLight</code>. Nous n&rsquo;avons jamais abordé ce sujet auparavant.</p>
+<p>Heureusement pour nous, ce n&rsquo;est pas trop compliqué. La définition des valeurs uniformes d&rsquo;un tableau de structures fonctionne de la même manière que la définition des uniformes d&rsquo;une seule structure, bien que cette fois-ci nous devions également définir l&rsquo;index approprié lors de l&rsquo;interrogation de l&rsquo;emplacement de l&rsquo;uniforme :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>lightingShader.setFloat(<span style="color:#e6db74">&#34;pointLights[0].constant&#34;</span>, <span style="color:#ae81ff">1.0f</span>);
+</span></span></code></pre></div><p>Ici, nous indexons la première structure <code>PointLight</code> dans le tableau <code>pointLights</code> et nous récupérons en interne l&rsquo;emplacement de sa variable constante, que nous fixons à $1.0$.</p>
+<p>N&rsquo;oublions pas que nous devons également définir un vecteur de position pour chacune des 4 lumières ponctuelles, alors répartissons-les un peu dans la scène. Nous allons définir un autre tableau <code>glm::vec3</code> contenant les positions des lumières ponctuelles :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 pointLightPositions[] <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>	glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">0.7f</span>,  <span style="color:#ae81ff">0.2f</span>,  <span style="color:#ae81ff">2.0f</span>),
+</span></span><span style="display:flex;"><span>	glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">2.3f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">3.3f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">4.0f</span>),
+</span></span><span style="display:flex;"><span>	glm<span style="color:#f92672">::</span>vec3(<span style="color:#f92672">-</span><span style="color:#ae81ff">4.0f</span>,  <span style="color:#ae81ff">2.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">12.0f</span>),
+</span></span><span style="display:flex;"><span>	glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">0.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">3.0f</span>)
+</span></span><span style="display:flex;"><span>};  
+</span></span></code></pre></div><p>Nous indexons ensuite la structure <code>PointLight</code> correspondante à partir du tableau <code>pointLights</code> et définissons son attribut de position comme l&rsquo;une des positions que nous venons de définir. Veillez également à dessiner 4 cubes de lumière au lieu d&rsquo;un seul. Créez simplement une matrice de modèle différente pour chacun des objets de lumière, comme nous l&rsquo;avons fait pour les conteneurs.</p>
+<p>Si vous utilisez également une lampe de poche, le résultat de toutes les lumières combinées ressemble à ceci :
+![[mlight1.png]]
+Comme vous pouvez le voir, il semble y avoir une forme de lumière globale (comme un soleil) quelque part dans le ciel, nous avons 4 lumières dispersées dans la scène et une lampe de poche est visible du point de vue du joueur. Ça a l&rsquo;air plutôt sympa, non ?</p>
+<p>Vous pouvez trouver le code source complet de l&rsquo;application finale <a href="https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/6.multiple_lights/multiple_lights.cpp">ici</a>.</p>
+<p>L&rsquo;image montre toutes les sources de lumière définies avec les propriétés de lumière par défaut que nous avons utilisées dans les chapitres précédents, mais si vous jouez avec ces valeurs, vous pouvez obtenir des résultats assez intéressants. Les artistes et les concepteurs de niveaux modifient généralement toutes ces variables d&rsquo;éclairage dans un grand éditeur pour s&rsquo;assurer que l&rsquo;éclairage correspond à l&rsquo;environnement. En utilisant notre environnement simple, vous pouvez déjà créer des visuels assez intéressants simplement en modifiant les attributs des lumières :
+![[mlight2.png]]</p>
+<p>Nous avons également modifié la couleur de la lumière pour qu&rsquo;elle reflète mieux l&rsquo;éclairage. Vous pouvez voir qu&rsquo;en ajustant simplement certains paramètres d&rsquo;éclairage, vous pouvez créer des atmosphères complètement différentes.</p>
+<p>Vous devriez maintenant avoir une bonne compréhension de l&rsquo;éclairage dans OpenGL. Avec les connaissances acquises jusqu&rsquo;à présent, nous pouvons déjà créer des environnements et des atmosphères intéressants et visuellement riches. Essayez de jouer avec les différentes valeurs pour créer vos propres atmosphères.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://hrst4.xyz/tags/cg/">cg</a></li>
+      <li><a href="https://hrst4.xyz/tags/opengl/">opengl</a></li>
+      <li><a href="https://hrst4.xyz/tags/computer-graphics/">computer graphics</a></li>
+      <li><a href="https://hrst4.xyz/tags/cpp/">cpp</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://hrst4.xyz/">My New Hugo Site</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

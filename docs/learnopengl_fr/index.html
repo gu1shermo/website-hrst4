@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>My New Hugo Site</title>
+<meta name="keywords" content="">
+<meta name="description" content="%% Begin Waypoint %%
+00_Introduction
+[[LEARNOPENGL_FR/00_Introduction/introduction]] 01_Getting_Started
+[[LEARNOPENGL_FR/01_Getting_Started/00_opengl]]
+[[LEARNOPENGL_FR/01_Getting_Started/01_creating a window]]
+[[LEARNOPENGL_FR/01_Getting_Started/02_hello window]]
+[[LEARNOPENGL_FR/01_Getting_Started/03_hello triangle]]
+[[LEARNOPENGL_FR/01_Getting_Started/04_shaders]]
+[[LEARNOPENGL_FR/01_Getting_Started/05_textures]]
+[[LEARNOPENGL_FR/01_Getting_Started/06_transformations]]
+[[LEARNOPENGL_FR/01_Getting_Started/07_coordinate systems]]
+[[LEARNOPENGL_FR/01_Getting_Started/08_camera]]
+[[LEARNOPENGL_FR/01_Getting_Started/09_glossary]]
+img
+video
+02_Lighting
+00_Colors [[LEARNOPENGL_FR/02_Lighting/00_Colors/colors]] 01_Basic Lighting [[LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting]] 02_Materials [[LEARNOPENGL_FR/02_Lighting/02_Materials/materials]] 03_Lighting Maps [[LEARNOPENGL_FR/02_Lighting/03_Lighting Maps/lighting maps]] 04_Light Casters [[LEARNOPENGL_FR/02_Lighting/04_Light Casters/light casters]] 05_Multiple Lights [[LEARNOPENGL_FR/02_Lighting/05_Multiple Lights/multiple lights]] [[LEARNOPENGL_FR/02_Lighting/glossary]] 03_Model_Loading
+[[LEARNOPENGL_FR/03_Model_Loading/assimp]] [[LEARNOPENGL_FR/03_Model_Loading/mesh]] [[LEARNOPENGL_FR/03_Model_Loading/model]] 04_Advanced_OpenGL
+[[LEARNOPENGL_FR/04_Advanced_OpenGL/00_depth_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/01_stencil_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/02_blending]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/03_face_culling]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/04_framebuffers]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/05_cubemaps]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/06_advanced_data]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/07_advanced_glsl]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/08_geometry_shader]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/09_instancing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/10_anti_aliasing]] 05_Advanced_Lighting
+[[LEARNOPENGL_FR/05_Advanced_Lighting/00_advanced_lighting]] [[LEARNOPENGL_FR/05_Advanced_Lighting/01_gamma_correction]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02a_shadow_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02b_point_shadows]] [[LEARNOPENGL_FR/05_Advanced_Lighting/03_normal_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/04_parallax_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/05_hdr]] [[LEARNOPENGL_FR/05_Advanced_Lighting/06_bloom]] [[LEARNOPENGL_FR/05_Advanced_Lighting/07_deferred_shading]] [[LEARNOPENGL_FR/05_Advanced_Lighting/08_ssao]] 06_PBR">
+<meta name="author" content="">
+<link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://hrst4.xyz/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://hrst4.xyz/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://hrst4.xyz/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://hrst4.xyz/apple-touch-icon.png">
+<link rel="mask-icon" href="https://hrst4.xyz/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="" />
+<meta property="og:description" content="%% Begin Waypoint %%
+00_Introduction
+[[LEARNOPENGL_FR/00_Introduction/introduction]] 01_Getting_Started
+[[LEARNOPENGL_FR/01_Getting_Started/00_opengl]]
+[[LEARNOPENGL_FR/01_Getting_Started/01_creating a window]]
+[[LEARNOPENGL_FR/01_Getting_Started/02_hello window]]
+[[LEARNOPENGL_FR/01_Getting_Started/03_hello triangle]]
+[[LEARNOPENGL_FR/01_Getting_Started/04_shaders]]
+[[LEARNOPENGL_FR/01_Getting_Started/05_textures]]
+[[LEARNOPENGL_FR/01_Getting_Started/06_transformations]]
+[[LEARNOPENGL_FR/01_Getting_Started/07_coordinate systems]]
+[[LEARNOPENGL_FR/01_Getting_Started/08_camera]]
+[[LEARNOPENGL_FR/01_Getting_Started/09_glossary]]
+img
+video
+02_Lighting
+00_Colors [[LEARNOPENGL_FR/02_Lighting/00_Colors/colors]] 01_Basic Lighting [[LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting]] 02_Materials [[LEARNOPENGL_FR/02_Lighting/02_Materials/materials]] 03_Lighting Maps [[LEARNOPENGL_FR/02_Lighting/03_Lighting Maps/lighting maps]] 04_Light Casters [[LEARNOPENGL_FR/02_Lighting/04_Light Casters/light casters]] 05_Multiple Lights [[LEARNOPENGL_FR/02_Lighting/05_Multiple Lights/multiple lights]] [[LEARNOPENGL_FR/02_Lighting/glossary]] 03_Model_Loading
+[[LEARNOPENGL_FR/03_Model_Loading/assimp]] [[LEARNOPENGL_FR/03_Model_Loading/mesh]] [[LEARNOPENGL_FR/03_Model_Loading/model]] 04_Advanced_OpenGL
+[[LEARNOPENGL_FR/04_Advanced_OpenGL/00_depth_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/01_stencil_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/02_blending]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/03_face_culling]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/04_framebuffers]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/05_cubemaps]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/06_advanced_data]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/07_advanced_glsl]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/08_geometry_shader]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/09_instancing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/10_anti_aliasing]] 05_Advanced_Lighting
+[[LEARNOPENGL_FR/05_Advanced_Lighting/00_advanced_lighting]] [[LEARNOPENGL_FR/05_Advanced_Lighting/01_gamma_correction]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02a_shadow_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02b_point_shadows]] [[LEARNOPENGL_FR/05_Advanced_Lighting/03_normal_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/04_parallax_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/05_hdr]] [[LEARNOPENGL_FR/05_Advanced_Lighting/06_bloom]] [[LEARNOPENGL_FR/05_Advanced_Lighting/07_deferred_shading]] [[LEARNOPENGL_FR/05_Advanced_Lighting/08_ssao]] 06_PBR" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/" /><meta property="article:section" content="docs" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="%% Begin Waypoint %%
+00_Introduction
+[[LEARNOPENGL_FR/00_Introduction/introduction]] 01_Getting_Started
+[[LEARNOPENGL_FR/01_Getting_Started/00_opengl]]
+[[LEARNOPENGL_FR/01_Getting_Started/01_creating a window]]
+[[LEARNOPENGL_FR/01_Getting_Started/02_hello window]]
+[[LEARNOPENGL_FR/01_Getting_Started/03_hello triangle]]
+[[LEARNOPENGL_FR/01_Getting_Started/04_shaders]]
+[[LEARNOPENGL_FR/01_Getting_Started/05_textures]]
+[[LEARNOPENGL_FR/01_Getting_Started/06_transformations]]
+[[LEARNOPENGL_FR/01_Getting_Started/07_coordinate systems]]
+[[LEARNOPENGL_FR/01_Getting_Started/08_camera]]
+[[LEARNOPENGL_FR/01_Getting_Started/09_glossary]]
+img
+video
+02_Lighting
+00_Colors [[LEARNOPENGL_FR/02_Lighting/00_Colors/colors]] 01_Basic Lighting [[LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting]] 02_Materials [[LEARNOPENGL_FR/02_Lighting/02_Materials/materials]] 03_Lighting Maps [[LEARNOPENGL_FR/02_Lighting/03_Lighting Maps/lighting maps]] 04_Light Casters [[LEARNOPENGL_FR/02_Lighting/04_Light Casters/light casters]] 05_Multiple Lights [[LEARNOPENGL_FR/02_Lighting/05_Multiple Lights/multiple lights]] [[LEARNOPENGL_FR/02_Lighting/glossary]] 03_Model_Loading
+[[LEARNOPENGL_FR/03_Model_Loading/assimp]] [[LEARNOPENGL_FR/03_Model_Loading/mesh]] [[LEARNOPENGL_FR/03_Model_Loading/model]] 04_Advanced_OpenGL
+[[LEARNOPENGL_FR/04_Advanced_OpenGL/00_depth_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/01_stencil_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/02_blending]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/03_face_culling]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/04_framebuffers]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/05_cubemaps]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/06_advanced_data]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/07_advanced_glsl]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/08_geometry_shader]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/09_instancing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/10_anti_aliasing]] 05_Advanced_Lighting
+[[LEARNOPENGL_FR/05_Advanced_Lighting/00_advanced_lighting]] [[LEARNOPENGL_FR/05_Advanced_Lighting/01_gamma_correction]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02a_shadow_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02b_point_shadows]] [[LEARNOPENGL_FR/05_Advanced_Lighting/03_normal_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/04_parallax_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/05_hdr]] [[LEARNOPENGL_FR/05_Advanced_Lighting/06_bloom]] [[LEARNOPENGL_FR/05_Advanced_Lighting/07_deferred_shading]] [[LEARNOPENGL_FR/05_Advanced_Lighting/08_ssao]] 06_PBR"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Docs",
+      "item": "https://hrst4.xyz/docs/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "",
+      "item": "https://hrst4.xyz/docs/learnopengl_fr/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "",
+  "name": "",
+  "description": "%% Begin Waypoint %%\n00_Introduction\n[[LEARNOPENGL_FR/00_Introduction/introduction]] 01_Getting_Started\n[[LEARNOPENGL_FR/01_Getting_Started/00_opengl]]\n[[LEARNOPENGL_FR/01_Getting_Started/01_creating a window]]\n[[LEARNOPENGL_FR/01_Getting_Started/02_hello window]]\n[[LEARNOPENGL_FR/01_Getting_Started/03_hello triangle]]\n[[LEARNOPENGL_FR/01_Getting_Started/04_shaders]]\n[[LEARNOPENGL_FR/01_Getting_Started/05_textures]]\n[[LEARNOPENGL_FR/01_Getting_Started/06_transformations]]\n[[LEARNOPENGL_FR/01_Getting_Started/07_coordinate systems]]\n[[LEARNOPENGL_FR/01_Getting_Started/08_camera]]\n[[LEARNOPENGL_FR/01_Getting_Started/09_glossary]]\nimg\nvideo\n02_Lighting\n00_Colors [[LEARNOPENGL_FR/02_Lighting/00_Colors/colors]] 01_Basic Lighting [[LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting]] 02_Materials [[LEARNOPENGL_FR/02_Lighting/02_Materials/materials]] 03_Lighting Maps [[LEARNOPENGL_FR/02_Lighting/03_Lighting Maps/lighting maps]] 04_Light Casters [[LEARNOPENGL_FR/02_Lighting/04_Light Casters/light casters]] 05_Multiple Lights [[LEARNOPENGL_FR/02_Lighting/05_Multiple Lights/multiple lights]] [[LEARNOPENGL_FR/02_Lighting/glossary]] 03_Model_Loading\n[[LEARNOPENGL_FR/03_Model_Loading/assimp]] [[LEARNOPENGL_FR/03_Model_Loading/mesh]] [[LEARNOPENGL_FR/03_Model_Loading/model]] 04_Advanced_OpenGL\n[[LEARNOPENGL_FR/04_Advanced_OpenGL/00_depth_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/01_stencil_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/02_blending]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/03_face_culling]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/04_framebuffers]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/05_cubemaps]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/06_advanced_data]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/07_advanced_glsl]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/08_geometry_shader]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/09_instancing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/10_anti_aliasing]] 05_Advanced_Lighting\n[[LEARNOPENGL_FR/05_Advanced_Lighting/00_advanced_lighting]] [[LEARNOPENGL_FR/05_Advanced_Lighting/01_gamma_correction]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02a_shadow_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02b_point_shadows]] [[LEARNOPENGL_FR/05_Advanced_Lighting/03_normal_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/04_parallax_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/05_hdr]] [[LEARNOPENGL_FR/05_Advanced_Lighting/06_bloom]] [[LEARNOPENGL_FR/05_Advanced_Lighting/07_deferred_shading]] [[LEARNOPENGL_FR/05_Advanced_Lighting/08_ssao]] 06_PBR",
+  "keywords": [
+    
+  ],
+  "articleBody": "%% Begin Waypoint %%\n00_Introduction\n[[LEARNOPENGL_FR/00_Introduction/introduction]] 01_Getting_Started\n[[LEARNOPENGL_FR/01_Getting_Started/00_opengl]]\n[[LEARNOPENGL_FR/01_Getting_Started/01_creating a window]]\n[[LEARNOPENGL_FR/01_Getting_Started/02_hello window]]\n[[LEARNOPENGL_FR/01_Getting_Started/03_hello triangle]]\n[[LEARNOPENGL_FR/01_Getting_Started/04_shaders]]\n[[LEARNOPENGL_FR/01_Getting_Started/05_textures]]\n[[LEARNOPENGL_FR/01_Getting_Started/06_transformations]]\n[[LEARNOPENGL_FR/01_Getting_Started/07_coordinate systems]]\n[[LEARNOPENGL_FR/01_Getting_Started/08_camera]]\n[[LEARNOPENGL_FR/01_Getting_Started/09_glossary]]\nimg\nvideo\n02_Lighting\n00_Colors [[LEARNOPENGL_FR/02_Lighting/00_Colors/colors]] 01_Basic Lighting [[LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting]] 02_Materials [[LEARNOPENGL_FR/02_Lighting/02_Materials/materials]] 03_Lighting Maps [[LEARNOPENGL_FR/02_Lighting/03_Lighting Maps/lighting maps]] 04_Light Casters [[LEARNOPENGL_FR/02_Lighting/04_Light Casters/light casters]] 05_Multiple Lights [[LEARNOPENGL_FR/02_Lighting/05_Multiple Lights/multiple lights]] [[LEARNOPENGL_FR/02_Lighting/glossary]] 03_Model_Loading\n[[LEARNOPENGL_FR/03_Model_Loading/assimp]] [[LEARNOPENGL_FR/03_Model_Loading/mesh]] [[LEARNOPENGL_FR/03_Model_Loading/model]] 04_Advanced_OpenGL\n[[LEARNOPENGL_FR/04_Advanced_OpenGL/00_depth_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/01_stencil_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/02_blending]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/03_face_culling]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/04_framebuffers]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/05_cubemaps]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/06_advanced_data]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/07_advanced_glsl]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/08_geometry_shader]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/09_instancing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/10_anti_aliasing]] 05_Advanced_Lighting\n[[LEARNOPENGL_FR/05_Advanced_Lighting/00_advanced_lighting]] [[LEARNOPENGL_FR/05_Advanced_Lighting/01_gamma_correction]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02a_shadow_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02b_point_shadows]] [[LEARNOPENGL_FR/05_Advanced_Lighting/03_normal_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/04_parallax_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/05_hdr]] [[LEARNOPENGL_FR/05_Advanced_Lighting/06_bloom]] [[LEARNOPENGL_FR/05_Advanced_Lighting/07_deferred_shading]] [[LEARNOPENGL_FR/05_Advanced_Lighting/08_ssao]] 06_PBR\n[[LEARNOPENGL_FR/06_PBR/01_theory]] [[LEARNOPENGL_FR/06_PBR/02_lighting]] 03_IBL [[LEARNOPENGL_FR/06_PBR/03_IBL/01_diffuse_irradiance]] [[LEARNOPENGL_FR/06_PBR/03_IBL/02_specular_ibl]] %% End Waypoint %%\n",
+  "wordCount" : "87",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://hrst4.xyz/docs/learnopengl_fr/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://hrst4.xyz/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://hrst4.xyz/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      
+    </h1>
+    <div class="post-meta">
+
+</div>
+  </header> 
+  <div class="post-content"><p>%% Begin Waypoint %%</p>
+<ul>
+<li>
+<p><strong>00_Introduction</strong></p>
+<ul>
+<li>[[LEARNOPENGL_FR/00_Introduction/introduction]]</li>
+</ul>
+</li>
+<li>
+<p><strong>01_Getting_Started</strong></p>
+<ul>
+<li>
+<p>[[LEARNOPENGL_FR/01_Getting_Started/00_opengl]]</p>
+</li>
+<li>
+<p>[[LEARNOPENGL_FR/01_Getting_Started/01_creating a window]]</p>
+</li>
+<li>
+<p>[[LEARNOPENGL_FR/01_Getting_Started/02_hello window]]</p>
+</li>
+<li>
+<p>[[LEARNOPENGL_FR/01_Getting_Started/03_hello triangle]]</p>
+</li>
+<li>
+<p>[[LEARNOPENGL_FR/01_Getting_Started/04_shaders]]</p>
+</li>
+<li>
+<p>[[LEARNOPENGL_FR/01_Getting_Started/05_textures]]</p>
+</li>
+<li>
+<p>[[LEARNOPENGL_FR/01_Getting_Started/06_transformations]]</p>
+</li>
+<li>
+<p>[[LEARNOPENGL_FR/01_Getting_Started/07_coordinate systems]]</p>
+</li>
+<li>
+<p>[[LEARNOPENGL_FR/01_Getting_Started/08_camera]]</p>
+</li>
+<li>
+<p>[[LEARNOPENGL_FR/01_Getting_Started/09_glossary]]</p>
+</li>
+<li>
+<p><strong>img</strong></p>
+</li>
+<li>
+<p><strong>video</strong></p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>02_Lighting</strong></p>
+<ul>
+<li><strong>00_Colors</strong>
+<ul>
+<li>[[LEARNOPENGL_FR/02_Lighting/00_Colors/colors]]</li>
+</ul>
+</li>
+<li><strong>01_Basic Lighting</strong>
+<ul>
+<li>[[LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting]]</li>
+</ul>
+</li>
+<li><strong>02_Materials</strong>
+<ul>
+<li>[[LEARNOPENGL_FR/02_Lighting/02_Materials/materials]]</li>
+</ul>
+</li>
+<li><strong>03_Lighting Maps</strong>
+<ul>
+<li>[[LEARNOPENGL_FR/02_Lighting/03_Lighting Maps/lighting maps]]</li>
+</ul>
+</li>
+<li><strong>04_Light Casters</strong>
+<ul>
+<li>[[LEARNOPENGL_FR/02_Lighting/04_Light Casters/light casters]]</li>
+</ul>
+</li>
+<li><strong>05_Multiple Lights</strong>
+<ul>
+<li>[[LEARNOPENGL_FR/02_Lighting/05_Multiple Lights/multiple lights]]</li>
+</ul>
+</li>
+<li>[[LEARNOPENGL_FR/02_Lighting/glossary]]</li>
+</ul>
+</li>
+<li>
+<p><strong>03_Model_Loading</strong></p>
+<ul>
+<li>[[LEARNOPENGL_FR/03_Model_Loading/assimp]]</li>
+<li>[[LEARNOPENGL_FR/03_Model_Loading/mesh]]</li>
+<li>[[LEARNOPENGL_FR/03_Model_Loading/model]]</li>
+</ul>
+</li>
+<li>
+<p><strong>04_Advanced_OpenGL</strong></p>
+<ul>
+<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/00_depth_testing]]</li>
+<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/01_stencil_testing]]</li>
+<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/02_blending]]</li>
+<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/03_face_culling]]</li>
+<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/04_framebuffers]]</li>
+<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/05_cubemaps]]</li>
+<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/06_advanced_data]]</li>
+<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/07_advanced_glsl]]</li>
+<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/08_geometry_shader]]</li>
+<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/09_instancing]]</li>
+<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/10_anti_aliasing]]</li>
+</ul>
+</li>
+<li>
+<p><strong>05_Advanced_Lighting</strong></p>
+<ul>
+<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/00_advanced_lighting]]</li>
+<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/01_gamma_correction]]</li>
+<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/02a_shadow_mapping]]</li>
+<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/02b_point_shadows]]</li>
+<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/03_normal_mapping]]</li>
+<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/04_parallax_mapping]]</li>
+<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/05_hdr]]</li>
+<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/06_bloom]]</li>
+<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/07_deferred_shading]]</li>
+<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/08_ssao]]</li>
+</ul>
+</li>
+<li>
+<p><strong>06_PBR</strong></p>
+<ul>
+<li>[[LEARNOPENGL_FR/06_PBR/01_theory]]</li>
+<li>[[LEARNOPENGL_FR/06_PBR/02_lighting]]</li>
+<li><strong>03_IBL</strong>
+<ul>
+<li>[[LEARNOPENGL_FR/06_PBR/03_IBL/01_diffuse_irradiance]]</li>
+<li>[[LEARNOPENGL_FR/06_PBR/03_IBL/02_specular_ibl]]</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>%% End Waypoint %%</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://hrst4.xyz/">My New Hugo Site</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

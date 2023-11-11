@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>My New Hugo Site</title>
+<meta name="keywords" content="">
+<meta name="description" content="Lighting Dans le chapitre précédent, nous avons jeté les bases d&rsquo;un moteur de rendu réaliste basé sur la physique. Dans ce chapitre, nous allons nous concentrer sur la traduction de la théorie discutée précédemment en un moteur de rendu réel qui utilise des sources de lumière directes (ou analytiques) : pensez aux lumières ponctuelles, aux lumières directionnelles et/ou aux projecteurs.
+Commençons par revoir l&rsquo;équation de réflectance finale du chapitre précédent : $$ L_0(p,w_0) \int_{\Omega} ( k_d {c\over \pi} &#43; { DFG \over 4(w_0 *n)(w_i * n) } L_i(p,w_i)n * w_idw_i ) $$">
+<meta name="author" content="">
+<link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/06_pbr/02_lighting/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://hrst4.xyz/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://hrst4.xyz/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://hrst4.xyz/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://hrst4.xyz/apple-touch-icon.png">
+<link rel="mask-icon" href="https://hrst4.xyz/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="" />
+<meta property="og:description" content="Lighting Dans le chapitre précédent, nous avons jeté les bases d&rsquo;un moteur de rendu réaliste basé sur la physique. Dans ce chapitre, nous allons nous concentrer sur la traduction de la théorie discutée précédemment en un moteur de rendu réel qui utilise des sources de lumière directes (ou analytiques) : pensez aux lumières ponctuelles, aux lumières directionnelles et/ou aux projecteurs.
+Commençons par revoir l&rsquo;équation de réflectance finale du chapitre précédent : $$ L_0(p,w_0) \int_{\Omega} ( k_d {c\over \pi} &#43; { DFG \over 4(w_0 *n)(w_i * n) } L_i(p,w_i)n * w_idw_i ) $$" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/06_pbr/02_lighting/" /><meta property="article:section" content="docs" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="Lighting Dans le chapitre précédent, nous avons jeté les bases d&rsquo;un moteur de rendu réaliste basé sur la physique. Dans ce chapitre, nous allons nous concentrer sur la traduction de la théorie discutée précédemment en un moteur de rendu réel qui utilise des sources de lumière directes (ou analytiques) : pensez aux lumières ponctuelles, aux lumières directionnelles et/ou aux projecteurs.
+Commençons par revoir l&rsquo;équation de réflectance finale du chapitre précédent : $$ L_0(p,w_0) \int_{\Omega} ( k_d {c\over \pi} &#43; { DFG \over 4(w_0 *n)(w_i * n) } L_i(p,w_i)n * w_idw_i ) $$"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Docs",
+      "item": "https://hrst4.xyz/docs/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "",
+      "item": "https://hrst4.xyz/docs/learnopengl_fr/06_pbr/02_lighting/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "",
+  "name": "",
+  "description": "Lighting Dans le chapitre précédent, nous avons jeté les bases d\u0026rsquo;un moteur de rendu réaliste basé sur la physique. Dans ce chapitre, nous allons nous concentrer sur la traduction de la théorie discutée précédemment en un moteur de rendu réel qui utilise des sources de lumière directes (ou analytiques) : pensez aux lumières ponctuelles, aux lumières directionnelles et/ou aux projecteurs.\nCommençons par revoir l\u0026rsquo;équation de réflectance finale du chapitre précédent : $$ L_0(p,w_0) \\int_{\\Omega} ( k_d {c\\over \\pi} + { DFG \\over 4(w_0 *n)(w_i * n) } L_i(p,w_i)n * w_idw_i ) $$",
+  "keywords": [
+    
+  ],
+  "articleBody": "Lighting Dans le chapitre précédent, nous avons jeté les bases d’un moteur de rendu réaliste basé sur la physique. Dans ce chapitre, nous allons nous concentrer sur la traduction de la théorie discutée précédemment en un moteur de rendu réel qui utilise des sources de lumière directes (ou analytiques) : pensez aux lumières ponctuelles, aux lumières directionnelles et/ou aux projecteurs.\nCommençons par revoir l’équation de réflectance finale du chapitre précédent : $$ L_0(p,w_0) \\int_{\\Omega} ( k_d {c\\over \\pi} + { DFG \\over 4(w_0 *n)(w_i * n) } L_i(p,w_i)n * w_idw_i ) $$\nNous savons maintenant à peu près ce qui se passe, mais il reste une grande inconnue : comment représenter exactement l’irradiation, la radiance totale $L$, de la scène. Nous savons que la radiance $L$ (telle qu’elle est interprétée dans le domaine de l’infographie) mesure le flux radiant $\\phi$ ou l’énergie lumineuse d’une source de lumière sur un angle solide donné $\\omega$. Dans notre cas, nous avons supposé que l’angle solide $\\omega$ est infiniment petit, auquel cas la radiance mesure le flux d’une source lumineuse sur un seul rayon lumineux ou vecteur de direction.\nCompte tenu de ces connaissances, comment les transposer dans les connaissances sur l’éclairage que nous avons accumulées dans les chapitres précédents ? Imaginons que nous ayons une lumière ponctuelle (une source lumineuse qui brille de la même manière dans toutes les directions) avec un flux radiant de $(23.47, 21.31, 20.79)$ traduit en un triplet RVB. L’intensité rayonnante de cette source lumineuse est égale à son flux rayonnant pour tous les rayons de direction sortants. Cependant, lors de l’ombrage d’un point spécifique $p$ sur une surface, parmi toutes les directions de lumière entrantes possibles sur son hémisphère $\\Omega$, seul un vecteur de direction entrant $w_i$ provient directement de la source lumineuse ponctuelle. Comme nous n’avons qu’une seule source lumineuse dans notre scène, supposée être un point unique dans l’espace, toutes les autres directions possibles de la lumière entrante ont une radiance nulle observée sur le point $p$ de la surface : ![[02_lighting-20230909-pbrlight1.png]] Si, dans un premier temps, nous supposons que l’atténuation de la lumière (diminution de la lumière sur la distance) n’affecte pas la source lumineuse ponctuelle, la radiance du rayon lumineux entrant est la même quel que soit l’endroit où nous positionnons la lumière (à l’exception de la mise à l’échelle de la radiance en fonction de l’angle d’incidence $cos\\theta$). En effet, la lumière ponctuelle a la même intensité radiante quel que soit l’angle sous lequel on la regarde, ce qui permet de modéliser son intensité radiante comme son flux radiant : un vecteur constant $(23.47, 21.31, 20.79)$.\nCependant, la radiance prend également une position $p$ et comme toute source lumineuse ponctuelle réaliste prend en compte l’atténuation de la lumière, l’intensité rayonnante de la source lumineuse ponctuelle est mise à l’échelle par une mesure de la distance entre le point $p$ et la source lumineuse. Ensuite, comme l’indique l’équation originale de la radiance, le résultat est mis à l’échelle par le produit de points entre la normale à la surface $n$ et la direction de la lumière entrante $w_i$.\nEn termes plus pratiques, dans le cas d’une lumière ponctuelle directe, la fonction de radiance $L$ mesure la couleur de la lumière, atténuée sur sa distance à $p$ et mise à l’échelle par $n*w_i$, mais uniquement sur le seul rayon lumineux $w_i$ qui atteint $p$ et qui est égal au vecteur de direction de la lumière à partir de $p$. En code, cela se traduit par :\nvec3 lightColor = vec3(23.47, 21.31, 20.79); vec3 wi = normalize(lightPos - fragPos); float cosTheta = max(dot(N, Wi), 0.0); float attenuation = calculateAttenuation(fragPos, lightPos); vec3 radiance = lightColor * attenuation * cosTheta; Hormis la terminologie différente, ce morceau de code devrait vous être très familier : c’est exactement la façon dont nous avons fait de l’éclairage diffus jusqu’à présent. En ce qui concerne l’éclairage direct, la radiance est calculée de la même manière que l’éclairage précédent, car un seul vecteur de direction de la lumière contribue à la radiance de la surface.\nIl convient de noter que cette hypothèse est valable dans la mesure où les lumières ponctuelles sont infiniment petites et ne représentent qu’un seul point dans l’espace. Si nous devions modéliser une lumière ayant une surface ou un volume, sa radiance serait non nulle dans plus d’une direction de lumière entrante.\nPour d’autres types de sources lumineuses provenant d’un seul point, nous calculons la radiance de la même manière. Par exemple, une source lumineuse directionnelle a un $w_i$ constant sans facteur d’atténuation. Et un projecteur n’aurait pas une intensité radiante constante, mais une intensité mise à l’échelle par le vecteur de direction vers l’avant du projecteur.\nCela nous ramène également à l’intégrale $\\int$ sur l’hémisphère $\\Omega$ de la surface. Comme nous connaissons à l’avance les emplacements uniques de toutes les sources lumineuses contribuant à l’ombrage d’un seul point de la surface, il n’est pas nécessaire d’essayer de résoudre l’intégrale. Nous pouvons directement prendre le nombre (connu) de sources lumineuses et calculer leur irradiance totale, étant donné que chaque source lumineuse n’a qu’une seule direction lumineuse qui influence l’irradiance de la surface. Cela rend le PBR sur les sources de lumière directe relativement simple puisque nous n’avons en fait qu’à boucler sur les sources de lumière qui y contribuent. Lorsque nous prenons ensuite en compte l’éclairage de l’environnement dans les chapitres [[IBL]] (todo: link), nous devons tenir compte de l’intégrale, car la lumière peut provenir de n’importe quelle direction.\nUn modèle de surface PBR Commençons par écrire un shader de fragment qui met en œuvre les modèles PBR décrits précédemment. Tout d’abord, nous devons prendre les entrées PBR nécessaires à l’ombrage de la surface :\n#version 330 core out vec4 FragColor; in vec2 TexCoords; in vec3 WorldPos; in vec3 Normal; uniform vec3 camPos; uniform vec3 albedo; uniform float metallic; uniform float roughness; uniform float ao; Nous prenons les entrées standard calculées par un vertex shader générique et un ensemble de propriétés matérielles constantes sur la surface de l’objet.\nEnsuite, au début du shader de fragment, nous effectuons les calculs habituels requis pour tout algorithme d’éclairage :\nvoid main() { vec3 N = normalize(Normal); vec3 V = normalize(camPos - WorldPos); [...] } Lumière directe Dans l’exemple de démonstration de ce chapitre, nous avons un total de 4 lumières ponctuelles qui, ensemble, représentent l’irradiance de la scène. Pour satisfaire l’équation de réflectance, nous bouclons sur chaque source lumineuse, calculons sa radiance individuelle et additionnons sa contribution mise à l’échelle par la BRDF et l’angle d’incidence de la lumière. Nous pouvons considérer que la boucle résout l’intégrale $\\int$ sur $\\Omega$ pour les sources lumineuses directes. Tout d’abord, nous calculons les variables pertinentes par lumière :\nvec3 Lo = vec3(0.0); for(int i = 0; i \u003c 4; ++i) { vec3 L = normalize(lightPositions[i] - WorldPos); vec3 H = normalize(V + L); float distance = length(lightPositions[i] - WorldPos); float attenuation = 1.0 / (distance * distance); vec3 radiance = lightColors[i] * attenuation; [...] Comme nous calculons l’éclairage dans l’espace linéaire (nous corrigerons le [[../05_Advanced_Lighting/01_gamma_correction|gamma]] à la fin du shader), nous atténuons les sources de lumière par la loi de l’inverse du carré, plus correcte physiquement.\nBien qu’elle soit physiquement correcte, vous pouvez toujours utiliser l’équation d’atténuation linéaire-quadratique constante qui (bien qu’elle ne soit pas physiquement correcte) peut vous offrir un contrôle beaucoup plus important sur l’affaiblissement de l’énergie de la lumière.\nEnsuite, pour chaque lumière, nous voulons calculer le terme de la BRDF spéculaire de Cook-Torrance : $$ { DFG \\over 4(w_0n)(w_in) } $$ La première chose à faire est de calculer le rapport entre la réflexion spéculaire et la réflexion diffuse, c’est-à-dire la mesure dans laquelle la surface réfléchit la lumière par rapport à la mesure dans laquelle elle la réfracte. Le chapitre précédent nous a appris que l’équation de Fresnel permet justement de calculer ce rapport (notez le clamp ici pour éviter les taches noires) :\nvec3 fresnelSchlick(float cosTheta, vec3 F0) { return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0); } L’approximation de Fresnel-Schlick prévoit un paramètre $F_0$ qui est connu comme étant la réflexion de la surface à incidence nulle ou la quantité de réflexion de la surface si l’on regarde directement la surface. Le $F_0$ varie selon le matériau et est teinté sur les métaux, comme on le trouve dans les grandes bases de données de matériaux. Dans le flux de travail PBR pour les surfaces métalliques, nous faisons l’hypothèse simplificatrice que la plupart des surfaces diélectriques sont visuellement correctes avec un $F_0$ constant de $0.04$, alors que nous spécifions le $F_0$ pour les surfaces métalliques comme étant donné par la valeur de l’albédo. Cela se traduit par le code suivant :\nvec3 F0 = vec3(0.04); F0 = mix(F0, albedo, metallic); vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0); Comme vous pouvez le constater, pour les surfaces non métalliques, $F_0$ est toujours de $0.04$. Pour les surfaces métalliques, nous faisons varier $F_0$ par interpolation linéaire entre la valeur originale de $F_0$ et la valeur de l’albédo correspondant à la propriété métallique.\nÉtant donné $F$ les termes restants à calculer sont la fonction de distribution normale $D$ et la fonction géométrique $G$.\nDans un shader d’éclairage PBR direct, leurs équivalents dans le code sont les suivants :\nfloat DistributionGGX(vec3 N, vec3 H, float roughness) { float a = roughness*roughness; float a2 = a*a; float NdotH = max(dot(N, H), 0.0); float NdotH2 = NdotH*NdotH; float num = a2; float denom = (NdotH2 * (a2 - 1.0) + 1.0); denom = PI * denom * denom; return num / denom; } float GeometrySchlickGGX(float NdotV, float roughness) { float r = (roughness + 1.0); float k = (r*r) / 8.0; float num = NdotV; float denom = NdotV * (1.0 - k) + k; return num / denom; } float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness) { float NdotV = max(dot(N, V), 0.0); float NdotL = max(dot(N, L), 0.0); float ggx2 = GeometrySchlickGGX(NdotV, roughness); float ggx1 = GeometrySchlickGGX(NdotL, roughness); return ggx1 * ggx2; } Il est important de noter ici que, contrairement au chapitre sur la [[01_theory|théorie]], nous transmettons le paramètre de rugosité directement à ces fonctions ; de cette façon, nous pouvons apporter des modifications spécifiques au terme à la valeur de rugosité d’origine. D’après les observations de Disney, adoptées par Epic Games, l’éclairage semble plus correct si l’on élève la rugosité au carré dans la géométrie et la fonction de distribution normale.\nUne fois les deux fonctions définies, le calcul de la $NDF$ et du terme $G$ dans la boucle de réflectance est simple :\nfloat NDF = DistributionGGX(N, H, roughness); float G = GeometrySmith(N, V, L, roughness); Cela nous permet de calculer la BRDF de Cook-Torrance :\nvec3 numerator = NDF * G * F; float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001; vec3 specular = numerator / denominator; Notez que nous ajoutons $0.0001$ au dénominateur pour éviter une division par zéro au cas où un produit de points aboutirait à $0.0$.\nNous pouvons maintenant calculer la contribution de chaque lumière à l’équation de réflectance. Comme la valeur de Fresnel correspond directement à $k_S$ nous pouvons utiliser $F$ pour désigner la contribution spéculaire de toute lumière qui frappe la surface. À partir de $k_S$, nous pouvons calculer le rapport de réfraction $k_D$ :\nvec3 kS = F; vec3 kD = vec3(1.0) - kS; kD *= 1.0 - metallic;\tÉtant donné que $k_S$ représente l’énergie de la lumière qui est réfléchie, le rapport restant de l’énergie de la lumière est la lumière qui est réfractée, que nous stockons sous la forme de $k_D$. En outre, comme les surfaces métalliques ne réfractent pas la lumière et n’ont donc pas de réflexions diffuses, nous renforçons cette propriété en annulant $k_D$ si la surface est métallique. Nous obtenons ainsi les données finales dont nous avons besoin pour calculer la valeur de réflectance sortante de chaque lumière :\nconst float PI = 3.14159265359; float NdotL = max(dot(N, L), 0.0); Lo += (kD * albedo / PI + specular) * radiance * NdotL; } La valeur $L_o$ résultante, ou radiance sortante, est en fait le résultat de l’intégrale de l’équation de réflectance $\\int$ sur $\\Omega$. Il n’est pas vraiment nécessaire d’essayer de résoudre l’intégrale pour toutes les directions possibles de la lumière entrante, car nous connaissons exactement les 4 directions de la lumière entrante qui peuvent influencer le fragment. De ce fait, nous pouvons directement boucler sur ces directions de lumière entrante, par exemple le nombre de lumières dans la scène.\nIl ne reste plus qu’à ajouter un terme ambiant (improvisé) au résultat de l’éclairage direct $L_o$ et nous avons la couleur éclairée finale du fragment :\nvec3 ambient = vec3(0.03) * albedo * ao; vec3 color = ambient + Lo; Rendu linéaire et HDR Jusqu’à présent, nous avons supposé que tous nos calculs étaient effectués dans un espace colorimétrique linéaire et, pour en tenir compte, nous devons procéder à une correction gamma à la fin du shader. Le calcul de l’éclairage dans l’espace linéaire est extrêmement important car le PBR exige que toutes les entrées soient linéaires. Ne pas en tenir compte se traduira par un éclairage incorrect. En outre, nous voulons que les entrées de lumière soient proches de leurs équivalents physiques, de sorte que leurs valeurs de radiance ou de couleur puissent varier de façon sauvage sur un large spectre de valeurs. Par conséquent, $L_o$ peut rapidement devenir très élevé, puis être bloqué entre $0.0$ et $1.0$ en raison de la sortie à faible plage dynamique (LDR) par défaut. Nous corrigeons ce problème en prenant $L_o$ et en appliquant le ton ou l’exposition de la valeur HDR (High Dynamic Range) correctement à LDR avant la correction gamma :\ncolor = color / (color + vec3(1.0)); color = pow(color, vec3(1.0/2.2)); Ici, nous appliquons le tone mapping à la couleur HDR à l’aide de l’opérateur Reinhard, en préservant la plage dynamique élevée d’une irradiation qui peut varier fortement, après quoi nous corrigeons la couleur au niveau du gamma. Nous n’avons pas de framebuffer séparé ou d’étape de post-traitement, ce qui nous permet d’appliquer directement le mapping des tons et l’étape de correction gamma à la fin du fragment shader avant.\n![[02_lighting-20230909_pbrlight2.png]]\nLa prise en compte de l’espace colorimétrique linéaire et de la plage dynamique élevée est extrêmement importante dans un pipeline PBR. Sans cela, il est impossible de capturer correctement les détails élevés et faibles des différentes intensités lumineuses et vos calculs finissent par être incorrects et donc visuellement désagréables.\nShader PBR à éclairage direct Il ne reste plus qu’à transmettre les couleurs finales corrigées en fonction de la tonalité et du gamma au canal de sortie du fragment shader et nous avons un shader d’éclairage PBR direct. Par souci d’exhaustivité, la fonction principale complète est listée ci-dessous :\n#version 330 core out vec4 FragColor; in vec2 TexCoords; in vec3 WorldPos; in vec3 Normal; // material parameters uniform vec3 albedo; uniform float metallic; uniform float roughness; uniform float ao; // lights uniform vec3 lightPositions[4]; uniform vec3 lightColors[4]; uniform vec3 camPos; const float PI = 3.14159265359; float DistributionGGX(vec3 N, vec3 H, float roughness); float GeometrySchlickGGX(float NdotV, float roughness); float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness); vec3 fresnelSchlick(float cosTheta, vec3 F0); void main() {\tvec3 N = normalize(Normal); vec3 V = normalize(camPos - WorldPos); vec3 F0 = vec3(0.04); F0 = mix(F0, albedo, metallic); // reflectance equation vec3 Lo = vec3(0.0); for(int i = 0; i \u003c 4; ++i) { // calculate per-light radiance vec3 L = normalize(lightPositions[i] - WorldPos); vec3 H = normalize(V + L); float distance = length(lightPositions[i] - WorldPos); float attenuation = 1.0 / (distance * distance); vec3 radiance = lightColors[i] * attenuation; // cook-torrance brdf float NDF = DistributionGGX(N, H, roughness); float G = GeometrySmith(N, V, L, roughness); vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0); vec3 kS = F; vec3 kD = vec3(1.0) - kS; kD *= 1.0 - metallic;\tvec3 numerator = NDF * G * F; float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001; vec3 specular = numerator / denominator; // add to outgoing radiance Lo float NdotL = max(dot(N, L), 0.0); Lo += (kD * albedo / PI + specular) * radiance * NdotL; } vec3 ambient = vec3(0.03) * albedo * ao; vec3 color = ambient + Lo; color = color / (color + vec3(1.0)); color = pow(color, vec3(1.0/2.2)); FragColor = vec4(color, 1.0); } Avec la [[01_theory|théorie]] du chapitre précédent et la connaissance de l’équation de réflectance, ce shader ne devrait plus être aussi intimidant. Si nous prenons ce shader, 4 lumières ponctuelles, et quelques sphères dont nous faisons varier les valeurs métalliques et de rugosité sur les axes verticaux et horizontaux respectivement, nous obtiendrons quelque chose comme ceci : ![[02_lighting-20230909-pbrlight3.png]] De bas en haut, la valeur métallique varie de $0.0$ à $1.0$, la rugosité augmentant de gauche à droite de $0.0$ à $1.0$. Vous pouvez voir qu’en changeant seulement ces deux paramètres simples à comprendre, nous pouvons déjà afficher un large éventail de matériaux différents.\nVous pouvez trouver le code source complet de la démo ici.\nPBR texturé L’extension du système pour qu’il accepte désormais ses paramètres de surface en tant que textures au lieu de valeurs uniformes nous permet de contrôler les propriétés du matériau de surface par fragment :\n[...] uniform sampler2D albedoMap; uniform sampler2D normalMap; uniform sampler2D metallicMap; uniform sampler2D roughnessMap; uniform sampler2D aoMap; void main() { vec3 albedo = pow(texture(albedoMap, TexCoords).rgb, 2.2); vec3 normal = getNormalFromNormalMap(); float metallic = texture(metallicMap, TexCoords).r; float roughness = texture(roughnessMap, TexCoords).r; float ao = texture(aoMap, TexCoords).r; [...] } Notez que les textures d’albédo provenant des artistes sont généralement créées dans l’espace sRGB, c’est pourquoi nous les convertissons d’abord en espace linéaire avant d’utiliser l’albédo dans nos calculs d’éclairage. En fonction du système utilisé par les artistes pour générer les cartes d’occlusion ambiante, il se peut que vous deviez également les convertir de l’espace sRGB à l’espace linéaire. Les maps métalliques et de rugosité sont presque toujours créées dans l’espace linéaire.\nLe remplacement des propriétés matérielles de l’ensemble précédent de sphères par des textures montre déjà une amélioration visuelle majeure par rapport aux algorithmes d’éclairage précédents que nous avons utilisés : ![[02_lighting-20230909-pbrlight5.png]] Vous pouvez trouver le code source complet de la démo texturée ici et le jeu de textures utilisé ici (avec une map d’ao blanche). Gardez à l’esprit que les surfaces métalliques ont tendance à paraître trop sombres dans les environnements à éclairage direct car elles n’ont pas de réflectance diffuse. Elles sont plus correctes lorsque l’on prend en compte l’éclairage spéculaire de l’environnement, ce sur quoi nous nous concentrerons dans les prochains chapitres.\nBien qu’il ne soit pas aussi impressionnant visuellement que certaines démonstrations de rendu PBR, étant donné que nous n’avons pas encore intégré l’éclairage basé sur l’image, le système que nous avons maintenant est toujours un moteur de rendu basé sur la physique, et même sans IBL, vous verrez que votre éclairage sera beaucoup plus réaliste.\n",
+  "wordCount" : "3158",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://hrst4.xyz/docs/learnopengl_fr/06_pbr/02_lighting/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://hrst4.xyz/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://hrst4.xyz/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      
+    </h1>
+    <div class="post-meta">
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="lighting">Lighting<a hidden class="anchor" aria-hidden="true" href="#lighting">#</a></h1>
+<p>Dans le chapitre précédent, nous avons jeté les bases d&rsquo;un moteur de rendu réaliste basé sur la physique. Dans ce chapitre, nous allons nous concentrer sur la traduction de la théorie discutée précédemment en un moteur de rendu réel qui utilise des sources de lumière directes (ou analytiques) : pensez aux lumières ponctuelles, aux lumières directionnelles et/ou aux projecteurs.</p>
+<h1 id="l_0pw_0">Commençons par revoir l&rsquo;équation de réflectance finale du chapitre précédent :
+$$
+L_0(p,w_0)</h1>
+<p>\int_{\Omega}
+(
+k_d {c\over \pi}
++
+{
+DFG
+\over
+4(w_0 *n)(w_i * n)
+}
+L_i(p,w_i)n
+*
+w_idw_i
+)
+$$</p>
+<p>Nous savons maintenant à peu près ce qui se passe, mais il reste une grande inconnue : comment représenter exactement l&rsquo;irradiation, la radiance totale $L$, de la scène.
+Nous savons que la radiance $L$ (telle qu&rsquo;elle est interprétée dans le domaine de l&rsquo;infographie) mesure le flux radiant $\phi$ ou l&rsquo;énergie lumineuse d&rsquo;une source de lumière sur un angle solide donné $\omega$. Dans notre cas, nous avons supposé que l&rsquo;angle solide $\omega$ est infiniment petit, auquel cas la radiance mesure le flux d&rsquo;une source lumineuse sur un seul rayon lumineux ou vecteur de direction.</p>
+<p>Compte tenu de ces connaissances, comment les transposer dans les connaissances sur l&rsquo;éclairage que nous avons accumulées dans les chapitres précédents ? Imaginons que nous ayons une lumière ponctuelle (une source lumineuse qui brille de la même manière dans toutes les directions) avec un flux radiant de $(23.47, 21.31, 20.79)$ traduit en un triplet RVB. L&rsquo;intensité rayonnante de cette source lumineuse est égale à son flux rayonnant pour tous les rayons de direction sortants. Cependant, lors de l&rsquo;ombrage d&rsquo;un point spécifique $p$ sur une surface, parmi toutes les directions de lumière entrantes possibles sur son hémisphère $\Omega$, seul un vecteur de direction entrant $w_i$ provient directement de la source lumineuse ponctuelle. Comme nous n&rsquo;avons qu&rsquo;une seule source lumineuse dans notre scène, supposée être un point unique dans l&rsquo;espace, toutes les autres directions possibles de la lumière entrante ont une radiance nulle observée sur le point $p$ de la surface :
+![[02_lighting-20230909-pbrlight1.png]]
+Si, dans un premier temps, nous supposons que l&rsquo;atténuation de la lumière (diminution de la lumière sur la distance) n&rsquo;affecte pas la source lumineuse ponctuelle, la radiance du rayon lumineux entrant est la même quel que soit l&rsquo;endroit où nous positionnons la lumière (à l&rsquo;exception de la mise à l&rsquo;échelle de la radiance en fonction de l&rsquo;angle d&rsquo;incidence $cos\theta$). En effet, la lumière ponctuelle a la même intensité radiante quel que soit l&rsquo;angle sous lequel on la regarde, ce qui permet de modéliser son intensité radiante comme son flux radiant : un vecteur constant $(23.47, 21.31, 20.79)$.</p>
+<p>Cependant, la radiance prend également une position $p$ et comme toute source lumineuse ponctuelle réaliste prend en compte l&rsquo;atténuation de la lumière, l&rsquo;intensité rayonnante de la source lumineuse ponctuelle est mise à l&rsquo;échelle par une mesure de la distance entre le point $p$ et la source lumineuse. Ensuite, comme l&rsquo;indique l&rsquo;équation originale de la radiance, le résultat est mis à l&rsquo;échelle par le produit de points entre la normale à la surface $n$ et la direction de la lumière entrante $w_i$.</p>
+<p>En termes plus pratiques, dans le cas d&rsquo;une lumière ponctuelle directe, la fonction de radiance $L$ mesure la couleur de la lumière, atténuée sur sa distance à $p$ et mise à l&rsquo;échelle par $n*w_i$, mais uniquement sur le seul rayon lumineux $w_i$ qui atteint $p$ et qui est égal au vecteur de direction de la lumière à partir de $p$. En code, cela se traduit par :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3  lightColor  <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">23.47</span>, <span style="color:#ae81ff">21.31</span>, <span style="color:#ae81ff">20.79</span>);
+</span></span><span style="display:flex;"><span>vec3  wi          <span style="color:#f92672">=</span> normalize(lightPos <span style="color:#f92672">-</span> fragPos);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> cosTheta    <span style="color:#f92672">=</span> max(dot(N, Wi), <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> attenuation <span style="color:#f92672">=</span> calculateAttenuation(fragPos, lightPos);
+</span></span><span style="display:flex;"><span>vec3  radiance    <span style="color:#f92672">=</span> lightColor <span style="color:#f92672">*</span> attenuation <span style="color:#f92672">*</span> cosTheta;
+</span></span></code></pre></div><p>Hormis la terminologie différente, ce morceau de code devrait vous être très familier : c&rsquo;est exactement la façon dont nous avons fait de l&rsquo;éclairage diffus jusqu&rsquo;à présent. En ce qui concerne l&rsquo;éclairage direct, la radiance est calculée de la même manière que l&rsquo;éclairage précédent, car un seul vecteur de direction de la lumière contribue à la radiance de la surface.</p>
+<blockquote>
+<p>Il convient de noter que cette hypothèse est valable dans la mesure où les lumières ponctuelles sont infiniment petites et ne représentent qu&rsquo;un seul point dans l&rsquo;espace. Si nous devions modéliser une lumière ayant une surface ou un volume, sa radiance serait non nulle dans plus d&rsquo;une direction de lumière entrante.</p>
+</blockquote>
+<p>Pour d&rsquo;autres types de sources lumineuses provenant d&rsquo;un seul point, nous calculons la radiance de la même manière. Par exemple, une source lumineuse directionnelle a un $w_i$ constant sans facteur d&rsquo;atténuation. Et un projecteur n&rsquo;aurait pas une intensité radiante constante, mais une intensité mise à l&rsquo;échelle par le vecteur de direction vers l&rsquo;avant du projecteur.</p>
+<p>Cela nous ramène également à l&rsquo;intégrale $\int$ sur l&rsquo;hémisphère $\Omega$ de la surface. Comme nous connaissons à l&rsquo;avance les emplacements uniques de toutes les sources lumineuses contribuant à l&rsquo;ombrage d&rsquo;un seul point de la surface, il n&rsquo;est pas nécessaire d&rsquo;essayer de résoudre l&rsquo;intégrale. Nous pouvons directement prendre le nombre (connu) de sources lumineuses et calculer leur irradiance totale, étant donné que chaque source lumineuse n&rsquo;a qu&rsquo;une seule direction lumineuse qui influence l&rsquo;irradiance de la surface. Cela rend le PBR sur les sources de lumière directe relativement simple puisque nous n&rsquo;avons en fait qu&rsquo;à boucler sur les sources de lumière qui y contribuent. Lorsque nous prenons ensuite en compte l&rsquo;éclairage de l&rsquo;environnement dans les chapitres [[IBL]] (todo: link), nous devons tenir compte de l&rsquo;intégrale, car la lumière peut provenir de n&rsquo;importe quelle direction.</p>
+<h2 id="un-modèle-de-surface-pbr">Un modèle de surface PBR<a hidden class="anchor" aria-hidden="true" href="#un-modèle-de-surface-pbr">#</a></h2>
+<p>Commençons par écrire un shader de fragment qui met en œuvre les modèles PBR décrits précédemment. Tout d&rsquo;abord, nous devons prendre les entrées PBR nécessaires à l&rsquo;ombrage de la surface :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>in vec2 TexCoords;
+</span></span><span style="display:flex;"><span>in vec3 WorldPos;
+</span></span><span style="display:flex;"><span>in vec3 Normal;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>uniform vec3 camPos;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>uniform vec3  albedo;
+</span></span><span style="display:flex;"><span>uniform <span style="color:#66d9ef">float</span> metallic;
+</span></span><span style="display:flex;"><span>uniform <span style="color:#66d9ef">float</span> roughness;
+</span></span><span style="display:flex;"><span>uniform <span style="color:#66d9ef">float</span> ao;
+</span></span></code></pre></div><p>Nous prenons les entrées standard calculées par un vertex shader générique et un ensemble de propriétés matérielles constantes sur la surface de l&rsquo;objet.</p>
+<p>Ensuite, au début du shader de fragment, nous effectuons les calculs habituels requis pour tout algorithme d&rsquo;éclairage :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    vec3 N <span style="color:#f92672">=</span> normalize(Normal); 
+</span></span><span style="display:flex;"><span>    vec3 V <span style="color:#f92672">=</span> normalize(camPos <span style="color:#f92672">-</span> WorldPos);
+</span></span><span style="display:flex;"><span>    [...]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="lumière-directe">Lumière directe<a hidden class="anchor" aria-hidden="true" href="#lumière-directe">#</a></h3>
+<p>Dans l&rsquo;exemple de démonstration de ce chapitre, nous avons un total de 4 lumières ponctuelles qui, ensemble, représentent l&rsquo;irradiance de la scène. Pour satisfaire l&rsquo;équation de réflectance, nous bouclons sur chaque source lumineuse, calculons sa radiance individuelle et additionnons sa contribution mise à l&rsquo;échelle par la BRDF et l&rsquo;angle d&rsquo;incidence de la lumière. Nous pouvons considérer que la boucle résout l&rsquo;intégrale $\int$ sur $\Omega$ pour les sources lumineuses directes. Tout d&rsquo;abord, nous calculons les variables pertinentes par lumière :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 Lo <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">4</span>; <span style="color:#f92672">++</span>i) 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    vec3 L <span style="color:#f92672">=</span> normalize(lightPositions[i] <span style="color:#f92672">-</span> WorldPos);
+</span></span><span style="display:flex;"><span>    vec3 H <span style="color:#f92672">=</span> normalize(V <span style="color:#f92672">+</span> L);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> distance    <span style="color:#f92672">=</span> length(lightPositions[i] <span style="color:#f92672">-</span> WorldPos);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> attenuation <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">/</span> (distance <span style="color:#f92672">*</span> distance);
+</span></span><span style="display:flex;"><span>    vec3 radiance     <span style="color:#f92672">=</span> lightColors[i] <span style="color:#f92672">*</span> attenuation; 
+</span></span><span style="display:flex;"><span>    [...]  
+</span></span></code></pre></div><p>Comme nous calculons l&rsquo;éclairage dans l&rsquo;espace linéaire (nous corrigerons le [[../05_Advanced_Lighting/01_gamma_correction|gamma]] à la fin du shader), nous atténuons les sources de lumière par la loi de l&rsquo;inverse du carré, plus correcte physiquement.</p>
+<blockquote>
+<p>Bien qu&rsquo;elle soit physiquement correcte, vous pouvez toujours utiliser l&rsquo;équation d&rsquo;atténuation linéaire-quadratique constante qui (bien qu&rsquo;elle ne soit pas physiquement correcte) peut vous offrir un contrôle beaucoup plus important sur l&rsquo;affaiblissement de l&rsquo;énergie de la lumière.</p>
+</blockquote>
+<p>Ensuite, pour chaque lumière, nous voulons calculer le terme de la BRDF spéculaire de Cook-Torrance :
+$$
+{
+DFG
+\over
+4(w_0<em>n)(w_i</em>n)
+}
+$$
+La première chose à faire est de calculer le rapport entre la réflexion spéculaire et la réflexion diffuse, c&rsquo;est-à-dire la mesure dans laquelle la surface réfléchit la lumière par rapport à la mesure dans laquelle elle la réfracte. Le chapitre précédent nous a appris que l&rsquo;équation de Fresnel permet justement de calculer ce rapport (notez le <strong>clamp</strong> ici pour éviter les taches noires) :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 <span style="color:#a6e22e">fresnelSchlick</span>(<span style="color:#66d9ef">float</span> cosTheta, vec3 F0)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> F0 <span style="color:#f92672">+</span> (<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> F0) <span style="color:#f92672">*</span> pow(clamp(<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> cosTheta, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>), <span style="color:#ae81ff">5.0</span>);
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>L&rsquo;approximation de Fresnel-Schlick prévoit un paramètre $F_0$ qui est connu comme étant la réflexion de la surface à incidence nulle ou la quantité de réflexion de la surface si l&rsquo;on regarde directement la surface. Le $F_0$ varie selon le matériau et est teinté sur les métaux, comme on le trouve dans les grandes bases de données de matériaux. Dans le flux de travail PBR pour les surfaces métalliques, nous faisons l&rsquo;hypothèse simplificatrice que la plupart des surfaces diélectriques sont visuellement correctes avec un $F_0$ constant de $0.04$, alors que nous spécifions le $F_0$ pour les surfaces métalliques comme étant donné par la valeur de l&rsquo;albédo. Cela se traduit par le code suivant :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 F0 <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">0.04</span>); 
+</span></span><span style="display:flex;"><span>F0      <span style="color:#f92672">=</span> mix(F0, albedo, metallic);
+</span></span><span style="display:flex;"><span>vec3 F  <span style="color:#f92672">=</span> fresnelSchlick(max(dot(H, V), <span style="color:#ae81ff">0.0</span>), F0);
+</span></span></code></pre></div><p>Comme vous pouvez le constater, pour les surfaces non métalliques, $F_0$ est toujours de $0.04$. Pour les surfaces métalliques, nous faisons varier $F_0$ par interpolation linéaire entre la valeur originale de $F_0$ et la valeur de l&rsquo;albédo correspondant à la propriété métallique.</p>
+<p>Étant donné $F$ les termes restants à calculer sont la fonction de distribution normale $D$ et la fonction géométrique $G$.</p>
+<p>Dans un shader d&rsquo;éclairage PBR direct, leurs équivalents dans le code sont les suivants :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">DistributionGGX</span>(vec3 N, vec3 H, <span style="color:#66d9ef">float</span> roughness)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> a      <span style="color:#f92672">=</span> roughness<span style="color:#f92672">*</span>roughness;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> a2     <span style="color:#f92672">=</span> a<span style="color:#f92672">*</span>a;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> NdotH  <span style="color:#f92672">=</span> max(dot(N, H), <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> NdotH2 <span style="color:#f92672">=</span> NdotH<span style="color:#f92672">*</span>NdotH;
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> num   <span style="color:#f92672">=</span> a2;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> denom <span style="color:#f92672">=</span> (NdotH2 <span style="color:#f92672">*</span> (a2 <span style="color:#f92672">-</span> <span style="color:#ae81ff">1.0</span>) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>    denom <span style="color:#f92672">=</span> PI <span style="color:#f92672">*</span> denom <span style="color:#f92672">*</span> denom;
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> num <span style="color:#f92672">/</span> denom;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">GeometrySchlickGGX</span>(<span style="color:#66d9ef">float</span> NdotV, <span style="color:#66d9ef">float</span> roughness)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> r <span style="color:#f92672">=</span> (roughness <span style="color:#f92672">+</span> <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> k <span style="color:#f92672">=</span> (r<span style="color:#f92672">*</span>r) <span style="color:#f92672">/</span> <span style="color:#ae81ff">8.0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> num   <span style="color:#f92672">=</span> NdotV;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> denom <span style="color:#f92672">=</span> NdotV <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> k) <span style="color:#f92672">+</span> k;
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> num <span style="color:#f92672">/</span> denom;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">GeometrySmith</span>(vec3 N, vec3 V, vec3 L, <span style="color:#66d9ef">float</span> roughness)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> NdotV <span style="color:#f92672">=</span> max(dot(N, V), <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> NdotL <span style="color:#f92672">=</span> max(dot(N, L), <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> ggx2  <span style="color:#f92672">=</span> GeometrySchlickGGX(NdotV, roughness);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> ggx1  <span style="color:#f92672">=</span> GeometrySchlickGGX(NdotL, roughness);
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> ggx1 <span style="color:#f92672">*</span> ggx2;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Il est important de noter ici que, contrairement au chapitre sur la [[01_theory|théorie]], nous transmettons le paramètre de rugosité directement à ces fonctions ; de cette façon, nous pouvons apporter des modifications spécifiques au terme à la valeur de rugosité d&rsquo;origine. D&rsquo;après les observations de Disney, adoptées par Epic Games, l&rsquo;éclairage semble plus correct si l&rsquo;on élève la rugosité au carré dans la géométrie et la fonction de distribution normale.</p>
+<p>Une fois les deux fonctions définies, le calcul de la $NDF$ et du terme $G$ dans la boucle de réflectance est simple :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> NDF <span style="color:#f92672">=</span> DistributionGGX(N, H, roughness);       
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> G   <span style="color:#f92672">=</span> GeometrySmith(N, V, L, roughness);  
+</span></span></code></pre></div><p>Cela nous permet de calculer la BRDF de Cook-Torrance :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 numerator    <span style="color:#f92672">=</span> NDF <span style="color:#f92672">*</span> G <span style="color:#f92672">*</span> F;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> denominator <span style="color:#f92672">=</span> <span style="color:#ae81ff">4.0</span> <span style="color:#f92672">*</span> max(dot(N, V), <span style="color:#ae81ff">0.0</span>) <span style="color:#f92672">*</span> max(dot(N, L), <span style="color:#ae81ff">0.0</span>)  <span style="color:#f92672">+</span> <span style="color:#ae81ff">0.0001</span>;
+</span></span><span style="display:flex;"><span>vec3 specular     <span style="color:#f92672">=</span> numerator <span style="color:#f92672">/</span> denominator;  
+</span></span></code></pre></div><p>Notez que nous ajoutons $0.0001$ au dénominateur pour éviter une division par zéro au cas où un produit de points aboutirait à $0.0$.</p>
+<p>Nous pouvons maintenant calculer la contribution de chaque lumière à l&rsquo;équation de réflectance. Comme la valeur de Fresnel correspond directement à $k_S$ nous pouvons utiliser $F$ pour désigner la contribution spéculaire de toute lumière qui frappe la surface. À partir de $k_S$, nous pouvons calculer le rapport de réfraction $k_D$ :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 kS <span style="color:#f92672">=</span> F;
+</span></span><span style="display:flex;"><span>vec3 kD <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">1.0</span>) <span style="color:#f92672">-</span> kS;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>kD <span style="color:#f92672">*=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> metallic;	
+</span></span></code></pre></div><p>Étant donné que $k_S$ représente l&rsquo;énergie de la lumière qui est réfléchie, le rapport restant de l&rsquo;énergie de la lumière est la lumière qui est réfractée, que nous stockons sous la forme de $k_D$. En outre, comme les surfaces métalliques ne réfractent pas la lumière et n&rsquo;ont donc pas de réflexions diffuses, nous renforçons cette propriété en annulant $k_D$ si la surface est métallique. Nous obtenons ainsi les données finales dont nous avons besoin pour calculer la valeur de réflectance sortante de chaque lumière :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> PI <span style="color:#f92672">=</span> <span style="color:#ae81ff">3.14159265359</span>;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> NdotL <span style="color:#f92672">=</span> max(dot(N, L), <span style="color:#ae81ff">0.0</span>);        
+</span></span><span style="display:flex;"><span>    Lo <span style="color:#f92672">+=</span> (kD <span style="color:#f92672">*</span> albedo <span style="color:#f92672">/</span> PI <span style="color:#f92672">+</span> specular) <span style="color:#f92672">*</span> radiance <span style="color:#f92672">*</span> NdotL;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>La valeur $L_o$ résultante, ou radiance sortante, est en fait le résultat de l&rsquo;intégrale de l&rsquo;équation de réflectance $\int$ sur $\Omega$. Il n&rsquo;est pas vraiment nécessaire d&rsquo;essayer de résoudre l&rsquo;intégrale pour toutes les directions possibles de la lumière entrante, car nous connaissons exactement les 4 directions de la lumière entrante qui peuvent influencer le fragment. De ce fait, nous pouvons directement boucler sur ces directions de lumière entrante, par exemple le nombre de lumières dans la scène.</p>
+<p>Il ne reste plus qu&rsquo;à ajouter un terme ambiant (improvisé) au résultat de l&rsquo;éclairage direct $L_o$ et nous avons la couleur éclairée finale du fragment :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 ambient <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">0.03</span>) <span style="color:#f92672">*</span> albedo <span style="color:#f92672">*</span> ao;
+</span></span><span style="display:flex;"><span>vec3 color   <span style="color:#f92672">=</span> ambient <span style="color:#f92672">+</span> Lo;  
+</span></span></code></pre></div><h2 id="rendu-linéaire-et-hdr">Rendu linéaire et HDR<a hidden class="anchor" aria-hidden="true" href="#rendu-linéaire-et-hdr">#</a></h2>
+<p>Jusqu&rsquo;à présent, nous avons supposé que tous nos calculs étaient effectués dans un espace colorimétrique linéaire et, pour en tenir compte, nous devons procéder à une correction gamma à la fin du shader. Le calcul de l&rsquo;éclairage dans l&rsquo;espace linéaire est extrêmement important car le PBR exige que toutes les entrées soient linéaires. Ne pas en tenir compte se traduira par un éclairage incorrect. En outre, nous voulons que les entrées de lumière soient proches de leurs équivalents physiques, de sorte que leurs valeurs de radiance ou de couleur puissent varier de façon sauvage sur un large spectre de valeurs. Par conséquent, $L_o$ peut rapidement devenir très élevé, puis être bloqué entre $0.0$ et $1.0$ en raison de la sortie à faible plage dynamique (LDR) par défaut. Nous corrigeons ce problème en prenant $L_o$ et en appliquant le ton ou l&rsquo;exposition de la valeur HDR (High Dynamic Range) correctement à LDR avant la correction gamma :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>color <span style="color:#f92672">=</span> color <span style="color:#f92672">/</span> (color <span style="color:#f92672">+</span> vec3(<span style="color:#ae81ff">1.0</span>));
+</span></span><span style="display:flex;"><span>color <span style="color:#f92672">=</span> pow(color, vec3(<span style="color:#ae81ff">1.0</span><span style="color:#f92672">/</span><span style="color:#ae81ff">2.2</span>)); 
+</span></span></code></pre></div><p>Ici, nous appliquons le tone mapping à la couleur HDR à l&rsquo;aide de l&rsquo;opérateur Reinhard, en préservant la plage dynamique élevée d&rsquo;une irradiation qui peut varier fortement, après quoi nous corrigeons la couleur au niveau du gamma. Nous n&rsquo;avons pas de framebuffer séparé ou d&rsquo;étape de post-traitement, ce qui nous permet d&rsquo;appliquer directement le mapping des tons et l&rsquo;étape de correction gamma à la fin du fragment shader avant.</p>
+<p>![[02_lighting-20230909_pbrlight2.png]]</p>
+<p>La prise en compte de l&rsquo;espace colorimétrique linéaire et de la plage dynamique élevée est extrêmement importante dans un pipeline PBR. Sans cela, il est impossible de capturer correctement les détails élevés et faibles des différentes intensités lumineuses et vos calculs finissent par être incorrects et donc visuellement désagréables.</p>
+<h2 id="shader-pbr-à-éclairage-direct">Shader PBR à éclairage direct<a hidden class="anchor" aria-hidden="true" href="#shader-pbr-à-éclairage-direct">#</a></h2>
+<p>Il ne reste plus qu&rsquo;à transmettre les couleurs finales corrigées en fonction de la tonalité et du gamma au canal de sortie du fragment shader et nous avons un shader d&rsquo;éclairage PBR direct. Par souci d&rsquo;exhaustivité, la fonction principale complète est listée ci-dessous :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>in vec2 TexCoords;
+</span></span><span style="display:flex;"><span>in vec3 WorldPos;
+</span></span><span style="display:flex;"><span>in vec3 Normal;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// material parameters
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>uniform vec3  albedo;
+</span></span><span style="display:flex;"><span>uniform <span style="color:#66d9ef">float</span> metallic;
+</span></span><span style="display:flex;"><span>uniform <span style="color:#66d9ef">float</span> roughness;
+</span></span><span style="display:flex;"><span>uniform <span style="color:#66d9ef">float</span> ao;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// lights
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>uniform vec3 lightPositions[<span style="color:#ae81ff">4</span>];
+</span></span><span style="display:flex;"><span>uniform vec3 lightColors[<span style="color:#ae81ff">4</span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform vec3 camPos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> PI <span style="color:#f92672">=</span> <span style="color:#ae81ff">3.14159265359</span>;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">DistributionGGX</span>(vec3 N, vec3 H, <span style="color:#66d9ef">float</span> roughness);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">GeometrySchlickGGX</span>(<span style="color:#66d9ef">float</span> NdotV, <span style="color:#66d9ef">float</span> roughness);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">GeometrySmith</span>(vec3 N, vec3 V, vec3 L, <span style="color:#66d9ef">float</span> roughness);
+</span></span><span style="display:flex;"><span>vec3 <span style="color:#a6e22e">fresnelSchlick</span>(<span style="color:#66d9ef">float</span> cosTheta, vec3 F0);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{		
+</span></span><span style="display:flex;"><span>    vec3 N <span style="color:#f92672">=</span> normalize(Normal);
+</span></span><span style="display:flex;"><span>    vec3 V <span style="color:#f92672">=</span> normalize(camPos <span style="color:#f92672">-</span> WorldPos);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    vec3 F0 <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">0.04</span>); 
+</span></span><span style="display:flex;"><span>    F0 <span style="color:#f92672">=</span> mix(F0, albedo, metallic);
+</span></span><span style="display:flex;"><span>	           
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// reflectance equation
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 Lo <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">4</span>; <span style="color:#f92672">++</span>i) 
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// calculate per-light radiance
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        vec3 L <span style="color:#f92672">=</span> normalize(lightPositions[i] <span style="color:#f92672">-</span> WorldPos);
+</span></span><span style="display:flex;"><span>        vec3 H <span style="color:#f92672">=</span> normalize(V <span style="color:#f92672">+</span> L);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">float</span> distance    <span style="color:#f92672">=</span> length(lightPositions[i] <span style="color:#f92672">-</span> WorldPos);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">float</span> attenuation <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">/</span> (distance <span style="color:#f92672">*</span> distance);
+</span></span><span style="display:flex;"><span>        vec3 radiance     <span style="color:#f92672">=</span> lightColors[i] <span style="color:#f92672">*</span> attenuation;        
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// cook-torrance brdf
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">float</span> NDF <span style="color:#f92672">=</span> DistributionGGX(N, H, roughness);        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">float</span> G   <span style="color:#f92672">=</span> GeometrySmith(N, V, L, roughness);      
+</span></span><span style="display:flex;"><span>        vec3 F    <span style="color:#f92672">=</span> fresnelSchlick(max(dot(H, V), <span style="color:#ae81ff">0.0</span>), F0);       
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        vec3 kS <span style="color:#f92672">=</span> F;
+</span></span><span style="display:flex;"><span>        vec3 kD <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">1.0</span>) <span style="color:#f92672">-</span> kS;
+</span></span><span style="display:flex;"><span>        kD <span style="color:#f92672">*=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> metallic;	  
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        vec3 numerator    <span style="color:#f92672">=</span> NDF <span style="color:#f92672">*</span> G <span style="color:#f92672">*</span> F;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">float</span> denominator <span style="color:#f92672">=</span> <span style="color:#ae81ff">4.0</span> <span style="color:#f92672">*</span> max(dot(N, V), <span style="color:#ae81ff">0.0</span>) <span style="color:#f92672">*</span> max(dot(N, L), <span style="color:#ae81ff">0.0</span>) <span style="color:#f92672">+</span> <span style="color:#ae81ff">0.0001</span>;
+</span></span><span style="display:flex;"><span>        vec3 specular     <span style="color:#f92672">=</span> numerator <span style="color:#f92672">/</span> denominator;  
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// add to outgoing radiance Lo
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">float</span> NdotL <span style="color:#f92672">=</span> max(dot(N, L), <span style="color:#ae81ff">0.0</span>);                
+</span></span><span style="display:flex;"><span>        Lo <span style="color:#f92672">+=</span> (kD <span style="color:#f92672">*</span> albedo <span style="color:#f92672">/</span> PI <span style="color:#f92672">+</span> specular) <span style="color:#f92672">*</span> radiance <span style="color:#f92672">*</span> NdotL; 
+</span></span><span style="display:flex;"><span>    }   
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    vec3 ambient <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">0.03</span>) <span style="color:#f92672">*</span> albedo <span style="color:#f92672">*</span> ao;
+</span></span><span style="display:flex;"><span>    vec3 color <span style="color:#f92672">=</span> ambient <span style="color:#f92672">+</span> Lo;
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>    color <span style="color:#f92672">=</span> color <span style="color:#f92672">/</span> (color <span style="color:#f92672">+</span> vec3(<span style="color:#ae81ff">1.0</span>));
+</span></span><span style="display:flex;"><span>    color <span style="color:#f92672">=</span> pow(color, vec3(<span style="color:#ae81ff">1.0</span><span style="color:#f92672">/</span><span style="color:#ae81ff">2.2</span>));  
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(color, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Avec la [[01_theory|théorie]] du chapitre précédent et la connaissance de l&rsquo;équation de réflectance, ce shader ne devrait plus être aussi intimidant. Si nous prenons ce shader, 4 lumières ponctuelles, et quelques sphères dont nous faisons varier les valeurs métalliques et de rugosité sur les axes verticaux et horizontaux respectivement, nous obtiendrons quelque chose comme ceci :
+![[02_lighting-20230909-pbrlight3.png]]
+De bas en haut, la valeur métallique varie de $0.0$ à $1.0$, la rugosité augmentant de gauche à droite de $0.0$ à $1.0$. Vous pouvez voir qu&rsquo;en changeant seulement ces deux paramètres simples à comprendre, nous pouvons déjà afficher un large éventail de matériaux différents.</p>
+<p>Vous pouvez trouver le code source complet de la démo <a href="https://learnopengl.com/code_viewer_gh.php?code=src/6.pbr/1.1.lighting/lighting.cpp">ici</a>.</p>
+<h1 id="pbr-texturé">PBR texturé<a hidden class="anchor" aria-hidden="true" href="#pbr-texturé">#</a></h1>
+<p>L&rsquo;extension du système pour qu&rsquo;il accepte désormais ses paramètres de surface en tant que textures au lieu de valeurs uniformes nous permet de contrôler les propriétés du matériau de surface par fragment :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>[...]
+</span></span><span style="display:flex;"><span>uniform sampler2D albedoMap;
+</span></span><span style="display:flex;"><span>uniform sampler2D normalMap;
+</span></span><span style="display:flex;"><span>uniform sampler2D metallicMap;
+</span></span><span style="display:flex;"><span>uniform sampler2D roughnessMap;
+</span></span><span style="display:flex;"><span>uniform sampler2D aoMap;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    vec3 albedo     <span style="color:#f92672">=</span> pow(texture(albedoMap, TexCoords).rgb, <span style="color:#ae81ff">2.2</span>);
+</span></span><span style="display:flex;"><span>    vec3 normal     <span style="color:#f92672">=</span> getNormalFromNormalMap();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> metallic  <span style="color:#f92672">=</span> texture(metallicMap, TexCoords).r;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> roughness <span style="color:#f92672">=</span> texture(roughnessMap, TexCoords).r;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> ao        <span style="color:#f92672">=</span> texture(aoMap, TexCoords).r;
+</span></span><span style="display:flex;"><span>    [...]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Notez que les textures d&rsquo;albédo provenant des artistes sont généralement créées dans l&rsquo;espace <strong>sRGB</strong>, c&rsquo;est pourquoi nous les convertissons d&rsquo;abord en espace linéaire avant d&rsquo;utiliser l&rsquo;albédo dans nos calculs d&rsquo;éclairage. En fonction du système utilisé par les artistes pour générer les cartes d&rsquo;occlusion ambiante, il se peut que vous deviez également les convertir de l&rsquo;espace sRGB à l&rsquo;espace linéaire. Les maps métalliques et de rugosité sont presque toujours créées dans l&rsquo;espace linéaire.</p>
+<p>Le remplacement des propriétés matérielles de l&rsquo;ensemble précédent de sphères par des textures montre déjà une amélioration visuelle majeure par rapport aux algorithmes d&rsquo;éclairage précédents que nous avons utilisés :
+![[02_lighting-20230909-pbrlight5.png]]
+Vous pouvez trouver le code source complet de la démo texturée <a href="https://learnopengl.com/code_viewer_gh.php?code=src/6.pbr/1.2.lighting_textured/lighting_textured.cpp">ici</a> et le jeu de textures utilisé <a href="http://freepbr.com/materials/rusted-iron-pbr-metal-material-alt/">ici</a> (avec une map d&rsquo;ao blanche). Gardez à l&rsquo;esprit que les surfaces métalliques ont tendance à paraître trop sombres dans les environnements à éclairage direct car elles n&rsquo;ont pas de réflectance diffuse. Elles sont plus correctes lorsque l&rsquo;on prend en compte l&rsquo;éclairage spéculaire de l&rsquo;environnement, ce sur quoi nous nous concentrerons dans les prochains chapitres.</p>
+<p>Bien qu&rsquo;il ne soit pas aussi impressionnant visuellement que certaines démonstrations de rendu PBR, étant donné que nous n&rsquo;avons pas encore intégré l&rsquo;éclairage basé sur l&rsquo;image, le système que nous avons maintenant est toujours un moteur de rendu basé sur la physique, et même sans IBL, vous verrez que votre éclairage sera beaucoup plus réaliste.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://hrst4.xyz/">My New Hugo Site</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
