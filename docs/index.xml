@@ -8,11 +8,11 @@
     <language>en-us</language>
     <lastBuildDate>Sat, 11 Nov 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://hrst4.xyz/docs/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>test5</title>
-      <link>https://hrst4.xyz/docs/test5/</link>
+      <title>src_post</title>
+      <link>https://hrst4.xyz/docs/src_post/</link>
       <pubDate>Sat, 11 Nov 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://hrst4.xyz/docs/test5/</guid>
+      <guid>https://hrst4.xyz/docs/src_post/</guid>
       <description>Link to another post
 What is Lorem Ipsum? Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&amp;rsquo;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</description>
     </item>
@@ -50,7 +50,7 @@ What is Lorem Ipsum? Lorem Ipsum is simply dummy text of the printing and typese
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://hrst4.xyz/docs/another_post/</guid>
-      <description>anotherpost</description>
+      <description>Another post </description>
     </item>
     
   </channel>
