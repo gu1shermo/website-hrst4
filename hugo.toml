@@ -15,7 +15,7 @@ disableThemeToggle = true
 # imageTitle = "<title of image as alt>"
 # imageWidth = 120
 # imageHeight = 120
-
+[outputs]
 [[outputs.home]]
 home = [ "HTML", "RSS", "JSON" ]
 
