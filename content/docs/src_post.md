@@ -2,7 +2,7 @@
 date: 2023-11-11
 authors:
   - hrst4
-title: src_post yml
+title: src_post (yml) or yaml
 tags: 
 categories: 
 series:
