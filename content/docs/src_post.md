@@ -9,7 +9,7 @@ series:
 ---
 [Link to another post](another_post.md)
 
-img:
+# img:
 
 ![](assets/image.png)
 What is Lorem Ipsum?](https://hrst4.xyz/content/posts/src_post.md#what-is-lorem-ipsum)

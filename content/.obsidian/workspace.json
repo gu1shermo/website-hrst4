@@ -157,6 +157,8 @@
   },
   "active": "6d5fa9713ff85d53",
   "lastOpenFiles": [
+    "docs/another_post.md",
+    "docs/src_post.md",
     "docs/assets/image.png",
     "docs/assets",
     "posts/Link to another post.md",
@@ -165,12 +167,10 @@
     "posts/Our First",
     "posts/assets/image.png",
     "docs/test3.md",
-    "docs/src_post.md",
     "docs/test2.md",
     "docs/test.md",
     "templates/tpl_frontmatter.md",
     "templates",
-    "docs/another_post.md",
     "docs/test5.md",
     "content/templates/tpl_frontmatter.md"
   ]
