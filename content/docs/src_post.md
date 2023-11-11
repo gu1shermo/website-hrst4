@@ -2,8 +2,8 @@
 date: 2023-11-11
 authors:
   - hrst4
-title: src_post (yml) or yaml
-tags: 
+title: src_post (toml)
+tags: ['test']
 categories: 
 series:
 ---

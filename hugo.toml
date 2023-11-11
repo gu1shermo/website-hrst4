@@ -1,21 +1,12 @@
 # baseURL = "https://gu1shermo.github.io/website-hrst4/"
-# baseURL = "https://hrst4.xyz/"
-# languageCode = 'en-us'
-# title = "hrst4's blog"
-# theme =  'PaperMod'
-# 
-# [module]
-# [[module.mounts]]
-# source = 'content'
-# target = 'content'
-# excludeFiles = ['templates/**']
-# 
-# [params.profileMode]
-# enabled = true
-# title = "<Title pmode>"
-# subtitle = "This is subtitle pmode"
-# imageUrl = "./content/docs/assets/image.png"
-# imageTitle = "<title of image as alt pmode>"
-# imageWidth = 120
-# imageHeight = 120
-# 
+baseURL = "https://hrst4.xyz/"
+languageCode = 'en-us'
+title = "hrst4's blog toml"
+theme =  'PaperMod'
+
+[module]
+[[module.mounts]]
+source = 'content'
+target = 'content'
+excludeFiles = ['templates/**']
+
