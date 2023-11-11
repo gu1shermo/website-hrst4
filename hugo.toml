@@ -7,7 +7,6 @@ theme =  'PaperMod'
 [params]
 defaultTheme = "dark"
 disableThemeToggle = true
-
 [[params.profileMode]]
 enabled = true
 title = "<Title>"
