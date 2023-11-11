@@ -6,13 +6,24 @@ params:
   defaultTheme: dark
   disableThemeToggle: true
   profileMode:
-    - enabled: true
-      title: <Title>
-      subtitle: This is subtitle
-      imageUrl: https://static.oceandraw.com/wp-content/uploads/2018/06/24145039/Hanabi-Ko-Koko.jpg
-      imageTitle: <title of image as alt>
-      imageWidth: 120
-      imageHeight: 120
+        enabled: true
+        title: "<Title>" # optional default will be site title
+        subtitle: "This is subtitle stitle"
+        imageUrl: "<image link>" # optional
+        imageTitle: "<title of image as alt>" # optional
+        imageWidth: 120 # custom size
+        imageHeight: 120 # custom size
+        buttons:
+            - name: Archive
+            url: "/archive"
+            - name: Github
+            url: "https://github.com/"
+
+    socialIcons: # optional
+        - name: "<platform>"
+            url: "<link>"
+        - name: "<platform 2>"
+            url: "<link2>"
 module:
   mounts:
     - source: content
