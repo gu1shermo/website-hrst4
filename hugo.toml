@@ -7,9 +7,9 @@ theme =  'PaperMod'
 [params]
 defaultTheme = "dark"
 disableThemeToggle = true
-[[params.homeInfoParams]]
-title = "Hi there wave dark theme"
-content = "Can be Info, links, about... dark theme"
+# [[params.homeInfoParams]]
+# title = "Hi there wave dark theme"
+# content = "Can be Info, links, about... dark theme"
 [[params.socialIcons]]
 name = "kofi"
 title = "<custom title> kofi"
