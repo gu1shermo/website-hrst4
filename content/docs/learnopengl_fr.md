@@ -1,6 +1,6 @@
 ---
 series: 
-categories: 
+categories: ["opengl, graphics"]
 tags: 
 title:
   "{ title }": 
