@@ -12,9 +12,7 @@ params:
         Content: Can be Info, links, about...
     socialIcons: # optional
         - name: "github"
-            url: "<link>"
-        - name: "<platform 2>"
-            url: "<link2>"
+            url: "github.com"
 
 module:
   mounts:

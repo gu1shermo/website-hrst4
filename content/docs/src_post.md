@@ -9,7 +9,7 @@ series:
 ---
 [Link to another post](another_post.md)
 
-modif1
+modif2
 
 # img:
 
