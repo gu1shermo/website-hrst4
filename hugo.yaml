@@ -3,29 +3,9 @@ languageCode: en-us
 title: hrst4's blog toml
 theme: PaperMod
 params:
-  defaultTheme: dark
-  disableThemeToggle: true
-
-params:  
-  profileMode:
-        enabled: true
-        title: "<Title>" # optional default will be site title
-        subtitle: "This is subtitle stitle"
-        imageUrl: "<image link>" # optional
-        imageTitle: "<title of image as alt>" # optional
-        imageWidth: 120 # custom size
-        imageHeight: 120 # custom size
-        buttons:
-            - name: Archive
-            url: "/archive"
-            - name: Github
-            url: "https://github.com/"
-
-    socialIcons: # optional
-        - name: "<platform>"
-            url: "<link>"
-        - name: "<platform 2>"
-            url: "<link2>"
+    # defaultTheme: light
+    defaultTheme: dark
+    # defaultTheme: auto # to switch between dark or light according to browser theme
 module:
   mounts:
     - source: content
