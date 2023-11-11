@@ -1,7 +1,7 @@
 # baseURL = "https://gu1shermo.github.io/website-hrst4/"
 baseURL = "https://hrst4.xyz/"
 languageCode = 'en-us'
-title = 'My New Hugo Site'
+title = "hrst4's blog"
 theme =  'PaperMod'
 
 [module]
