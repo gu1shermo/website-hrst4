@@ -1,6 +1,6 @@
 baseURL: https://hrst4.xyz/
 languageCode: en-us
-title: hrst4's blog
+title: hrst4's blog yml
 theme: PaperMod
 module:
   mounts:
