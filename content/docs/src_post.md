@@ -2,7 +2,7 @@
 date: 2023-11-11
 authors:
   - hrst4
-title: src_post (toml)
+title: src_post (toml update)
 tags: ['test']
 categories: 
 series:
