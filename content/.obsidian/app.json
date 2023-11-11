@@ -3,5 +3,6 @@
   "newFileFolderPath": "posts",
   "newLinkFormat": "relative",
   "useMarkdownLinks": true,
-  "attachmentFolderPath": "posts/assets"
+  "attachmentFolderPath": "posts/assets",
+  "promptDelete": false
 }

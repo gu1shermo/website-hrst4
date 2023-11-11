@@ -21,7 +21,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/test3.md",
+                "file": "docs/src_post.md",
                 "mode": "source",
                 "source": false
               }
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "docs/test3.md",
+                "file": "docs/src_post.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -111,7 +111,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "docs/test3.md",
+                "file": "docs/src_post.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -134,7 +134,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "docs/test3.md"
+                "file": "docs/src_post.md"
               }
             }
           }
@@ -155,9 +155,14 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "5a9e9aece207fdff",
+  "active": "6d5fa9713ff85d53",
   "lastOpenFiles": [
+    "docs/test3.md",
     "docs/src_post.md",
+    "docs/test2.md",
+    "docs/test.md",
+    "templates/tpl_frontmatter.md",
+    "templates",
     "docs/another_post.md",
     "docs/test5.md",
     "content/templates/tpl_frontmatter.md"
