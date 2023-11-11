@@ -1,12 +1,12 @@
 # baseURL = "https://gu1shermo.github.io/website-hrst4/"
-baseURL = "https://hrst4.xyz/"
-languageCode = 'en-us'
-title = "hrst4's blog toml"
-theme =  'PaperMod'
-
-[params]
-defaultTheme = "dark"
-disableThemeToggle = true
+# baseURL = "https://hrst4.xyz/"
+# languageCode = 'en-us'
+# title = "hrst4's blog toml"
+# theme =  'PaperMod'
+# 
+# [params]
+# defaultTheme = "dark"
+# disableThemeToggle = true
 # [[params.profileMode]]
 # enabled = true
 # title = "<Title>"
@@ -30,9 +30,9 @@ disableThemeToggle = true
 # title = "<custom title>"
 # url = "https://twitter.com"
 
-[module]
-[[module.mounts]]
-source = 'content'
-target = 'content'
-excludeFiles = ['templates/**']
+# [module]
+# [[module.mounts]]
+# source = 'content'
+# target = 'content'
+# excludeFiles = ['templates/**']
 

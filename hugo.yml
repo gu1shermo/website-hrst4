@@ -1,0 +1,21 @@
+baseURL: https://hrst4.xyz/
+languageCode: en-us
+title: hrst4's blog toml
+theme: PaperMod
+params:
+  defaultTheme: dark
+  disableThemeToggle: true
+  profileMode:
+    - enabled: true
+      title: <Title>
+      subtitle: This is subtitle
+      imageUrl: https://static.oceandraw.com/wp-content/uploads/2018/06/24145039/Hanabi-Ko-Koko.jpg
+      imageTitle: <title of image as alt>
+      imageWidth: 120
+      imageHeight: 120
+module:
+  mounts:
+    - source: content
+      target: content
+      excludeFiles:
+        - templates/**
