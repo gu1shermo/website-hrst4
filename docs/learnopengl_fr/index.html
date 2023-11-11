@@ -10,23 +10,23 @@
 <meta name="description" content="%% Begin Waypoint %%
 00_Introduction
 introduction 01_Getting_Started
-[[LEARNOPENGL_FR/01_Getting_Started/00_opengl]]
-[[LEARNOPENGL_FR/01_Getting_Started/01_creating a window]]
-[[LEARNOPENGL_FR/01_Getting_Started/02_hello window]]
-[[LEARNOPENGL_FR/01_Getting_Started/03_hello triangle]]
-[[LEARNOPENGL_FR/01_Getting_Started/04_shaders]]
-[[LEARNOPENGL_FR/01_Getting_Started/05_textures]]
-[[LEARNOPENGL_FR/01_Getting_Started/06_transformations]]
-[[LEARNOPENGL_FR/01_Getting_Started/07_coordinate systems]]
-[[LEARNOPENGL_FR/01_Getting_Started/08_camera]]
-[[LEARNOPENGL_FR/01_Getting_Started/09_glossary]]
+00_opengl
+01_creating a window
+02_hello window
+03_hello triangle
+04_shaders
+05_textures
+06_transformations
+07_coordinate systems
+08_camera
+09_glossary
 img
 video
 02_Lighting
-00_Colors [[LEARNOPENGL_FR/02_Lighting/00_Colors/colors]] 01_Basic Lighting [[LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting]] 02_Materials [[LEARNOPENGL_FR/02_Lighting/02_Materials/materials]] 03_Lighting Maps [[LEARNOPENGL_FR/02_Lighting/03_Lighting Maps/lighting maps]] 04_Light Casters [[LEARNOPENGL_FR/02_Lighting/04_Light Casters/light casters]] 05_Multiple Lights [[LEARNOPENGL_FR/02_Lighting/05_Multiple Lights/multiple lights]] [[LEARNOPENGL_FR/02_Lighting/glossary]] 03_Model_Loading
-[[LEARNOPENGL_FR/03_Model_Loading/assimp]] [[LEARNOPENGL_FR/03_Model_Loading/mesh]] [[LEARNOPENGL_FR/03_Model_Loading/model]] 04_Advanced_OpenGL
-[[LEARNOPENGL_FR/04_Advanced_OpenGL/00_depth_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/01_stencil_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/02_blending]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/03_face_culling]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/04_framebuffers]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/05_cubemaps]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/06_advanced_data]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/07_advanced_glsl]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/08_geometry_shader]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/09_instancing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/10_anti_aliasing]] 05_Advanced_Lighting
-[[LEARNOPENGL_FR/05_Advanced_Lighting/00_advanced_lighting]] [[LEARNOPENGL_FR/05_Advanced_Lighting/01_gamma_correction]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02a_shadow_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02b_point_shadows]] [[LEARNOPENGL_FR/05_Advanced_Lighting/03_normal_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/04_parallax_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/05_hdr]] [[LEARNOPENGL_FR/05_Advanced_Lighting/06_bloom]] [[LEARNOPENGL_FR/05_Advanced_Lighting/07_deferred_shading]] [[LEARNOPENGL_FR/05_Advanced_Lighting/08_ssao]] 06_PBR">
+00_Colors colors 01_Basic Lighting basic lighting 02_Materials materials 03_Lighting Maps lighting maps 04_Light Casters light casters 05_Multiple Lights multiple lights glossary 03_Model_Loading
+assimp mesh model 04_Advanced_OpenGL
+00_depth_testing 01_stencil_testing 02_blending 03_face_culling 04_framebuffers 05_cubemaps 06_advanced_data 07_advanced_glsl 08_geometry_shader 09_instancing 10_anti_aliasing 05_Advanced_Lighting
+00_advanced_lighting 01_gamma_correction 02a_shadow_mapping 02b_point_shadows 03_normal_mapping 04_parallax_mapping 05_hdr 06_bloom 07_deferred_shading 08_ssao 06_PBR">
 <meta name="author" content="">
 <link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
@@ -79,23 +79,23 @@ video
 <meta property="og:description" content="%% Begin Waypoint %%
 00_Introduction
 introduction 01_Getting_Started
-[[LEARNOPENGL_FR/01_Getting_Started/00_opengl]]
-[[LEARNOPENGL_FR/01_Getting_Started/01_creating a window]]
-[[LEARNOPENGL_FR/01_Getting_Started/02_hello window]]
-[[LEARNOPENGL_FR/01_Getting_Started/03_hello triangle]]
-[[LEARNOPENGL_FR/01_Getting_Started/04_shaders]]
-[[LEARNOPENGL_FR/01_Getting_Started/05_textures]]
-[[LEARNOPENGL_FR/01_Getting_Started/06_transformations]]
-[[LEARNOPENGL_FR/01_Getting_Started/07_coordinate systems]]
-[[LEARNOPENGL_FR/01_Getting_Started/08_camera]]
-[[LEARNOPENGL_FR/01_Getting_Started/09_glossary]]
+00_opengl
+01_creating a window
+02_hello window
+03_hello triangle
+04_shaders
+05_textures
+06_transformations
+07_coordinate systems
+08_camera
+09_glossary
 img
 video
 02_Lighting
-00_Colors [[LEARNOPENGL_FR/02_Lighting/00_Colors/colors]] 01_Basic Lighting [[LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting]] 02_Materials [[LEARNOPENGL_FR/02_Lighting/02_Materials/materials]] 03_Lighting Maps [[LEARNOPENGL_FR/02_Lighting/03_Lighting Maps/lighting maps]] 04_Light Casters [[LEARNOPENGL_FR/02_Lighting/04_Light Casters/light casters]] 05_Multiple Lights [[LEARNOPENGL_FR/02_Lighting/05_Multiple Lights/multiple lights]] [[LEARNOPENGL_FR/02_Lighting/glossary]] 03_Model_Loading
-[[LEARNOPENGL_FR/03_Model_Loading/assimp]] [[LEARNOPENGL_FR/03_Model_Loading/mesh]] [[LEARNOPENGL_FR/03_Model_Loading/model]] 04_Advanced_OpenGL
-[[LEARNOPENGL_FR/04_Advanced_OpenGL/00_depth_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/01_stencil_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/02_blending]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/03_face_culling]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/04_framebuffers]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/05_cubemaps]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/06_advanced_data]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/07_advanced_glsl]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/08_geometry_shader]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/09_instancing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/10_anti_aliasing]] 05_Advanced_Lighting
-[[LEARNOPENGL_FR/05_Advanced_Lighting/00_advanced_lighting]] [[LEARNOPENGL_FR/05_Advanced_Lighting/01_gamma_correction]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02a_shadow_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02b_point_shadows]] [[LEARNOPENGL_FR/05_Advanced_Lighting/03_normal_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/04_parallax_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/05_hdr]] [[LEARNOPENGL_FR/05_Advanced_Lighting/06_bloom]] [[LEARNOPENGL_FR/05_Advanced_Lighting/07_deferred_shading]] [[LEARNOPENGL_FR/05_Advanced_Lighting/08_ssao]] 06_PBR" />
+00_Colors colors 01_Basic Lighting basic lighting 02_Materials materials 03_Lighting Maps lighting maps 04_Light Casters light casters 05_Multiple Lights multiple lights glossary 03_Model_Loading
+assimp mesh model 04_Advanced_OpenGL
+00_depth_testing 01_stencil_testing 02_blending 03_face_culling 04_framebuffers 05_cubemaps 06_advanced_data 07_advanced_glsl 08_geometry_shader 09_instancing 10_anti_aliasing 05_Advanced_Lighting
+00_advanced_lighting 01_gamma_correction 02a_shadow_mapping 02b_point_shadows 03_normal_mapping 04_parallax_mapping 05_hdr 06_bloom 07_deferred_shading 08_ssao 06_PBR" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/" /><meta property="article:section" content="docs" />
 
@@ -106,23 +106,23 @@ video
 <meta name="twitter:description" content="%% Begin Waypoint %%
 00_Introduction
 introduction 01_Getting_Started
-[[LEARNOPENGL_FR/01_Getting_Started/00_opengl]]
-[[LEARNOPENGL_FR/01_Getting_Started/01_creating a window]]
-[[LEARNOPENGL_FR/01_Getting_Started/02_hello window]]
-[[LEARNOPENGL_FR/01_Getting_Started/03_hello triangle]]
-[[LEARNOPENGL_FR/01_Getting_Started/04_shaders]]
-[[LEARNOPENGL_FR/01_Getting_Started/05_textures]]
-[[LEARNOPENGL_FR/01_Getting_Started/06_transformations]]
-[[LEARNOPENGL_FR/01_Getting_Started/07_coordinate systems]]
-[[LEARNOPENGL_FR/01_Getting_Started/08_camera]]
-[[LEARNOPENGL_FR/01_Getting_Started/09_glossary]]
+00_opengl
+01_creating a window
+02_hello window
+03_hello triangle
+04_shaders
+05_textures
+06_transformations
+07_coordinate systems
+08_camera
+09_glossary
 img
 video
 02_Lighting
-00_Colors [[LEARNOPENGL_FR/02_Lighting/00_Colors/colors]] 01_Basic Lighting [[LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting]] 02_Materials [[LEARNOPENGL_FR/02_Lighting/02_Materials/materials]] 03_Lighting Maps [[LEARNOPENGL_FR/02_Lighting/03_Lighting Maps/lighting maps]] 04_Light Casters [[LEARNOPENGL_FR/02_Lighting/04_Light Casters/light casters]] 05_Multiple Lights [[LEARNOPENGL_FR/02_Lighting/05_Multiple Lights/multiple lights]] [[LEARNOPENGL_FR/02_Lighting/glossary]] 03_Model_Loading
-[[LEARNOPENGL_FR/03_Model_Loading/assimp]] [[LEARNOPENGL_FR/03_Model_Loading/mesh]] [[LEARNOPENGL_FR/03_Model_Loading/model]] 04_Advanced_OpenGL
-[[LEARNOPENGL_FR/04_Advanced_OpenGL/00_depth_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/01_stencil_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/02_blending]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/03_face_culling]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/04_framebuffers]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/05_cubemaps]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/06_advanced_data]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/07_advanced_glsl]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/08_geometry_shader]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/09_instancing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/10_anti_aliasing]] 05_Advanced_Lighting
-[[LEARNOPENGL_FR/05_Advanced_Lighting/00_advanced_lighting]] [[LEARNOPENGL_FR/05_Advanced_Lighting/01_gamma_correction]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02a_shadow_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02b_point_shadows]] [[LEARNOPENGL_FR/05_Advanced_Lighting/03_normal_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/04_parallax_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/05_hdr]] [[LEARNOPENGL_FR/05_Advanced_Lighting/06_bloom]] [[LEARNOPENGL_FR/05_Advanced_Lighting/07_deferred_shading]] [[LEARNOPENGL_FR/05_Advanced_Lighting/08_ssao]] 06_PBR"/>
+00_Colors colors 01_Basic Lighting basic lighting 02_Materials materials 03_Lighting Maps lighting maps 04_Light Casters light casters 05_Multiple Lights multiple lights glossary 03_Model_Loading
+assimp mesh model 04_Advanced_OpenGL
+00_depth_testing 01_stencil_testing 02_blending 03_face_culling 04_framebuffers 05_cubemaps 06_advanced_data 07_advanced_glsl 08_geometry_shader 09_instancing 10_anti_aliasing 05_Advanced_Lighting
+00_advanced_lighting 01_gamma_correction 02a_shadow_mapping 02b_point_shadows 03_normal_mapping 04_parallax_mapping 05_hdr 06_bloom 07_deferred_shading 08_ssao 06_PBR"/>
 
 
 <script type="application/ld+json">
@@ -151,12 +151,12 @@ video
   "@type": "BlogPosting",
   "headline": "",
   "name": "",
-  "description": "%% Begin Waypoint %%\n00_Introduction\nintroduction 01_Getting_Started\n[[LEARNOPENGL_FR/01_Getting_Started/00_opengl]]\n[[LEARNOPENGL_FR/01_Getting_Started/01_creating a window]]\n[[LEARNOPENGL_FR/01_Getting_Started/02_hello window]]\n[[LEARNOPENGL_FR/01_Getting_Started/03_hello triangle]]\n[[LEARNOPENGL_FR/01_Getting_Started/04_shaders]]\n[[LEARNOPENGL_FR/01_Getting_Started/05_textures]]\n[[LEARNOPENGL_FR/01_Getting_Started/06_transformations]]\n[[LEARNOPENGL_FR/01_Getting_Started/07_coordinate systems]]\n[[LEARNOPENGL_FR/01_Getting_Started/08_camera]]\n[[LEARNOPENGL_FR/01_Getting_Started/09_glossary]]\nimg\nvideo\n02_Lighting\n00_Colors [[LEARNOPENGL_FR/02_Lighting/00_Colors/colors]] 01_Basic Lighting [[LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting]] 02_Materials [[LEARNOPENGL_FR/02_Lighting/02_Materials/materials]] 03_Lighting Maps [[LEARNOPENGL_FR/02_Lighting/03_Lighting Maps/lighting maps]] 04_Light Casters [[LEARNOPENGL_FR/02_Lighting/04_Light Casters/light casters]] 05_Multiple Lights [[LEARNOPENGL_FR/02_Lighting/05_Multiple Lights/multiple lights]] [[LEARNOPENGL_FR/02_Lighting/glossary]] 03_Model_Loading\n[[LEARNOPENGL_FR/03_Model_Loading/assimp]] [[LEARNOPENGL_FR/03_Model_Loading/mesh]] [[LEARNOPENGL_FR/03_Model_Loading/model]] 04_Advanced_OpenGL\n[[LEARNOPENGL_FR/04_Advanced_OpenGL/00_depth_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/01_stencil_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/02_blending]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/03_face_culling]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/04_framebuffers]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/05_cubemaps]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/06_advanced_data]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/07_advanced_glsl]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/08_geometry_shader]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/09_instancing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/10_anti_aliasing]] 05_Advanced_Lighting\n[[LEARNOPENGL_FR/05_Advanced_Lighting/00_advanced_lighting]] [[LEARNOPENGL_FR/05_Advanced_Lighting/01_gamma_correction]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02a_shadow_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02b_point_shadows]] [[LEARNOPENGL_FR/05_Advanced_Lighting/03_normal_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/04_parallax_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/05_hdr]] [[LEARNOPENGL_FR/05_Advanced_Lighting/06_bloom]] [[LEARNOPENGL_FR/05_Advanced_Lighting/07_deferred_shading]] [[LEARNOPENGL_FR/05_Advanced_Lighting/08_ssao]] 06_PBR",
+  "description": "%% Begin Waypoint %%\n00_Introduction\nintroduction 01_Getting_Started\n00_opengl\n01_creating a window\n02_hello window\n03_hello triangle\n04_shaders\n05_textures\n06_transformations\n07_coordinate systems\n08_camera\n09_glossary\nimg\nvideo\n02_Lighting\n00_Colors colors 01_Basic Lighting basic lighting 02_Materials materials 03_Lighting Maps lighting maps 04_Light Casters light casters 05_Multiple Lights multiple lights glossary 03_Model_Loading\nassimp mesh model 04_Advanced_OpenGL\n00_depth_testing 01_stencil_testing 02_blending 03_face_culling 04_framebuffers 05_cubemaps 06_advanced_data 07_advanced_glsl 08_geometry_shader 09_instancing 10_anti_aliasing 05_Advanced_Lighting\n00_advanced_lighting 01_gamma_correction 02a_shadow_mapping 02b_point_shadows 03_normal_mapping 04_parallax_mapping 05_hdr 06_bloom 07_deferred_shading 08_ssao 06_PBR",
   "keywords": [
     
   ],
-  "articleBody": "%% Begin Waypoint %%\n00_Introduction\nintroduction 01_Getting_Started\n[[LEARNOPENGL_FR/01_Getting_Started/00_opengl]]\n[[LEARNOPENGL_FR/01_Getting_Started/01_creating a window]]\n[[LEARNOPENGL_FR/01_Getting_Started/02_hello window]]\n[[LEARNOPENGL_FR/01_Getting_Started/03_hello triangle]]\n[[LEARNOPENGL_FR/01_Getting_Started/04_shaders]]\n[[LEARNOPENGL_FR/01_Getting_Started/05_textures]]\n[[LEARNOPENGL_FR/01_Getting_Started/06_transformations]]\n[[LEARNOPENGL_FR/01_Getting_Started/07_coordinate systems]]\n[[LEARNOPENGL_FR/01_Getting_Started/08_camera]]\n[[LEARNOPENGL_FR/01_Getting_Started/09_glossary]]\nimg\nvideo\n02_Lighting\n00_Colors [[LEARNOPENGL_FR/02_Lighting/00_Colors/colors]] 01_Basic Lighting [[LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting]] 02_Materials [[LEARNOPENGL_FR/02_Lighting/02_Materials/materials]] 03_Lighting Maps [[LEARNOPENGL_FR/02_Lighting/03_Lighting Maps/lighting maps]] 04_Light Casters [[LEARNOPENGL_FR/02_Lighting/04_Light Casters/light casters]] 05_Multiple Lights [[LEARNOPENGL_FR/02_Lighting/05_Multiple Lights/multiple lights]] [[LEARNOPENGL_FR/02_Lighting/glossary]] 03_Model_Loading\n[[LEARNOPENGL_FR/03_Model_Loading/assimp]] [[LEARNOPENGL_FR/03_Model_Loading/mesh]] [[LEARNOPENGL_FR/03_Model_Loading/model]] 04_Advanced_OpenGL\n[[LEARNOPENGL_FR/04_Advanced_OpenGL/00_depth_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/01_stencil_testing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/02_blending]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/03_face_culling]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/04_framebuffers]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/05_cubemaps]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/06_advanced_data]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/07_advanced_glsl]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/08_geometry_shader]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/09_instancing]] [[LEARNOPENGL_FR/04_Advanced_OpenGL/10_anti_aliasing]] 05_Advanced_Lighting\n[[LEARNOPENGL_FR/05_Advanced_Lighting/00_advanced_lighting]] [[LEARNOPENGL_FR/05_Advanced_Lighting/01_gamma_correction]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02a_shadow_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/02b_point_shadows]] [[LEARNOPENGL_FR/05_Advanced_Lighting/03_normal_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/04_parallax_mapping]] [[LEARNOPENGL_FR/05_Advanced_Lighting/05_hdr]] [[LEARNOPENGL_FR/05_Advanced_Lighting/06_bloom]] [[LEARNOPENGL_FR/05_Advanced_Lighting/07_deferred_shading]] [[LEARNOPENGL_FR/05_Advanced_Lighting/08_ssao]] 06_PBR\n[[LEARNOPENGL_FR/06_PBR/01_theory]] [[LEARNOPENGL_FR/06_PBR/02_lighting]] 03_IBL [[LEARNOPENGL_FR/06_PBR/03_IBL/01_diffuse_irradiance]] [[LEARNOPENGL_FR/06_PBR/03_IBL/02_specular_ibl]] %% End Waypoint %%\n",
-  "wordCount" : "87",
+  "articleBody": "%% Begin Waypoint %%\n00_Introduction\nintroduction 01_Getting_Started\n00_opengl\n01_creating a window\n02_hello window\n03_hello triangle\n04_shaders\n05_textures\n06_transformations\n07_coordinate systems\n08_camera\n09_glossary\nimg\nvideo\n02_Lighting\n00_Colors colors 01_Basic Lighting basic lighting 02_Materials materials 03_Lighting Maps lighting maps 04_Light Casters light casters 05_Multiple Lights multiple lights glossary 03_Model_Loading\nassimp mesh model 04_Advanced_OpenGL\n00_depth_testing 01_stencil_testing 02_blending 03_face_culling 04_framebuffers 05_cubemaps 06_advanced_data 07_advanced_glsl 08_geometry_shader 09_instancing 10_anti_aliasing 05_Advanced_Lighting\n00_advanced_lighting 01_gamma_correction 02a_shadow_mapping 02b_point_shadows 03_normal_mapping 04_parallax_mapping 05_hdr 06_bloom 07_deferred_shading 08_ssao 06_PBR\n01_theory 02_lighting 03_IBL 01_diffuse_irradiance 02_specular_ibl %% End Waypoint %%\n",
+  "wordCount" : "83",
   "inLanguage": "en",
   "datePublished": "0001-01-01T00:00:00Z",
   "dateModified": "0001-01-01T00:00:00Z",
@@ -243,34 +243,34 @@ video
 <p><strong>01_Getting_Started</strong></p>
 <ul>
 <li>
-<p>[[LEARNOPENGL_FR/01_Getting_Started/00_opengl]]</p>
+<p><a href="/docs/learnopengl_fr/01_getting_started/00_opengl/">00_opengl</a></p>
 </li>
 <li>
-<p>[[LEARNOPENGL_FR/01_Getting_Started/01_creating a window]]</p>
+<p><a href="/docs/learnopengl_fr/01_getting_started/01_creating-a-window/">01_creating a window</a></p>
 </li>
 <li>
-<p>[[LEARNOPENGL_FR/01_Getting_Started/02_hello window]]</p>
+<p><a href="/docs/learnopengl_fr/01_getting_started/02_hello-window/">02_hello window</a></p>
 </li>
 <li>
-<p>[[LEARNOPENGL_FR/01_Getting_Started/03_hello triangle]]</p>
+<p><a href="/docs/learnopengl_fr/01_getting_started/03_hello-triangle/">03_hello triangle</a></p>
 </li>
 <li>
-<p>[[LEARNOPENGL_FR/01_Getting_Started/04_shaders]]</p>
+<p><a href="/docs/learnopengl_fr/01_getting_started/04_shaders/">04_shaders</a></p>
 </li>
 <li>
-<p>[[LEARNOPENGL_FR/01_Getting_Started/05_textures]]</p>
+<p><a href="/docs/learnopengl_fr/01_getting_started/05_textures/">05_textures</a></p>
 </li>
 <li>
-<p>[[LEARNOPENGL_FR/01_Getting_Started/06_transformations]]</p>
+<p><a href="/docs/learnopengl_fr/01_getting_started/06_transformations/">06_transformations</a></p>
 </li>
 <li>
-<p>[[LEARNOPENGL_FR/01_Getting_Started/07_coordinate systems]]</p>
+<p><a href="/docs/learnopengl_fr/01_getting_started/07_coordinate-systems/">07_coordinate systems</a></p>
 </li>
 <li>
-<p>[[LEARNOPENGL_FR/01_Getting_Started/08_camera]]</p>
+<p><a href="/docs/learnopengl_fr/01_getting_started/08_camera/">08_camera</a></p>
 </li>
 <li>
-<p>[[LEARNOPENGL_FR/01_Getting_Started/09_glossary]]</p>
+<p><a href="/docs/learnopengl_fr/01_getting_started/09_glossary/">09_glossary</a></p>
 </li>
 <li>
 <p><strong>img</strong></p>
@@ -285,85 +285,85 @@ video
 <ul>
 <li><strong>00_Colors</strong>
 <ul>
-<li>[[LEARNOPENGL_FR/02_Lighting/00_Colors/colors]]</li>
+<li><a href="/docs/learnopengl_fr/02_lighting/00_colors/colors/">colors</a></li>
 </ul>
 </li>
 <li><strong>01_Basic Lighting</strong>
 <ul>
-<li>[[LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting]]</li>
+<li><a href="/docs/learnopengl_fr/02_lighting/01_basic-lighting/basic-lighting/">basic lighting</a></li>
 </ul>
 </li>
 <li><strong>02_Materials</strong>
 <ul>
-<li>[[LEARNOPENGL_FR/02_Lighting/02_Materials/materials]]</li>
+<li><a href="/docs/learnopengl_fr/02_lighting/02_materials/materials/">materials</a></li>
 </ul>
 </li>
 <li><strong>03_Lighting Maps</strong>
 <ul>
-<li>[[LEARNOPENGL_FR/02_Lighting/03_Lighting Maps/lighting maps]]</li>
+<li><a href="/docs/learnopengl_fr/02_lighting/03_lighting-maps/lighting-maps/">lighting maps</a></li>
 </ul>
 </li>
 <li><strong>04_Light Casters</strong>
 <ul>
-<li>[[LEARNOPENGL_FR/02_Lighting/04_Light Casters/light casters]]</li>
+<li><a href="/docs/learnopengl_fr/02_lighting/04_light-casters/light-casters/">light casters</a></li>
 </ul>
 </li>
 <li><strong>05_Multiple Lights</strong>
 <ul>
-<li>[[LEARNOPENGL_FR/02_Lighting/05_Multiple Lights/multiple lights]]</li>
+<li><a href="/docs/learnopengl_fr/02_lighting/05_multiple-lights/multiple-lights/">multiple lights</a></li>
 </ul>
 </li>
-<li>[[LEARNOPENGL_FR/02_Lighting/glossary]]</li>
+<li><a href="/docs/learnopengl_fr/02_lighting/glossary/">glossary</a></li>
 </ul>
 </li>
 <li>
 <p><strong>03_Model_Loading</strong></p>
 <ul>
-<li>[[LEARNOPENGL_FR/03_Model_Loading/assimp]]</li>
-<li>[[LEARNOPENGL_FR/03_Model_Loading/mesh]]</li>
-<li>[[LEARNOPENGL_FR/03_Model_Loading/model]]</li>
+<li><a href="/docs/learnopengl_fr/03_model_loading/assimp/">assimp</a></li>
+<li><a href="/docs/learnopengl_fr/03_model_loading/mesh/">mesh</a></li>
+<li><a href="/docs/learnopengl_fr/03_model_loading/model/">model</a></li>
 </ul>
 </li>
 <li>
 <p><strong>04_Advanced_OpenGL</strong></p>
 <ul>
-<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/00_depth_testing]]</li>
-<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/01_stencil_testing]]</li>
-<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/02_blending]]</li>
-<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/03_face_culling]]</li>
-<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/04_framebuffers]]</li>
-<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/05_cubemaps]]</li>
-<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/06_advanced_data]]</li>
-<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/07_advanced_glsl]]</li>
-<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/08_geometry_shader]]</li>
-<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/09_instancing]]</li>
-<li>[[LEARNOPENGL_FR/04_Advanced_OpenGL/10_anti_aliasing]]</li>
+<li><a href="/docs/learnopengl_fr/04_advanced_opengl/00_depth_testing/">00_depth_testing</a></li>
+<li><a href="/docs/learnopengl_fr/04_advanced_opengl/01_stencil_testing/">01_stencil_testing</a></li>
+<li><a href="/docs/learnopengl_fr/04_advanced_opengl/02_blending/">02_blending</a></li>
+<li><a href="/docs/learnopengl_fr/04_advanced_opengl/03_face_culling/">03_face_culling</a></li>
+<li><a href="/docs/learnopengl_fr/04_advanced_opengl/04_framebuffers/">04_framebuffers</a></li>
+<li><a href="/docs/learnopengl_fr/04_advanced_opengl/05_cubemaps/">05_cubemaps</a></li>
+<li><a href="/docs/learnopengl_fr/04_advanced_opengl/06_advanced_data/">06_advanced_data</a></li>
+<li><a href="/docs/learnopengl_fr/04_advanced_opengl/07_advanced_glsl/">07_advanced_glsl</a></li>
+<li><a href="/docs/learnopengl_fr/04_advanced_opengl/08_geometry_shader/">08_geometry_shader</a></li>
+<li><a href="/docs/learnopengl_fr/04_advanced_opengl/09_instancing/">09_instancing</a></li>
+<li><a href="/docs/learnopengl_fr/04_advanced_opengl/10_anti_aliasing/">10_anti_aliasing</a></li>
 </ul>
 </li>
 <li>
 <p><strong>05_Advanced_Lighting</strong></p>
 <ul>
-<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/00_advanced_lighting]]</li>
-<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/01_gamma_correction]]</li>
-<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/02a_shadow_mapping]]</li>
-<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/02b_point_shadows]]</li>
-<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/03_normal_mapping]]</li>
-<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/04_parallax_mapping]]</li>
-<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/05_hdr]]</li>
-<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/06_bloom]]</li>
-<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/07_deferred_shading]]</li>
-<li>[[LEARNOPENGL_FR/05_Advanced_Lighting/08_ssao]]</li>
+<li><a href="/docs/learnopengl_fr/05_advanced_lighting/00_advanced_lighting/">00_advanced_lighting</a></li>
+<li><a href="/docs/learnopengl_fr/05_advanced_lighting/01_gamma_correction/">01_gamma_correction</a></li>
+<li><a href="/docs/learnopengl_fr/05_advanced_lighting/02a_shadow_mapping/">02a_shadow_mapping</a></li>
+<li><a href="/docs/learnopengl_fr/05_advanced_lighting/02b_point_shadows/">02b_point_shadows</a></li>
+<li><a href="/docs/learnopengl_fr/05_advanced_lighting/03_normal_mapping/">03_normal_mapping</a></li>
+<li><a href="/docs/learnopengl_fr/05_advanced_lighting/04_parallax_mapping/">04_parallax_mapping</a></li>
+<li><a href="/docs/learnopengl_fr/05_advanced_lighting/05_hdr/">05_hdr</a></li>
+<li><a href="/docs/learnopengl_fr/05_advanced_lighting/06_bloom/">06_bloom</a></li>
+<li><a href="/docs/learnopengl_fr/05_advanced_lighting/07_deferred_shading/">07_deferred_shading</a></li>
+<li><a href="/docs/learnopengl_fr/05_advanced_lighting/08_ssao/">08_ssao</a></li>
 </ul>
 </li>
 <li>
 <p><strong>06_PBR</strong></p>
 <ul>
-<li>[[LEARNOPENGL_FR/06_PBR/01_theory]]</li>
-<li>[[LEARNOPENGL_FR/06_PBR/02_lighting]]</li>
+<li><a href="/docs/learnopengl_fr/06_pbr/01_theory/">01_theory</a></li>
+<li><a href="/docs/learnopengl_fr/06_pbr/02_lighting/">02_lighting</a></li>
 <li><strong>03_IBL</strong>
 <ul>
-<li>[[LEARNOPENGL_FR/06_PBR/03_IBL/01_diffuse_irradiance]]</li>
-<li>[[LEARNOPENGL_FR/06_PBR/03_IBL/02_specular_ibl]]</li>
+<li><a href="/docs/learnopengl_fr/06_pbr/03_ibl/01_diffuse_irradiance/">01_diffuse_irradiance</a></li>
+<li><a href="/docs/learnopengl_fr/06_pbr/03_ibl/02_specular_ibl/">02_specular_ibl</a></li>
 </ul>
 </li>
 </ul>
