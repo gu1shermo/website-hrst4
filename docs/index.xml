@@ -35,7 +35,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
       <guid>https://hrst4.xyz/docs/learnopengl_fr/</guid>
       <description>%% Begin Waypoint %%
 00_Introduction
-[[LEARNOPENGL_FR/00_Introduction/introduction]] 01_Getting_Started
+introduction 01_Getting_Started
 [[LEARNOPENGL_FR/01_Getting_Started/00_opengl]]
 [[LEARNOPENGL_FR/01_Getting_Started/01_creating a window]]
 [[LEARNOPENGL_FR/01_Getting_Started/02_hello window]]

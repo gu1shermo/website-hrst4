@@ -8,16 +8,6 @@
     <language>en-us</language><atom:link href="https://hrst4.xyz/tags/cg/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title></title>
-      <link>https://hrst4.xyz/docs/learnopengl_fr/00_introduction/introduction/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://hrst4.xyz/docs/learnopengl_fr/00_introduction/introduction/</guid>
-      <description>Introduction Depuis que vous êtes arrivé ici, vous voulez probablement apprendre les rouages de l&amp;rsquo;infographie et faire tous les trucs que les jeunes cool font par eux-mêmes. Faire les choses par soi-même est extrêmement amusant et plein de ressources, et cela vous permet d&amp;rsquo;acquérir une excellente compréhension de la programmation graphique. Cependant, il y a quelques points à prendre en considération avant de commencer votre voyage.
-Prérequis Comme OpenGL est une API graphique et non une plateforme propre, il nécessite un langage pour fonctionner et le langage de choix est le C++.</description>
-    </item>
-    
-    <item>
-      <title></title>
       <link>https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/00_opengl/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
