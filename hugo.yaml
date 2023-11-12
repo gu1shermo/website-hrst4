@@ -8,9 +8,6 @@ params:
     # defaultTheme: auto # to switch between dark or light according to browser theme
     disableThemeToggle: true
 
-menu:
-  main: docs
-  url: /docs
 
 module:
   mounts:
