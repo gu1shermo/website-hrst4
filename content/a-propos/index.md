@@ -8,4 +8,4 @@ categories: []
 series:
 ---
 
-a propos index.html
+a propos index.md
