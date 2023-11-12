@@ -10,10 +10,10 @@ params:
     disableThemeToggle: true
 
 # top menu
-menu:
-  main:
-    - name: docs
-      url: /docs
+# menu:
+#   main:
+#     - name: docs
+#       url: /docs
 
     # - name: apropos
     #   url: /apropos
