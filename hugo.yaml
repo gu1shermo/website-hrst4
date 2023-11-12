@@ -1,6 +1,7 @@
 baseURL: https://hrst4.xyz/
 languageCode: en-us
 title: hrst4's blog
+#theme
 theme: PaperMod
 params:
     # defaultTheme: light
@@ -8,10 +9,21 @@ params:
     # defaultTheme: auto # to switch between dark or light according to browser theme
     disableThemeToggle: true
 
+# top menu
 menu:
   main:
     - name: docs
       url: /docs
+# social networks
+menu:
+  social:
+    - name: GitHub
+      url: https://github.com/gu1shermo
+      pre: <i class='fab fa-github'></i>
+    - name: Twitter
+      url: https://twitter.com/VotreCompteTwitter
+      pre: <i class='fab fa-twitter'></i>
+
 
 
 module:
