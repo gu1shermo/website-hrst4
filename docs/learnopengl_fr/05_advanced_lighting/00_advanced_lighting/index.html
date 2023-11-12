@@ -1,123 +1,46 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto">
-
-<head><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>hrst4&#39;s blog</title>
-<meta name="keywords" content="">
-<meta name="description" content="Eclairage avancé Dans les chapitres consacrés à l&rsquo;éclairage, nous avons brièvement présenté le modèle d&rsquo;éclairage Phong afin d&rsquo;apporter un minimum de réalisme à nos scènes. Le modèle Phong est agréable à regarder, mais il présente quelques nuances sur lesquelles nous allons nous concentrer dans ce chapitre.
-Blinn-Phong L&rsquo;éclairage Phong est une excellente approximation très efficace de l&rsquo;éclairage, mais ses réflexions spéculaires se dégradent dans certaines conditions, en particulier lorsque la propriété de brillance est faible, ce qui entraîne une grande zone spéculaire (rugueuse).">
-<meta name="author" content="">
-<link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/00_advanced_lighting/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
-<link rel="icon" href="https://hrst4.xyz/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://hrst4.xyz/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://hrst4.xyz/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://hrst4.xyz/apple-touch-icon.png">
-<link rel="mask-icon" href="https://hrst4.xyz/safari-pinned-tab.svg">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
-
-    </style>
-</noscript><meta property="og:title" content="" />
-<meta property="og:description" content="Eclairage avancé Dans les chapitres consacrés à l&rsquo;éclairage, nous avons brièvement présenté le modèle d&rsquo;éclairage Phong afin d&rsquo;apporter un minimum de réalisme à nos scènes. Le modèle Phong est agréable à regarder, mais il présente quelques nuances sur lesquelles nous allons nous concentrer dans ce chapitre.
-Blinn-Phong L&rsquo;éclairage Phong est une excellente approximation très efficace de l&rsquo;éclairage, mais ses réflexions spéculaires se dégradent dans certaines conditions, en particulier lorsque la propriété de brillance est faible, ce qui entraîne une grande zone spéculaire (rugueuse)." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/00_advanced_lighting/" /><meta property="article:section" content="docs" />
-
-
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content=""/>
-<meta name="twitter:description" content="Eclairage avancé Dans les chapitres consacrés à l&rsquo;éclairage, nous avons brièvement présenté le modèle d&rsquo;éclairage Phong afin d&rsquo;apporter un minimum de réalisme à nos scènes. Le modèle Phong est agréable à regarder, mais il présente quelques nuances sur lesquelles nous allons nous concentrer dans ce chapitre.
-Blinn-Phong L&rsquo;éclairage Phong est une excellente approximation très efficace de l&rsquo;éclairage, mais ses réflexions spéculaires se dégradent dans certaines conditions, en particulier lorsque la propriété de brillance est faible, ce qui entraîne une grande zone spéculaire (rugueuse)."/>
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "",
-      "item": "https://hrst4.xyz/docs/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "",
-      "item": "https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/00_advanced_lighting/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "",
-  "name": "",
-  "description": "Eclairage avancé Dans les chapitres consacrés à l\u0026rsquo;éclairage, nous avons brièvement présenté le modèle d\u0026rsquo;éclairage Phong afin d\u0026rsquo;apporter un minimum de réalisme à nos scènes. Le modèle Phong est agréable à regarder, mais il présente quelques nuances sur lesquelles nous allons nous concentrer dans ce chapitre.\nBlinn-Phong L\u0026rsquo;éclairage Phong est une excellente approximation très efficace de l\u0026rsquo;éclairage, mais ses réflexions spéculaires se dégradent dans certaines conditions, en particulier lorsque la propriété de brillance est faible, ce qui entraîne une grande zone spéculaire (rugueuse).",
-  "keywords": [
-    
-  ],
-  "articleBody": "Eclairage avancé Dans les chapitres consacrés à l’éclairage, nous avons brièvement présenté le modèle d’éclairage Phong afin d’apporter un minimum de réalisme à nos scènes. Le modèle Phong est agréable à regarder, mais il présente quelques nuances sur lesquelles nous allons nous concentrer dans ce chapitre.\nBlinn-Phong L’éclairage Phong est une excellente approximation très efficace de l’éclairage, mais ses réflexions spéculaires se dégradent dans certaines conditions, en particulier lorsque la propriété de brillance est faible, ce qui entraîne une grande zone spéculaire (rugueuse). L’image ci-dessous montre ce qui se passe lorsque nous utilisons un exposant de brillance spéculaire de 1,0 sur un plan texturé plat : Vous pouvez voir sur les bords que la zone spéculaire est immédiatement coupée. La raison en est que l’angle entre le vecteur de vue et le vecteur de réflexion ne dépasse pas 90 degrés. Si l’angle est plus grand que 90 degrés, le produit pointé résultant devient négatif, ce qui se traduit par un exposant spéculaire de 0,0. Vous pensez probablement que cela ne pose pas de problème puisque nous ne devrions pas obtenir de lumière avec des angles supérieurs à 90 degrés, n’est-ce pas ?\nC’est faux, cela ne s’applique qu’à la composante diffuse : un angle supérieur à 90 degrés entre la normale et la source lumineuse signifie que la source lumineuse se trouve sous la surface éclairée et que la contribution diffuse de la lumière doit donc être égale à 0,0. Cependant, avec l’éclairage spéculaire, nous ne mesurons pas l’angle entre la source lumineuse et la normale, mais entre le vecteur de vue et le vecteur de réflexion. Regardez les deux images suivantes : Ici le problème devrait apparaître. L’image de gauche montre les réflexions de Phong telles qu’elles sont connues, avec un angle θ inférieur à 90 degrés. Dans l’image de droite, nous pouvons voir que l’angle θ entre la vue et le vecteur de réflexion est supérieur à 90 degrés, ce qui annule la contribution spéculaire. Ce n’est généralement pas un problème puisque la direction de la vue est éloignée de la direction de la réflexion, mais si nous utilisons un exposant spéculaire faible, le rayon spéculaire est suffisamment grand pour avoir une contribution dans ces conditions. Comme nous annulons cette contribution à des angles supérieurs à 90 degrés, nous obtenons l’artefact de la première image.\nEn 1977, le modèle d’ombrage Blinn-Phong a été introduit par James F. Blinn comme une extension de l’ombrage Phong que nous avons utilisé jusqu’à présent. Le modèle Blinn-Phong est largement similaire, mais aborde le modèle spéculaire de manière légèrement différente, ce qui permet de résoudre notre problème. Au lieu de s’appuyer sur un vecteur de réflexion, nous utilisons ce que l’on appelle un vecteur à mi-chemin, c’est-à-dire un vecteur unitaire situé exactement à mi-chemin entre la direction de la vue et la direction de la lumière. Plus ce vecteur intermédiaire est proche du vecteur normal de la surface, plus la contribution spéculaire est élevée. Lorsque la direction de la vue est parfaitement alignée avec le vecteur de réflexion (maintenant imaginaire), le vecteur médian s’aligne parfaitement avec le vecteur normal. Plus la direction de la vue est proche de la direction de réflexion originale, plus l’accentuation spéculaire est forte.\nIci, vous pouvez constater que, quelle que soit la direction d’observation, l’angle entre le vecteur médian et la normale de la surface ne dépasse jamais 90 degrés (à moins que la lumière ne se trouve très en dessous de la surface, bien entendu). Les résultats sont légèrement différents des réflexions de Phong, mais ils sont généralement plus plausibles sur le plan visuel, en particulier lorsque l’exposant spéculaire est faible. Le modèle d’ombrage de Blinn-Phong est également le modèle d’ombrage exact utilisé dans l’ancien pipeline de fonctions fixes d’OpenGL.\nIl est facile d’obtenir le vecteur de mi-chemin, nous ajoutons le vecteur de direction de la lumière et le vecteur de vue ensemble et nous normalisons le résultat : $$ \\vec{H} = { {\\vec{L} + \\vec{V}}\\over{||\\vec{L} + \\vec{V}||} } $$ Cela se traduit par le code GLSL suivant :\nvec3 lightDir = normalize(lightPos - FragPos); vec3 viewDir = normalize(viewPos - FragPos); vec3 halfwayDir = normalize(lightDir + viewDir); Ensuite, le calcul du terme spéculaire devient un produit scalaire entre la normale de la surface et le vecteur de mi-chemin pour obtenir l’angle cosinus entre les deux que nous élevons à nouveau à un exposant de brillance spéculaire :\nfloat spec = pow(max(dot(normal, halfwayDir), 0.0), shininess); vec3 specular = lightColor * spec; Et il n’y a rien de plus à Blinn-Phong que ce que nous venons de décrire. La seule différence entre Blinn-Phong et la réflexion spéculaire Phong est que nous mesurons maintenant l’angle entre le vecteur normal et le vecteur médian au lieu de l’angle entre le vecteur de vue et le vecteur de réflexion.\nAvec l’introduction du vecteur à mi-chemin, nous ne devrions plus avoir le problème de la coupure spéculaire de l’ombrage Phong. L’image ci-dessous montre la zone spéculaire des deux méthodes avec un exposant spéculaire de 0,5 : Une autre différence subtile entre l’ombrage Phong et l’ombrage Blinn-Phong est que l’angle entre le vecteur à mi-chemin et la normale de la surface est souvent plus court que l’angle entre le vecteur de vue et le vecteur de réflexion. Par conséquent, pour obtenir des visuels similaires à l’ombrage de Phong, l’exposant de brillance spéculaire doit être réglé un peu plus haut. En règle générale, il faut le régler entre 2 et 4 fois l’exposant de brillance de Phong.\nVoici une comparaison entre les deux modèles de réflexion spéculaire avec l’exposant de Phong fixé à 8,0 et la composante de Blinn-Phong fixée à 32,0 : Vous pouvez voir que l’exposant spéculaire de Blinn-Phong est un peu plus net que celui de Phong. Il faut généralement un peu de doigté pour obtenir des résultats similaires à ceux que l’on obtenait avec l’ombrage Phong. Mais cela en vaut la peine car l’ombrage Blinn-Phong est généralement plus réaliste que l’ombrage Phong par défaut.\nIci, nous avons utilisé un simple fragment shader qui alterne entre les réflexions Phong classiques et les réflexions Blinn-Phong :\nvoid main() { [...] float spec = 0.0; if(blinn) { vec3 halfwayDir = normalize(lightDir + viewDir); spec = pow(max(dot(normal, halfwayDir), 0.0), 16.0); } else { vec3 reflectDir = reflect(-lightDir, normal); spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0); } Vous pouvez trouver le code source de la démo simple ici. En appuyant sur la touche b, la démo passe de l’éclairage Phong à l’éclairage Blinn-Phong et vice versa.\n",
-  "wordCount" : "1079",
-  "inLanguage": "en",
-  "datePublished": "0001-01-01T00:00:00Z",
-  "dateModified": "0001-01-01T00:00:00Z",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/00_advanced_lighting/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "hrst4's blog",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://hrst4.xyz/favicon.ico"
-    }
-  }
-}
-</script>
-</head>
-
-<body class=" dark" id="top">
-
-<header class="header">
-    <nav class="nav">
-        <div class="logo">
-            <a href="https://hrst4.xyz/" accesskey="h" title="hrst4&#39;s blog (Alt + H)">hrst4&#39;s blog</a>
-            <div class="logo-switches">
+<html lang="en-us"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<body><header>
+    <nav class="navbar" role="navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a href="/" title="home" class="navbar-item">
+                    <span class="logo"><h1>hrst4&#39;s blog</h1></span>
+                </a>
+                
+                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
             </div>
+
+            <div class="navbar-menu">
+                <div class="navbar-start">
+                    
+                    <a href="/apropos" class="navbar-item">apropos</a>
+                    
+                    <a href="/docs" class="navbar-item">docs</a>
+                    
+                </div>
+                <div class="navbar-end">
+                    
+                </div>
+            </div>
+
         </div>
-        <ul id="menu">
-            <li>
-                <a href="https://hrst4.xyz/apropos" title="apropos">
-                    <span>apropos</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://hrst4.xyz/docs" title="docs">
-                    <span>docs</span>
-                </a>
-            </li>
-        </ul>
     </nav>
-</header>
-<main class="main">
+    <script>
+        $(document).ready(function () {
+            $(".navbar-burger").click(function () {
+                $(".navbar-burger").toggleClass("is-active");
+                $(".navbar-menu").toggleClass("is-active");
+            })
+        })
+    </script>
+</header><main>
 
 <article class="post-single">
   <header class="post-header">
@@ -185,8 +108,7 @@ Vous pouvez voir que l&rsquo;exposant spéculaire de Blinn-Phong est un peu plus
     </ul>
   </footer>
 </article>
-    </main>
-    
+        </main>
 <footer class="footer">
     <span>&copy; 2023 <a href="https://hrst4.xyz/">hrst4&#39;s blog</a></span>
     <span>
@@ -244,5 +166,4 @@ Vous pouvez voir que l&rsquo;exposant spéculaire de Blinn-Phong est un peu plus
 
 </script>
 </body>
-
 </html>
