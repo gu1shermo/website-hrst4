@@ -1,46 +1,116 @@
 <!DOCTYPE html>
-<html lang="en-us"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<body><header>
-    <nav class="navbar" role="navigation">
-        <div class="container">
-            <div class="navbar-brand">
-                <a href="/" title="home" class="navbar-item">
-                    <span class="logo"><h1>hrst4&#39;s blog</h1></span>
-                </a>
-                
-                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                </a>
-            </div>
+<html lang="en" dir="auto">
 
-            <div class="navbar-menu">
-                <div class="navbar-start">
-                    
-                    <a href="/apropos" class="navbar-item">apropos</a>
-                    
-                    <a href="/docs" class="navbar-item">docs</a>
-                    
-                </div>
-                <div class="navbar-end">
-                    
-                </div>
-            </div>
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>hrst4&#39;s blog</title>
+<meta name="keywords" content="cg, opengl, computer graphics, cpp">
+<meta name="description" content="Hello Window Voyons si nous pouvons faire fonctionner GLFW. Tout d&rsquo;abord, créez un fichier .cpp et ajoutez les inclusions suivantes au début de votre fichier nouvellement créé.
+#include &lt;glad/glad.h&gt; #include &lt;GLFW/glfw3.h&gt; Assurez-vous d&rsquo;inclure GLAD avant GLFW. Le fichier include de GLAD inclut les en-têtes OpenGL nécessaires dans les coulisses (comme GL/gl.h). Il faut donc s&rsquo;assurer d&rsquo;inclure GLAD avant les autres fichiers d&rsquo;en-tête qui nécessitent OpenGL (comme GLFW).
+Ensuite, nous créons la fonction principale dans laquelle nous allons instancier la fenêtre GLFW:">
+<meta name="author" content="">
+<link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/02_hello-window/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://hrst4.xyz/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://hrst4.xyz/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://hrst4.xyz/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://hrst4.xyz/apple-touch-icon.png">
+<link rel="mask-icon" href="https://hrst4.xyz/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
 
+    </style>
+</noscript><meta property="og:title" content="" />
+<meta property="og:description" content="Hello Window Voyons si nous pouvons faire fonctionner GLFW. Tout d&rsquo;abord, créez un fichier .cpp et ajoutez les inclusions suivantes au début de votre fichier nouvellement créé.
+#include &lt;glad/glad.h&gt; #include &lt;GLFW/glfw3.h&gt; Assurez-vous d&rsquo;inclure GLAD avant GLFW. Le fichier include de GLAD inclut les en-têtes OpenGL nécessaires dans les coulisses (comme GL/gl.h). Il faut donc s&rsquo;assurer d&rsquo;inclure GLAD avant les autres fichiers d&rsquo;en-tête qui nécessitent OpenGL (comme GLFW).
+Ensuite, nous créons la fonction principale dans laquelle nous allons instancier la fenêtre GLFW:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/02_hello-window/" /><meta property="article:section" content="docs" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="Hello Window Voyons si nous pouvons faire fonctionner GLFW. Tout d&rsquo;abord, créez un fichier .cpp et ajoutez les inclusions suivantes au début de votre fichier nouvellement créé.
+#include &lt;glad/glad.h&gt; #include &lt;GLFW/glfw3.h&gt; Assurez-vous d&rsquo;inclure GLAD avant GLFW. Le fichier include de GLAD inclut les en-têtes OpenGL nécessaires dans les coulisses (comme GL/gl.h). Il faut donc s&rsquo;assurer d&rsquo;inclure GLAD avant les autres fichiers d&rsquo;en-tête qui nécessitent OpenGL (comme GLFW).
+Ensuite, nous créons la fonction principale dans laquelle nous allons instancier la fenêtre GLFW:"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "",
+      "item": "https://hrst4.xyz/docs/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "",
+      "item": "https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/02_hello-window/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "",
+  "name": "",
+  "description": "Hello Window Voyons si nous pouvons faire fonctionner GLFW. Tout d\u0026rsquo;abord, créez un fichier .cpp et ajoutez les inclusions suivantes au début de votre fichier nouvellement créé.\n#include \u0026lt;glad/glad.h\u0026gt; #include \u0026lt;GLFW/glfw3.h\u0026gt; Assurez-vous d\u0026rsquo;inclure GLAD avant GLFW. Le fichier include de GLAD inclut les en-têtes OpenGL nécessaires dans les coulisses (comme GL/gl.h). Il faut donc s\u0026rsquo;assurer d\u0026rsquo;inclure GLAD avant les autres fichiers d\u0026rsquo;en-tête qui nécessitent OpenGL (comme GLFW).\nEnsuite, nous créons la fonction principale dans laquelle nous allons instancier la fenêtre GLFW:",
+  "keywords": [
+    "cg", "opengl", "computer graphics", "cpp"
+  ],
+  "articleBody": "Hello Window Voyons si nous pouvons faire fonctionner GLFW. Tout d’abord, créez un fichier .cpp et ajoutez les inclusions suivantes au début de votre fichier nouvellement créé.\n#include #include Assurez-vous d’inclure GLAD avant GLFW. Le fichier include de GLAD inclut les en-têtes OpenGL nécessaires dans les coulisses (comme GL/gl.h). Il faut donc s’assurer d’inclure GLAD avant les autres fichiers d’en-tête qui nécessitent OpenGL (comme GLFW).\nEnsuite, nous créons la fonction principale dans laquelle nous allons instancier la fenêtre GLFW:\nint main() { glfwInit(); glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); return 0; } Dans la fonction principale, nous commençons par initialiser GLFW avec glfwInit, après quoi nous pouvons configurer GLFW en utilisant glfwWindowHint. Le premier argument de glfwWindowHint nous indique l’option que nous voulons configurer, où nous pouvons sélectionner l’option à partir d’une grande liste d’options possibles préfixées par GLFW_. Le deuxième argument est un entier qui définit la valeur de notre option. Une liste de toutes les options possibles et de leurs valeurs correspondantes peut être trouvée dans la documentation sur la gestion des fenêtres de GLFW. Si vous essayez d’exécuter l’application maintenant et qu’elle produit un grand nombre d’erreurs de références non définies, cela signifie que vous n’avez pas réussi à lier la bibliothèque GLFW.\nPuisque ce livre se concentre sur la version 3.3 d’OpenGL, nous aimerions dire à GLFW que la version 3.3 est la version d’OpenGL que nous voulons utiliser. De cette manière, GLFW peut prendre les dispositions nécessaires lors de la création du contexte OpenGL. Cela permet de s’assurer que lorsqu’un utilisateur n’a pas la bonne version d’OpenGL, GLFW ne s’exécute pas. Nous fixons la version majeure et mineure à 3. Nous indiquons également à GLFW que nous voulons utiliser explicitement le core-profile. Dire à GLFW que nous voulons utiliser le core-profile signifie que nous aurons accès à un sous-ensemble plus petit de fonctionnalités OpenGL sans fonctionnalités rétrocompatibles dont nous n’avons plus besoin. Notez que sous Mac OS X, vous devez ajouter glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE) ; à votre code d’initialisation pour que cela fonctionne.\nAssurez-vous que les versions 3.3 ou plus d’OpenGL sont installées sur votre système/matériel, sinon l’application plantera ou affichera un comportement indéfini. Pour connaître la version d’OpenGL sur votre machine, appelez glxinfo sur les machines Linux ou utilisez un utilitaire comme OpenGL Extension Viewer pour Windows. Si la version supportée est inférieure, essayez de vérifier si votre carte vidéo supporte OpenGL 3.3+ (sinon elle est vraiment vieille) et/ou mettez à jour vos pilotes.\nEnsuite, nous devons créer un objet fenêtre. Cet objet contient toutes les données de fenêtrage et est nécessaire à la plupart des autres fonctions de GLFW.\nGLFWwindow* window = glfwCreateWindow(800, 600, \"LearnOpenGL\", NULL, NULL); if (window == NULL) { std::cout \u003c\u003c \"Failed to create GLFW window\" \u003c\u003c std::endl; glfwTerminate(); return -1; } glfwMakeContextCurrent(window); La fonction glfwCreateWindow requiert la largeur et la hauteur de la fenêtre comme ses deux premiers arguments respectivement. Le troisième argument nous permet de créer un nom pour la fenêtre ; pour l’instant nous l’appelons “LearnOpenGL” mais vous êtes autorisés à lui donner le nom que vous voulez. Nous pouvons ignorer les deux derniers paramètres. La fonction renvoie un objet GLFWwindow dont nous aurons besoin plus tard pour d’autres opérations de GLFW. Après cela, nous demandons à GLFW de faire du contexte de notre fenêtre le contexte principal du thread courant.\nGLAD Dans le chapitre précédent, nous avons mentionné que GLAD gère les pointeurs de fonction pour OpenGL, nous voulons donc initialiser GLAD avant d’appeler une fonction OpenGL :\nif (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) { std::cout \u003c\u003c \"Failed to initialize GLAD\" \u003c\u003c std::endl; return -1; } Nous passons à GLAD la fonction pour charger l’adresse des pointeurs de fonction OpenGL qui est spécifique au système d’exploitation. GLFW nous fournit glfwGetProcAddress qui définit la fonction correcte en fonction du système d’exploitation pour lequel nous compilons.\nViewport Avant de commencer le rendu, nous devons faire une dernière chose. Nous devons indiquer à OpenGL la taille de la fenêtre de rendu afin qu’OpenGL sache comment nous voulons afficher les données et les coordonnées par rapport à la fenêtre. Nous pouvons définir ces dimensions via la fonction glViewport :\nglViewport(0, 0, 800, 600); Les deux premiers paramètres de glViewport définissent l’emplacement du coin inférieur gauche de la fenêtre. Les troisième et quatrième paramètres définissent la largeur et la hauteur de la fenêtre de rendu en pixels, que nous fixons à la taille de la fenêtre de GLFW.\n**Nous pourrions en fait fixer les dimensions de la fenêtre à des valeurs inférieures à celles de GLFW **; ainsi, tout le rendu OpenGL serait affiché dans une fenêtre plus petite et nous pourrions, par exemple, afficher d’autres éléments en dehors de la fenêtre OpenGL.\nEn coulisses, OpenGL utilise les données spécifiées par glViewport pour transformer les coordonnées 2D qu’il a traitées en coordonnées sur votre écran. Par exemple, un point traité de la position (-0.5,0.5) serait (comme sa transformation finale) mappé à (200,450) en coordonnées d’écran. Notez que les coordonnées traitées dans OpenGL sont comprises entre -1 et 1, de sorte que nous mappons effectivement de l’intervalle (-1 à 1) à (0, 800) et (0, 600).\nCependant, lorsque l’utilisateur redimensionne la fenêtre, la fenêtre de visualisation doit également être ajustée. Nous pouvons enregistrer une fonction de rappel sur la fenêtre qui est appelée chaque fois que la fenêtre est redimensionnée. Cette fonction de rappel de redimensionnement a le prototype suivant :\nvoid framebuffer_size_callback(GLFWwindow* window, int width, int height); La fonction framebuffer_size_callback prend une fenêtre GLFW comme premier argument et deux entiers indiquant les nouvelles dimensions de la fenêtre. Chaque fois que la taille de la fenêtre change, GLFW appelle cette fonction et remplit les arguments appropriés pour que vous puissiez les traiter.\nvoid framebuffer_size_callback(GLFWwindow* window, int width, int height) { glViewport(0, 0, width, height); } Nous devons indiquer à GLFW que nous voulons appeler cette fonction à chaque redimensionnement de fenêtre en l’enregistrant :\nglfwSetFramebufferSizeCallback(window, framebuffer_size_callback); Lorsque la fenêtre est affichée pour la première fois, framebuffer_size_callback est également appelé avec les dimensions résultantes de la fenêtre. Pour les écrans Rétina, la largeur et la hauteur seront significativement plus élevées que les valeurs d’origine.\nIl existe de nombreuses fonctions de rappel que nous pouvons définir pour enregistrer nos propres fonctions. Par exemple, nous pouvons créer une fonction de rappel pour traiter les changements d’entrée du joystick, traiter les messages d’erreur, etc. Nous enregistrons les fonctions de rappel après avoir créé la fenêtre et avant que la boucle de rendu ne soit lancée.\nPréparez vos moteurs Nous ne voulons pas que l’application dessine une seule image, puis qu’elle quitte immédiatement et ferme la fenêtre. Nous voulons que l’application continue à dessiner des images et à gérer les entrées de l’utilisateur jusqu’à ce que le programme reçoive l’ordre explicite de s’arrêter. Pour cette raison, nous devons créer une boucle while, que nous appelons maintenant boucle de rendu, qui continue à fonctionner jusqu’à ce que nous demandions à GLFW de s’arrêter. Le code suivant montre une boucle de rendu très simple :\nwhile(!glfwWindowShouldClose(window)) { glfwSwapBuffers(window); glfwPollEvents(); } La fonction glfwWindowShouldClose vérifie au début de chaque itération de la boucle si GLFW a reçu l’ordre de se fermer. Si c’est le cas, la fonction renvoie vrai et la boucle de rendu s’arrête, après quoi nous pouvons fermer l’application.\nLa fonction glfwPollEvents vérifie si des événements sont déclenchés (comme des entrées clavier ou des mouvements de souris), met à jour l’état de la fenêtre et appelle les fonctions correspondantes (que nous pouvons enregistrer via des méthodes de rappel). La fonction glfwSwapBuffer va permuter le color buffer (un grand tampon 2D qui contient les valeurs de couleur pour chaque pixel de la fenêtre de GLFW) qui est utilisé pour le rendu pendant cette itération de rendu et l’afficher en sortie à l’écran.\nDouble buffer\nLorsqu’une application dessine dans une seule mémoire tampon, l’image résultante peut présenter des problèmes de scintillement. En effet, l’image résultante n’est pas dessinée en un instant, mais pixel par pixel, généralement de gauche à droite et de haut en bas. Comme cette image n’est pas affichée instantanément à l’utilisateur tout en étant rendue, le résultat peut contenir des artefacts. Pour contourner ces problèmes, les applications de fenêtrage utilisent une double mémoire tampon pour le rendu. La mémoire tampon avant (front buffer) contient l’image de sortie finale qui est affichée à l’écran, tandis que toutes les commandes de rendu dessinent dans la mémoire tampon arrière (back buffer). Dès que toutes les commandes de rendu sont terminées, le tampon arrière est remplacé par le tampon avant, de sorte que l’image peut être affichée sans être en train d’être rendue, ce qui supprime tous les artefacts susmentionnés.\nUne dernière chose Dès que nous sortons de la boucle de rendu, nous souhaitons nettoyer/supprimer correctement toutes les ressources de GLFW qui ont été allouées. Nous pouvons le faire via la fonction glfwTerminate que nous appelons à la fin de la fonction principale.\nglfwTerminate(); return 0; Ceci nettoiera toutes les ressources et quittera correctement l’application. Essayez maintenant de compiler votre application et si tout s’est bien passé, vous devriez voir la sortie suivante : Si c’est une image noire très terne et ennuyeuse, c’est que vous avez bien fait les choses ! Si vous n’avez pas obtenu la bonne image ou si vous ne savez pas comment tout s’articule, consultez le code source complet ici (et si des couleurs différentes ont commencé à clignoter, continuez à lire).\nSi vous avez des problèmes pour compiler l’application, assurez-vous d’abord que toutes les options de votre linker sont correctement réglées et que vous avez inclus les bons répertoires dans votre IDE (comme expliqué dans le chapitre précédent). Assurez-vous également que votre code est correct ; vous pouvez le vérifier en le comparant avec le code source complet.\nInput (entrée) Nous souhaitons également disposer d’une forme de contrôle des entrées dans GLFW et nous pouvons y parvenir grâce à plusieurs fonctions d’entrée de GLFW. Nous utiliserons la fonction glfwGetKey de GLFW qui prend la fenêtre en entrée ainsi qu’une touche. La fonction retourne si cette touche est actuellement pressée. Nous créons une fonction processInput pour organiser l’ensemble du code d’entrée :\nvoid processInput(GLFWwindow *window) { if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, true); } Nous vérifions ici si l’utilisateur a appuyé sur la touche d’échappement (si ce n’est pas le cas, glfwGetKey renvoie GLFW_RELEASE). Si l’utilisateur a appuyé sur la touche d’échappement, nous fermons GLFW en définissant sa propriété WindowShouldCloseà true à l’aide de glfwSetwindowShouldClose. La vérification de la condition suivante de la boucle while principale échoue alors et l’application se ferme.\nNous appelons ensuite processInput à chaque itération de la boucle de rendu :\nwhile (!glfwWindowShouldClose(window)) { processInput(window); glfwSwapBuffers(window); glfwPollEvents(); } Nous disposons ainsi d’un moyen simple de vérifier la présence de touches spécifiques et de réagir en conséquence à chaque image. Une itération de la boucle de rendu est plus communément appelée une image.\nRendering (le rendu) Nous voulons placer toutes les commandes de rendu dans la boucle de rendu, puisque nous voulons exécuter toutes les commandes de rendu à chaque itération ou image de la boucle. Cela ressemblerait un peu à ceci :\n// render loop while(!glfwWindowShouldClose(window)) { // input processInput(window); // rendering commands here ... // check and call events and swap the buffers glfwPollEvents(); glfwSwapBuffers(window); } Juste pour tester si les choses fonctionnent réellement, nous voulons effacer l’écran avec une couleur de notre choix. Au début de l’image, nous voulons effacer l’écran. Sinon, nous verrions toujours les résultats de l’image précédente (cela pourrait être l’effet recherché, mais en général ce n’est pas le cas). Nous pouvons effacer le tampon de couleur (color buffer) de l’écran en utilisant glClear où nous passons des bits de tampon (buffer bits) pour spécifier le tampon que nous voulons effacer. Les bits possibles sont GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT et GL_STENCIL_BUFFER_BIT. Pour l’instant, nous ne nous intéressons qu’aux valeurs de couleur et nous n’effaçons donc que le tampon de couleur.\nglClearColor(0.2f, 0.3f, 0.3f, 1.0f); glClear(GL_COLOR_BUFFER_BIT); Notez que nous spécifions également la couleur à utiliser pour effacer l’écran à l’aide de glClearColor. Chaque fois que nous appelons glClear et que nous vidons le tampon de couleurs, celui-ci est entièrement rempli avec la couleur configurée par glClearColor. Il en résultera une couleur vert foncé-bleuâtre.\nComme vous vous en souvenez peut-être dans le chapitre sur OpenGL, la fonction glClearColor est une fonction de définition d’état et glClear est une fonction d’utilisation d’état en ce sens qu’elle utilise l’état actuel pour récupérer la couleur d’effacement.\nLe code source complet de l’application est disponible ici.\nNous avons maintenant tout ce qu’il faut pour remplir la boucle de rendu avec de nombreux appels de rendu, mais c’est pour le prochain chapitre. Je pense que nous avons assez divagué ici.\n",
+  "wordCount" : "2112",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://hrst4.xyz/docs/learnopengl_fr/01_getting_started/02_hello-window/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "hrst4's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://hrst4.xyz/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://hrst4.xyz/" accesskey="h" title="hrst4&#39;s blog (Alt + H)">hrst4&#39;s blog</a>
+            <div class="logo-switches">
+            </div>
         </div>
+        <ul id="menu">
+        </ul>
     </nav>
-    <script>
-        $(document).ready(function () {
-            $(".navbar-burger").click(function () {
-                $(".navbar-burger").toggleClass("is-active");
-                $(".navbar-menu").toggleClass("is-active");
-            })
-        })
-    </script>
-</header><main>
+</header>
+<main class="main">
 
 <article class="post-single">
   <header class="post-header">
@@ -194,7 +264,8 @@ Le code source complet de l&rsquo;application est disponible <a href="https://le
     </ul>
   </footer>
 </article>
-        </main>
+    </main>
+    
 <footer class="footer">
     <span>&copy; 2023 <a href="https://hrst4.xyz/">hrst4&#39;s blog</a></span>
     <span>
@@ -252,4 +323,5 @@ Le code source complet de l&rsquo;application est disponible <a href="https://le
 
 </script>
 </body>
+
 </html>

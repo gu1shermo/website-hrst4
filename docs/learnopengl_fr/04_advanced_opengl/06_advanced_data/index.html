@@ -1,46 +1,113 @@
 <!DOCTYPE html>
-<html lang="en-us"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<body><header>
-    <nav class="navbar" role="navigation">
-        <div class="container">
-            <div class="navbar-brand">
-                <a href="/" title="home" class="navbar-item">
-                    <span class="logo"><h1>hrst4&#39;s blog</h1></span>
-                </a>
-                
-                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                </a>
-            </div>
+<html lang="en" dir="auto">
 
-            <div class="navbar-menu">
-                <div class="navbar-start">
-                    
-                    <a href="/apropos" class="navbar-item">apropos</a>
-                    
-                    <a href="/docs" class="navbar-item">docs</a>
-                    
-                </div>
-                <div class="navbar-end">
-                    
-                </div>
-            </div>
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>hrst4&#39;s blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="Data avancée Dans la plupart des chapitres, nous avons largement utilisé les tampons dans OpenGL pour stocker des données sur le GPU. Dans ce chapitre, nous discuterons brièvement de quelques approches alternatives pour gérer les tampons.
+Un tampon dans OpenGL est, à la base, un objet qui gère une partie de la mémoire du GPU et rien de plus. Nous donnons un sens à un tampon en le liant à une cible spécifique.">
+<meta name="author" content="">
+<link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/06_advanced_data/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://hrst4.xyz/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://hrst4.xyz/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://hrst4.xyz/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://hrst4.xyz/apple-touch-icon.png">
+<link rel="mask-icon" href="https://hrst4.xyz/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
 
+    </style>
+</noscript><meta property="og:title" content="" />
+<meta property="og:description" content="Data avancée Dans la plupart des chapitres, nous avons largement utilisé les tampons dans OpenGL pour stocker des données sur le GPU. Dans ce chapitre, nous discuterons brièvement de quelques approches alternatives pour gérer les tampons.
+Un tampon dans OpenGL est, à la base, un objet qui gère une partie de la mémoire du GPU et rien de plus. Nous donnons un sens à un tampon en le liant à une cible spécifique." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/06_advanced_data/" /><meta property="article:section" content="docs" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="Data avancée Dans la plupart des chapitres, nous avons largement utilisé les tampons dans OpenGL pour stocker des données sur le GPU. Dans ce chapitre, nous discuterons brièvement de quelques approches alternatives pour gérer les tampons.
+Un tampon dans OpenGL est, à la base, un objet qui gère une partie de la mémoire du GPU et rien de plus. Nous donnons un sens à un tampon en le liant à une cible spécifique."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "",
+      "item": "https://hrst4.xyz/docs/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "",
+      "item": "https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/06_advanced_data/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "",
+  "name": "",
+  "description": "Data avancée Dans la plupart des chapitres, nous avons largement utilisé les tampons dans OpenGL pour stocker des données sur le GPU. Dans ce chapitre, nous discuterons brièvement de quelques approches alternatives pour gérer les tampons.\nUn tampon dans OpenGL est, à la base, un objet qui gère une partie de la mémoire du GPU et rien de plus. Nous donnons un sens à un tampon en le liant à une cible spécifique.",
+  "keywords": [
+    
+  ],
+  "articleBody": "Data avancée Dans la plupart des chapitres, nous avons largement utilisé les tampons dans OpenGL pour stocker des données sur le GPU. Dans ce chapitre, nous discuterons brièvement de quelques approches alternatives pour gérer les tampons.\nUn tampon dans OpenGL est, à la base, un objet qui gère une partie de la mémoire du GPU et rien de plus. Nous donnons un sens à un tampon en le liant à une cible spécifique. Un tampon n’est qu’un tampon de tableau de vertex lorsque nous le lions à GL_ARRAY_BUFFER, mais nous pourrions tout aussi bien le lier à GL_ELEMENT_ARRAY_BUFFER. OpenGL stocke en interne une référence au tampon par cible et, en fonction de la cible, traite le tampon différemment.\nJusqu’à présent, nous avons rempli la mémoire du tampon en appelant glBufferData, qui alloue une partie de la mémoire du GPU et ajoute des données dans cette mémoire. Si nous devions passer NULL comme argument de données, la fonction ne ferait qu’allouer de la mémoire et ne la remplirait pas. Ceci est utile si nous voulons d’abord réserver une quantité spécifique de mémoire et revenir plus tard à ce tampon.\nAu lieu de remplir la totalité du tampon en un seul appel de fonction, nous pouvons également remplir des régions spécifiques du tampon en appelant glBufferSubData. Cette fonction attend comme arguments une cible de tampon, un décalage, la taille des données et les données réelles. Ce qui est nouveau avec cette fonction, c’est que nous pouvons maintenant donner un décalage qui spécifie l’endroit à partir duquel nous voulons remplir la mémoire tampon. Cela nous permet de n’insérer/mettre à jour que certaines parties de la mémoire tampon. Notez que le tampon doit avoir suffisamment de mémoire allouée, de sorte qu’un appel à glBufferData est nécessaire avant d’appeler glBufferSubData sur le tampon.\nglBufferSubData(GL_ARRAY_BUFFER, 24, sizeof(data), \u0026data); // Range: [24, 24 + sizeof(data)] Une autre méthode pour obtenir des données dans un tampon est de demander un pointeur vers la mémoire du tampon et de copier directement les données en mémoire. En appelant glMapBuffer, OpenGL renvoie un pointeur vers la mémoire du tampon actuellement lié pour que nous puissions l’utiliser :\nfloat data[] = { 0.5f, 1.0f, -0.35f [...] }; glBindBuffer(GL_ARRAY_BUFFER, buffer); // get pointer void *ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY); // now copy data into memory memcpy(ptr, data, sizeof(data)); // make sure to tell OpenGL we're done with the pointer glUnmapBuffer(GL_ARRAY_BUFFER); En indiquant à OpenGL que nous en avons fini avec les opérations de pointeur via glUnmapBuffer, OpenGL sait que vous avez terminé. En annulant le mappage, le pointeur devient invalide et la fonction renvoie GL_TRUE si OpenGL a été capable de mapper vos données avec succès dans le tampon.\nL’utilisation de glMapBuffer est utile pour mapper directement des données dans un tampon, sans les stocker d’abord dans une mémoire temporaire. Pensez à lire directement les données d’un fichier et à les copier dans la mémoire du tampon.\nBatching vertex attributes L’utilisation de glVertexAttribPointer nous a permis de spécifier la disposition des attributs du contenu de la mémoire tampon du tableau de vertex. Dans la mémoire tampon du tableau de vertex, nous avons entrelacé les attributs, c’est-à-dire que nous avons placé les coordonnées de position, de normale et/ou de texture les unes à côté des autres dans la mémoire pour chaque vertex. Maintenant que nous en savons un peu plus sur les tampons, nous pouvons adopter une approche différente.\nNous pourrions également regrouper toutes les données vectorielles en gros morceaux par type d’attribut au lieu de les entrelacer. Au lieu d’une disposition entrelacée 123123123123, nous adoptons une approche par lots 111122223333.\nLorsque vous chargez des données de vertex à partir d’un fichier, vous récupérez généralement un tableau de positions, un tableau de normales et/ou un tableau de coordonnées de texture. La combinaison de ces tableaux en un seul grand tableau de données entrelacées peut s’avérer coûteuse. L’approche par lots est alors une solution plus simple que nous pouvons facilement mettre en œuvre à l’aide de glBufferSubData :\nfloat positions[] = { ... }; float normals[] = { ... }; float tex[] = { ... }; // fill buffer glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(positions), \u0026positions); glBufferSubData(GL_ARRAY_BUFFER, sizeof(positions), sizeof(normals), \u0026normals); glBufferSubData(GL_ARRAY_BUFFER, sizeof(positions) + sizeof(normals), sizeof(tex), \u0026tex); De cette manière, nous pouvons directement transférer les tableaux d’attributs dans le tampon sans avoir à les traiter au préalable. Nous aurions également pu les combiner dans un grand tableau et remplir le tampon immédiatement à l’aide de glBufferData, mais l’utilisation de glBufferSubData se prête parfaitement à ce genre de tâches.\nNous devrons également mettre à jour les pointeurs d’attributs de vertex pour refléter ces changements :\nglVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0); glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(sizeof(positions))); glVertexAttribPointer( 2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(sizeof(positions) + sizeof(normals))); Notez que le paramètre stride est égal à la taille de l’attribut de sommet, puisque le vecteur d’attribut de sommet suivant peut être trouvé directement après ses 3 (ou 2) composants.\nCela nous donne encore une autre approche pour définir et spécifier les attributs de sommet. Il est possible d’utiliser l’une ou l’autre approche, il s’agit surtout d’une manière plus organisée de définir les attributs de sommet. Cependant, l’approche entrelacée reste l’approche recommandée car les attributs de vertex pour chaque exécution du shader de vertex sont alors étroitement alignés en mémoire.\nCopie des tampons Une fois que vos tampons sont remplis de données, vous pouvez souhaiter partager ces données avec d’autres tampons ou copier le contenu du tampon dans un autre tampon. La fonction glCopyBufferSubData nous permet de copier les données d’un tampon vers un autre tampon avec une relative facilité. Le prototype de la fonction est le suivant :\nvoid glCopyBufferSubData(GLenum readtarget, GLenum writetarget, GLintptr readoffset, GLintptr writeoffset, GLsizeiptr size); Les paramètres readtarget et writetarget doivent indiquer les cibles de tampon à partir desquelles et vers lesquelles nous voulons effectuer la copie. Nous pouvons par exemple copier un tampon VERTEX_ARRAY_BUFFER vers un tampon VERTEX_ELEMENT_ARRAY_BUFFER en spécifiant ces cibles comme cibles de lecture et d’écriture respectivement. Les tampons actuellement liés à ces cibles seront alors affectés.\nMais que se passe-t-il si nous voulons lire et écrire des données dans deux tampons différents qui sont tous deux des tampons de tableaux de vertex ? Nous ne pouvons pas lier deux tampons en même temps à la même cible de tampon. C’est pour cette raison, et uniquement pour cette raison, qu’OpenGL nous donne deux cibles de tampon supplémentaires appelées GL_COPY_READ_BUFFER et GL_COPY_WRITE_BUFFER. Nous lions ensuite les tampons de notre choix à ces nouvelles cibles de tampons et définissons ces cibles en tant qu’argument readtarget et writetarget.\nglCopyBufferSubData lit alors des données d’une taille donnée à partir d’un readoffset donné et les écrit dans le tampon writetarget à writeoffset. Un exemple de copie du contenu de deux tampons de tableau de vertex est illustré ci-dessous :\nglBindBuffer(GL_COPY_READ_BUFFER, vbo1); glBindBuffer(GL_COPY_WRITE_BUFFER, vbo2); glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, 8 * sizeof(float)); Nous aurions également pu le faire en liant uniquement le tampon de la cible d’écriture à l’un des nouveaux types de cibles de tampon :\nfloat vertexData[] = { ... }; glBindBuffer(GL_ARRAY_BUFFER, vbo1); glBindBuffer(GL_COPY_WRITE_BUFFER, vbo2); glCopyBufferSubData(GL_ARRAY_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, 8 * sizeof(float)); Avec quelques connaissances supplémentaires sur la façon de manipuler les tampons, nous pouvons déjà les utiliser de façon plus intéressante. Plus vous avancez dans OpenGL, plus ces nouvelles méthodes de tampons deviennent utiles. Dans le prochain chapitre, où nous discuterons des objets tampons uniformes, nous ferons bon usage de glBufferSubData.\n",
+  "wordCount" : "1237",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/06_advanced_data/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "hrst4's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://hrst4.xyz/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://hrst4.xyz/" accesskey="h" title="hrst4&#39;s blog (Alt + H)">hrst4&#39;s blog</a>
+            <div class="logo-switches">
+            </div>
         </div>
+        <ul id="menu">
+        </ul>
     </nav>
-    <script>
-        $(document).ready(function () {
-            $(".navbar-burger").click(function () {
-                $(".navbar-burger").toggleClass("is-active");
-                $(".navbar-menu").toggleClass("is-active");
-            })
-        })
-    </script>
-</header><main>
+</header>
+<main class="main">
 
 <article class="post-single">
   <header class="post-header">
@@ -116,7 +183,8 @@
     </ul>
   </footer>
 </article>
-        </main>
+    </main>
+    
 <footer class="footer">
     <span>&copy; 2023 <a href="https://hrst4.xyz/">hrst4&#39;s blog</a></span>
     <span>
@@ -174,4 +242,5 @@
 
 </script>
 </body>
+
 </html>
