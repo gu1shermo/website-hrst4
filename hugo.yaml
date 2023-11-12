@@ -15,8 +15,8 @@ menu:
     - name: docs
       url: /docs
 
-    - name: apropos
-      url: /apropos
+    # - name: apropos
+    #   url: /apropos
     
 # social networks
 # menu:
