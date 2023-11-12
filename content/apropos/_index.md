@@ -1,0 +1,14 @@
+---
+date:
+  "{ date }": 
+authors:
+  - hrst4
+title:
+  "{ title }": 
+tags: 
+categories: 
+series:
+---
+
+# apropos _index.md
+

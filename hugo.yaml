@@ -14,13 +14,17 @@ menu:
   main:
     - name: docs
       url: /docs
+menu:
+  main:
+    - name: apropos
+      url: /apropos
     
 # social networks
-menu:
-  social:
-    - name: GitHub
-      url: https://github.com/gu1shermo
-      pre: <i class='fab fa-github'></i>
+# menu:
+#   social:
+#     - name: GitHub
+#       url: https://github.com/gu1shermo
+#       pre: <i class='fab fa-github'></i>
 
 
 
