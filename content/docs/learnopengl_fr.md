@@ -10,7 +10,6 @@ date:
   "{ date }":
 ---
 
-%% Begin Waypoint %%
 - **00_Introduction**
 	- [introduction](./LEARNOPENGL_FR/00_Introduction/introduction.md)
 - **01_Getting_Started**
@@ -75,5 +74,3 @@ date:
 	- **03_IBL**
 		- [01_diffuse_irradiance](LEARNOPENGL_FR/06_PBR/03_IBL/01_diffuse_irradiance.md)
 		- [02_specular_ibl](LEARNOPENGL_FR/06_PBR/03_IBL/02_specular_ibl.md)
-
-%% End Waypoint %%
