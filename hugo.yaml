@@ -7,12 +7,10 @@ params:
     defaultTheme: dark
     # defaultTheme: auto # to switch between dark or light according to browser theme
     disableThemeToggle: true
+
 menu:
-  main: "a propos"
-  url: "/a-propos"
-menu:
-  main: "docs"
-  url: "/docs"
+  main: docs
+  url: /docs
 
 module:
   mounts:
