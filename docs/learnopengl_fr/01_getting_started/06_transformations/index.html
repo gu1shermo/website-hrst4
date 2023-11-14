@@ -11,6 +11,13 @@
     
     <title>transformations | hrst4.xyz</title>
     <style>
+    code.has-jax {
+    -webkit-font-smoothing: antialiased;
+    background: inherit !important;
+    border: none !important;
+    font-size: 100%;
+    }
+
     .font-125 {
         font-family: cursive;
         font-weight: 400;
@@ -121,8 +128,8 @@ Ici, &ldquo;gauche&rdquo; est la direction et &ldquo;10 pas&rdquo; est la magnit
 <img src="/docs/LEARNOPENGL_FR/01_Getting_Started/img/transfo1.png" alt="transfo1"/>
 Pour décrire les vecteurs, les mathématiciens préfèrent généralement utiliser des symboles de caractères avec une petite barre au-dessus de leur tête, comme v¯. De même, lorsque les vecteurs sont affichés dans des formules, ils sont généralement présentés comme suit :</p>
 <p>$$\vec{v} = \begin{pmatrix}
-x\
-y\
+x\\
+y\\
 z
 \end{pmatrix}$$
 Comme les vecteurs sont spécifiés en tant que directions, il est parfois difficile de les visualiser en tant que positions. Si nous voulons visualiser les vecteurs comme des positions, nous pouvons imaginer que l&rsquo;origine du vecteur de direction est (0,0,0) et qu&rsquo;il pointe ensuite vers une certaine direction qui spécifie le point, ce qui en fait un vecteur de position (nous pourrions également spécifier une origine différente et dire : &ldquo;ce vecteur pointe vers ce point dans l&rsquo;espace à partir de cette origine&rdquo;). Le vecteur position (3,5) pointerait alors vers (3,5) sur le graphique dont l&rsquo;origine est (0,0). <strong>Les vecteurs permettent donc de décrire des directions et des positions dans l&rsquo;espace en 2D et en 3D.</strong></p>
@@ -130,120 +137,115 @@ Comme les vecteurs sont spécifiés en tant que directions, il est parfois diffi
 <h3 id="opérations-scalaires-sur-les-vecteurs">Opérations scalaires sur les vecteurs</h3>
 <p>Un scalaire est un chiffre unique. Lors de l&rsquo;addition/soustraction/multiplication ou de la division d&rsquo;un vecteur avec un scalaire, il suffit d&rsquo;ajouter/soustraire/multiplier ou diviser chaque élément du vecteur par le scalaire. Dans le cas d&rsquo;une addition, cela donnerait ceci :
 $$\begin{pmatrix}
-1\
-2\
+1\\
+2\\
 3
 \end{pmatrix} + x
 = \begin{pmatrix}
-1\
-2\
+1\\
+2\\
 3
 \end{pmatrix} +
 \begin{pmatrix}
-x\
-x\
+x\\
+x\\
 x
 \end{pmatrix} =
 \begin{pmatrix}
-1 + x\
-2 + x\
+1 + x\\
+2 + x\\
 3 + x
 \end{pmatrix}
 $$
 Où $+$ peut être $+$, $-$, $⋅$ ou $÷$ où $⋅$ est l&rsquo;opérateur de multiplication.</p>
 <h3 id="négation-du-vecteur">Négation du vecteur</h3>
-<p><strong>La négation d&rsquo;un vecteur entraîne l&rsquo;apparition d&rsquo;un vecteur dans la direction inverse</strong>. Un vecteur pointant vers le nord-est pointera vers le sud-ouest après la négation. Pour inverser un vecteur, nous ajoutons un signe moins à chaque composante (vous pouvez également le représenter comme une multiplication scalaire vectorielle avec une valeur scalaire de -1) :
-$$
+<p><strong>La négation d&rsquo;un vecteur entraîne l&rsquo;apparition d&rsquo;un vecteur dans la direction inverse</strong>. Un vecteur pointant vers le nord-est pointera vers le sud-ouest après la négation. Pour inverser un vecteur, nous ajoutons un signe moins à chaque composante (vous pouvez également le représenter comme une multiplication scalaire vectorielle avec une valeur scalaire de -1) :</p>
+<p>$$
 -\vec{v}
 = -\begin{pmatrix}
-v_x\
-v_y\
+v_x\\
+v_y\\
 v_z
 \end{pmatrix} =
 \begin{pmatrix}
--v_x\
--v_y\
+-v_x\\
+-v_y\\
 -v_z
 \end{pmatrix}
 $$</p>
 <h3 id="addition-et-soustraction">Addition et soustraction</h3>
-<p>L&rsquo;addition de deux vecteurs est définie comme une addition par composante, c&rsquo;est-à-dire que chaque composante d&rsquo;un vecteur est ajoutée à la même composante de l&rsquo;autre vecteur de la manière suivante :</p>
-<h1 id="endpmatrix">$$
-\vec{v}
-= \begin{pmatrix}
-1\
-2\
+<p>L&rsquo;addition de deux vecteurs est définie comme une addition par composante, c&rsquo;est-à-dire que chaque composante d&rsquo;un vecteur est ajoutée à la même composante de l&rsquo;autre vecteur de la manière suivante:</p>
+<p>$$
+\vec{v} =
+\begin{pmatrix}
+1\\
+2\\
 3
-\end{pmatrix}
-,
-\vec{k}
-= \begin{pmatrix}
-4\
-5\
+\end{pmatrix},
+\vec{k} =
+\begin{pmatrix}
+4\\
+5\\
 6
-\end{pmatrix}
-=&gt;
+\end{pmatrix} =&gt;
 \vec{v} + \vec{k} =
 \begin{pmatrix}
-1 + 4\
-2 + 5\
+1 + 4\\
+2 + 5\\
 3 + 6
-\end{pmatrix}</h1>
-<h1 id="endpmatrix-1">\begin{pmatrix}
-5\
-7\
+\end{pmatrix} =
+\begin{pmatrix}
+5\\
+7\\
 9
 \end{pmatrix}
-$$
-Visuellement, cela ressemble à ceci pour les vecteurs $\vec{v}=(4,2)$ et $\vec{k}=(1,2)$, où le deuxième vecteur est ajouté à l&rsquo;extrémité du premier vecteur pour trouver le point final du vecteur résultant (méthode de la tête à la queue (head to tail method)) :
+$$</p>
+<p>Visuellement, cela ressemble à ceci pour les vecteurs $vec{v}=(4,2)$ et $vec{k}=(1,2)$, où le deuxième vecteur est ajouté à l&rsquo;extrémité du premier vecteur pour trouver le point final du vecteur résultant (méthode de la tête à la queue (head to tail method)) :
 <img src="/docs/LEARNOPENGL_FR/01_Getting_Started/img/transfo2.png" alt="transfo2"/>
-Tout comme l&rsquo;addition et la soustraction normales, la soustraction de vecteurs est la même chose que l&rsquo;addition avec un second vecteur annulé :
-$$
-\vec{v}
-= \begin{pmatrix}
-1\
-2\
+Tout comme l&rsquo;addition et la soustraction normales, la soustraction de vecteurs est la même chose que l&rsquo;addition avec un second vecteur annulé :</p>
+<p>$$
+\vec{v} = \begin{pmatrix}
+1\\
+2\\
 3
-\end{pmatrix}
-,
-\vec{k}
-= \begin{pmatrix}
-4\
-5\
+\end{pmatrix},
+\vec{k} =
+\begin{pmatrix}
+4\\
+5\\
 6
-\end{pmatrix}
-=&gt;
+\end{pmatrix} =&gt;
 \vec{v} + -\vec{k} =
 \begin{pmatrix}
-1 + (-4)\
-2 + (-5)\
+1 + (-4)\\
+2 + (-5)\\
 3 + (-6)
-\end{pmatrix}</h1>
-<p>\begin{pmatrix}
--3\
--3\
+\end{pmatrix} =
+\begin{pmatrix}
+-3\\
+-3\\
 -3
 \end{pmatrix}
-$$
-En soustrayant deux vecteurs l&rsquo;un de l&rsquo;autre, on obtient un vecteur qui est la différence des positions vers lesquelles pointent les deux vecteurs. Cela s&rsquo;avère utile dans certains cas où nous devons récupérer un vecteur qui est la différence entre deux points.
-<img src="/docs/LEARNOPENGL_FR/01_Getting_Started/img/transfo3.png" alt="transfo3"/></p>
+$$</p>
+<p>En soustrayant deux vecteurs l&rsquo;un de l&rsquo;autre, on obtient un vecteur qui est la différence des positions vers lesquelles pointent les deux vecteurs. Cela s&rsquo;avère utile dans certains cas où nous devons récupérer un vecteur qui est la différence entre deux points.</p>
+<!-- raw HTML omitted -->
 <h3 id="longueur">Longueur</h3>
-<h1 id="vecv">Pour déterminer la longueur/magnitude d&rsquo;un vecteur, nous utilisons le théorème de Pythagore dont vous vous souvenez peut-être de vos cours de mathématiques. Un vecteur forme un triangle lorsque vous visualisez ses composantes x et y individuelles comme les deux côtés d&rsquo;un triangle :
-<img src="/docs/LEARNOPENGL_FR/01_Getting_Started/img/transfo4.png" alt="transfo4"/>
-Puisque les longueurs des deux côtés (x, y) sont connues et que nous voulons connaître la longueur du côté incliné $\vec{v}$, nous pouvons la calculer en utilisant le théorème de Pythagore comme suit :
-$$
-||\vec{v}||</h1>
-<h1 id="vecv-1">\sqrt{x^2 + y^2}
-$$
-Où $||\vec{v}||$  est noté comme la longueur du vecteur $\vec{v}$. Il est facile d&rsquo;étendre ce principe à la 3D en ajoutant $z^2$ à l&rsquo;équation.
-Dans ce cas, la longueur du vecteur $(4, 2)$ est égale à :
-$$
-||\vec{v}||</h1>
-<h1 id="sqrt42--22">\sqrt{4^2 + 2^2}</h1>
-<h1 id="sqrt16--4">\sqrt{16 + 4}</h1>
-<p>\sqrt{20} = 4.47
-$$
-Ce qui donne 4.47.</p>
+<p>Pour déterminer la longueur/magnitude d&rsquo;un vecteur, nous utilisons le théorème de Pythagore dont vous vous souvenez peut-être de vos cours de mathématiques. Un vecteur forme un triangle lorsque vous visualisez ses composantes x et y individuelles comme les deux côtés d&rsquo;un triangle :</p>
+<!-- raw HTML omitted -->
+<p>Puisque les longueurs des deux côtés $(x, y)$ sont connues et que nous voulons connaître la longueur du côté incliné $\vec{v}$, nous pouvons la calculer en utilisant le théorème de Pythagore comme suit :</p>
+<p>$$
+||\vec{v}|| =
+\sqrt{x^2 + y^2}
+$$</p>
+<p>Où $||\vec{v}||$  est noté comme la longueur du vecteur $\vec{v}$. Il est facile d&rsquo;étendre ce principe à la 3D en ajoutant $z^2$ à l&rsquo;équation.
+Dans ce cas, la longueur du vecteur $(4, 2)$ est égale à :</p>
+<p>$$
+||\vec{v}|| =
+\sqrt{4^2 + 2^2} =
+\sqrt{16 + 4} =
+\sqrt{20} = 4.47
+$$</p>
+<p>Ce qui donne 4.47.</p>
 <p>Il existe également un type spécial de vecteur que nous appelons <strong>vecteur unitaire</strong>. <strong>Un vecteur unitaire possède une propriété supplémentaire : sa longueur est exactement égale à 1.</strong> Nous pouvons calculer un vecteur unitaire $\hat{n}$ à partir de n&rsquo;importe quel vecteur en divisant chacune des composantes du vecteur par sa longueur :
 $$
 \hat{n}
@@ -264,114 +266,113 @@ $$
 1 \cdot 1 \cdot \cos{\theta} = \cos{\theta}
 $$
 Le produit scalaire ne définit plus que l&rsquo;angle entre les deux vecteurs. Vous vous souvenez peut-être que la fonction cosinus ou cos devient 0 lorsque l&rsquo;angle est de 90 degrés ou 1 lorsque l&rsquo;angle est de 0. <strong>Cela nous permet de tester facilement si les deux vecteurs sont orthogonaux ou parallèles l&rsquo;un à l&rsquo;autre à l&rsquo;aide du produit scalaire</strong> (orthogonal signifie que les vecteurs sont à angle droit l&rsquo;un par rapport à l&rsquo;autre). Si vous souhaitez en savoir plus sur les fonctions sin et cos, je vous conseille les vidéos suivantes de la <a href="https://www.khanacademy.org/math/trigonometry/basic-trigonometry/basic_trig_ratios/v/basic-trigonometry">Khan Academy</a> sur la trigonométrie de base.</p>
-<h1 id="endpmatrix-2">Comment calculer le produit scalaire ? Le produit scalaire est une multiplication par composantes où l&rsquo;on additionne les résultats. Voici à quoi cela ressemble avec deux vecteurs unitaires (vous pouvez vérifier que leurs longueurs respectives sont exactement égales à 1 :
-$$
+<p>Comment calculer le produit scalaire ? Le produit scalaire est une multiplication par composantes où l&rsquo;on additionne les résultats. Voici à quoi cela ressemble avec deux vecteurs unitaires (vous pouvez vérifier que leurs longueurs respectives sont exactement égales à 1 :</p>
+<p>$$
 \begin{pmatrix}
-0.6\
--0.8\
+0.6\\
+-0.8\\
 0
 \end{pmatrix}
 \cdot
 \begin{pmatrix}
-0\
-1\
+0\\
+1\\
 0
-\end{pmatrix}</h1>
-<p>(0.6 * 0) + (-0.8 * 1) + (0 * 0) = -0.8
-$$
-Pour calculer le degré entre ces deux vecteurs unitaires, nous utilisons l&rsquo;inverse de la fonction cosinus $\cos{}^{-1}$, ce qui donne 143,1 degrés. Nous avons donc calculé l&rsquo;angle entre ces deux vecteurs. Le produit scalaire s&rsquo;avère très utile pour les calculs d&rsquo;éclairage ultérieurs.</p>
+\end{pmatrix} =
+(0.6 * 0) + (-0.8 * 1) + (0 * 0) = -0.8
+$$</p>
+<p>Pour calculer le degré entre ces deux vecteurs unitaires, nous utilisons l&rsquo;inverse de la fonction cosinus $\cos{}^{-1}$, ce qui donne 143,1 degrés. Nous avons donc calculé l&rsquo;angle entre ces deux vecteurs. Le produit scalaire s&rsquo;avère très utile pour les calculs d&rsquo;éclairage ultérieurs.</p>
 <h4 id="produit-vectoriel-cross-product">Produit vectoriel (cross product)</h4>
-<h1 id="endpmatrix-3">Le produit vectoriel n&rsquo;est défini que dans l&rsquo;espace 3D. Il prend deux vecteurs non parallèles en entrée et produit un troisième vecteur qui est orthogonal aux deux vecteurs d&rsquo;entrée. Si les deux vecteurs d&rsquo;entrée sont également orthogonaux l&rsquo;un par rapport à l&rsquo;autre, un produit vectoriel produira trois vecteurs orthogonaux, ce qui s&rsquo;avérera utile dans les chapitres suivants. L&rsquo;image suivante montre à quoi cela ressemble dans l&rsquo;espace 3D :
+<p>Le produit vectoriel n&rsquo;est défini que dans l&rsquo;espace 3D. Il prend deux vecteurs non parallèles en entrée et produit un troisième vecteur qui est orthogonal aux deux vecteurs d&rsquo;entrée. Si les deux vecteurs d&rsquo;entrée sont également orthogonaux l&rsquo;un par rapport à l&rsquo;autre, un produit vectoriel produira trois vecteurs orthogonaux, ce qui s&rsquo;avérera utile dans les chapitres suivants. L&rsquo;image suivante montre à quoi cela ressemble dans l&rsquo;espace 3D :
 <img src="/docs/LEARNOPENGL_FR/01_Getting_Started/img/transfo5.png" alt="transfo5"/>
-Contrairement aux autres opérations, le produit vectoriel n&rsquo;est pas vraiment intuitif si l&rsquo;on ne se plonge pas dans l&rsquo;algèbre linéaire. Il est donc préférable de mémoriser la formule et de s&rsquo;en sortir (ou de ne pas le faire, vous vous en sortirez probablement aussi). Vous trouverez ci-dessous le produit vectoriel de deux vecteurs orthogonaux A et B :
-$$
+Contrairement aux autres opérations, le produit vectoriel n&rsquo;est pas vraiment intuitif si l&rsquo;on ne se plonge pas dans l&rsquo;algèbre linéaire. Il est donc préférable de mémoriser la formule et de s&rsquo;en sortir (ou de ne pas le faire, vous vous en sortirez probablement aussi). Vous trouverez ci-dessous le produit vectoriel de deux vecteurs orthogonaux A et B :</p>
+<p>$$
 \begin{pmatrix}
-A_x\
-A_y\
+A_x\\
+A_y\\
 A_z
 \end{pmatrix}
 \times
 \begin{pmatrix}
-B_x\
-B_y\
+B_x\\
+B_y\\
 B_z
-\end{pmatrix}</h1>
-<p>\begin{pmatrix}
-A_y \cdot B_z - A_z \cdot B_y \
-A_z \cdot B_x - A_x \cdot B_z \
+\end{pmatrix} =
+\begin{pmatrix}
+A_y \cdot B_z - A_z \cdot B_y \\
+A_z \cdot B_x - A_x \cdot B_z \\
 A_x \cdot B_y - A_y \cdot B_x
 \end{pmatrix}
-$$
-Comme vous pouvez le constater, cela n&rsquo;a pas vraiment de sens. Cependant, si vous suivez ces étapes, vous obtiendrez un autre vecteur orthogonal à vos vecteurs d&rsquo;entrée.</p>
+$$</p>
+<p>Comme vous pouvez le constater, cela n&rsquo;a pas vraiment de sens. Cependant, si vous suivez ces étapes, vous obtiendrez un autre vecteur orthogonal à vos vecteurs d&rsquo;entrée.</p>
 <h2 id="matrices">Matrices</h2>
 <p>Maintenant que nous avons abordé la quasi-totalité des vecteurs, il est temps d&rsquo;entrer dans la matrice ! Une matrice est un tableau rectangulaire de nombres, de symboles et/ou d&rsquo;expressions mathématiques. Chaque élément d&rsquo;une matrice est appelé élément de la matrice. Voici un exemple de matrice de 2 x 3 :
 $$
 \begin{bmatrix}
-1 &amp; 2 &amp; 3\
-4 &amp; 5 &amp; 6 \
+1 &amp; 2 &amp; 3\\
+4 &amp; 5 &amp; 6 \\
 \end{bmatrix}
 $$
 Les matrices sont indexées par $(i,j)$ où $i$ est la ligne et  $j$ est la colonne, c&rsquo;est pourquoi la matrice ci-dessus est appelée une matrice $2\times3$ (3 colonnes et 2 lignes, également connues comme les dimensions de la matrice). C&rsquo;est l&rsquo;inverse de ce à quoi vous êtes habitué lorsque vous indexez des graphiques 2D comme $(x,y)$. Pour récupérer la valeur 4, nous devrions l&rsquo;indexer comme (2,1) (deuxième ligne, première colonne).</p>
 <p>Les matrices ne sont rien d&rsquo;autre que des tableaux rectangulaires d&rsquo;expressions mathématiques. Elles possèdent un ensemble de propriétés mathématiques très intéressantes et, tout comme les vecteurs, nous pouvons définir plusieurs opérations sur les matrices, à savoir: l&rsquo;addition, la soustraction et la multiplication.</p>
 <h3 id="addition-et-soustraction-1">Addition et soustraction</h3>
-<h1 id="endbmatrix">L&rsquo;addition et la soustraction entre deux matrices s&rsquo;effectuent par élément. Les règles générales applicables sont donc les mêmes que celles que nous connaissons pour les nombres normaux, mais elles s&rsquo;appliquent aux éléments des deux matrices ayant le même indice. Cela signifie que l&rsquo;addition et la soustraction ne sont définies que pour les matrices de même dimension. Une matrice 3x2 et une matrice 2x3 (ou une matrice 3x3 et une matrice 4x4) ne peuvent pas être additionnées ou soustraites ensemble. Voyons comment fonctionne l&rsquo;addition de matrices sur deux matrices 2x2 :
-$$
+<p>L&rsquo;addition et la soustraction entre deux matrices s&rsquo;effectuent par élément. Les règles générales applicables sont donc les mêmes que celles que nous connaissons pour les nombres normaux, mais elles s&rsquo;appliquent aux éléments des deux matrices ayant le même indice. Cela signifie que l&rsquo;addition et la soustraction ne sont définies que pour les matrices de même dimension. Une matrice 3x2 et une matrice 2x3 (ou une matrice 3x3 et une matrice 4x4) ne peuvent pas être additionnées ou soustraites ensemble. Voyons comment fonctionne l&rsquo;addition de matrices sur deux matrices 2x2 :</p>
+<p>$$
 \begin{bmatrix}
-1 &amp; 2\
+1 &amp; 2\\
 3 &amp; 4
-\end{bmatrix}
-+
+\end{bmatrix}+
 \begin{bmatrix}
-5 &amp; 6\
+5 &amp; 6\\
 7 &amp; 8
-\end{bmatrix}</h1>
-<h1 id="endbmatrix-1">\begin{bmatrix}
-1+5 &amp; 2+6\
+\end{bmatrix}=
+\begin{bmatrix}
+1+5 &amp; 2+6\\
 3+7 &amp; 4+8
-\end{bmatrix}</h1>
-<h2 id="endbmatrix-2">\begin{bmatrix}
-6 &amp; 8\
+\end{bmatrix}=
+\begin{bmatrix}
+6 &amp; 8\\
 10 &amp; 12
 \end{bmatrix}
-$$
-Les mêmes règles s&rsquo;appliquent à la soustraction de la matrice :
-$$
+$$</p>
+<p>Les mêmes règles s&rsquo;appliquent à la soustraction de la matrice :</p>
+<p>$$
 \begin{bmatrix}
-4 &amp; 2\
+4 &amp; 2\\
 1 &amp; 6
-\end{bmatrix}</h2>
-<h1 id="endbmatrix-3">\begin{bmatrix}
-2 &amp; 4\
+\end{bmatrix}-
+\begin{bmatrix}
+2 &amp; 4\\
 0 &amp; 1
-\end{bmatrix}</h1>
-<h1 id="endbmatrix-4">\begin{bmatrix}
-4-2 &amp; 2-4\
+\end{bmatrix}=
+\begin{bmatrix}
+4-2 &amp; 2-4\\
 1-0 &amp; 6-1
-\end{bmatrix}</h1>
-<p>\begin{bmatrix}
-2 &amp; -2\
+\end{bmatrix}=
+\begin{bmatrix}
+2 &amp; -2\\
 1 &amp; 5
 \end{bmatrix}
 $$</p>
 <h3 id="produit-scalaire-de-matrices">Produit scalaire de matrices</h3>
 <p>Un produit matrice-scalaire multiplie chaque élément de la matrice par un scalaire. L&rsquo;exemple suivant illustre la multiplication :</p>
-<h1 id="endbmatrix-5">$$
+<p>$$
 2
 \cdot
 \begin{bmatrix}
-1 &amp; 2\
+1 &amp; 2\\
 3 &amp; 4
-\end{bmatrix}</h1>
-<h1 id="endbmatrix-6">\begin{bmatrix}
-2\cdot1 &amp; 2\cdot2\
+\end{bmatrix}=
+\begin{bmatrix}
+2\cdot1 &amp; 2\cdot2\\
 2\cdot3 &amp; 2\cdot4
-\end{bmatrix}</h1>
-<p>\begin{bmatrix}
-2 &amp; 4\
+\end{bmatrix}=
+\begin{bmatrix}
+2 &amp; 4\\
 6 &amp; 8
-\end{bmatrix}</p>
-<p>$$
-On comprend maintenant pourquoi ces nombres uniques sont appelés scalaires. <strong>Un scalaire met à l&rsquo;échelle tous les éléments de la matrice en fonction de sa valeur</strong>. Dans l&rsquo;exemple précédent, tous les éléments ont été mis à l&rsquo;échelle par 2.</p>
+\end{bmatrix}
+$$</p>
+<p>On comprend maintenant pourquoi ces nombres uniques sont appelés scalaires. <strong>Un scalaire met à l&rsquo;échelle tous les éléments de la matrice en fonction de sa valeur</strong>. Dans l&rsquo;exemple précédent, tous les éléments ont été mis à l&rsquo;échelle par 2.</p>
 <p>Jusqu&rsquo;à présent, tout va bien, tous nos cas ne sont pas trop compliqués. Enfin, jusqu&rsquo;à ce que nous nous attaquions à la multiplication matrice-matrice.</p>
 <h3 id="multiplication-entre-matrices">Multiplication entre matrices</h3>
 <p>La multiplication des matrices n&rsquo;est pas nécessairement complexe, mais il est plutôt difficile de s&rsquo;y habituer. La multiplication matricielle consiste essentiellement à suivre un ensemble de règles prédéfinies lors de la multiplication. Il existe cependant quelques restrictions :</p>
@@ -379,31 +380,31 @@ On comprend maintenant pourquoi ces nombres uniques sont appelés scalaires. <st
 <li><strong>Vous ne pouvez multiplier deux matrices que si le nombre de colonnes de la matrice de gauche est égal au nombre de lignes de la matrice de droite.</strong></li>
 <li>La multiplication des matrices n&rsquo;est pas commutative, c&rsquo;est-à-dire $A⋅B ≠ B⋅A$</li>
 </ol>
-<h1 id="endbmatrix-7">Commençons par un exemple de multiplication de 2 matrices <code>2x2</code> :
-$$
+<p>Commençons par un exemple de multiplication de 2 matrices <code>2x2</code> :</p>
+<p>$$
 \begin{bmatrix}
-1 &amp; 2\
+1 &amp; 2\\
 3 &amp; 4
 \end{bmatrix}
 \cdot
 \begin{bmatrix}
-5 &amp; 6\
+5 &amp; 6\\
 7 &amp; 8
-\end{bmatrix}</h1>
-<h1 id="endbmatrix-8">\begin{bmatrix}
-1\cdot5 + 2\cdot7 &amp; 1\cdot6 + 2\cdot8\
+\end{bmatrix}=
+\begin{bmatrix}
+1\cdot5 + 2\cdot7 &amp; 1\cdot6 + 2\cdot8\\
 3\cdot5 + 4\cdot7 &amp; 3\cdot6 + 4\cdot8
-\end{bmatrix}</h1>
-<h1 id="endbmatrix-9">\begin{bmatrix}
-5+14 &amp; 6+16\
+\end{bmatrix}=
+\begin{bmatrix}
+5+14 &amp; 6+16\\
 15+28 &amp; 18+32
-\end{bmatrix}</h1>
-<p>\begin{bmatrix}
-19 &amp; 22\
+\end{bmatrix}=
+\begin{bmatrix}
+19 &amp; 22\\
 43 &amp; 50
 \end{bmatrix}
-$$
-À l&rsquo;heure actuelle, vous essayez probablement de comprendre ce qui vient de se passer ? La multiplication matricielle est une combinaison de la multiplication normale et de l&rsquo;addition utilisant les lignes de la matrice gauche avec les colonnes de la matrice droite. Essayons d&rsquo;en discuter à l&rsquo;aide de l&rsquo;image suivante :
+$$</p>
+<p>À l&rsquo;heure actuelle, vous essayez probablement de comprendre ce qui vient de se passer ? La multiplication matricielle est une combinaison de la multiplication normale et de l&rsquo;addition utilisant les lignes de la matrice gauche avec les colonnes de la matrice droite. Essayons d&rsquo;en discuter à l&rsquo;aide de l&rsquo;image suivante :
 <img src="/docs/LEARNOPENGL_FR/01_Getting_Started/img/transfo6.png" alt="transfo6"/>
 Nous prenons d&rsquo;abord la ligne supérieure de la matrice de gauche, puis une colonne de la matrice de droite. La ligne et la colonne que nous avons choisies déterminent la valeur de sortie de la matrice <code>2x2</code> résultante que nous allons calculer. Si nous prenons la première ligne de la matrice de gauche, la valeur résultante se retrouvera dans la première ligne de la matrice de résultat, puis nous choisissons une colonne et s&rsquo;il s&rsquo;agit de la première colonne, la valeur résultante se retrouvera dans la première colonne de la matrice de résultat. C&rsquo;est exactement le cas du chemin rouge. Pour calculer le résultat en bas à droite, nous prenons la ligne inférieure de la première matrice et la colonne la plus à droite de la deuxième matrice.</p>
 <p>Pour calculer la valeur résultante, nous multiplions le premier élément de la ligne et de la colonne en utilisant la multiplication normale, nous faisons de même pour les deuxième éléments, troisième, quatrième, etc. Les résultats des multiplications individuelles sont ensuite additionnés et nous obtenons notre résultat. Il est logique que l&rsquo;une des conditions requises soit que la taille des colonnes de la matrice de gauche et celle des lignes de la matrice de droite soient égales, sinon nous ne pouvons pas terminer les opérations !</p>
@@ -417,29 +418,29 @@ Nous prenons d&rsquo;abord la ligne supérieure de la matrice de gauche, puis un
 <p>Jusqu&rsquo;à présent, nous avons eu notre part de vecteurs. Nous les avons utilisés pour représenter des positions, des couleurs et même des coordonnées de texture. Allons un peu plus loin et disons qu&rsquo;un vecteur est en fait une matrice $N\times1$ où $N$ est le nombre de composantes du vecteur (également connu sous le nom de vecteur à $N$ dimensions). Si vous y réfléchissez bien, c&rsquo;est tout à fait logique. Les vecteurs sont comme les matrices, un tableau de nombres, mais avec une seule colonne. En quoi cette nouvelle information peut-elle nous être utile ? Eh bien, si nous avons une matrice $M\times N$, nous pouvons multiplier cette matrice avec notre vecteur $N\times 1$, puisque les colonnes de la matrice sont égales au nombre de lignes du vecteur, ce qui définit la multiplication matricielle.</p>
 <p>Mais pourquoi se soucier de savoir si l&rsquo;on peut multiplier des matrices avec un vecteur ? Eh bien, il se trouve qu&rsquo;il existe de nombreuses transformations 2D/3D intéressantes que l&rsquo;on peut placer à l&rsquo;intérieur d&rsquo;une matrice, et le fait de multiplier cette matrice par un vecteur transforme alors ce vecteur. Au cas où vous seriez encore un peu confus, commençons par quelques exemples et vous comprendrez vite ce que nous voulons dire.</p>
 <h3 id="matrice-identité">Matrice identité</h3>
-<h1 id="endbmatrix-10"><strong>Dans OpenGL, nous travaillons généralement avec des matrices de transformation $4\times 4$</strong> pour plusieurs raisons, l&rsquo;une d&rsquo;entre elles étant que la plupart des vecteurs sont de taille 4. La matrice de transformation la plus simple à laquelle nous pouvons penser est la matrice identité. La matrice identité est une matrice $N\times N$ quine contient que des 0 sauf sur sa diagonale. Comme vous le verrez, cette matrice de transformation laisse un vecteur complètement intact :
-$$
+<p><strong>Dans OpenGL, nous travaillons généralement avec des matrices de transformation $4\times 4$</strong> pour plusieurs raisons, l&rsquo;une d&rsquo;entre elles étant que la plupart des vecteurs sont de taille 4. La matrice de transformation la plus simple à laquelle nous pouvons penser est la matrice identité. La matrice identité est une matrice $N\times N$ quine contient que des 0 sauf sur sa diagonale. Comme vous le verrez, cette matrice de transformation laisse un vecteur complètement intact :</p>
+<p>$$
 \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 0\
-0 &amp; 1 &amp; 0 &amp; 0\
-0 &amp; 0 &amp; 1 &amp; 0\
+1 &amp; 0 &amp; 0 &amp; 0\\
+0 &amp; 1 &amp; 0 &amp; 0\\
+0 &amp; 0 &amp; 1 &amp; 0\\
 0 &amp; 0 &amp; 0 &amp; 1
 \end{bmatrix}
 \cdot
 \begin{bmatrix}
-1\
-2\
-3\
+1\\
+2\\
+3\\
 4
-\end{bmatrix}</h1>
-<p>\begin{bmatrix}
-1\
-2\
-3\
+\end{bmatrix}=
+\begin{bmatrix}
+1\\
+2\\
+3\\
 4
 \end{bmatrix}
-$$
-Le vecteur est totalement intact. Les règles de multiplication le montrent clairement : le premier élément du résultat est chaque élément individuel de la première ligne de la matrice multiplié par chaque élément du vecteur. Étant donné que tous les éléments de la ligne sont égaux à 0, à l&rsquo;exception du premier, nous obtenons : $1⋅1+0⋅2+0⋅3+0⋅4=1$ et il en va de même pour les 3 autres éléments du vecteur.</p>
+$$</p>
+<p>Le vecteur est totalement intact. Les règles de multiplication le montrent clairement : le premier élément du résultat est chaque élément individuel de la première ligne de la matrice multiplié par chaque élément du vecteur. Étant donné que tous les éléments de la ligne sont égaux à 0, à l&rsquo;exception du premier, nous obtenons : $1⋅1+0⋅2+0⋅3+0⋅4=1$ et il en va de même pour les 3 autres éléments du vecteur.</p>
 <blockquote>
 <p>Vous vous demandez peut-être à quoi sert une matrice de transformation qui ne se transforme pas ? <strong>La matrice identité est généralement un point de départ pour générer d&rsquo;autres matrices de transformation et, si nous creusons encore plus loin dans l&rsquo;algèbre linéaire, une matrice très utile pour prouver des théorèmes et résoudre des équations linéaires.</strong></p>
 </blockquote>
@@ -448,54 +449,54 @@ Le vecteur est totalement intact. Les règles de multiplication le montrent clai
 <p>Essayons de mettre à l&rsquo;échelle le vecteur $\vec{v}=(3,2)$. Nous allons mettre à l&rsquo;échelle le vecteur le long de l&rsquo;axe des $x$ par $0.5$, ce qui le rendra deux fois plus étroit ; et nous allons mettre à l&rsquo;échelle le vecteur par 2 le long de l&rsquo;axe des $y$, ce qui le rendra deux fois plus haut. Voyons ce que cela donne si nous mettons le vecteur à l&rsquo;échelle $(0.5,2)$ (le résultat sera le vecteur $\vec{s}$) :
 <img src="/docs/LEARNOPENGL_FR/01_Getting_Started/img/transfo8.png" alt="transfo8"/>
 Gardez à l&rsquo;esprit qu&rsquo;OpenGL fonctionne généralement dans l&rsquo;espace 3D, donc pour ce cas 2D, nous pourrions mettre l&rsquo;échelle de l&rsquo;axe $z$ à 1, ce qui le laisserait intact. <strong>L&rsquo;opération de mise à l&rsquo;échelle que nous venons d&rsquo;effectuer est une mise à l&rsquo;échelle non uniforme, car le facteur d&rsquo;échelle n&rsquo;est pas le même pour chaque axe. Si le facteur d&rsquo;échelle était égal sur tous les axes, on parlerait d&rsquo;une échelle uniforme.</strong></p>
-<h1 id="endbmatrix-11">Commençons par construire une matrice de transformation qui effectue la mise à l&rsquo;échelle pour nous. Nous avons vu dans la matrice d&rsquo;identité que chacun des éléments diagonaux était multiplié par l&rsquo;élément vectoriel correspondant. Que se passerait-il si nous remplacions les 1 de la matrice d&rsquo;identité par des 3 ? Dans ce cas, nous multiplierions chacun des éléments du vecteur par une valeur de 3, ce qui aurait pour effet d&rsquo;augmenter uniformément le vecteur de 3. Si nous représentons les variables d&rsquo;échelle par $(S1,S2,S3)$ nous pouvons définir une matrice d&rsquo;échelle sur n&rsquo;importe quel vecteur $(x,y,z)$ comme suit :
-$$
+<p>Commençons par construire une matrice de transformation qui effectue la mise à l&rsquo;échelle pour nous. Nous avons vu dans la matrice d&rsquo;identité que chacun des éléments diagonaux était multiplié par l&rsquo;élément vectoriel correspondant. Que se passerait-il si nous remplacions les 1 de la matrice d&rsquo;identité par des 3 ? Dans ce cas, nous multiplierions chacun des éléments du vecteur par une valeur de 3, ce qui aurait pour effet d&rsquo;augmenter uniformément le vecteur de 3. Si nous représentons les variables d&rsquo;échelle par $(S1,S2,S3)$ nous pouvons définir une matrice d&rsquo;échelle sur n&rsquo;importe quel vecteur $(x,y,z)$ comme suit :</p>
+<p>$$
 \begin{bmatrix}
-S1 &amp; 0 &amp; 0 &amp; 0\
-0 &amp; S2 &amp; 0 &amp; 0\
-0 &amp; 0 &amp; S3 &amp; 0\
+S1 &amp; 0 &amp; 0 &amp; 0\\
+0 &amp; S2 &amp; 0 &amp; 0\\
+0 &amp; 0 &amp; S3 &amp; 0\\
 0 &amp; 0 &amp; 0 &amp; 1
 \end{bmatrix}
 \cdot
 \begin{bmatrix}
-x\
-y\
-z\
+x\\
+y\\
+z\\
 1
-\end{bmatrix}</h1>
-<p>\begin{bmatrix}
-x \cdot S1\
-y \cdot S2\
-z \cdot S3\
+\end{bmatrix}=
+\begin{bmatrix}
+x \cdot S1\\
+y \cdot S2\\
+z \cdot S3\\
 1
 \end{bmatrix}
-$$
-<strong>Notez que nous conservons la 4e valeur d&rsquo;échelle 1. La composante $w$ est utilisée à d&rsquo;autres fins, comme nous le verrons plus loin.</strong></p>
+$$</p>
+<p><strong>Notez que nous conservons la 4e valeur d&rsquo;échelle 1. La composante $w$ est utilisée à d&rsquo;autres fins, comme nous le verrons plus loin.</strong></p>
 <h3 id="translation">Translation</h3>
 <p><strong>La translation consiste à ajouter un autre vecteur au vecteur d&rsquo;origine pour obtenir un nouveau vecteur avec une position différente, déplaçant ainsi le vecteur sur la base d&rsquo;un vecteur de translation.</strong> Nous avons déjà abordé la question de l&rsquo;addition des vecteurs, ce qui ne devrait pas être trop nouveau.</p>
-<h1 id="endbmatrix-12">Tout comme la matrice de mise à l&rsquo;échelle, il existe plusieurs emplacements sur une matrice 4 par 4 que nous pouvons utiliser pour effectuer certaines opérations et, p<strong>our la translation, il s&rsquo;agit des trois premières valeurs de la quatrième colonne.</strong> Si nous représentons le vecteur de translation par $(T_x,T_y,T_z)$ nous pouvons définir la matrice de translation comme suit :
-$$
+<p>Tout comme la matrice de mise à l&rsquo;échelle, il existe plusieurs emplacements sur une matrice 4 par 4 que nous pouvons utiliser pour effectuer certaines opérations et, p<strong>our la translation, il s&rsquo;agit des trois premières valeurs de la quatrième colonne.</strong> Si nous représentons le vecteur de translation par $(T_x,T_y,T_z)$ nous pouvons définir la matrice de translation comme suit :</p>
+<p>$$
 \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; T_x\
-0 &amp; 1 &amp; 0 &amp; T_y\
-0 &amp; 0 &amp; 1 &amp; T_z\
+1 &amp; 0 &amp; 0 &amp; T_x\\
+0 &amp; 1 &amp; 0 &amp; T_y\\
+0 &amp; 0 &amp; 1 &amp; T_z\\
 0 &amp; 0 &amp; 0 &amp; 1
 \end{bmatrix}
 \cdot
 \begin{bmatrix}
-x\
-y\
-z\
+x\\
+y\\
+z\\
 1
-\end{bmatrix}</h1>
-<p>\begin{bmatrix}
-x + T_x\
-y + T_y\
-z + T_z\
+\end{bmatrix}=
+\begin{bmatrix}
+x + T_x\\
+y + T_y\\
+z + T_z\\
 1
 \end{bmatrix}
-$$
-Cela fonctionne parce que toutes les valeurs de translation sont multipliées par la colonne $w$ du vecteur et ajoutées aux valeurs originales du vecteur (rappelez-vous les règles de multiplication des matrices). Cela n&rsquo;aurait pas été possible avec une matrice $3 \times 3$.</p>
+$$</p>
+<p>Cela fonctionne parce que toutes les valeurs de translation sont multipliées par la colonne $w$ du vecteur et ajoutées aux valeurs originales du vecteur (rappelez-vous les règles de multiplication des matrices). Cela n&rsquo;aurait pas été possible avec une matrice $3 \times 3$.</p>
 <blockquote>
 <p><strong>Coordonnées homogènes</strong><br>
 <strong>La composante $w$ d&rsquo;un vecteur est également appelée coordonnée homogène</strong>. <strong>Pour obtenir le vecteur 3D à partir d&rsquo;un vecteur homogène, nous divisons les coordonnées x, y et z par la coordonnée w</strong>. Nous ne le remarquons généralement pas, car la composante $w$ est généralement égale à 1,0. <strong>L&rsquo;utilisation de coordonnées homogènes présente plusieurs avantages : elle nous permet d&rsquo;effectuer des translations matricielles sur des vecteurs 3D (sans composante w, nous ne pouvons pas translater les vecteurs) et, dans le chapitre suivant, nous utiliserons la valeur w pour créer une perspective 3D.</strong></p>
@@ -518,69 +519,69 @@ Où $\pi$ est égal (arrondi) à $3,14159265359$.</p>
 Les rotations en 3D sont spécifiées par un angle et un axe de rotation. L&rsquo;angle spécifié fera tourner l&rsquo;objet le long de l&rsquo;axe de rotation indiqué. Essayez de visualiser cela en faisant tourner votre tête d&rsquo;un certain degré tout en regardant continuellement vers le bas un seul axe de rotation. <strong>Lorsque l&rsquo;on fait tourner des vecteurs 2D dans un monde 3D, par exemple, on fixe l&rsquo;axe de rotation sur l&rsquo;axe z</strong> (essayez de visualiser cela).</p>
 <p>En utilisant la trigonométrie, il est possible de transformer des vecteurs en vecteurs nouvellement tournés en fonction d&rsquo;un angle. Cela se fait généralement par une combinaison intelligente des fonctions sinus et cosinus (communément abrégées en $\sin$ et $\cos$). Une discussion sur la manière dont les matrices de rotation sont générées n&rsquo;entre pas dans le cadre de ce chapitre.</p>
 <p>Une matrice de rotation est définie pour chaque axe unitaire dans l&rsquo;espace 3D où l&rsquo;angle est représenté par le symbole thêta $\theta$.</p>
-<h1 id="endbmatrix-13"><strong>Rotation autour de l&rsquo;axe X :</strong>
-$$
+<p><strong>Rotation autour de l&rsquo;axe X :</strong></p>
+<p>$$
 \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 0\
-0 &amp; \cos{\theta} &amp; -\sin{\theta} &amp; 0\
-0 &amp; \sin{\theta} &amp; \cos{\theta} &amp; 0\
+1 &amp; 0 &amp; 0 &amp; 0\\
+0 &amp; \cos{\theta} &amp; -\sin{\theta} &amp; 0\\
+0 &amp; \sin{\theta} &amp; \cos{\theta} &amp; 0\\
 0 &amp; 0 &amp; 0 &amp; 1
 \end{bmatrix}
 \cdot
 \begin{bmatrix}
-x\
-y\
-z\
+x\\
+y\\
+z\\
 1
-\end{bmatrix}</h1>
-<h1 id="endbmatrix-14">\begin{bmatrix}
-x\
-\cos{\theta} \cdot y - \sin{\theta} \cdot z\
+\end{bmatrix}=
+\begin{bmatrix}
+x\\
+\cos{\theta} \cdot y - \sin{\theta} \cdot z\\
 \sin{\theta} \cdot y + \sin{\theta} \cdot z\\
 1
 \end{bmatrix}
-$$
-<strong>Rotation autour de l&rsquo;axe Y :</strong>
-$$
+$$</p>
+<p><strong>Rotation autour de l&rsquo;axe Y :</strong></p>
+<p>$$
 \begin{bmatrix}
-\cos{\theta} &amp; 0 &amp; \sin{\theta} &amp; 0\
-0 &amp; 1 &amp; 0 &amp; 0\
--\sin{\theta} &amp; 0 &amp; \cos{\theta} &amp; 0\
+\cos{\theta} &amp; 0 &amp; \sin{\theta} &amp; 0\\
+0 &amp; 1 &amp; 0 &amp; 0\\
+-\sin{\theta} &amp; 0 &amp; \cos{\theta} &amp; 0\\
 0 &amp; 0 &amp; 0 &amp; 1
 \end{bmatrix}
 \cdot
 \begin{bmatrix}
-x\
-y\
-z\
+x\\
+y\\
+z\\
 1
-\end{bmatrix}</h1>
-<p>\begin{bmatrix}</p>
-<h1 id="endbmatrix-15">\cos{\theta} \cdot x + \sin{\theta} \cdot z\
-y\
--\sin{\theta} \cdot x + \cos{\theta} \cdot z\
+\end{bmatrix}=
+\begin{bmatrix}
+\cos{\theta} \cdot x + \sin{\theta} \cdot z\\
+y\\
+-\sin{\theta} \cdot x + \cos{\theta} \cdot z\\
 1
 \end{bmatrix}
-$$
-Rotation autour de l&rsquo;axe Z :
-$$
+$$</p>
+<p>Rotation autour de l&rsquo;axe Z :</p>
+<p>$$
 \begin{bmatrix}
-\cos{\theta} &amp; -\sin{\theta} &amp; 0 &amp; 0\
-\sin{\theta} &amp;  \cos{\theta} &amp; 0 &amp; 0\
-0 &amp; 0 &amp; 1 &amp; 0\
+\cos{\theta} &amp; -\sin{\theta} &amp; 0 &amp; 0\\
+\sin{\theta} &amp;  \cos{\theta} &amp; 0 &amp; 0\\
+0 &amp; 0 &amp; 1 &amp; 0\\
 0 &amp; 0 &amp; 0 &amp; 1
 \end{bmatrix}
 \cdot
 \begin{bmatrix}
-x\
-y\
-z\
+x\\
+y\\
+z\\
 1
-\end{bmatrix}</h1>
-<p>\begin{bmatrix}
-\cos{\theta} \cdot x - \sin{\theta} \cdot y\
-\sin{\theta} \cdot x + \cos{\theta} \cdot y\
-z\
+\end{bmatrix}=
+\begin{bmatrix}
+\cos{\theta} \cdot x - \sin{\theta} \cdot y\\
+\sin{\theta} \cdot x + \cos{\theta} \cdot y\\
+z\\
 1
 \end{bmatrix}
 $$</p>
@@ -591,67 +592,67 @@ Nous ne discuterons pas des détails, mais <strong>une meilleure solution consis
 \cos{\theta} + {R_x}^{2}(1 - \cos{\theta}) &amp;
 R_xR_y(1 - \cos{\theta}) - R_z\sin{\theta} &amp;
 R_xR_z(1 - \cos{\theta}) + R_y\sin{\theta} &amp;
-0\
+0\\
 R_yR_x(1 - \cos{\theta}) + R_z\sin{\theta} &amp;
 \cos{\theta} + {R_y}^{2}(1 - \cos{\theta}) &amp;
 R_yR_z(1 - \cos{\theta}) - R_x\sin{\theta} &amp;
-0\
+0\\
 R_zR_x(1 - \cos{\theta}) - R_y\sin{\theta} &amp;
 R_zR_y(1 - \cos{\theta}) + R_x\sin{\theta} &amp;
 \cos{\theta} + {R_z}^{2}(1 - \cos{\theta}) &amp;
-0\
+0\\
 0&amp;0&amp;0&amp;1
 \end{bmatrix}
-$$
-Une discussion mathématique sur la création d&rsquo;une telle matrice n&rsquo;entre pas dans le cadre de ce chapitre. Gardez à l&rsquo;esprit que même cette matrice n&rsquo;empêche pas complètement le gimbal lock (bien qu&rsquo;il devienne beaucoup plus difficile à réaliser). Pour éviter réellement les gimbal locks (blocages de cadran), nous devons représenter les rotations à l&rsquo;aide de <strong>quaternions</strong>, qui sont non seulement <strong>plus sûrs, mais aussi plus faciles à calculer</strong>. Cependant, une discussion sur les quaternions n&rsquo;entre pas dans le cadre de ce chapitre.</p>
+$$</p>
+<p>Une discussion mathématique sur la création d&rsquo;une telle matrice n&rsquo;entre pas dans le cadre de ce chapitre. Gardez à l&rsquo;esprit que même cette matrice n&rsquo;empêche pas complètement le gimbal lock (bien qu&rsquo;il devienne beaucoup plus difficile à réaliser). Pour éviter réellement les gimbal locks (blocages de cadran), nous devons représenter les rotations à l&rsquo;aide de <strong>quaternions</strong>, qui sont non seulement <strong>plus sûrs, mais aussi plus faciles à calculer</strong>. Cependant, une discussion sur les quaternions n&rsquo;entre pas dans le cadre de ce chapitre.</p>
 <h3 id="combiner-les-matrices">Combiner les matrices</h3>
-<h1 id="trans-cdot-scale"><strong>La véritable puissance de l&rsquo;utilisation des matrices pour les transformations réside dans le fait que nous pouvons combiner plusieurs transformations dans une seule matrice grâce à la multiplication matrice-matrice.</strong> Voyons si nous pouvons générer une matrice de transformation qui combine plusieurs transformations. Supposons que nous ayons un vecteur $(x,y,z)$ et que nous voulions le mettre à l&rsquo;échelle par 2 puis le translater par $(1,2,3)$. Nous avons besoin d&rsquo;une matrice de translation et d&rsquo;une matrice de mise à l&rsquo;échelle pour les étapes requises. La matrice de transformation résultante ressemblerait alors à:
-$$
-Trans \cdot Scale</h1>
-<h1 id="endbmatrix-16">\begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 1\
-0 &amp; 1 &amp; 0 &amp; 2\
-0 &amp; 0 &amp; 1 &amp; 3\
+<p><strong>La véritable puissance de l&rsquo;utilisation des matrices pour les transformations réside dans le fait que nous pouvons combiner plusieurs transformations dans une seule matrice grâce à la multiplication matrice-matrice.</strong> Voyons si nous pouvons générer une matrice de transformation qui combine plusieurs transformations. Supposons que nous ayons un vecteur $(x,y,z)$ et que nous voulions le mettre à l&rsquo;échelle par 2 puis le translater par $(1,2,3)$. Nous avons besoin d&rsquo;une matrice de translation et d&rsquo;une matrice de mise à l&rsquo;échelle pour les étapes requises. La matrice de transformation résultante ressemblerait alors à:</p>
+<p>$$
+Trans \cdot Scale=
+\begin{bmatrix}
+1 &amp; 0 &amp; 0 &amp; 1\\
+0 &amp; 1 &amp; 0 &amp; 2\\
+0 &amp; 0 &amp; 1 &amp; 3\\
 0 &amp; 0 &amp; 0 &amp; 1
 \end{bmatrix}
 \cdot
 \begin{bmatrix}
-2 &amp; 0 &amp; 0 &amp; 0\
-0 &amp; 2 &amp; 0 &amp; 0\
-0 &amp; 0 &amp; 2 &amp; 0\
+2 &amp; 0 &amp; 0 &amp; 0\\
+0 &amp; 2 &amp; 0 &amp; 0\\
+0 &amp; 0 &amp; 2 &amp; 0\\
 0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}</h1>
-<p>\begin{bmatrix}
-2 &amp; 0 &amp; 0 &amp; 1\
-0 &amp; 2 &amp; 0 &amp; 2\
-0 &amp; 0 &amp; 2 &amp; 3\
+\end{bmatrix}=
+\begin{bmatrix}
+2 &amp; 0 &amp; 0 &amp; 1\\
+0 &amp; 2 &amp; 0 &amp; 2\\
+0 &amp; 0 &amp; 2 &amp; 3\\
 0 &amp; 0 &amp; 0 &amp; 1
 \end{bmatrix}
-$$
-<strong>Notez que nous effectuons d&rsquo;abord une translation et ensuite une transformation d&rsquo;échelle lorsque nous multiplions des matrices. La multiplication des matrices n&rsquo;est pas commutative, ce qui signifie que leur ordre est important.</strong> <strong>Lors de la multiplication de matrices, la matrice la plus à droite est d&rsquo;abord multipliée par le vecteur, vous devez donc lire les multiplications de droite à gauche.</strong> Il est conseillé d&rsquo;effectuer <strong>d&rsquo;abord les opérations de mise à l&rsquo;échelle, puis les rotations et enfin les translations</strong> lors de la combinaison de matrices, car elles peuvent avoir un effet (négatif) l&rsquo;une sur l&rsquo;autre. Par exemple, si vous effectuez d&rsquo;abord une translation, puis une mise à l&rsquo;échelle, le vecteur de translation sera également mis à l&rsquo;échelle !
+$$</p>
+<p><strong>Notez que nous effectuons d&rsquo;abord une translation et ensuite une transformation d&rsquo;échelle lorsque nous multiplions des matrices. La multiplication des matrices n&rsquo;est pas commutative, ce qui signifie que leur ordre est important.</strong> <strong>Lors de la multiplication de matrices, la matrice la plus à droite est d&rsquo;abord multipliée par le vecteur, vous devez donc lire les multiplications de droite à gauche.</strong> Il est conseillé d&rsquo;effectuer <strong>d&rsquo;abord les opérations de mise à l&rsquo;échelle, puis les rotations et enfin les translations</strong> lors de la combinaison de matrices, car elles peuvent avoir un effet (négatif) l&rsquo;une sur l&rsquo;autre. Par exemple, si vous effectuez d&rsquo;abord une translation, puis une mise à l&rsquo;échelle, le vecteur de translation sera également mis à l&rsquo;échelle !
 En appliquant la matrice de transformation finale à notre vecteur, on obtient le vecteur suivant :</p>
-<h1 id="endbmatrix-17">$$
+<p>$$
 \begin{bmatrix}
-2 &amp; 0 &amp; 0 &amp; 1\
-0 &amp; 2 &amp; 0 &amp; 2\
-0 &amp; 0 &amp; 2 &amp; 3\
+2 &amp; 0 &amp; 0 &amp; 1\\
+0 &amp; 2 &amp; 0 &amp; 2\\
+0 &amp; 0 &amp; 2 &amp; 3\\
 0 &amp; 0 &amp; 0 &amp; 1
 \end{bmatrix}
 \cdot
 \begin{bmatrix}
-x\
-y\
-z\
+x\\
+y\\
+z\\
 1
-\end{bmatrix}</h1>
-<p>\begin{bmatrix}
-2x + 1\
-2y + 2\
-2z + 3\
+\end{bmatrix}=
+\begin{bmatrix}
+2x + 1\\
+2y + 2\\
+2z + 3\\
 1
 \end{bmatrix}
-$$
-Superbe ! Le vecteur est d&rsquo;abord mis à l&rsquo;échelle par deux, puis translaté par (1,2,3).</p>
+$$</p>
+<p>Superbe ! Le vecteur est d&rsquo;abord mis à l&rsquo;échelle par deux, puis translaté par (1,2,3).</p>
 <h2 id="en-pratique">En pratique</h2>
 <p>Maintenant que nous avons expliqué toute la théorie derrière les transformations, il est temps de voir comment nous pouvons utiliser ces connaissances à notre avantage. OpenGL n&rsquo;intègre aucune forme de connaissance des matrices ou des vecteurs, nous devons donc définir nos propres classes et fonctions mathématiques. Dans ce livre, nous préférons nous abstraire de tous les petits détails mathématiques et utiliser simplement des bibliothèques mathématiques pré-faites. Heureusement, il existe une bibliothèque mathématique facile à utiliser et adaptée à OpenGL, appelée <strong>GLM</strong>.</p>
 <h3 id="glm">GLM</h3>
@@ -728,5 +729,29 @@ Et voilà. Un conteneur translaté qui pivote au fil du temps, le tout grâce à
 <script>
   feather.replace();
 </script>
+
+
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$','$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  
+    
+    
+    
+    
+  
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   </body>
 </html>

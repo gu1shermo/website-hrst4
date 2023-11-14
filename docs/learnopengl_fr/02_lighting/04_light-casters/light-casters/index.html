@@ -11,6 +11,13 @@
     
     <title>light casters | hrst4.xyz</title>
     <style>
+    code.has-jax {
+    -webkit-font-smoothing: antialiased;
+    background: inherit !important;
+    border: none !important;
+    font-size: 100%;
+    }
+
     .font-125 {
         font-family: cursive;
         font-weight: 400;
@@ -241,7 +248,7 @@ Vous pouvez voir que, pour l&rsquo;instant, seuls les conteneurs situés à l&rs
 </span></span></code></pre></div><p>Comme vous pouvez le voir, nous ne définissons pas un angle pour la valeur de coupure, mais nous calculons la valeur du cosinus sur la base d&rsquo;un angle et nous transmettons le résultat du cosinus au fragment shader.
 La raison en est que dans le fragment shader, nous calculons le produit scalaire entre le vecteur <code>LightDir</code> et le vecteur <code>SpotDir</code> et que le produit scalaire renvoie une valeur de cosinus et non un angle ; et nous ne pouvons pas comparer directement un angle avec une valeur de cosinus. <strong>Pour obtenir l&rsquo;angle dans le shader, nous devons calculer l&rsquo;inverse du cosinus du résultat du produit scalaire</strong>, ce qui est une opération <strong>coûteuse</strong>.
 Ainsi, pour gagner en performance, nous calculons au préalable la valeur du cosinus d&rsquo;un angle de coupure donné et transmettons ce résultat au fragment shader. Puisque les deux angles sont maintenant représentés par des cosinus, nous pouvons les comparer directement sans opérations coûteuses.</p>
-<p>Il ne reste plus qu&rsquo;à calculer la valeur de thêta $\theta$ et de la comparer à la valeur de coupure $\phi$ pour déterminer si nous sommes dans ou en dehors du spotlight :</p>
+<p>Il ne reste plus qu&rsquo;à calculer la valeur de thêta $$theta$ et de la comparer à la valeur de coupure $$phi$ pour déterminer si nous sommes dans ou en dehors du spotlight :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> theta <span style="color:#f92672">=</span> dot(lightDir, normalize(<span style="color:#f92672">-</span>light.direction));
 </span></span><span style="display:flex;"><span>    
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(theta <span style="color:#f92672">&gt;</span> light.cutOff) 
@@ -267,10 +274,10 @@ Vous pouvez maintenant voir que plus la valeur du cosinus est proche de $1.0$, p
 $$
 I = {{\theta - \gamma}\over \epsilon}
 $$
-Ici, $\epsilon$ (epsilon) est la différence de cosinus entre le cône intérieur ($\theta$) et le cône extérieur ($\gamma$) ($\epsilon=\theta-\gamma$). La valeur $I$ qui en résulte est alors l&rsquo;intensité de la lumière du projecteur sur le fragment actuel.</p>
+Ici, $$epsilon$ (epsilon) est la différence de cosinus entre le cône intérieur ($$theta$) et le cône extérieur ($$gamma$) ($$epsilon=\theta-\gamma$). La valeur $I$ qui en résulte est alors l&rsquo;intensité de la lumière du projecteur sur le fragment actuel.</p>
 <p>Il est un peu difficile de visualiser le fonctionnement de cette formule, alors essayons-la avec quelques exemples de valeurs :</p>
 <p><img src="/docs/LEARNOPENGL_FR/02_Lighting/04_Light%20Casters/lcaster10.png" alt="lcaster10"/></p>
-<p>Comme vous pouvez le voir, nous interpolons essentiellement entre le cosinus extérieur et le cosinus intérieur sur la base de la valeur $\theta$.
+<p>Comme vous pouvez le voir, nous interpolons essentiellement entre le cosinus extérieur et le cosinus intérieur sur la base de la valeur $$theta$.
 Si vous ne comprenez toujours pas ce qui se passe, ne vous inquiétez pas, vous pouvez simplement considérer la formule comme acquise et revenir ici lorsque vous serez plus âgé et plus sage.</p>
 <p>Nous avons maintenant une valeur d&rsquo;intensité qui est soit négative à l&rsquo;extérieur du projecteur, soit supérieure à $1.0$ à l&rsquo;intérieur du cône intérieur, et quelque part entre les deux sur les bords. Si nous bloquons correctement les valeurs, nous n&rsquo;avons plus besoin d&rsquo;un if-else dans le fragment shader et nous pouvons simplement multiplier les composantes de la lumière avec la valeur d&rsquo;intensité calculée :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> theta     <span style="color:#f92672">=</span> dot(lightDir, normalize(<span style="color:#f92672">-</span>light.direction));
@@ -296,5 +303,29 @@ Ah, c&rsquo;est beaucoup mieux. Jouez avec les angles de cutoff intérieur et ex
 <script>
   feather.replace();
 </script>
+
+
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$','$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  
+    
+    
+    
+    
+  
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   </body>
 </html>

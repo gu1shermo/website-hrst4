@@ -11,6 +11,13 @@
     
     <title>blending | hrst4.xyz</title>
     <style>
+    code.has-jax {
+    -webkit-font-smoothing: antialiased;
+    background: inherit !important;
+    border: none !important;
+    font-size: 100%;
+    }
+
     .font-125 {
         font-family: cursive;
         font-weight: 400;
@@ -184,10 +191,10 @@ $$
 \vec{C}<em>{destination} * F</em>{destination}
 $$</p>
 <ul>
-<li>$\vec{C}_{source}$ : le vecteur de couleur source. Il s&rsquo;agit de la couleur de sortie du shader de fragment.</li>
+<li>$$vec{C}_{source}$ : le vecteur de couleur source. Il s&rsquo;agit de la couleur de sortie du shader de fragment.</li>
 </ul>
 <ul>
-<li>$\vec{C}_{destination}$ : le vecteur de couleur de destination. Il s&rsquo;agit du vecteur de couleur actuellement stocké dans le tampon de couleur.</li>
+<li>$$vec{C}_{destination}$ : le vecteur de couleur de destination. Il s&rsquo;agit du vecteur de couleur actuellement stocké dans le tampon de couleur.</li>
 <li>$F_{source}$ : la valeur du facteur de source. Définit l&rsquo;impact de la valeur alpha sur la couleur source.</li>
 <li>$F_{destination}$ : valeur du facteur de destination. Définit l&rsquo;impact de la valeur alpha sur la couleur de destination.</li>
 </ul>
@@ -219,7 +226,7 @@ Le résultat est que les fragments de carrés combinés contiennent une couleur 
 <img src="/docs/LEARNOPENGL_FR/04_Advanced_OpenGL/blending_equation_mixed.png" alt="blending_equation_mixed"/>
 La couleur résultante est alors stockée dans le tampon de couleur, remplaçant la couleur précédente.</p>
 <p>C&rsquo;est bien beau tout ça, mais comment dire à OpenGL d&rsquo;utiliser de tels facteurs ? Il se trouve qu&rsquo;il existe une fonction pour cela, appelée <code>glBlendFunc</code>.</p>
-<p>La fonction <code>glBlendFunc(GLenum sfactor, GLenum dfactor)</code> attend deux paramètres qui définissent l&rsquo;option pour le facteur de source et de destination. OpenGL a défini un certain nombre d&rsquo;options que nous allons énumérer ci-dessous. Notez que le vecteur de couleur constante $\vec{C}_{constant}$  peut être défini séparément via la fonction <code>glBlendColor</code>.</p>
+<p>La fonction <code>glBlendFunc(GLenum sfactor, GLenum dfactor)</code> attend deux paramètres qui définissent l&rsquo;option pour le facteur de source et de destination. OpenGL a défini un certain nombre d&rsquo;options que nous allons énumérer ci-dessous. Notez que le vecteur de couleur constante $$vec{C}_{constant}$  peut être défini séparément via la fonction <code>glBlendColor</code>.</p>
 <p><img src="/docs/LEARNOPENGL_FR/04_Advanced_OpenGL/02_blending-20230816.png" alt="02_blending-20230816"/>
 Pour obtenir le résultat du blending de notre petit exemple de deux carrés, nous voulons prendre l&rsquo;<strong>alpha</strong> du vecteur de couleur source pour le facteur source et <strong>1-alpha</strong> du même vecteur de couleur pour le facteur de destination. Cela se traduit par <code>glBlendFunc</code> écrit comme suit :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
@@ -228,11 +235,11 @@ Pour obtenir le résultat du blending de notre petit exemple de deux carrés, no
 </span></span></code></pre></div><p>Cette fonction définit les composantes RVB comme nous l&rsquo;avons fait précédemment, mais ne laisse que la composante alpha résultante être influencée par la valeur alpha de la source.</p>
 <p>OpenGL nous donne encore plus de flexibilité en nous permettant de changer l&rsquo;opérateur entre la partie source et la partie destination de l&rsquo;équation. Actuellement, les composantes source et destination sont additionnées, mais nous pourrions également les soustraire si nous le souhaitions. glBlendEquation(GLenum mode) nous permet de définir cette opération et dispose de 5 options possibles :</p>
 <ul>
-<li><code>GL_FUNC_ADD</code> : la valeur par défaut, ajoute les deux couleurs l&rsquo;une à l&rsquo;autre : $\vec{C}_{result}=Src+Dst$</li>
-<li><code>GL_FUNC_SUBTRACT</code> : soustrait les deux couleurs l&rsquo;une de l&rsquo;autre : $\vec{C}_{result}=Src-Dst$</li>
-<li><code>GL_FUNC_REVERSE_SUBTRACT</code> : soustrait les deux couleurs, mais inverse l&rsquo;ordre : $\vec{C}_{result}=Dst-Src$</li>
-<li><code>GL_MIN</code> : prend le minimum en composantes des deux couleurs : $\vec{C}_{result}=min(Dst,Src)$</li>
-<li><code>GL_MAX</code> : prend le maximum des deux couleurs en fonction de leurs composantes : $\vec{C}_{result}=max(Dst,Src)$</li>
+<li><code>GL_FUNC_ADD</code> : la valeur par défaut, ajoute les deux couleurs l&rsquo;une à l&rsquo;autre : $$vec{C}_{result}=Src+Dst$</li>
+<li><code>GL_FUNC_SUBTRACT</code> : soustrait les deux couleurs l&rsquo;une de l&rsquo;autre : $$vec{C}_{result}=Src-Dst$</li>
+<li><code>GL_FUNC_REVERSE_SUBTRACT</code> : soustrait les deux couleurs, mais inverse l&rsquo;ordre : $$vec{C}_{result}=Dst-Src$</li>
+<li><code>GL_MIN</code> : prend le minimum en composantes des deux couleurs : $$vec{C}_{result}=min(Dst,Src)$</li>
+<li><code>GL_MAX</code> : prend le maximum des deux couleurs en fonction de leurs composantes : $$vec{C}_{result}=max(Dst,Src)$</li>
 </ul>
 <p>En général, nous pouvons simplement omettre d&rsquo;appeler <code>glBlendEquation</code> parce que GL_FUNC_ADD est l&rsquo;équation de blending préférée pour la plupart des opérations, mais si vous essayez vraiment de faire de votre mieux pour sortir du circuit traditionnel, n&rsquo;importe laquelle des autres équations peut répondre à vos besoins.</p>
 <h2 id="rendu-de-textures-semi-transparentes">Rendu de textures semi-transparentes</h2>
@@ -298,5 +305,29 @@ Vous pouvez trouver le code source complet avec le tri <a href="https://learnope
 <script>
   feather.replace();
 </script>
+
+
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$','$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  
+    
+    
+    
+    
+  
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   </body>
 </html>

@@ -11,6 +11,13 @@
     
     <title>pbr theory | hrst4.xyz</title>
     <style>
+    code.has-jax {
+    -webkit-font-smoothing: antialiased;
+    background: inherit !important;
+    border: none !important;
+    font-size: 100%;
+    }
+
     .font-125 {
         font-family: cursive;
         font-weight: 400;
@@ -153,10 +160,10 @@ $$
 L_o(p, w_o) = \int_{\Omega}^{}f_r(p,w_i,w_o)L_i(p,w_i)n \cdot w_idw_i
 $$
 L&rsquo;équation de la réflectance semble décourageante au premier abord, mais au fur et à mesure que nous la décortiquerons, vous verrez qu&rsquo;elle prend peu à peu tout son sens. Pour comprendre l&rsquo;équation, nous devons nous plonger dans un peu de <strong>radiométrie</strong>. La radiométrie est la mesure du rayonnement électromagnétique, y compris la lumière visible. Il existe plusieurs grandeurs radiométriques que l&rsquo;on peut utiliser pour mesurer la lumière sur des surfaces et dans des directions différentes, mais nous n&rsquo;en aborderons qu&rsquo;une seule qui est pertinente pour l&rsquo;équation de réflectance : la <strong>radiance</strong>, désignée ici par <strong>L</strong>. <strong>La radiance est utilisée pour quantifier l&rsquo;ampleur ou l&rsquo;intensité de la lumière provenant d&rsquo;une seule direction.</strong> Il est un peu difficile à comprendre au début, car la radiance est une combinaison de plusieurs grandeurs physiques, c&rsquo;est pourquoi nous nous concentrerons d&rsquo;abord sur celles-ci :</p>
-<p><strong>Flux radiant</strong> (radiant flux) : <strong>le flux radiant $\Phi$ est l&rsquo;énergie transmise par une source lumineuse</strong>, mesurée en watts. La lumière est une somme collective d&rsquo;énergie répartie sur plusieurs longueurs d&rsquo;onde différentes, chaque longueur d&rsquo;onde étant associée à une couleur (visible) particulière. <strong>L&rsquo;énergie émise par une source lumineuse peut donc être considérée comme une fonction de toutes ses différentes longueurs d&rsquo;onde</strong>. Les longueurs d&rsquo;onde comprises entre 390 nm et 700 nm (nanomètres) sont considérées comme faisant partie du spectre de la lumière visible, c&rsquo;est-à-dire des longueurs d&rsquo;onde que l&rsquo;œil humain est capable de percevoir. Vous trouverez ci-dessous une image des différentes énergies par longueur d&rsquo;onde de la lumière du jour :
+<p><strong>Flux radiant</strong> (radiant flux) : <strong>le flux radiant $$Phi$ est l&rsquo;énergie transmise par une source lumineuse</strong>, mesurée en watts. La lumière est une somme collective d&rsquo;énergie répartie sur plusieurs longueurs d&rsquo;onde différentes, chaque longueur d&rsquo;onde étant associée à une couleur (visible) particulière. <strong>L&rsquo;énergie émise par une source lumineuse peut donc être considérée comme une fonction de toutes ses différentes longueurs d&rsquo;onde</strong>. Les longueurs d&rsquo;onde comprises entre 390 nm et 700 nm (nanomètres) sont considérées comme faisant partie du spectre de la lumière visible, c&rsquo;est-à-dire des longueurs d&rsquo;onde que l&rsquo;œil humain est capable de percevoir. Vous trouverez ci-dessous une image des différentes énergies par longueur d&rsquo;onde de la lumière du jour :
 <img src="/docs/LEARNOPENGL_FR/06_PBR/pbr6.png" alt="pbr6"/>
 Le flux radiant mesure la surface totale de cette fonction de différentes longueurs d&rsquo;onde. Il n&rsquo;est pas très pratique de prendre directement cette mesure des longueurs d&rsquo;onde en entrée, c&rsquo;est pourquoi nous simplifions souvent la représentation du flux radiant, non pas comme une fonction de différentes longueurs d&rsquo;onde, mais comme un triplet de couleurs codé en RVB (ou comme nous l&rsquo;appelons communément : couleur de la lumière). Ce codage s&rsquo;accompagne d&rsquo;une perte d&rsquo;informations, mais celle-ci est généralement négligeable pour les aspects visuels.</p>
-<p><strong>Angle solide</strong> (solid angle): l&rsquo;angle solide, noté $\omega$, <strong>indique la taille ou la surface d&rsquo;une forme projetée sur une sphère unitaire</strong>. L&rsquo;aire de la forme projetée sur cette sphère unitaire est connue sous le nom d&rsquo;angle solide ; vous pouvez visualiser l&rsquo;angle solide comme une direction avec un volume :
+<p><strong>Angle solide</strong> (solid angle): l&rsquo;angle solide, noté $$omega$, <strong>indique la taille ou la surface d&rsquo;une forme projetée sur une sphère unitaire</strong>. L&rsquo;aire de la forme projetée sur cette sphère unitaire est connue sous le nom d&rsquo;angle solide ; vous pouvez visualiser l&rsquo;angle solide comme une direction avec un volume :
 <img src="/docs/LEARNOPENGL_FR/06_PBR/pbr7.png" alt="pbr7"/>
 Imaginez que vous êtes un observateur au centre de cette sphère unitaire et que vous regardez dans la direction de la forme ; la taille de la silhouette que vous en faites est l&rsquo;angle solide.</p>
 <p><strong>Intensité rayonnante</strong> (radiant intensity) : <strong>l&rsquo;intensité rayonnante mesure la quantité de flux rayonnant par angle solide</strong>, ou l&rsquo;intensité d&rsquo;une source lumineuse sur une surface projetée sur la sphère unité. Par exemple, pour une lumière omnidirectionnelle qui rayonne de manière égale dans toutes les directions, l&rsquo;intensité rayonnante peut nous donner son énergie sur une zone spécifique (angle solide) :
@@ -179,9 +186,9 @@ $$
 L_o(p, w_o) = \int_{\Omega}^{}f_r(p,w_i,w_o)L_i(p,w_i)n \cdot w_idw_i
 $$
 Nous savons maintenant que $L$ dans l&rsquo;équation de rendu représente la radiance d&rsquo;un point $p$ et d&rsquo;un angle solide infiniment petit $ω_i$, qui peut être considéré comme un vecteur de direction entrant $ω_i$. Rappelons que le $cos(θ)$ échelonne l&rsquo;énergie en fonction de l&rsquo;angle d&rsquo;incidence de la lumière sur la surface, que l&rsquo;on retrouve dans l&rsquo;équation de réflectance sous la forme $n \cdot ω_i$. L&rsquo;équation de réflectance calcule la somme de la radiance réfléchie $L_o(p,ω_o)$ d&rsquo;un point $p$ dans la direction $ω_o$, qui est la direction de sortie vers l&rsquo;observateur. En d&rsquo;autres termes, $L_o$ mesure la somme réfléchie des lumières : $L_o$ mesure la somme réfléchie de l&rsquo;irradiance des lumières sur le point $p$ vu depuis $ω_o$.</p>
-<p>L&rsquo;équation de la réflectance est basée sur l&rsquo;irradiance, qui est la somme de toutes les radiations entrantes dont nous mesurons la lumière. Non seulement d&rsquo;une seule direction de lumière entrante, mais de toutes les directions de lumière entrante à l&rsquo;intérieur d&rsquo;un hémisphère $\Omega$ centré sur le point $p$. Un hémisphère peut être décrit comme une demi-sphère alignée autour de la normale $n$ d&rsquo;une surface :
+<p>L&rsquo;équation de la réflectance est basée sur l&rsquo;irradiance, qui est la somme de toutes les radiations entrantes dont nous mesurons la lumière. Non seulement d&rsquo;une seule direction de lumière entrante, mais de toutes les directions de lumière entrante à l&rsquo;intérieur d&rsquo;un hémisphère $$Omega$ centré sur le point $p$. Un hémisphère peut être décrit comme une demi-sphère alignée autour de la normale $n$ d&rsquo;une surface :
 <img src="/docs/LEARNOPENGL_FR/06_PBR/pbr10.png" alt="pbr10"/>
-Pour calculer le total des valeurs à l&rsquo;intérieur d&rsquo;une zone ou (dans le cas d&rsquo;un hémisphère) d&rsquo;un volume, nous utilisons une construction mathématique appelée intégrale, désignée dans l&rsquo;équation de réflectance par $\int$ sur toutes les directions entrantes $dω_i$ à l&rsquo;intérieur de l&rsquo;hémisphère $Ω$ . Une intégrale mesure l&rsquo;aire d&rsquo;une fonction, qui peut être calculée analytiquement ou numériquement. Comme il n&rsquo;existe pas de solution analytique à l&rsquo;équation de rendu et de réflectance, nous voulons résoudre numériquement l&rsquo;intégrale de façon discrète. Cela revient à prendre le résultat de petits pas discrets de l&rsquo;équation de réflectance sur l&rsquo;hémisphère $Ω$ et à faire la moyenne de leurs résultats sur la taille du pas. C&rsquo;est ce que l&rsquo;on appelle <strong>la somme de Riemann</strong>, que l&rsquo;on peut grossièrement visualiser en code comme suit :</p>
+Pour calculer le total des valeurs à l&rsquo;intérieur d&rsquo;une zone ou (dans le cas d&rsquo;un hémisphère) d&rsquo;un volume, nous utilisons une construction mathématique appelée intégrale, désignée dans l&rsquo;équation de réflectance par $$int$ sur toutes les directions entrantes $dω_i$ à l&rsquo;intérieur de l&rsquo;hémisphère $Ω$ . Une intégrale mesure l&rsquo;aire d&rsquo;une fonction, qui peut être calculée analytiquement ou numériquement. Comme il n&rsquo;existe pas de solution analytique à l&rsquo;équation de rendu et de réflectance, nous voulons résoudre numériquement l&rsquo;intégrale de façon discrète. Cela revient à prendre le résultat de petits pas discrets de l&rsquo;équation de réflectance sur l&rsquo;hémisphère $Ω$ et à faire la moyenne de leurs résultats sur la taille du pas. C&rsquo;est ce que l&rsquo;on appelle <strong>la somme de Riemann</strong>, que l&rsquo;on peut grossièrement visualiser en code comme suit :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> steps <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>;
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> sum <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0f</span>;
 </span></span><span style="display:flex;"><span>vec3 P    <span style="color:#f92672">=</span> ...;
@@ -208,7 +215,7 @@ Ici, $k_d$ est le rapport mentionné précédemment entre l&rsquo;énergie lumin
 $$
 f_{lambert} = {c \over \pi}
 $$
-$c$ étant l&rsquo;albédo ou la couleur de la surface (pensez à la texture de la surface diffuse). La division par $\pi$ sert à normaliser la lumière diffuse, car l&rsquo;intégrale susmentionnée qui contient la BRDF est mise à l&rsquo;échelle par $\pi$ (nous y reviendrons dans les chapitres consacrés à l&rsquo;IBL).</p>
+$c$ étant l&rsquo;albédo ou la couleur de la surface (pensez à la texture de la surface diffuse). La division par $$pi$ sert à normaliser la lumière diffuse, car l&rsquo;intégrale susmentionnée qui contient la BRDF est mise à l&rsquo;échelle par $$pi$ (nous y reviendrons dans les chapitres consacrés à l&rsquo;IBL).</p>
 <blockquote>
 <p>Vous vous demandez peut-être quel est le rapport entre cette diffusion lambertienne et l&rsquo;éclairage diffus que nous avons utilisé précédemment : la couleur de la surface multipliée par le produit scalaire entre la normale de la surface et la direction de la lumière. Le produit scalaire est toujours présent, mais il a été déplacé hors de la BRDF puisque nous trouvons $n*ω_i$ à la fin de l&rsquo;intégrale de $L_o$.</p>
 </blockquote>
@@ -226,7 +233,7 @@ La BRDF spéculaire de Cook-Torrance est composée de trois fonctions et d&rsquo
 <p>Chacune de ces fonctions est une approximation de leurs équivalents physiques et vous trouverez plus d&rsquo;une version de chacune d&rsquo;entre elles qui vise à approximer la physique sous-jacente de différentes manières ; certaines sont plus réalistes, d&rsquo;autres plus efficaces. Vous pouvez tout à fait choisir la version approximative de ces fonctions que vous souhaitez utiliser.
 Brian Karis d&rsquo;Epic Games a fait de nombreuses recherches sur les différents types d&rsquo;approximations. Nous allons choisir les mêmes fonctions que celles utilisées par l&rsquo;Unreal Engine 4 d&rsquo;Epic Game, à savoir le GGX de Trowbridge-Reitz pour $D$, l&rsquo;approximation de Fresnel-Schlick pour $F$ et le GGX de Smith-Schlick pour $G$.</p>
 <h2 id="fonction-de-distribution-normale">Fonction de distribution normale</h2>
-<h1 id="ndf_ggxxtrnhalpha">La fonction de distribution normale D donne une approximation statistique de la surface relative des microfacettes exactement alignées sur le vecteur (à mi-chemin) $\vec{h}$. Il existe une multitude de fonctions de distribution normale qui donnent une approximation statistique de l&rsquo;alignement général des microfacettes en fonction d&rsquo;un certain paramètre de rugosité ; celle que nous utiliserons est connue sous le nom de GGX de Trowbridge-Reitz:
+<h1 id="ndf_ggxxtrnhalpha">La fonction de distribution normale D donne une approximation statistique de la surface relative des microfacettes exactement alignées sur le vecteur (à mi-chemin) $$vec{h}$. Il existe une multitude de fonctions de distribution normale qui donnent une approximation statistique de l&rsquo;alignement général des microfacettes en fonction d&rsquo;un certain paramètre de rugosité ; celle que nous utiliserons est connue sous le nom de GGX de Trowbridge-Reitz:
 $$
 NDF_{GGXXTR}(n,h,\alpha)</h1>
 <p>{
@@ -242,9 +249,9 @@ NDF_{GGXXTR}(n,h,\alpha)</h1>
 }
 }
 $$
-Ici, $\vec{h}$ est le vecteur médian à mesurer par rapport aux microfacettes de la surface, $a$ étant une mesure de la rugosité de la surface. Si nous prenons $\vec{h}$ comme vecteur à mi-chemin entre la normale de la surface et la direction de la lumière pour différents paramètres de rugosité, nous obtenons le résultat visuel suivant :
+Ici, $$vec{h}$ est le vecteur médian à mesurer par rapport aux microfacettes de la surface, $a$ étant une mesure de la rugosité de la surface. Si nous prenons $$vec{h}$ comme vecteur à mi-chemin entre la normale de la surface et la direction de la lumière pour différents paramètres de rugosité, nous obtenons le résultat visuel suivant :
 <img src="/docs/LEARNOPENGL_FR/06_PBR/theory-20230909-pbrth-1.png" alt="theory-20230909-pbrth-1.png"/>
-Lorsque la rugosité est faible (la surface est donc lisse), un nombre très concentré de microfacettes est aligné sur des vecteurs à mi-chemin sur un petit rayon. En raison de cette forte concentration, le NDF affiche une tache très brillante. En revanche, sur une surface rugueuse, où les microfacettes sont alignées dans des directions beaucoup plus aléatoires, vous trouverez un nombre beaucoup plus important de vecteurs à mi-chemin $\vec{h}$ quelque peu alignés sur les microfacettes (mais moins concentrés), ce qui donne des résultats plus grisâtres.</p>
+Lorsque la rugosité est faible (la surface est donc lisse), un nombre très concentré de microfacettes est aligné sur des vecteurs à mi-chemin sur un petit rayon. En raison de cette forte concentration, le NDF affiche une tache très brillante. En revanche, sur une surface rugueuse, où les microfacettes sont alignées dans des directions beaucoup plus aléatoires, vous trouverez un nombre beaucoup plus important de vecteurs à mi-chemin $$vec{h}$ quelque peu alignés sur les microfacettes (mais moins concentrés), ce qui donne des résultats plus grisâtres.</p>
 <p>En GLSL, la fonction de distribution normale de Trowbridge-Reitz GGX se traduit par le code suivant :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">DistributionGGX</span>(vec3 N, vec3 H, <span style="color:#66d9ef">float</span> a)
 </span></span><span style="display:flex;"><span>{
@@ -270,7 +277,7 @@ n<em>v
 (n</em>v)(1-k)+k
 }
 $$
-Ici, k est un remappage de $\alpha$ basé sur l&rsquo;utilisation de la fonction géométrique pour l&rsquo;éclairage direct ou l&rsquo;éclairage IBL :
+Ici, k est un remappage de $$alpha$ basé sur l&rsquo;utilisation de la fonction géométrique pour l&rsquo;éclairage direct ou l&rsquo;éclairage IBL :
 $$
 k_{direct}</h1>
 <p>{
@@ -287,7 +294,7 @@ k_{IBL} =
 2
 }
 $$
-Notez que la valeur de $\alpha$ peut varier en fonction de la façon dont votre moteur traduit la rugosité en $\alpha$.</p>
+Notez que la valeur de $$alpha$ peut varier en fonction de la façon dont votre moteur traduit la rugosité en $$alpha$.</p>
 <p>Dans les chapitres suivants, nous examinerons en détail comment et où ce remappage devient pertinent.</p>
 <h1 id="g_nvlk">Pour approximer efficacement la géométrie, nous devons prendre en compte à la fois la direction de la vue (obstruction de la géométrie) et le vecteur de direction de la lumière (ombrage de la géométrie). La méthode de Smith permet de prendre en compte ces deux éléments :
 $$
@@ -346,7 +353,7 @@ créé en tant que couleur de surface. Comme les surfaces métalliques absorbent
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> F0 <span style="color:#f92672">+</span> (<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> F0) <span style="color:#f92672">*</span> pow(<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> cosTheta, <span style="color:#ae81ff">5.0</span>);
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Avec <code>cosTheta</code> qui est le produit scalaire entre la normale n de la surface et la direction $\vec{h}$ (ou $\vec{v}$) de la demi-vue.</p>
+</span></span></code></pre></div><p>Avec <code>cosTheta</code> qui est le produit scalaire entre la normale n de la surface et la direction $$vec{h}$ (ou $$vec{v}$) de la demi-vue.</p>
 <h2 id="équation-de-réflectance-cook-torrance">Équation de réflectance Cook-Torrance</h2>
 <p>Chaque composante de la BRDF de Cook-Torrance étant décrite, nous pouvons inclure la BRDF physique dans l&rsquo;équation de réflectance finale :
 <img src="/docs/LEARNOPENGL_FR/06_PBR/theory-20230909-pbr5.png" alt="theory-20230909-pbr5.png"/>
@@ -383,5 +390,29 @@ Cette équation décrit maintenant complètement un modèle de rendu basé sur l
 <script>
   feather.replace();
 </script>
+
+
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$','$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  
+    
+    
+    
+    
+  
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   </body>
 </html>
