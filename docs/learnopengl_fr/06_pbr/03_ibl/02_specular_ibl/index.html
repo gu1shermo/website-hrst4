@@ -3,9 +3,13 @@
     <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="generator" content="Hugo 0.110.0">
     
     <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <title></title>
+    
+    
+    
+    <title>IBL specular | hrst4&#39;s Blog</title>
     <style>
     .container {
       max-width: 700px;
@@ -64,11 +68,29 @@
       <main id="main">
        
 
-<h1></h1>
+<h1>IBL specular</h1>
 
 
-<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+<i data-feather="calendar"></i> <time datetime="2023-11-11">Nov 11, 2023</time>
 
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cg">cg</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/opengl">opengl</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/graphics">graphics</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cpp">cpp</a>
+  
+
+  
 
 
 
@@ -78,25 +100,20 @@
 
 
 <br><br>
-<ul>
-<li>*# IBL Spéculaire
-Dans le chapitre précédent, nous avons mis en place le PBR en combinaison avec l&rsquo;éclairage basé sur l&rsquo;image en pré-calculant une map d&rsquo;irradiance comme partie diffuse indirecte de l&rsquo;éclairage. Dans ce chapitre, nous allons nous concentrer sur la partie spéculaire de l&rsquo;équation de réflectance :
+<h1 id="ibl-spéculaire">IBL Spéculaire</h1>
+<h1 id="l_opw_o">Dans le chapitre précédent, nous avons mis en place le PBR en combinaison avec l&rsquo;éclairage basé sur l&rsquo;image en pré-calculant une map d&rsquo;irradiance comme partie diffuse indirecte de l&rsquo;éclairage. Dans ce chapitre, nous allons nous concentrer sur la partie spéculaire de l&rsquo;équation de réflectance :
 $$
-L_o(p,w_o)
-=
-\int_{\Omega}
+L_o(p,w_o)</h1>
+<p>\int_{\Omega}
 (
 k_d
 {
 c
 \over
 \pi
-}</li>
-</ul>
-<ul>
-<li></li>
-</ul>
-<p>k_s
+}
++
+k_s
 {
 DFG
 \over
@@ -106,7 +123,7 @@ L_i(p,w_i)n*w_idw_i
 )
 $$
 Vous remarquerez que la partie spéculaire de Cook-Torrance (multipliée par $k_S$) n&rsquo;est pas constante sur l&rsquo;intégrale et dépend de la direction de la lumière entrante, mais aussi de la direction de la vue entrante. Essayer de résoudre l&rsquo;intégrale pour toutes les directions de lumière entrante, y compris toutes les directions de vue possibles, est une surcharge combinatoire et beaucoup trop coûteuse à calculer en temps réel. Epic Games a proposé une solution permettant de pré-convoluer la partie spéculaire en temps réel, moyennant quelques compromis, connue sous le nom d&rsquo;approximation de la somme divisée (<em>split sum approximation</em>).</p>
-<h1 id="l_opw_o">Cette approximation divise la partie spéculaire de l&rsquo;équation de réflectance en deux parties distinctes que nous pouvons convoluer individuellement et combiner plus tard dans le shader PBR pour un éclairage spéculaire indirect basé sur l&rsquo;image. De la même manière que nous avons pré-convolué la map d&rsquo;irradiance, l&rsquo;approximation de la somme divisée nécessite une map d&rsquo;environnement HDR comme entrée de convolution. Pour comprendre l&rsquo;approximation de la somme fractionnée, nous allons à nouveau examiner l&rsquo;équation de réflectance, mais en nous concentrant cette fois sur la partie spéculaire :
+<h1 id="l_opw_o-1">Cette approximation divise la partie spéculaire de l&rsquo;équation de réflectance en deux parties distinctes que nous pouvons convoluer individuellement et combiner plus tard dans le shader PBR pour un éclairage spéculaire indirect basé sur l&rsquo;image. De la même manière que nous avons pré-convolué la map d&rsquo;irradiance, l&rsquo;approximation de la somme divisée nécessite une map d&rsquo;environnement HDR comme entrée de convolution. Pour comprendre l&rsquo;approximation de la somme fractionnée, nous allons à nouveau examiner l&rsquo;équation de réflectance, mais en nous concentrant cette fois sur la partie spéculaire :
 $$
 L_o(p,w_o)</h1>
 <h1 id="heading">\int_{\Omega}
@@ -132,7 +149,7 @@ DFG
 }
 $$
 L&rsquo;intégrale dépend également de $w_o$, et nous ne pouvons pas vraiment échantillonner un cubemap pré-calculé avec deux vecteurs de direction. La position $p$ n&rsquo;est pas pertinente ici, comme décrit dans le chapitre précédent. Le calcul préalable de cette intégrale pour toutes les combinaisons possibles de $ω_i$ et $ω_o$ n&rsquo;est pas pratique dans un environnement en temps réel.</p>
-<h1 id="l_opw_o-1">L&rsquo;approximation de la somme divisée d&rsquo;Epic Games résout le problème en divisant le pré-calcul en deux parties individuelles que nous pouvons ensuite combiner pour obtenir le résultat pré-calculé que nous recherchons. L&rsquo;approximation de la somme divisée divise l&rsquo;intégrale spéculaire en deux intégrales distinctes :
+<h1 id="l_opw_o-2">L&rsquo;approximation de la somme divisée d&rsquo;Epic Games résout le problème en divisant le pré-calcul en deux parties individuelles que nous pouvons ensuite combiner pour obtenir le résultat pré-calculé que nous recherchons. L&rsquo;approximation de la somme divisée divise l&rsquo;intégrale spéculaire en deux intégrales distinctes :
 $$
 L_o(p,w_o)</h1>
 <p>\int_\Omega
