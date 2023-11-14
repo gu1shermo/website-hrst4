@@ -19,10 +19,15 @@ title = "hrst4's Blog"
     url = "/blog/"
     weight = 2
   [[menu.main]]
+    name = "Doc"
+    pre = "database"
+    url = "/docs/"
+    weight = 3
+  [[menu.main]]
     name = "Tags"
     pre = "tag"
     url = "/tags/"
-    weight = 3
+    weight = 4
 
 [taxonomies]
   # category = "categories"

@@ -1,13 +1,8 @@
 ---
-series: 
-categories: ["opengl, graphics"]
-tags: 
-title:
-  "{ title }": 
-authors:
-  - hrst4
-date:
-  "{ date }":
+date: 2023-11-11
+authors: hrst4
+title: "learnopengl (fr)"
+tags: ['cg','opengl','graphics','cpp']
 ---
 
 - **00_Introduction**

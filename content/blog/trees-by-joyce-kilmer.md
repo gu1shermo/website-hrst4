@@ -2,6 +2,7 @@
 title: "Trees by Joyce Kilmer"
 date: 2023-11-14T10:01:06+01:00
 tags: ["poetry", "trees"]
+author: "hrst4"
 draft: false
 ---
 
