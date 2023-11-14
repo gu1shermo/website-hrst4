@@ -7,7 +7,7 @@
   <i data-feather="tag"></i>
   {{ range . }}
   {{ $href := print (relURL "tags/") (urlize .) }}
-  <a class="btn btn-sm btn-outline-dark tag-btn" href="{{ $href }}">{{ . }}</a>
+  <a class="btn btn-sm btn-outline-light tag-btn" href="{{ $href }}">{{ . }}</a>
   {{ end }}
 
   
