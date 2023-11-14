@@ -1,122 +1,42 @@
-<!DOCTYPE html>
-<html lang="en" dir="auto">
-
-<head><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>hrst4&#39;s blog</title>
-<meta name="keywords" content="">
-<meta name="description" content="Mesh Avec Assimp, nous pouvons charger de nombreux modèles différents dans l&rsquo;application, mais une fois chargés, ils sont tous stockés dans les structures de données d&rsquo;Assimp. Ce que nous voulons finalement, c&rsquo;est transformer ces données dans un format qu&rsquo;OpenGL comprend afin que nous puissions effectuer le rendu des objets. Nous avons appris dans le chapitre précédent qu&rsquo;un mesh représente une seule entité dessinable, alors commençons par définir notre propre classe de mesh.">
-<meta name="author" content="">
-<link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/03_model_loading/mesh/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
-<link rel="icon" href="https://hrst4.xyz/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://hrst4.xyz/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://hrst4.xyz/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://hrst4.xyz/apple-touch-icon.png">
-<link rel="mask-icon" href="https://hrst4.xyz/safari-pinned-tab.svg">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
-
-    </style>
-</noscript><meta property="og:title" content="" />
-<meta property="og:description" content="Mesh Avec Assimp, nous pouvons charger de nombreux modèles différents dans l&rsquo;application, mais une fois chargés, ils sont tous stockés dans les structures de données d&rsquo;Assimp. Ce que nous voulons finalement, c&rsquo;est transformer ces données dans un format qu&rsquo;OpenGL comprend afin que nous puissions effectuer le rendu des objets. Nous avons appris dans le chapitre précédent qu&rsquo;un mesh représente une seule entité dessinable, alors commençons par définir notre propre classe de mesh." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/03_model_loading/mesh/" /><meta property="article:section" content="docs" />
-
-
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content=""/>
-<meta name="twitter:description" content="Mesh Avec Assimp, nous pouvons charger de nombreux modèles différents dans l&rsquo;application, mais une fois chargés, ils sont tous stockés dans les structures de données d&rsquo;Assimp. Ce que nous voulons finalement, c&rsquo;est transformer ces données dans un format qu&rsquo;OpenGL comprend afin que nous puissions effectuer le rendu des objets. Nous avons appris dans le chapitre précédent qu&rsquo;un mesh représente une seule entité dessinable, alors commençons par définir notre propre classe de mesh."/>
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "",
-      "item": "https://hrst4.xyz/docs/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "",
-      "item": "https://hrst4.xyz/docs/learnopengl_fr/03_model_loading/mesh/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "",
-  "name": "",
-  "description": "Mesh Avec Assimp, nous pouvons charger de nombreux modèles différents dans l\u0026rsquo;application, mais une fois chargés, ils sont tous stockés dans les structures de données d\u0026rsquo;Assimp. Ce que nous voulons finalement, c\u0026rsquo;est transformer ces données dans un format qu\u0026rsquo;OpenGL comprend afin que nous puissions effectuer le rendu des objets. Nous avons appris dans le chapitre précédent qu\u0026rsquo;un mesh représente une seule entité dessinable, alors commençons par définir notre propre classe de mesh.",
-  "keywords": [
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
-  ],
-  "articleBody": "Mesh Avec Assimp, nous pouvons charger de nombreux modèles différents dans l’application, mais une fois chargés, ils sont tous stockés dans les structures de données d’Assimp. Ce que nous voulons finalement, c’est transformer ces données dans un format qu’OpenGL comprend afin que nous puissions effectuer le rendu des objets. Nous avons appris dans le chapitre précédent qu’un mesh représente une seule entité dessinable, alors commençons par définir notre propre classe de mesh.\nRevoyons un peu ce que nous avons appris jusqu’à présent pour réfléchir à ce qu’un mesh devrait minimalement avoir comme données. Un mesh doit au moins avoir un ensemble de sommets, où chaque sommet contient un vecteur de position, un vecteur de normalité et un vecteur de coordonnées de texture. Un maillage doit également contenir des indices pour le dessin indexé et des données matérielles sous la forme de textures (maps diffuses/spéculaires).\nMaintenant que nous avons défini les exigences minimales pour une classe de mesh, nous pouvons définir un sommet dans OpenGL :\nstruct Vertex { glm::vec3 Position; glm::vec3 Normal; glm::vec2 TexCoords; }; Nous stockons chacun des attributs de vertex requis dans une structure appelée Vertex. En plus de la structure Vertex, nous voulons également organiser les données de texture dans une structure Texture :\nstruct Texture { unsigned int id; string type; }; Nous stockons l’identifiant de la texture et son type, par exemple une texture diffuse ou spéculaire.\nConnaissant la représentation réelle d’un sommet et d’une texture, nous pouvons commencer à définir la structure de la classe de Mesh :\nclass Mesh { public: // mesh data vector\u003cVertex\u003e vertices; vector\u003cunsigned int\u003e indices; vector\u003cTexture\u003e textures; Mesh(vector\u003cVertex\u003e vertices, vector\u003cunsigned int\u003e indices, vector\u003cTexture\u003e textures); void Draw(Shader \u0026shader); private: // render data unsigned int VAO, VBO, EBO; void setupMesh(); }; Comme vous pouvez le voir, la classe n’est pas trop compliquée. Dans le constructeur, nous donnons au mesh toutes les données nécessaires, nous initialisons les buffers dans la fonction setupMesh, et enfin nous dessinons le mesh via la fonction Draw. Notez que nous donnons un shader à la fonction Draw ; en passant le shader au mesh, nous pouvons définir plusieurs uniformes avant de dessiner (comme lier les samplers aux unités de texture).\nLe contenu de la fonction du constructeur est assez simple. Nous définissons simplement les variables publiques de la classe avec les variables d’argument correspondantes du constructeur. Nous appelons également la fonction setupMesh dans le constructeur :\nMesh(vector\u003cVertex\u003e vertices, vector\u003cunsigned int\u003e indices, vector\u003cTexture\u003e textures) { this-\u003evertices = vertices; this-\u003eindices = indices; this-\u003etextures = textures; setupMesh(); } Il ne se passe rien de spécial ici. Plongeons maintenant dans la fonction setupMesh.\nInitialisation Grâce au constructeur, nous disposons maintenant de grandes listes de données de mesh que nous pouvons utiliser pour le rendu. Nous devons configurer les buffers appropriés et spécifier la disposition du vertex shader via les pointeurs d’attributs de vertex. Vous ne devriez plus avoir de problème avec ces concepts, mais nous les avons un peu pimentés avec l’introduction des données de vertex dans les structures :\nvoid setupMesh() { glGenVertexArrays(1, \u0026VAO); glGenBuffers(1, \u0026VBO); glGenBuffers(1, \u0026EBO); glBindVertexArray(VAO); glBindBuffer(GL_ARRAY_BUFFER, VBO); glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), \u0026vertices[0], GL_STATIC_DRAW); glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), \u0026indices[0], GL_STATIC_DRAW); // vertex positions glEnableVertexAttribArray(0);\tglVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0); // vertex normals glEnableVertexAttribArray(1);\tglVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal)); // vertex texture coords glEnableVertexAttribArray(2);\tglVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords)); glBindVertexArray(0); } Le code n’est pas très différent de ce à quoi on pourrait s’attendre, mais quelques petites astuces ont été utilisées avec l’aide de la structure Vertex.\nLes structures ont une grande propriété en C++, à savoir que leur disposition en mémoire est séquentielle. En d’autres termes, si nous devions représenter une structure comme un tableau de données, elle ne contiendrait que les variables de la structure dans un ordre séquentiel, ce qui se traduit directement par un tableau de flottants (en fait d’octets) que nous voulons pour un buffer de tableau. Par exemple, si nous avons une structure Vertex remplie, sa disposition en mémoire serait la suivante :\nVertex vertex; vertex.Position = glm::vec3(0.2f, 0.4f, 0.6f); vertex.Normal = glm::vec3(0.0f, 1.0f, 0.0f); vertex.TexCoords = glm::vec2(1.0f, 0.0f); // = [0.2f, 0.4f, 0.6f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f]; Grâce à cette propriété utile, nous pouvons directement passer un pointeur sur une grande liste de structures Vertex en tant que données du buffer et elles correspondent parfaitement à ce que glBufferData attend en tant qu’argument :\nglBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices[0], GL_STATIC_DRAW); Naturellement, l’opérateur sizeof peut également être utilisé sur la structure pour obtenir la taille appropriée en octets. Celle-ci devrait être de 32 octets (8 flottants * 4 octets chacun).\nUne autre utilisation intéressante des structures est une directive du préprocesseur appelée offsetof(s,m) qui prend comme premier argument une structure et comme second argument un nom de variable de la structure. La macro renvoie l’octet de décalage de cette variable à partir du début de la structure. Cette macro est parfaite pour définir le paramètre offset de la fonction glVertexAttribPointer :\nglVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal)); Le décalage est maintenant défini à l’aide de la macro offsetof qui, dans ce cas, définit le décalage d’octet du vecteur normal égal au décalage d’octet de l’attribut normal dans la structure qui est de 3 flottants et donc de 12 octets.\nL’utilisation d’une telle structure ne nous permet pas seulement d’obtenir un code plus lisible, mais aussi d’étendre facilement la structure. Si nous voulons un autre attribut de sommet, nous pouvons simplement l’ajouter à la structure et, en raison de sa nature flexible, le code de rendu ne sera pas interrompu.\nRendu (Rendering) La dernière fonction que nous devons définir pour que la classe Mesh soit complète est la fonction Draw. Avant de rendre le mesh, nous voulons d’abord lier les textures appropriées avant d’appeler glDrawElements. ****Cependant, ceci est quelque peu difficile puisque nous ne savons pas dès le départ combien de textures (s’il y en a) le mesh possède et quel type elles peuvent avoir. Comment définir les unités de texture et les échantillonneurs dans les shaders ?\nPour résoudre ce problème, nous allons partir d’une certaine convention de nommage : chaque texture diffuse est nommée texture_diffuseN, et chaque texture spéculaire doit être nommée texture_specularN, où N est un nombre quelconque allant de 1 au nombre maximum d’échantillonneurs de textures autorisé. Supposons que nous ayons 3 textures diffuses et 2 textures spéculaires pour un maillage particulier, leurs échantillonneurs de texture devraient alors être appelés :\nuniform sampler2D texture_diffuse1; uniform sampler2D texture_diffuse2; uniform sampler2D texture_diffuse3; uniform sampler2D texture_specular1; uniform sampler2D texture_specular2; Grâce à cette convention, nous pouvons définir autant de samplers de textures que nous le souhaitons dans les shaders (jusqu’au maximum d’OpenGL) et si un maillage contient effectivement (autant) de textures, nous savons quels seront leurs noms. Grâce à cette convention, nous pouvons traiter n’importe quel nombre de textures sur un seul maillage et le développeur de shaders est libre d’en utiliser autant qu’il le souhaite en définissant les samplers appropriés.\nIl existe de nombreuses solutions à ce type de problème et si vous n’aimez pas cette solution particulière, c’est à vous de faire preuve de créativité et de trouver votre propre approche.\nLe code de dessin résultant devient alors :\nvoid Draw(Shader \u0026shader) { unsigned int diffuseNr = 1; unsigned int specularNr = 1; for(unsigned int i = 0; i \u003c textures.size(); i++) { glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding // retrieve texture number (the N in diffuse_textureN) string number; string name = textures[i].type; if(name == \"texture_diffuse\") number = std::to_string(diffuseNr++); else if(name == \"texture_specular\") number = std::to_string(specularNr++); shader.setInt((\"material.\" + name + number).c_str(), i); glBindTexture(GL_TEXTURE_2D, textures[i].id); } glActiveTexture(GL_TEXTURE0); // draw mesh glBindVertexArray(VAO); glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0); glBindVertexArray(0); } Nous calculons d’abord la composante N par type de texture et la concaténons à la chaîne de type de la texture pour obtenir le nom d’uniforme approprié. Nous localisons ensuite le sampler approprié, lui donnons la valeur d’emplacement correspondant à l’unité de texture actuellement active et lions la texture. C’est également la raison pour laquelle nous avons besoin du shader dans la fonction Draw.\nNous avons également ajouté “material.” au nom de l’uniforme résultant parce que nous stockons généralement les textures dans une structure matérielle (cela peut différer selon l’implémentation).\nNotez que nous incrémentons les compteurs diffus et spéculaires au moment où nous les convertissons en chaînes de caractères. En C++, l’appel à l’incrémentation : variable++ renvoie la variable telle quelle, puis l’incrémente, tandis que ++variable incrémente d’abord la variable, puis la renvoie. Dans notre cas, la valeur transmise à std::string est la valeur originale du compteur. Ensuite, la valeur est incrémentée pour le prochain tour.\nVous pouvez trouver le code source complet de la classe Mesh ici.\nLa classe Mesh que nous venons de définir est une abstraction pour de nombreux sujets que nous avons abordés dans les premiers chapitres. Dans le prochain chapitre, nous créerons un modèle qui servira de conteneur pour plusieurs objets mesh et qui implémentera l’interface de chargement d’Assimp.\n",
-  "wordCount" : "1493",
-  "inLanguage": "en",
-  "datePublished": "0001-01-01T00:00:00Z",
-  "dateModified": "0001-01-01T00:00:00Z",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://hrst4.xyz/docs/learnopengl_fr/03_model_loading/mesh/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "hrst4's blog",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://hrst4.xyz/favicon.ico"
-    }
-  }
-}
-</script>
-</head>
-
-<body class=" dark" id="top">
-
-<header class="header">
-    <nav class="nav">
-        <div class="logo">
-            <a href="https://hrst4.xyz/" accesskey="h" title="hrst4&#39;s blog (Alt + H)">hrst4&#39;s blog</a>
-            <div class="logo-switches">
-            </div>
-        </div>
-        <ul id="menu">
-        </ul>
-    </nav>
-</header>
-<main class="main">
-
-<article class="post-single">
-  <header class="post-header">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
     
-    <h1 class="post-title">
       
-    </h1>
-    <div class="post-meta">
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
 
-</div>
-  </header> 
-  <div class="post-content"><h1 id="mesh">Mesh<a hidden class="anchor" aria-hidden="true" href="#mesh">#</a></h1>
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+<br><br>
+<h1 id="mesh">Mesh</h1>
 <p>Avec Assimp, nous pouvons charger de nombreux modèles différents dans l&rsquo;application, mais une fois chargés, ils sont tous stockés dans les structures de données d&rsquo;Assimp. <strong>Ce que nous voulons finalement, c&rsquo;est transformer ces données dans un format qu&rsquo;OpenGL comprend afin que nous puissions effectuer le rendu des objets</strong>. Nous avons appris dans le chapitre précédent qu&rsquo;un mesh représente une seule entité dessinable, alors commençons par définir notre propre classe de mesh.</p>
 <p>Revoyons un peu ce que nous avons appris jusqu&rsquo;à présent pour réfléchir à ce qu&rsquo;un mesh devrait minimalement avoir comme données. <strong>Un mesh doit au moins avoir un ensemble de sommets, où chaque sommet contient un vecteur de position, un vecteur de normalité et un vecteur de coordonnées de texture</strong>. <strong>Un maillage doit également contenir des indices pour le dessin indexé et des données matérielles sous la forme de textures (maps diffuses/spéculaires).</strong></p>
 <p>Maintenant que nous avons défini les exigences minimales pour une classe de mesh, nous pouvons définir un sommet dans OpenGL :</p>
@@ -158,7 +78,7 @@
 </span></span><span style="display:flex;"><span>    setupMesh();
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Il ne se passe rien de spécial ici. Plongeons maintenant dans la fonction <code>setupMesh</code>.</p>
-<h2 id="initialisation">Initialisation<a hidden class="anchor" aria-hidden="true" href="#initialisation">#</a></h2>
+<h2 id="initialisation">Initialisation</h2>
 <p>Grâce au constructeur, nous disposons maintenant de grandes listes de données de mesh que nous pouvons utiliser pour le rendu. Nous devons configurer les buffers appropriés et spécifier la disposition du vertex shader via les pointeurs d&rsquo;attributs de vertex. Vous ne devriez plus avoir de problème avec ces concepts, mais nous les avons un peu pimentés avec l&rsquo;introduction des données de vertex dans les structures :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setupMesh</span>()
 </span></span><span style="display:flex;"><span>{
@@ -201,7 +121,7 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glVertexAttribPointer(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, GL_FLOAT, GL_FALSE, <span style="color:#66d9ef">sizeof</span>(Vertex), (<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>)offsetof(Vertex, Normal));  
 </span></span></code></pre></div><p>Le décalage est maintenant défini à l&rsquo;aide de la macro <code>offsetof</code> qui, dans ce cas, définit le décalage d&rsquo;octet du vecteur normal égal au décalage d&rsquo;octet de l&rsquo;attribut normal dans la structure qui est de 3 flottants et donc de 12 octets.</p>
 <p><strong>L&rsquo;utilisation d&rsquo;une telle structure ne nous permet pas seulement d&rsquo;obtenir un code plus lisible, mais aussi d&rsquo;étendre facilement la structure.</strong> Si nous voulons un autre attribut de sommet, nous pouvons simplement l&rsquo;ajouter à la structure et, en raison de sa nature flexible, le code de rendu ne sera pas interrompu.</p>
-<h2 id="rendu-rendering">Rendu (Rendering)<a hidden class="anchor" aria-hidden="true" href="#rendu-rendering">#</a></h2>
+<h2 id="rendu-rendering">Rendu (Rendering)</h2>
 <p>La dernière fonction que nous devons définir pour que la classe <code>Mesh</code> soit complète est la fonction <code>Draw</code>. <strong>Avant de rendre le mesh, nous voulons d&rsquo;abord lier les textures appropriées avant d&rsquo;appeler <code>glDrawElements</code></strong>. ****Cependant, ceci est quelque peu difficile puisque nous ne savons pas dès le départ combien de textures (s&rsquo;il y en a) le mesh possède et quel type elles peuvent avoir. Comment définir les unités de texture et les échantillonneurs dans les shaders ?</p>
 <p><strong>Pour résoudre ce problème, nous allons partir d&rsquo;une certaine convention de nommage</strong> : chaque texture diffuse est nommée <code>texture_diffuseN</code>, et chaque texture spéculaire doit être nommée <code>texture_specularN</code>, <strong>où N est un nombre quelconque allant de 1 au nombre maximum d&rsquo;échantillonneurs de textures autorisé</strong>. Supposons que nous ayons 3 textures diffuses et 2 textures spéculaires pour un maillage particulier, leurs échantillonneurs de texture devraient alors être appelés :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>uniform sampler2D texture_diffuse1;
@@ -248,71 +168,13 @@
 <p>La classe <code>Mesh</code> que nous venons de définir est une <strong>abstraction</strong> pour de nombreux sujets que nous avons abordés dans les premiers chapitres. Dans le prochain chapitre, nous créerons un modèle qui servira de conteneur pour plusieurs objets mesh et qui implémentera l&rsquo;interface de chargement d&rsquo;Assimp.</p>
 
 
-  </div>
 
-  <footer class="post-footer">
-    <ul class="post-tags">
-    </ul>
-  </footer>
-</article>
-    </main>
+      </main>
+    </div>
     
-<footer class="footer">
-    <span>&copy; 2023 <a href="https://hrst4.xyz/">hrst4&#39;s blog</a></span>
-    <span>
-        Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
-</footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
-    </svg>
-</a>
-
+<script src="/js/feather.min.js"></script>
 <script>
-    let menu = document.getElementById('menu')
-    if (menu) {
-        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
-        menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
-        });
-    });
-
+  feather.replace();
 </script>
-<script>
-    var mybutton = document.getElementById("top-link");
-    window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
-        } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
-        }
-    };
-
-</script>
-</body>
-
+  </body>
 </html>

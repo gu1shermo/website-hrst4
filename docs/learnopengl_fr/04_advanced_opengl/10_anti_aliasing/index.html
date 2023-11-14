@@ -1,122 +1,42 @@
-<!DOCTYPE html>
-<html lang="en" dir="auto">
-
-<head><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>hrst4&#39;s blog</title>
-<meta name="keywords" content="">
-<meta name="description" content="Anti Aliasing (Anti-crénelage) Au cours de votre aventure dans le domaine du rendu, vous avez probablement rencontré des motifs dentelés semblables à des scies sur les bords de vos modèles. La raison pour laquelle ces bords dentelés apparaissent est due à la façon dont le rasterizer transforme les données de vertex en fragments réels. Un exemple de ce à quoi ressemblent ces bords crénelés peut déjà être vu en dessinant un simple cube : Bien que cela ne soit pas immédiatement visible, si vous regardez de plus près les bords du cube, vous verrez un motif crénelé.">
-<meta name="author" content="">
-<link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/10_anti_aliasing/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
-<link rel="icon" href="https://hrst4.xyz/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://hrst4.xyz/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://hrst4.xyz/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://hrst4.xyz/apple-touch-icon.png">
-<link rel="mask-icon" href="https://hrst4.xyz/safari-pinned-tab.svg">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
-
-    </style>
-</noscript><meta property="og:title" content="" />
-<meta property="og:description" content="Anti Aliasing (Anti-crénelage) Au cours de votre aventure dans le domaine du rendu, vous avez probablement rencontré des motifs dentelés semblables à des scies sur les bords de vos modèles. La raison pour laquelle ces bords dentelés apparaissent est due à la façon dont le rasterizer transforme les données de vertex en fragments réels. Un exemple de ce à quoi ressemblent ces bords crénelés peut déjà être vu en dessinant un simple cube : Bien que cela ne soit pas immédiatement visible, si vous regardez de plus près les bords du cube, vous verrez un motif crénelé." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/10_anti_aliasing/" /><meta property="article:section" content="docs" />
-
-
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content=""/>
-<meta name="twitter:description" content="Anti Aliasing (Anti-crénelage) Au cours de votre aventure dans le domaine du rendu, vous avez probablement rencontré des motifs dentelés semblables à des scies sur les bords de vos modèles. La raison pour laquelle ces bords dentelés apparaissent est due à la façon dont le rasterizer transforme les données de vertex en fragments réels. Un exemple de ce à quoi ressemblent ces bords crénelés peut déjà être vu en dessinant un simple cube : Bien que cela ne soit pas immédiatement visible, si vous regardez de plus près les bords du cube, vous verrez un motif crénelé."/>
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "",
-      "item": "https://hrst4.xyz/docs/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "",
-      "item": "https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/10_anti_aliasing/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "",
-  "name": "",
-  "description": "Anti Aliasing (Anti-crénelage) Au cours de votre aventure dans le domaine du rendu, vous avez probablement rencontré des motifs dentelés semblables à des scies sur les bords de vos modèles. La raison pour laquelle ces bords dentelés apparaissent est due à la façon dont le rasterizer transforme les données de vertex en fragments réels. Un exemple de ce à quoi ressemblent ces bords crénelés peut déjà être vu en dessinant un simple cube : Bien que cela ne soit pas immédiatement visible, si vous regardez de plus près les bords du cube, vous verrez un motif crénelé.",
-  "keywords": [
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
-  ],
-  "articleBody": "Anti Aliasing (Anti-crénelage) Au cours de votre aventure dans le domaine du rendu, vous avez probablement rencontré des motifs dentelés semblables à des scies sur les bords de vos modèles. La raison pour laquelle ces bords dentelés apparaissent est due à la façon dont le rasterizer transforme les données de vertex en fragments réels. Un exemple de ce à quoi ressemblent ces bords crénelés peut déjà être vu en dessinant un simple cube : Bien que cela ne soit pas immédiatement visible, si vous regardez de plus près les bords du cube, vous verrez un motif crénelé. Si vous faites un zoom avant, vous verrez ce qui suit : Ce n’est évidemment pas quelque chose que nous voulons dans la version finale d’une application. Cet effet, qui consiste à voir clairement les formations de pixels dont un bord est composé, s’appelle l’aliasing. Il existe un certain nombre de techniques appelées techniques d’anti aliasing qui changent ce comportement en produisant des bords plus lisses.\nAu début, nous avions une technique appelée super sample anti-aliasing (SSAA) qui utilisait temporairement un tampon de rendu de résolution beaucoup plus élevée pour effectuer le rendu de la scène (super sampling). Ensuite, lorsque la scène complète est rendue, la résolution est ramenée à la résolution normale. Cette résolution supplémentaire a été utilisée pour éviter les bords irréguliers. Bien qu’elle nous ait apporté une solution au problème de l’aliasing, elle s’accompagne d’un inconvénient majeur en termes de performances, puisque nous devons dessiner beaucoup plus de fragments qu’à l’accoutumée. Cette technique n’a donc connu qu’un bref moment de gloire.\nCette technique a donné naissance à une technique plus moderne appelée multisample anti-aliasing ou MSAA qui emprunte les concepts derrière le SSAA tout en mettant en œuvre une approche beaucoup plus efficace. Dans ce chapitre, nous allons discuter en détail de cette technique MSAA qui est intégrée dans OpenGL.\nMultisampling Pour comprendre ce qu’est le multi-échantillonnage et comment il permet de résoudre le problème de l’aliasing, nous devons d’abord nous plonger un peu plus dans le fonctionnement interne du rasterizer d’OpenGL.\nLe rasterizer est la combinaison de tous les algorithmes et processus qui se situent entre les sommets traités et le fragment shader. Le rasterizer prend tous les sommets appartenant à une primitive unique et les transforme en un ensemble de fragments. Les coordonnées des sommets peuvent théoriquement avoir n’importe quelle coordonnée, mais les fragments ne le peuvent pas puisqu’ils sont limités par la résolution de votre écran. Il n’y aura presque jamais de correspondance un à un entre les coordonnées des sommets et les fragments, de sorte que le rasterizer doit déterminer d’une manière ou d’une autre à quel fragment/coordonnée d’écran chaque sommet spécifique aboutira. Nous voyons ici une grille de pixels d’écran où le centre de chaque pixel contient un point d’échantillonnage qui est utilisé pour déterminer si un pixel est couvert par le triangle. Les points d’échantillonnage rouges sont couverts par le triangle et un fragment sera généré pour ce pixel couvert. Même si certaines parties des bords du triangle pénètrent encore dans certains pixels de l’écran, le point d’échantillonnage du pixel n’est pas couvert par l’intérieur du triangle et ce pixel ne sera donc pas influencé par un fragment shader.\nVous pouvez probablement déjà comprendre l’origine de l’aliasing. La version rendue complète du triangle ressemblerait à ceci sur votre écran : En raison du nombre limité de pixels de l’écran, certains pixels seront rendus le long d’un bord et d’autres non. Le résultat est que nous rendons les primitives avec des bords non lisses, ce qui donne lieu aux bords crénelés que nous avons vus précédemment.\nLe multi-échantillonnage n’utilise pas un seul point d’échantillonnage pour déterminer la couverture du triangle, mais plusieurs points d’échantillonnage (devinez d’où vient son nom). Au lieu d’un seul point d’échantillonnage au centre de chaque pixel, nous allons placer 4 sous-échantillons dans un schéma général et les utiliser pour déterminer la couverture des pixels.\nLa partie gauche de l’image montre comment nous déterminerions normalement la couverture d’un triangle. Ce pixel spécifique n’exécutera pas de shader de fragment (et restera donc vide) puisque son point d’échantillonnage n’était pas couvert par le triangle. La partie droite de l’image montre une version multi-échantillonnée où chaque pixel contient 4 points d’échantillonnage. Ici, nous pouvons voir que seuls 2 des points d’échantillonnage couvrent le triangle.\nLe nombre de points d’échantillonnage peut être quelconque, un plus grand nombre d’échantillons permettant d’obtenir une meilleure précision de couverture.\nC’est ici que le multi-échantillonnage devient intéressant. Nous avons déterminé que deux sous-échantillons étaient couverts par le triangle. L’étape suivante consiste donc à déterminer une couleur pour ce pixel spécifique. Notre première idée serait d’exécuter le fragment shader pour chaque sous-échantillon couvert et de faire ensuite la moyenne des couleurs de chaque sous-échantillon par pixel. Dans ce cas, nous exécuterions le fragment shader deux fois sur les données interpolées des sommets de chaque sous-échantillon et nous stockerions la couleur résultante dans ces points d’échantillonnage. Ce n’est (heureusement) pas ainsi que cela fonctionne, car cela signifierait que nous devrions exécuter beaucoup plus de fragment shaders que sans le multi-échantillonnage, ce qui réduirait drastiquement les performances.\nLe fonctionnement réel de MSAA est le suivant : le shader de fragment n’est exécuté qu’une seule fois par pixel (pour chaque primitive), quel que soit le nombre de sous-échantillons couverts par le triangle ; le shader de fragment s’exécute avec les données du sommet interpolées au centre du pixel. MSAA utilise ensuite un tampon de profondeur/stencil plus important pour déterminer la couverture des sous-échantillons. Le nombre de sous-échantillons couverts détermine la contribution de la couleur du pixel au framebuffer. Étant donné que seuls 2 des 4 échantillons ont été couverts dans l’image précédente, la moitié de la couleur du triangle est mélangée à la couleur du framebuffer (dans ce cas, la couleur claire), ce qui donne une couleur bleu clair.\nLe résultat est un tampon de plus haute résolution (avec une profondeur/un stencil de plus haute résolution) où tous les bords primitifs produisent maintenant un motif plus lisse. Voyons à quoi ressemble le multi-échantillonnage lorsque nous déterminons la couverture du triangle précédent : Ici, chaque pixel contient 4 sous-échantillons (les échantillons non pertinents ont été cachés) où les sous-échantillons bleus sont couverts par le triangle et les points d’échantillonnage gris ne le sont pas. Dans la région intérieure du triangle, tous les pixels exécuteront une fois le fragment shader dont la couleur de sortie est stockée directement dans le framebuffer (en supposant qu’il n’y ait pas de mélange). Cependant, sur les bords intérieurs du triangle, tous les sous-échantillons ne seront pas couverts, de sorte que le résultat du fragment shader ne contribuera pas entièrement au framebuffer. En fonction du nombre d’échantillons couverts, une plus ou moins grande partie de la couleur du fragment de triangle aboutit à ce pixel.\nPour chaque pixel, moins il y a de sous-échantillons dans le triangle, moins il prend la couleur du triangle. Si nous remplissons les couleurs des pixels, nous obtenons l’image suivante : Les bords du triangle sont maintenant entourés de couleurs légèrement plus claires que la couleur réelle du bord, ce qui donne un aspect lisse au bord lorsqu’on le regarde de loin.\nLes valeurs de profondeur et de stencil sont stockées par sous-échantillon et, même si nous n’exécutons le shader de fragment qu’une seule fois, les valeurs de couleur sont également stockées par sous-échantillon dans le cas où plusieurs triangles se chevauchent sur un seul pixel. Pour les tests de profondeur, la valeur de profondeur du sommet est interpolée à chaque sous-échantillon avant d’exécuter le test de profondeur, et pour les tests de stencil, nous stockons les valeurs de stencil par sous-échantillon. Cela signifie que la taille des tampons est maintenant augmentée par le nombre de sous-échantillons par pixel.\nCe que nous avons vu jusqu’à présent est une vue d’ensemble de la manière dont l’anticrénelage multi-échantillonné fonctionne en coulisses. La logique réelle derrière le rasterizer est un peu plus compliquée, mais cette brève description devrait être suffisante pour comprendre le concept et la logique derrière l’anticrénelage multi-échantillonné ; suffisamment pour se plonger dans les aspects pratiques.\nMSAA dans OpenGL Si nous voulons utiliser le MSAA dans OpenGL, nous devons utiliser un tampon capable de stocker plus d’une valeur d’échantillon par pixel. Nous avons besoin d’un nouveau type de tampon capable de stocker une quantité donnée de multi-échantillons, appelé tampon multi-échantillons (multisample buffer).\nLa plupart des systèmes de fenêtrage sont capables de nous fournir un tampon multi-échantillon au lieu d’un tampon par défaut. GLFW nous offre également cette fonctionnalité et tout ce que nous avons à faire est d’indiquer à GLFW que nous aimerions utiliser un tampon multi-échantillons avec N échantillons au lieu d’un tampon normal en appelant glfwWindowHint avant de créer la fenêtre :\nglfwWindowHint(GLFW_SAMPLES, 4); Lorsque nous appelons maintenant glfwCreateWindow, nous créons une fenêtre de rendu, mais cette fois avec une mémoire tampon contenant 4 sous-échantillons par coordonnée d’écran. Cela signifie que la taille du tampon est augmentée de 4.\nMaintenant que nous avons demandé à GLFW des tampons multi-échantillonnés, nous devons activer le multi-échantillonnage en appelant glEnable avec GL_MULTISAMPLE. Sur la plupart des pilotes OpenGL, le multi-échantillonnage est activé par défaut, donc cet appel est un peu redondant, mais c’est généralement une bonne idée de l’activer de toute façon. De cette façon, toutes les implémentations d’OpenGL ont le multi-échantillonnage activé.\nglEnable(GL_MULTISAMPLE); Comme les algorithmes de multi-échantillonnage sont implémentés dans le rasterizer de vos pilotes OpenGL, il n’y a pas grand-chose d’autre à faire. Si nous effectuons maintenant le rendu du cube vert du début de ce chapitre, nous devrions voir des bords plus lisses : Le cube a effectivement l’air beaucoup plus lisse et il en va de même pour tout autre objet que vous dessinez dans votre scène. Vous trouverez le code source de cet exemple simple ici.\n## MSAA hors-écran Comme GLFW se charge de créer les tampons multi-échantillonnés, il est assez facile d’activer le MSAA. Cependant, si nous voulons utiliser nos propres framebuffers, nous devons générer nous-mêmes les tampons multi-échantillonnés ; nous devons donc nous occuper de la création des tampons multi-échantillonnés.\nIl y a deux façons de créer des tampons multi-échantillonnés pour servir d’attachement aux framebuffers : les attachements de texture et les attachements de renderbuffer. Ces deux types d’attachements sont assez similaires aux attachements normaux dont nous avons parlé dans le chapitre sur les framebuffers.\nAttachement de textures multi-échantillonnées Pour créer une texture prenant en charge le stockage de plusieurs points d’échantillonnage, nous utilisons glTexImage2DMultisample au lieu de glTexImage2D qui accepte GL_TEXTURE_2D_MULTISAMPLE comme cible de texture :\nglBindTexture(GL_TEXTURE_2D_MULTISAMPLE, tex); glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, GL_RGB, width, height, GL_TRUE); glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0); Le deuxième argument définit le nombre d’échantillons que nous souhaitons pour la texture. Si le dernier argument vaut GL_TRUE, l’image utilisera des emplacements d’échantillons identiques et le même nombre de sous-échantillons pour chaque texel.\nPour attacher une texture multi-échantillonnée à un framebuffer, nous utilisons glFramebufferTexture2D, mais cette fois avec GL_TEXTURE_2D_MULTISAMPLE comme type de texture :\nglFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, tex, 0); Le framebuffer actuellement lié dispose maintenant d’un tampon de couleurs multi-échantillonnées sous la forme d’une image de texture.\nObjets de tampon de rendu multi-échantillonnés Comme pour les textures, la création d’un objet renderbuffer multi-échantillonné n’est pas difficile. C’est même assez facile puisqu’il suffit de changer glRenderbufferStorage en glRenderbufferStorageMultisample lorsque nous configurons la mémoire de stockage du tampon de rendu (actuellement lié) :\nglRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, width, height); La seule chose qui a changé ici est le second paramètre supplémentaire où nous définissons le nombre d’échantillons que nous souhaitons utiliser ; 4 dans ce cas particulier.\nRendu dans un framebuffer multi-échantillonné Le rendu dans un framebuffer multi-échantillonné est simple. Chaque fois que nous dessinons quelque chose alors que l’objet framebuffer est lié, le rasterizer se charge de toutes les opérations de multi-échantillonnage. Cependant, parce qu’un tampon multi-échantillonné est un peu spécial, nous ne pouvons pas utiliser directement le tampon pour d’autres opérations comme l’échantillonnage dans un shader.\nUne image multi-échantillonnée contient beaucoup plus d’informations qu’une image normale, c’est pourquoi nous devons réduire l’échelle ou résoudre l’image. La résolution d’un framebuffer multi-échantillonné se fait généralement via glBlitFramebuffer qui copie une région d’un framebuffer à l’autre tout en résolvant les buffers multi-échantillonnés.\nglBlitFramebuffer transfère une région source donnée, définie par 4 coordonnées d’espace-écran, vers une région cible donnée, également définie par 4 coordonnées d’espace-écran. Vous vous souvenez peut-être du chapitre sur les framebuffers que si nous nous lions à GL_FRAMEBUFFER, nous nous lions à la fois à la cible de lecture et à la cible de dessin du framebuffer. Nous pourrions également lier ces cibles individuellement en liant les framebuffers à GL_READ_FRAMEBUFFER et GL_DRAW_FRAMEBUFFER respectivement. La fonction glBlitFramebuffer lit ces deux cibles pour déterminer quel est le framebuffer source et quel est le framebuffer cible. Nous pouvons alors transférer la sortie du framebuffer multi-échantillonné vers l’écran réel en blitant (blitting?) l’image dans le framebuffer par défaut comme suit :\nglBindFramebuffer(GL_READ_FRAMEBUFFER, multisampledFBO); glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST); Si nous effectuons ensuite le rendu de la même application, nous devrions obtenir le même résultat : un cube vert tilleul affiché avec MSAA et présentant à nouveau des arêtes nettement moins irrégulières : Vous pouvez trouver le code source ici.\nMais que se passe-t-il si nous voulons utiliser le résultat de la texture d’un framebuffer multi-échantillonné pour faire des choses comme du post-traitement ? Nous ne pouvons pas utiliser directement la (les) texture(s) multi-échantillonnée(s) dans le fragment shader. Ce que nous pouvons faire cependant, c’est blitter le(s) tampon(s) multi-échantillonné(s) vers un FBO différent avec un attachement de texture non multi-échantillonné. Nous utilisons ensuite cette texture de couleur ordinaire pour le post-traitement, ce qui revient à post-traiter une image rendue via le multi-échantillonnage. Cela signifie que nous devons générer un nouveau FBO qui agit uniquement comme un objet framebuffer intermédiaire pour résoudre le tampon multi-échantillonné en une texture 2D normale que nous pouvons utiliser dans le fragment shader. Ce processus ressemble un peu à ceci en pseudocode :\nunsigned int msFBO = CreateFBOWithMultiSampledAttachments(); // then create another FBO with a normal texture color attachment [...] glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0); [...] while(!glfwWindowShouldClose(window)) { [...] glBindFramebuffer(msFBO); ClearFrameBuffer(); DrawScene(); // now resolve multisampled buffer(s) into intermediate FBO glBindFramebuffer(GL_READ_FRAMEBUFFER, msFBO); glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediateFBO); glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST); // now scene is stored as 2D texture image, so use that image for post-processing glBindFramebuffer(GL_FRAMEBUFFER, 0); ClearFramebuffer(); glBindTexture(GL_TEXTURE_2D, screenTexture); DrawPostProcessingQuad(); [...] Si nous implémentons ceci dans le code de post-traitement du chapitre sur les framebuffers, nous pouvons créer toutes sortes d’effets de post-traitement sympas sur une texture d’une scène qui n’a (presque) pas de bords irréguliers. Avec un filtre de post-traitement en niveaux de gris appliqué, cela ressemblera à quelque chose comme ceci : La texture de l’écran étant à nouveau une texture normale (non multi-échantillonnée), certains filtres de post-traitement tels que la détection des bords introduiront à nouveau des bords irréguliers. Pour y remédier, vous pouvez flouter la texture par la suite ou créer votre propre algorithme d’anticrénelage.\nVous pouvez voir que lorsque nous voulons combiner le multi-échantillonnage avec le rendu hors écran, nous devons suivre quelques étapes supplémentaires. Ces étapes en valent cependant la peine puisque le multi-échantillonnage améliore considérablement la qualité visuelle de votre scène. Notez que l’activation du multi-échantillonnage peut sensiblement réduire les performances au fur et à mesure que vous utilisez plus d’échantillons.\nAlgorithme d’anti-crénelage personnalisé Il est possible de transmettre directement une image de texture multi-échantillonnée à un shader de fragment au lieu de la résoudre d’abord. GLSL nous donne la possibilité d’échantillonner l’image de texture par sous-échantillon afin de créer nos propres algorithmes d’anticrénelage.\nPour obtenir une valeur de texture par sous-échantillon, vous devez définir l’échantillonneur uniforme de texture comme un sampler2DMS au lieu du sampler2D habituel :\nuniform sampler2DMS screenTextureMS; En utilisant la fonction texelFetch, il est alors possible de récupérer la valeur de la couleur par échantillon :\nvec4 colorSample = texelFetch(screenTextureMS, TexCoords, 3); // 4th subsample Nous n’entrerons pas ici dans les détails de la création de techniques d’anticrénelage personnalisées, mais cela peut suffire pour commencer à en créer une soi-même.\n",
-  "wordCount" : "2678",
-  "inLanguage": "en",
-  "datePublished": "0001-01-01T00:00:00Z",
-  "dateModified": "0001-01-01T00:00:00Z",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/10_anti_aliasing/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "hrst4's blog",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://hrst4.xyz/favicon.ico"
-    }
-  }
-}
-</script>
-</head>
-
-<body class=" dark" id="top">
-
-<header class="header">
-    <nav class="nav">
-        <div class="logo">
-            <a href="https://hrst4.xyz/" accesskey="h" title="hrst4&#39;s blog (Alt + H)">hrst4&#39;s blog</a>
-            <div class="logo-switches">
-            </div>
-        </div>
-        <ul id="menu">
-        </ul>
-    </nav>
-</header>
-<main class="main">
-
-<article class="post-single">
-  <header class="post-header">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
     
-    <h1 class="post-title">
       
-    </h1>
-    <div class="post-meta">
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
 
-</div>
-  </header> 
-  <div class="post-content"><h1 id="anti-aliasing-anti-crénelage">Anti Aliasing (Anti-crénelage)<a hidden class="anchor" aria-hidden="true" href="#anti-aliasing-anti-crénelage">#</a></h1>
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+<br><br>
+<h1 id="anti-aliasing-anti-crénelage">Anti Aliasing (Anti-crénelage)</h1>
 <p>Au cours de votre aventure dans le domaine du rendu, vous avez probablement rencontré des motifs dentelés semblables à des scies sur les bords de vos modèles. La raison pour laquelle ces bords dentelés apparaissent est due à la façon dont le rasterizer transforme les données de vertex en fragments réels. Un exemple de ce à quoi ressemblent ces bords crénelés peut déjà être vu en dessinant un simple cube :
 <img src="/docs/LEARNOPENGL_FR/04_Advanced_OpenGL/anti_aliasing_aliasing.png" alt="anti_aliasing_aliasing"/>
 Bien que cela ne soit pas immédiatement visible, si vous regardez de plus près les bords du cube, vous verrez un motif crénelé. Si vous faites un zoom avant, vous verrez ce qui suit :
@@ -124,7 +44,7 @@ Bien que cela ne soit pas immédiatement visible, si vous regardez de plus près
 Ce n&rsquo;est évidemment pas quelque chose que nous voulons dans la version finale d&rsquo;une application. <strong>Cet effet, qui consiste à voir clairement les formations de pixels dont un bord est composé, s&rsquo;appelle l&rsquo;aliasing</strong>. Il existe un certain nombre de techniques appelées techniques d&rsquo;anti aliasing qui changent ce comportement en produisant des bords plus lisses.</p>
 <p>Au début, nous avions une technique appelée <strong>super sample anti-aliasing (SSAA)</strong> qui utilisait temporairement un tampon de rendu de résolution beaucoup plus élevée pour effectuer le rendu de la scène (super sampling). Ensuite, lorsque la scène complète est rendue, la résolution est ramenée à la résolution normale. Cette résolution supplémentaire a été utilisée pour éviter les bords irréguliers. <strong>Bien qu&rsquo;elle nous ait apporté une solution au problème de l&rsquo;aliasing, elle s&rsquo;accompagne d&rsquo;un inconvénient majeur en termes de performances, puisque nous devons dessiner beaucoup plus de fragments qu&rsquo;à l&rsquo;accoutumée. Cette technique n&rsquo;a donc connu qu&rsquo;un bref moment de gloire.</strong></p>
 <p><strong>Cette technique a donné naissance à une technique plus moderne appelée multisample anti-aliasing ou MSAA qui emprunte les concepts derrière le SSAA tout en mettant en œuvre une approche beaucoup plus efficace.</strong> Dans ce chapitre, nous allons discuter en détail de cette technique MSAA qui est intégrée dans OpenGL.</p>
-<h1 id="multisampling">Multisampling<a hidden class="anchor" aria-hidden="true" href="#multisampling">#</a></h1>
+<h1 id="multisampling">Multisampling</h1>
 <p><strong>Pour comprendre ce qu&rsquo;est le multi-échantillonnage et comment il permet de résoudre le problème de l&rsquo;aliasing, nous devons d&rsquo;abord nous plonger un peu plus dans le fonctionnement interne du rasterizer d&rsquo;OpenGL.</strong></p>
 <p>Le rasterizer est la combinaison de tous les algorithmes et processus qui se situent entre les sommets traités et le fragment shader. <strong>Le rasterizer prend tous les sommets appartenant à une primitive unique et les transforme en un ensemble de fragments</strong>. <strong>Les coordonnées des sommets peuvent théoriquement avoir n&rsquo;importe quelle coordonnée, mais les fragments ne le peuvent pas puisqu&rsquo;ils sont limités par la résolution de votre écran</strong>. Il n&rsquo;y aura presque jamais de correspondance un à un entre les coordonnées des sommets et les fragments, de sorte que <strong>le rasterizer doit déterminer d&rsquo;une manière ou d&rsquo;une autre à quel fragment/coordonnée d&rsquo;écran chaque sommet spécifique aboutira.</strong>
 <img src="/docs/LEARNOPENGL_FR/04_Advanced_OpenGL/anti_aliasing_rasterization.png" alt="anti_aliasing_rasterization"/>
@@ -146,7 +66,7 @@ La partie gauche de l&rsquo;image montre comment nous déterminerions normalemen
 <strong>Les bords du triangle sont maintenant entourés de couleurs légèrement plus claires que la couleur réelle du bord, ce qui donne un aspect lisse au bord lorsqu&rsquo;on le regarde de loin</strong>.</p>
 <p>Les valeurs de profondeur et de stencil sont stockées par sous-échantillon et, même si nous n&rsquo;exécutons le shader de fragment qu&rsquo;une seule fois, les valeurs de couleur sont également stockées par sous-échantillon dans le cas où plusieurs triangles se chevauchent sur un seul pixel. Pour les tests de profondeur, la valeur de profondeur du sommet est interpolée à chaque sous-échantillon avant d&rsquo;exécuter le test de profondeur, et pour les tests de stencil, nous stockons les valeurs de stencil par sous-échantillon. <strong>Cela signifie que la taille des tampons est maintenant augmentée par le nombre de sous-échantillons par pixel.</strong></p>
 <p>Ce que nous avons vu jusqu&rsquo;à présent est une vue d&rsquo;ensemble de la manière dont l&rsquo;anticrénelage multi-échantillonné fonctionne en coulisses. La logique réelle derrière le rasterizer est un peu plus compliquée, mais cette brève description devrait être suffisante pour comprendre le concept et la logique derrière l&rsquo;anticrénelage multi-échantillonné ; suffisamment pour se plonger dans les aspects pratiques.</p>
-<h2 id="msaa-dans-opengl">MSAA dans OpenGL<a hidden class="anchor" aria-hidden="true" href="#msaa-dans-opengl">#</a></h2>
+<h2 id="msaa-dans-opengl">MSAA dans OpenGL</h2>
 <p>Si nous voulons utiliser le MSAA dans OpenGL, nous devons utiliser un tampon capable de stocker plus d&rsquo;une valeur d&rsquo;échantillon par pixel. <strong>Nous avons besoin d&rsquo;un nouveau type de tampon capable de stocker une quantité donnée de multi-échantillons, appelé tampon multi-échantillons (multisample buffer).</strong></p>
 <p>La plupart des systèmes de fenêtrage sont capables de nous fournir un tampon multi-échantillon au lieu d&rsquo;un tampon par défaut. GLFW nous offre également cette fonctionnalité et tout ce que nous avons à faire est d&rsquo;indiquer à GLFW que nous aimerions utiliser un tampon multi-échantillons avec N échantillons au lieu d&rsquo;un tampon normal en appelant <code>glfwWindowHint</code> avant de créer la fenêtre :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glfwWindowHint(GLFW_SAMPLES, <span style="color:#ae81ff">4</span>);
@@ -156,10 +76,10 @@ La partie gauche de l&rsquo;image montre comment nous déterminerions normalemen
 </span></span></code></pre></div><p>Comme les algorithmes de multi-échantillonnage sont implémentés dans le rasterizer de vos pilotes OpenGL, il n&rsquo;y a pas grand-chose d&rsquo;autre à faire. Si nous effectuons maintenant le rendu du cube vert du début de ce chapitre, nous devrions voir des bords plus lisses :<img src="/docs/LEARNOPENGL_FR/04_Advanced_OpenGL/LEARNOPENGL_FR/05_Advanced_Lighting/anti_aliasing_multisampled.png" alt="anti_aliasing_multisampled"/>
 Le cube a effectivement l&rsquo;air beaucoup plus lisse et il en va de même pour tout autre objet que vous dessinez dans votre scène.
 Vous trouverez le code source de cet exemple simple <a href="https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/11.1.anti_aliasing_msaa/anti_aliasing_msaa.cpp">ici</a>.</p>
-<h2 id="-msaa-hors-écran">## MSAA hors-écran<a hidden class="anchor" aria-hidden="true" href="#-msaa-hors-écran">#</a></h2>
+<h2 id="-msaa-hors-écran">## MSAA hors-écran</h2>
 <p>Comme GLFW se charge de créer les tampons multi-échantillonnés, il est assez facile d&rsquo;activer le MSAA. <strong>Cependant, si nous voulons utiliser nos propres framebuffers, nous devons générer nous-mêmes les tampons multi-échantillonnés ; nous devons donc nous occuper de la création des tampons multi-échantillonnés.</strong></p>
 <p><strong>Il y a deux façons de créer des tampons multi-échantillonnés pour servir d&rsquo;attachement aux framebuffers : les attachements de texture et les attachements de renderbuffer. Ces deux types d&rsquo;attachements sont assez similaires aux attachements normaux dont nous avons parlé dans le chapitre sur les framebuffers.</strong></p>
-<h3 id="attachement-de-textures-multi-échantillonnées">Attachement de textures multi-échantillonnées<a hidden class="anchor" aria-hidden="true" href="#attachement-de-textures-multi-échantillonnées">#</a></h3>
+<h3 id="attachement-de-textures-multi-échantillonnées">Attachement de textures multi-échantillonnées</h3>
 <p>Pour créer une texture prenant en charge le stockage de plusieurs points d&rsquo;échantillonnage, nous utilisons <code>glTexImage2DMultisample</code> au lieu de <code>glTexImage2D</code> qui accepte <code>GL_TEXTURE_2D_MULTISAMPLE</code> comme cible de texture :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, tex);
 </span></span><span style="display:flex;"><span>glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, GL_RGB, width, height, GL_TRUE);
@@ -168,11 +88,11 @@ Vous trouverez le code source de cet exemple simple <a href="https://learnopengl
 <p>Pour attacher une texture multi-échantillonnée à un framebuffer, nous utilisons <code>glFramebufferTexture2D</code>, mais cette fois avec <code>GL_TEXTURE_2D_MULTISAMPLE</code> comme type de texture :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, tex, <span style="color:#ae81ff">0</span>); 
 </span></span></code></pre></div><p>Le framebuffer actuellement lié dispose maintenant d&rsquo;un tampon de couleurs multi-échantillonnées sous la forme d&rsquo;une image de texture.</p>
-<h3 id="objets-de-tampon-de-rendu-multi-échantillonnés">Objets de tampon de rendu multi-échantillonnés<a hidden class="anchor" aria-hidden="true" href="#objets-de-tampon-de-rendu-multi-échantillonnés">#</a></h3>
+<h3 id="objets-de-tampon-de-rendu-multi-échantillonnés">Objets de tampon de rendu multi-échantillonnés</h3>
 <p>Comme pour les textures, la création d&rsquo;un objet renderbuffer multi-échantillonné n&rsquo;est pas difficile. C&rsquo;est même assez facile puisqu&rsquo;il suffit de changer <code>glRenderbufferStorage</code> en <code>glRenderbufferStorageMultisample</code> lorsque nous configurons la mémoire de stockage du tampon de rendu (actuellement lié) :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glRenderbufferStorageMultisample(GL_RENDERBUFFER, <span style="color:#ae81ff">4</span>, GL_DEPTH24_STENCIL8, width, height);  
 </span></span></code></pre></div><p>La seule chose qui a changé ici est le second paramètre supplémentaire où nous définissons le nombre d&rsquo;échantillons que nous souhaitons utiliser ; 4 dans ce cas particulier.</p>
-<h3 id="rendu-dans-un-framebuffer-multi-échantillonné">Rendu dans un framebuffer multi-échantillonné<a hidden class="anchor" aria-hidden="true" href="#rendu-dans-un-framebuffer-multi-échantillonné">#</a></h3>
+<h3 id="rendu-dans-un-framebuffer-multi-échantillonné">Rendu dans un framebuffer multi-échantillonné</h3>
 <p>Le rendu dans un framebuffer multi-échantillonné est simple. Chaque fois que nous dessinons quelque chose alors que l&rsquo;objet framebuffer est lié, le rasterizer se charge de toutes les opérations de multi-échantillonnage. Cependant, parce qu&rsquo;un tampon multi-échantillonné est un peu spécial, nous ne pouvons pas utiliser directement le tampon pour d&rsquo;autres opérations comme l&rsquo;échantillonnage dans un shader.</p>
 <p><strong>Une image multi-échantillonnée contient beaucoup plus d&rsquo;informations qu&rsquo;une image normale, c&rsquo;est pourquoi nous devons réduire l&rsquo;échelle ou résoudre l&rsquo;image</strong>. La résolution d&rsquo;un framebuffer multi-échantillonné se fait généralement via <code>glBlitFramebuffer</code> qui copie une région d&rsquo;un framebuffer à l&rsquo;autre tout en résolvant les buffers multi-échantillonnés.</p>
 <p><code>glBlitFramebuffer</code> transfère une région source donnée, définie par 4 coordonnées d&rsquo;espace-écran, vers une région cible donnée, également définie par 4 coordonnées d&rsquo;espace-écran. Vous vous souvenez peut-être du chapitre sur les framebuffers que si nous nous lions à <code>GL_FRAMEBUFFER</code>, nous nous lions à la fois à la cible de lecture et à la cible de dessin du framebuffer. Nous pourrions également lier ces cibles individuellement en liant les framebuffers à <code>GL_READ_FRAMEBUFFER</code> et <code>GL_DRAW_FRAMEBUFFER</code> respectivement. La fonction <code>glBlitFramebuffer</code> lit ces deux cibles pour déterminer quel est le framebuffer source et quel est le framebuffer cible. Nous pouvons alors transférer la sortie du framebuffer multi-échantillonné vers l&rsquo;écran réel en <code>blitant</code> (blitting?) l&rsquo;image dans le framebuffer par défaut comme suit :</p>
@@ -212,7 +132,7 @@ Vous pouvez trouver le code source <a href="https://learnopengl.com/code_viewer_
 <p>La texture de l&rsquo;écran étant à nouveau une texture normale (non multi-échantillonnée), certains filtres de post-traitement tels que la détection des bords introduiront à nouveau des bords irréguliers. Pour y remédier, vous pouvez flouter la texture par la suite ou créer votre propre algorithme d&rsquo;anticrénelage.</p>
 </blockquote>
 <p>Vous pouvez voir que lorsque nous voulons combiner le multi-échantillonnage avec le rendu hors écran, nous devons suivre quelques étapes supplémentaires. Ces étapes en valent cependant la peine puisque le multi-échantillonnage améliore considérablement la qualité visuelle de votre scène. Notez que l&rsquo;activation du multi-échantillonnage peut sensiblement réduire les performances au fur et à mesure que vous utilisez plus d&rsquo;échantillons.</p>
-<h2 id="algorithme-danti-crénelage-personnalisé">Algorithme d&rsquo;anti-crénelage personnalisé<a hidden class="anchor" aria-hidden="true" href="#algorithme-danti-crénelage-personnalisé">#</a></h2>
+<h2 id="algorithme-danti-crénelage-personnalisé">Algorithme d&rsquo;anti-crénelage personnalisé</h2>
 <p>Il est possible de transmettre directement une image de texture multi-échantillonnée à un shader de fragment au lieu de la résoudre d&rsquo;abord. GLSL nous donne la possibilité d&rsquo;échantillonner l&rsquo;image de texture par sous-échantillon afin de créer nos propres algorithmes d&rsquo;anticrénelage.</p>
 <p>Pour obtenir une valeur de texture par sous-échantillon, vous devez définir l&rsquo;échantillonneur uniforme de texture comme un <code>sampler2DMS</code> au lieu du <code>sampler2D</code> habituel :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>uniform sampler2DMS screenTextureMS;    
@@ -221,71 +141,13 @@ Vous pouvez trouver le code source <a href="https://learnopengl.com/code_viewer_
 </span></span></span></code></pre></div><p>Nous n&rsquo;entrerons pas ici dans les détails de la création de techniques d&rsquo;anticrénelage personnalisées, mais cela peut suffire pour commencer à en créer une soi-même.</p>
 
 
-  </div>
 
-  <footer class="post-footer">
-    <ul class="post-tags">
-    </ul>
-  </footer>
-</article>
-    </main>
+      </main>
+    </div>
     
-<footer class="footer">
-    <span>&copy; 2023 <a href="https://hrst4.xyz/">hrst4&#39;s blog</a></span>
-    <span>
-        Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
-</footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
-    </svg>
-</a>
-
+<script src="/js/feather.min.js"></script>
 <script>
-    let menu = document.getElementById('menu')
-    if (menu) {
-        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
-        menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
-        });
-    });
-
+  feather.replace();
 </script>
-<script>
-    var mybutton = document.getElementById("top-link");
-    window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
-        } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
-        }
-    };
-
-</script>
-</body>
-
+  </body>
 </html>

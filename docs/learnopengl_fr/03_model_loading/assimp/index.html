@@ -1,127 +1,63 @@
-<!DOCTYPE html>
-<html lang="en" dir="auto">
-
-<head><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>hrst4&#39;s blog</title>
-<meta name="keywords" content="cg, opengl, computer graphics, cpp">
-<meta name="description" content="Assimp Dans toutes les scènes présentées jusqu&rsquo;à présent, nous avons beaucoup joué avec notre petit ami le conteneur, mais avec le temps, même nos meilleurs amis peuvent devenir un peu ennuyeux. Dans les applications graphiques plus importantes, il y a généralement beaucoup de modèles compliqués et intéressants qui sont beaucoup plus jolis à regarder qu&rsquo;un conteneur statique. Cependant, contrairement à l&rsquo;objet conteneur, nous ne pouvons pas vraiment définir manuellement tous les sommets, les normales et les coordonnées de texture de formes compliquées telles que des maisons, des véhicules ou des personnages humains.">
-<meta name="author" content="">
-<link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/03_model_loading/assimp/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
-<link rel="icon" href="https://hrst4.xyz/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://hrst4.xyz/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://hrst4.xyz/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://hrst4.xyz/apple-touch-icon.png">
-<link rel="mask-icon" href="https://hrst4.xyz/safari-pinned-tab.svg">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
-
-    </style>
-</noscript><meta property="og:title" content="" />
-<meta property="og:description" content="Assimp Dans toutes les scènes présentées jusqu&rsquo;à présent, nous avons beaucoup joué avec notre petit ami le conteneur, mais avec le temps, même nos meilleurs amis peuvent devenir un peu ennuyeux. Dans les applications graphiques plus importantes, il y a généralement beaucoup de modèles compliqués et intéressants qui sont beaucoup plus jolis à regarder qu&rsquo;un conteneur statique. Cependant, contrairement à l&rsquo;objet conteneur, nous ne pouvons pas vraiment définir manuellement tous les sommets, les normales et les coordonnées de texture de formes compliquées telles que des maisons, des véhicules ou des personnages humains." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/03_model_loading/assimp/" /><meta property="article:section" content="docs" />
-
-
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content=""/>
-<meta name="twitter:description" content="Assimp Dans toutes les scènes présentées jusqu&rsquo;à présent, nous avons beaucoup joué avec notre petit ami le conteneur, mais avec le temps, même nos meilleurs amis peuvent devenir un peu ennuyeux. Dans les applications graphiques plus importantes, il y a généralement beaucoup de modèles compliqués et intéressants qui sont beaucoup plus jolis à regarder qu&rsquo;un conteneur statique. Cependant, contrairement à l&rsquo;objet conteneur, nous ne pouvons pas vraiment définir manuellement tous les sommets, les normales et les coordonnées de texture de formes compliquées telles que des maisons, des véhicules ou des personnages humains."/>
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "",
-      "item": "https://hrst4.xyz/docs/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "",
-      "item": "https://hrst4.xyz/docs/learnopengl_fr/03_model_loading/assimp/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "",
-  "name": "",
-  "description": "Assimp Dans toutes les scènes présentées jusqu\u0026rsquo;à présent, nous avons beaucoup joué avec notre petit ami le conteneur, mais avec le temps, même nos meilleurs amis peuvent devenir un peu ennuyeux. Dans les applications graphiques plus importantes, il y a généralement beaucoup de modèles compliqués et intéressants qui sont beaucoup plus jolis à regarder qu\u0026rsquo;un conteneur statique. Cependant, contrairement à l\u0026rsquo;objet conteneur, nous ne pouvons pas vraiment définir manuellement tous les sommets, les normales et les coordonnées de texture de formes compliquées telles que des maisons, des véhicules ou des personnages humains.",
-  "keywords": [
-    "cg", "opengl", "computer graphics", "cpp"
-  ],
-  "articleBody": "Assimp Dans toutes les scènes présentées jusqu’à présent, nous avons beaucoup joué avec notre petit ami le conteneur, mais avec le temps, même nos meilleurs amis peuvent devenir un peu ennuyeux. Dans les applications graphiques plus importantes, il y a généralement beaucoup de modèles compliqués et intéressants qui sont beaucoup plus jolis à regarder qu’un conteneur statique. Cependant, contrairement à l’objet conteneur, nous ne pouvons pas vraiment définir manuellement tous les sommets, les normales et les coordonnées de texture de formes compliquées telles que des maisons, des véhicules ou des personnages humains. Ce que nous voulons, c’est importer ces modèles dans l’application ; des modèles qui ont été soigneusement conçus par des artistes 3D dans des outils tels que Blender, 3DS Max ou Maya.\nCes outils de modélisation 3D permettent aux artistes de créer des formes complexes et de leur appliquer des textures grâce à un processus appelé uv-mapping. Les outils génèrent ensuite automatiquement toutes les coordonnées des sommets, les normales des sommets et les coordonnées des textures, tout en les exportant dans un format de fichier de modèle que nous pouvons utiliser. De cette manière, les artistes disposent d’une vaste boîte à outils pour créer des modèles de haute qualité sans avoir à se préoccuper des détails techniques. Tous les aspects techniques sont cachés dans le fichier de modèle exporté. En tant que programmeurs graphiques, nous devons cependant nous préoccuper de ces détails techniques.\nC’est notre travail d’analyser ces fichiers de modèles exportés et d’en extraire toutes les informations pertinentes afin de les stocker dans un format compréhensible par OpenGL. Un problème commun est qu’il existe des douzaines de formats de fichiers différents où chacun exporte les données du modèle d’une manière unique. Les formats de modèle comme le obj de Wavefront ne contiennent que des données de modèle avec des informations matérielles mineures comme les couleurs du modèle et les cartes diffuse/spéculaire, alors que les formats de modèle comme le format de fichier Collada basé sur XML sont extrêmement complets et contiennent des modèles, des lumières, de nombreux types de matériaux, des données d’animation, des caméras, des informations complètes sur la scène, et bien plus encore. Le format d’objet Wavefront est généralement considéré comme un format de modèle facile à analyser. Il est recommandé de visiter la page wiki de Wavefront au moins une fois pour voir comment les données d’un tel format de fichier sont structurées. Cela devrait vous donner une idée de la façon dont les formats de fichier de modèle sont généralement structurés.\nDans l’ensemble, il existe de nombreux formats de fichiers différents pour lesquels il n’existe généralement pas de structure générale commune. Par conséquent, si nous voulons importer un modèle à partir de ces formats de fichiers, nous devons écrire nous-mêmes un importateur pour chacun des formats de fichiers que nous voulons importer. Heureusement pour nous, il existe une bibliothèque pour cela.\nUne bibliothèque de chargement de modèles Une bibliothèque de chargement de modèles très populaire s’appelle Assimp (Open Asset Import Library). Assimp est capable d’importer des dizaines de formats de fichiers de modèles différents (et d’exporter vers certains d’entre eux également) en chargeant toutes les données du modèle dans les structures de données généralisées d’Assimp. Dès qu’Assimp a chargé le modèle, nous pouvons récupérer toutes les données dont nous avons besoin dans les structures de données d’Assimp. Comme la structure de données d’Assimp reste la même, quel que soit le type de format de fichier importé, elle fait abstraction de tous les formats de fichiers existants.\nLors de l’importation d’un modèle via Assimp, le modèle entier est chargé dans un objet scène qui contient toutes les données du modèle/de la scène importé(e). Assimp dispose alors d’une collection de nœuds où chaque nœud contient des indices vers les données stockées dans l’objet scène et où chaque nœud peut avoir un nombre quelconque d’enfants. Un modèle (simpliste) de la structure d’Assimp est présenté ci-dessous : Toutes les données de la scène/modèle sont contenues dans l’objet Scene, comme tous les matériaux et les maillages. Il contient également une référence au nœud racine de la scène. Le nœud racine de la scène peut contenir des nœuds enfants (comme tous les autres nœuds) et peut avoir un ensemble d’indices qui pointent vers des données de maillage (mesh data) dans le tableau mMeshes de l’objet scène. Le tableau mMeshes de la scène contient les objets Mesh proprement dits, les valeurs du tableau mMeshes d’un nœud ne sont que des indices pour le tableau des Meshes de la scène. Un objet Mesh contient toutes les données nécessaires au rendu : positions des vertex, vecteurs normaux, coordonnées de texture, faces et matériau de l’objet. Un mesh contient plusieurs faces. Une Face représente une primitive de rendu de l’objet (triangles, carrés, points). Une Face contient les indices des sommets qui forment une primitive. Comme les sommets et les indices sont séparés, il est facile d’effectuer le rendu via un buffer d’index (voir 03_hello triangle). Enfin, un mesh est également lié à un objet Material qui héberge plusieurs fonctions permettant de récupérer les propriétés matérielles d’un objet. Pensez aux couleurs et/ou aux maps de texture (comme les maps diffuse et spéculaire). Ce que nous voulons faire, c’est d’abord charger un objet dans un objet Scene, récupérer récursivement les objets Mesh correspondants à partir de chacun des nœuds (nous recherchons récursivement les enfants de chaque nœud), et traiter chaque objet Mesh pour récupérer les données des vertex, les indices et les propriétés de ses matériaux. Le résultat est alors une collection de données de maillage (data mesh) que nous voulons contenir dans un seul objet Model.\nMesh\nLorsqu’ils modélisent des objets dans des outils de modélisation, les artistes ne créent généralement pas un modèle entier à partir d’une seule forme. En général, chaque modèle se compose de plusieurs sous-modèles/formes. Chacune de ces formes est appelée un mesh. Prenons l’exemple d’un personnage humain : les artistes modélisent généralement la tête, les membres, les vêtements et les armes en tant qu’éléments distincts, et le résultat combiné de tous ces meshes représente le modèle final. Un mesh unique est la représentation minimale de ce dont nous avons besoin pour dessiner un objet dans OpenGL (données des sommets, indices et propriétés des matériaux). Un modèle est (généralement) constitué de plusieurs meshes.\nDans les prochains chapitres, nous créerons nos propres classes Model et Mesh qui chargeront et stockeront les modèles importés en utilisant la structure que nous venons de décrire. Si nous voulons ensuite dessiner un modèle, nous ne rendons pas le modèle dans son ensemble, mais nous rendons tous les meshes individuels dont le modèle est composé. Cependant, avant de pouvoir commencer à importer des modèles, nous devons d’abord inclure Assimp dans notre projet.\nBuilding Assimp Vous pouvez télécharger Assimp depuis leur page GitHub et choisir la version correspondante. Pour cet article, la version d’Assimp utilisée est la version 3.1.1. Il est conseillé de compiler les bibliothèques par vous-même, car les bibliothèques précompilées ne fonctionnent pas toujours sur tous les systèmes. Relisez le chapitre Création d’une fenêtre si vous avez oublié comment compiler une bibliothèque par vous-même via CMake.\nQuelques problèmes peuvent survenir lors de la construction d’Assimp, je vais donc les noter ici avec leurs solutions au cas où l’un d’entre vous obtiendrait les mêmes erreurs :\nCMake donne continuellement des erreurs lors de la récupération de la liste de configuration à propos de bibliothèques DirectX manquantes, des messages comme : Could not locate DirectX CMake Error at cmake-modules/FindPkgMacros.cmake:110 (message): Required library DirectX not found! Install the library (including dev packages) and try again. If the library is already installed, set the missing variables manually in cmake. Ici la solution consiste à installer le SDK DirectX au cas où vous ne l’auriez pas encore fait. Vous pouvez télécharger le SDK ici.\nLors de l’installation du SDK DirectX, un code d’erreur s1023 peut apparaître. Dans ce cas, vous devez d’abord désinstaller le(s) paquet(s) C++ Redistributable avant d’installer le SDK. Une fois la configuration terminée, vous pouvez générer un fichier de solution, l’ouvrir et compiler les bibliothèques (soit en version release, soit en version debug, comme vous le souhaitez). Assurez-vous de compiler en 64 bits car tout le code LearnOpenGL est en 64 bits.\nLa configuration par défaut construit Assimp comme une bibliothèque dynamique, nous devons donc inclure la DLL résultante nommée assimp.dll (ou avec un post-fix) avec les binaires de l’application. Vous pouvez simplement copier la DLL dans le même dossier que l’exécutable de votre application.\nAprès avoir compilé la solution générée, la bibliothèque et le fichier DLL résultants se trouvent dans le dossier code/Debug ou code/Release. Il vous suffit ensuite de déplacer la librairie et la DLL à leur emplacement approprié, de les lier à votre solution et de veiller à copier les en-têtes d’Assimp dans votre répertoire include (les fichiers d’en-tête se trouvent dans le dossier include des fichiers téléchargés d’Assimp).\nVous devriez maintenant avoir compilé Assimp et l’avoir lié à votre application. Si vous avez encore reçu une erreur non signalée, n’hésitez pas à demander de l’aide dans les commentaires.\n",
-  "wordCount" : "1505",
-  "inLanguage": "en",
-  "datePublished": "0001-01-01T00:00:00Z",
-  "dateModified": "0001-01-01T00:00:00Z",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://hrst4.xyz/docs/learnopengl_fr/03_model_loading/assimp/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "hrst4's blog",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://hrst4.xyz/favicon.ico"
-    }
-  }
-}
-</script>
-</head>
-
-<body class=" dark" id="top">
-
-<header class="header">
-    <nav class="nav">
-        <div class="logo">
-            <a href="https://hrst4.xyz/" accesskey="h" title="hrst4&#39;s blog (Alt + H)">hrst4&#39;s blog</a>
-            <div class="logo-switches">
-            </div>
-        </div>
-        <ul id="menu">
-        </ul>
-    </nav>
-</header>
-<main class="main">
-
-<article class="post-single">
-  <header class="post-header">
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
-    <h1 class="post-title">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
       
-    </h1>
-    <div class="post-meta">
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
 
-</div>
-  </header> 
-  <div class="post-content"><h1 id="assimp">Assimp<a hidden class="anchor" aria-hidden="true" href="#assimp">#</a></h1>
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cg">cg</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/opengl">opengl</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/computer-graphics">computer graphics</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cpp">cpp</a>
+  
+
+<br><br>
+<h1 id="assimp">Assimp</h1>
 <p>Dans toutes les scènes présentées jusqu&rsquo;à présent, nous avons beaucoup joué avec notre petit ami le conteneur, mais avec le temps, même nos meilleurs amis peuvent devenir un peu ennuyeux. Dans les applications graphiques plus importantes, il y a généralement beaucoup de modèles compliqués et intéressants qui sont beaucoup plus jolis à regarder qu&rsquo;un conteneur statique. Cependant, contrairement à l&rsquo;objet conteneur, nous ne pouvons pas vraiment définir manuellement tous les sommets, les normales et les coordonnées de texture de formes compliquées telles que des maisons, des véhicules ou des personnages humains. <strong>Ce que nous voulons, c&rsquo;est importer ces modèles dans l&rsquo;application ; des modèles qui ont été soigneusement conçus par des artistes 3D dans des outils tels que Blender, 3DS Max ou Maya.</strong></p>
 <p>Ces outils de modélisation 3D permettent aux artistes de créer des formes complexes et de leur appliquer des textures grâce à un processus appelé <strong>uv-mapping</strong>. <strong>Les outils génèrent ensuite automatiquement toutes les coordonnées des sommets, les normales des sommets et les coordonnées des textures, tout en les exportant dans un format de fichier de modèle que nous pouvons utiliser.</strong> De cette manière, les artistes disposent d&rsquo;une vaste boîte à outils pour créer des modèles de haute qualité sans avoir à se préoccuper des détails techniques. Tous les aspects techniques sont cachés dans le fichier de modèle exporté. En tant que programmeurs graphiques, nous devons cependant nous préoccuper de ces détails techniques.</p>
 <p><strong>C&rsquo;est notre travail d&rsquo;analyser ces fichiers de modèles exportés et d&rsquo;en extraire toutes les informations pertinentes afin de les stocker dans un format compréhensible par OpenGL</strong>. <strong>Un problème commun est qu&rsquo;il existe des douzaines de formats de fichiers différents où chacun exporte les données du modèle d&rsquo;une manière unique</strong>. Les formats de modèle comme le <code>obj </code>de Wavefront ne contiennent que des données de modèle avec des informations matérielles mineures comme les couleurs du modèle et les cartes diffuse/spéculaire, alors que les formats de modèle comme le format de <a href="http://en.wikipedia.org/wiki/COLLADA">fichier Collada</a> basé sur <code>XML</code> sont extrêmement complets et contiennent des modèles, des lumières, de nombreux types de matériaux, des données d&rsquo;animation, des caméras, des informations complètes sur la scène, et bien plus encore. Le format d&rsquo;objet Wavefront est généralement considéré comme un format de modèle facile à analyser. Il est recommandé de visiter la page wiki de Wavefront au moins une fois pour voir comment les données d&rsquo;un tel format de fichier sont structurées. Cela devrait vous donner une idée de la façon dont les formats de fichier de modèle sont généralement structurés.</p>
 <p>Dans l&rsquo;ensemble, il existe de nombreux formats de fichiers différents pour lesquels il n&rsquo;existe généralement pas de structure générale commune. <strong>Par conséquent, si nous voulons importer un modèle à partir de ces formats de fichiers, nous devons écrire nous-mêmes un importateur pour chacun des formats de fichiers que nous voulons importer. Heureusement pour nous, il existe une bibliothèque pour cela.</strong></p>
-<h2 id="une-bibliothèque-de-chargement-de-modèles">Une bibliothèque de chargement de modèles<a hidden class="anchor" aria-hidden="true" href="#une-bibliothèque-de-chargement-de-modèles">#</a></h2>
+<h2 id="une-bibliothèque-de-chargement-de-modèles">Une bibliothèque de chargement de modèles</h2>
 <p>Une bibliothèque de chargement de modèles très populaire s&rsquo;appelle <strong>Assimp</strong> (Open Asset Import Library). Assimp est capable d&rsquo;importer des dizaines de formats de fichiers de modèles différents (et d&rsquo;exporter vers certains d&rsquo;entre eux également) en chargeant toutes les données du modèle dans les structures de données généralisées d&rsquo;Assimp. Dès qu&rsquo;Assimp a chargé le modèle, nous pouvons récupérer toutes les données dont nous avons besoin dans les structures de données d&rsquo;Assimp. <strong>Comme la structure de données d&rsquo;Assimp reste la même, quel que soit le type de format de fichier importé, elle fait abstraction de tous les formats de fichiers existants.</strong></p>
 <p>Lors de l&rsquo;importation d&rsquo;un modèle via Assimp, le modèle entier est chargé dans un objet scène qui contient toutes les données du modèle/de la scène importé(e). Assimp dispose alors d&rsquo;une collection de nœuds où chaque nœud contient des indices vers les données stockées dans l&rsquo;objet scène et où chaque nœud peut avoir un nombre quelconque d&rsquo;enfants. Un modèle (simpliste) de la structure d&rsquo;Assimp est présenté ci-dessous :
 <img src="/docs/LEARNOPENGL_FR/03_Model_Loading/model1.png" alt="model1"/></p>
@@ -138,7 +74,7 @@
 Lorsqu&rsquo;ils modélisent des objets dans des outils de modélisation, les artistes ne créent généralement pas un modèle entier à partir d&rsquo;une seule forme. En général, chaque modèle se compose de plusieurs sous-modèles/formes. Chacune de ces formes est appelée un <strong>mesh</strong>. Prenons l&rsquo;exemple d&rsquo;un personnage humain : les artistes modélisent généralement la tête, les membres, les vêtements et les armes en tant qu&rsquo;éléments distincts, et le résultat combiné de tous ces meshes représente le modèle final. Un mesh unique est la représentation minimale de ce dont nous avons besoin pour dessiner un objet dans OpenGL (données des sommets, indices et propriétés des matériaux). Un modèle est (généralement) constitué de plusieurs meshes.</p>
 </blockquote>
 <p>Dans les prochains chapitres, nous créerons nos propres classes <code>Model</code> et <code>Mesh</code> qui chargeront et stockeront les modèles importés en utilisant la structure que nous venons de décrire. <strong>Si nous voulons ensuite dessiner un modèle, nous ne rendons pas le modèle dans son ensemble, mais nous rendons tous les meshes individuels dont le modèle est composé</strong>. Cependant, avant de pouvoir commencer à importer des modèles, nous devons d&rsquo;abord inclure Assimp dans notre projet.</p>
-<h2 id="building-assimp">Building Assimp<a hidden class="anchor" aria-hidden="true" href="#building-assimp">#</a></h2>
+<h2 id="building-assimp">Building Assimp</h2>
 <p>Vous pouvez télécharger Assimp depuis leur page <a href="https://github.com/assimp/assimp/blob/master/Build.md">GitHub</a> et choisir la version correspondante. Pour cet article, la version d&rsquo;Assimp utilisée est la version <code>3.1.1</code>. Il est conseillé de compiler les bibliothèques par vous-même, car les bibliothèques précompilées ne fonctionnent pas toujours sur tous les systèmes. Relisez le chapitre <a href="/docs/learnopengl_fr/01_getting_started/01_creating-a-window/">Création d&rsquo;une fenêtre</a> si vous avez oublié comment compiler une bibliothèque par vous-même via CMake.</p>
 <p>Quelques problèmes peuvent survenir lors de la construction d&rsquo;Assimp, je vais donc les noter ici avec leurs solutions au cas où l&rsquo;un d&rsquo;entre vous obtiendrait les mêmes erreurs :</p>
 <ul>
@@ -159,75 +95,13 @@ manually in cmake.
 <p>Vous devriez maintenant avoir compilé Assimp et l&rsquo;avoir lié à votre application. Si vous avez encore reçu une erreur non signalée, n&rsquo;hésitez pas à demander de l&rsquo;aide dans les commentaires.</p>
 
 
-  </div>
 
-  <footer class="post-footer">
-    <ul class="post-tags">
-      <li><a href="https://hrst4.xyz/tags/cg/">cg</a></li>
-      <li><a href="https://hrst4.xyz/tags/opengl/">opengl</a></li>
-      <li><a href="https://hrst4.xyz/tags/computer-graphics/">computer graphics</a></li>
-      <li><a href="https://hrst4.xyz/tags/cpp/">cpp</a></li>
-    </ul>
-  </footer>
-</article>
-    </main>
+      </main>
+    </div>
     
-<footer class="footer">
-    <span>&copy; 2023 <a href="https://hrst4.xyz/">hrst4&#39;s blog</a></span>
-    <span>
-        Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
-</footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
-    </svg>
-</a>
-
+<script src="/js/feather.min.js"></script>
 <script>
-    let menu = document.getElementById('menu')
-    if (menu) {
-        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
-        menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
-        });
-    });
-
+  feather.replace();
 </script>
-<script>
-    var mybutton = document.getElementById("top-link");
-    window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
-        } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
-        }
-    };
-
-</script>
-</body>
-
+  </body>
 </html>

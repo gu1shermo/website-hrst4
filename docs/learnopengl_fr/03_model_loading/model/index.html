@@ -1,122 +1,42 @@
-<!DOCTYPE html>
-<html lang="en" dir="auto">
-
-<head><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>hrst4&#39;s blog</title>
-<meta name="keywords" content="">
-<meta name="description" content="Modèle Il est maintenant temps de mettre la main à la pâte avec Assimp et de commencer à créer le code de chargement et de traduction. L&rsquo;objectif de ce chapitre est de créer une autre classe qui représente un modèle dans son intégralité, c&rsquo;est-à-dire un modèle qui contient plusieurs meshes, éventuellement avec plusieurs textures. Une maison qui contient un balcon en bois, une tour et peut-être une piscine peut être chargée comme un seul modèle.">
-<meta name="author" content="">
-<link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/03_model_loading/model/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
-<link rel="icon" href="https://hrst4.xyz/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://hrst4.xyz/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://hrst4.xyz/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://hrst4.xyz/apple-touch-icon.png">
-<link rel="mask-icon" href="https://hrst4.xyz/safari-pinned-tab.svg">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
-
-    </style>
-</noscript><meta property="og:title" content="" />
-<meta property="og:description" content="Modèle Il est maintenant temps de mettre la main à la pâte avec Assimp et de commencer à créer le code de chargement et de traduction. L&rsquo;objectif de ce chapitre est de créer une autre classe qui représente un modèle dans son intégralité, c&rsquo;est-à-dire un modèle qui contient plusieurs meshes, éventuellement avec plusieurs textures. Une maison qui contient un balcon en bois, une tour et peut-être une piscine peut être chargée comme un seul modèle." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/03_model_loading/model/" /><meta property="article:section" content="docs" />
-
-
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content=""/>
-<meta name="twitter:description" content="Modèle Il est maintenant temps de mettre la main à la pâte avec Assimp et de commencer à créer le code de chargement et de traduction. L&rsquo;objectif de ce chapitre est de créer une autre classe qui représente un modèle dans son intégralité, c&rsquo;est-à-dire un modèle qui contient plusieurs meshes, éventuellement avec plusieurs textures. Une maison qui contient un balcon en bois, une tour et peut-être une piscine peut être chargée comme un seul modèle."/>
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "",
-      "item": "https://hrst4.xyz/docs/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "",
-      "item": "https://hrst4.xyz/docs/learnopengl_fr/03_model_loading/model/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "",
-  "name": "",
-  "description": "Modèle Il est maintenant temps de mettre la main à la pâte avec Assimp et de commencer à créer le code de chargement et de traduction. L\u0026rsquo;objectif de ce chapitre est de créer une autre classe qui représente un modèle dans son intégralité, c\u0026rsquo;est-à-dire un modèle qui contient plusieurs meshes, éventuellement avec plusieurs textures. Une maison qui contient un balcon en bois, une tour et peut-être une piscine peut être chargée comme un seul modèle.",
-  "keywords": [
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
-  ],
-  "articleBody": "Modèle Il est maintenant temps de mettre la main à la pâte avec Assimp et de commencer à créer le code de chargement et de traduction. L’objectif de ce chapitre est de créer une autre classe qui représente un modèle dans son intégralité, c’est-à-dire un modèle qui contient plusieurs meshes, éventuellement avec plusieurs textures. Une maison qui contient un balcon en bois, une tour et peut-être une piscine peut être chargée comme un seul modèle. Nous chargerons le modèle via Assimp et le traduirons en plusieurs objets Mesh que nous avons créés dans le chapitre précédent.\nSans plus attendre, je vous présente la structure de la classe Model :\nclass Mode { public: Model(char *path) { loadModel(path); } void Draw(Shader \u0026shader);\tprivate: // model data vector\u003cMesh\u003e meshes; string directory; void loadModel(string path); void processNode(aiNode *node, const aiScene *scene); Mesh processMesh(aiMesh *mesh, const aiScene *scene); vector\u003cTexture\u003e loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName); }; La classe Model contient un vecteur d’objets Mesh et nécessite que nous lui indiquions l’emplacement d’un fichier dans son constructeur. Elle charge ensuite le fichier immédiatement via la fonction loadModel qui est appelée dans le constructeur. Les fonctions privées sont toutes conçues pour traiter une partie de la routine d’importation d’Assimp et nous les couvrirons bientôt. Nous stockons également le répertoire du chemin d’accès au fichier dont nous aurons besoin plus tard pour charger les textures. La fonction Draw n’a rien de spécial et passe en boucle sur chacun des meshes pour appeler leur fonction Draw respective :\nvoid Draw(Shader \u0026shader) { for(unsigned int i = 0; i \u003c meshes.size(); i++) meshes[i].Draw(shader); } Importer un modèle 3D dans OpenGL Pour importer un modèle et le traduire dans notre propre structure, nous devons d’abord inclure les en-têtes appropriés d’Assimp :\n#include #include #include La première fonction que nous appelons est loadModel, qui est directement appelée depuis le constructeur. Dans loadModel, nous utilisons Assimp pour charger le modèle dans une structure de données d’Assimp appelée objet scène (scene object). Vous vous souvenez peut-être du premier chapitre de la série sur le chargement de modèles, qui expliquait qu’il s’agissait de l’objet racine de l’interface de données d’Assimp. Une fois que nous avons l’objet scène, nous pouvons accéder à toutes les données dont nous avons besoin à partir du modèle chargé.\nL’avantage d’Assimp est qu’il fait abstraction de tous les détails techniques liés au chargement des différents formats de fichiers et qu’il fait tout cela en une seule ligne :\nAssimp::Importer importer; const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs); Nous commençons par déclarer un objet Importer dans l’espace de noms d’Assimp, puis nous appelons sa fonction ReadFile. La fonction attend un chemin d’accès au fichier et plusieurs options de post-traitement comme second argument. Assimp nous permet de spécifier plusieurs options qui obligent Assimp à effectuer des calculs/opérations supplémentaires sur les données importées. En définissant aiProcess_Triangulate, nous indiquons à Assimp que si le modèle n’est pas (entièrement) constitué de triangles, il doit d’abord transformer toutes les formes primitives du modèle en triangles. L’option aiProcess_FlipUVs inverse les coordonnées de la texture sur l’axe y lorsque cela est nécessaire pendant le traitement (vous vous souvenez peut-être du chapitre sur les textures que la plupart des images en OpenGL étaient inversées autour de l’axe y ; cette petite option de post-traitement corrige cela pour nous). Quelques autres options utiles sont:\naiProcess_GenNormals : crée des vecteurs normaux pour chaque sommet si le modèle ne contient pas de vecteurs normaux. aiProcess_SplitLargeMeshes : divise le grands meshes en sous-meshes plus petits, ce qui est utile si votre rendu a un nombre maximum de sommets autorisés et ne peut traiter que des meshes plus petits. aiProcess_OptimizeMeshes : fait l’inverse en essayant de joindre plusieurs meshes en un mesh plus grand, réduisant les appels au dessin pour l’optimisation. Assimp propose un grand nombre d’options de post-traitement que vous pouvez trouver ici. Le chargement d’un modèle via Assimp est (comme vous pouvez le voir) étonnamment facile. Le plus dur est d’utiliser l’objet scène retourné pour traduire les données chargées en un tableau d’objets Mesh. La fonction loadModel complète est présentée ici :\nvoid loadModel(string path) { Assimp::Importer import; const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);\tif(!scene || scene-\u003emFlags \u0026 AI_SCENE_FLAGS_INCOMPLETE || !scene-\u003emRootNode) { cout \u003c\u003c \"ERROR::ASSIMP::\" \u003c\u003c import.GetErrorString() \u003c\u003c endl; return; } directory = path.substr(0, path.find_last_of('/')); processNode(scene-\u003emRootNode, scene); } Après avoir chargé le modèle, nous vérifions que la scène et le nœud racine de la scène ne sont pas null et nous vérifions l’un de ses flags pour voir si les données renvoyées sont incomplètes. Si l’une de ces conditions d’erreur est remplie, nous signalons l’erreur récupérée dans la fonction GetErrorString de l’importateur et nous faisons un return. Nous récupérons également le chemin d’accès au répertoire du fichier donné.\nSi rien ne s’est mal passé, nous voulons traiter tous les nœuds de la scène. Nous passons le premier nœud (nœud racine) à la fonction récursive processNode. Comme chaque nœud contient (éventuellement) un ensemble d’enfants, nous voulons d’abord traiter le nœud en question, puis continuer à traiter tous les enfants du nœud et ainsi de suite. Cela correspond à une structure récursive, nous allons donc définir une fonction récursive. Une fonction récursive est une fonction qui effectue un traitement et appelle de manière récursive la même fonction avec différents paramètres jusqu’à ce qu’une certaine condition soit remplie. Dans notre cas, la condition de sortie est remplie lorsque tous les nœuds ont été traités.\nComme vous vous en souvenez peut-être dans la structure d’Assimp, chaque nœud contient un ensemble d’indices de meshes où chaque indice pointe vers un mesh spécifique situé dans l’objet de la scène. Nous voulons donc récupérer ces indices de mesh, récupérer chaque mesh, traiter chaque mesh, puis recommencer l’opération pour chacun des nœuds enfants du nœud. Le contenu de la fonction processNode est illustré ci-dessous :\nvoid processNode(aiNode *node, const aiScene *scene) { // process all the node's meshes (if any) for(unsigned int i = 0; i \u003c node-\u003emNumMeshes; i++) { aiMesh *mesh = scene-\u003emMeshes[node-\u003emMeshes[i]]; meshes.push_back(processMesh(mesh, scene));\t} // then do the same for each of its children for(unsigned int i = 0; i \u003c node-\u003emNumChildren; i++) { processNode(node-\u003emChildren[i], scene); } } Nous vérifions d’abord les indices de mesh de chaque nœud et récupérons le mesh correspondant en indexant le tableau mMeshes de la scène. Le mesh retourné est ensuite passé à la fonction processMesh qui retourne un objet Mesh que nous pouvons stocker dans la liste/le vecteur meshes.\nUne fois que tous les meshes ont été traités, nous parcourons tous les enfants du nœud et appelons la même fonction processNode pour chacun de ses enfants. Lorsqu’un nœud n’a plus d’enfants, la récursivité s’arrête.\nUn lecteur attentif aura peut-être remarqué que nous pourrions oublier de traiter les nœuds et simplement parcourir en boucle tous les meshes de la scène directement, sans faire toutes ces choses compliquées avec les indices. La raison pour laquelle nous faisons cela est que l’idée initiale d’utiliser des nœuds comme celui-ci est qu’ils définissent une relation parent-enfant entre les meshes. En itérant récursivement à travers ces relations, nous pouvons définir certains meshes comme étant les parents d’autres meshes. Un exemple d’utilisation d’un tel système est lorsque vous voulez traduire un mesh de voiture et vous assurer que tous ses enfants (comme un mesh de moteur, un mesh de volant, et ses meshes de pneus) se traduisent également ; un tel système est facilement créé en utilisant les relations parent-enfant.\nPour l’instant, nous n’utilisons pas un tel système, mais il est généralement recommandé de conserver cette approche lorsque vous souhaitez exercer un contrôle supplémentaire sur les données de votre maillage. Ces relations de type nœud sont après tout définies par les artistes qui ont créé les modèles.\nL’étape suivante consiste à traiter les données d’Assimp dans la classe Mesh du chapitre précédent.\nAssimp vers Mesh Traduire un objet aiMesh en un objet mesh qui nous est propre n’est pas très difficile. Tout ce que nous avons à faire, c’est d’accéder à chacune des propriétés pertinentes du mesh et de les stocker dans notre propre objet. La structure générale de la fonction processMesh devient alors :\nMesh processMesh(aiMesh *mesh, const aiScene *scene) { vector\u003cVertex\u003e vertices; vector\u003cunsigned int\u003e indices; vector\u003cTexture\u003e textures; for(unsigned int i = 0; i \u003c mesh-\u003emNumVertices; i++) { Vertex vertex; // process vertex positions, normals and texture coordinates [...] vertices.push_back(vertex); } // process indices [...] // process material if(mesh-\u003emMaterialIndex \u003e= 0) { [...] } return Mesh(vertices, indices, textures); } Le traitement d’un mesh est un processus en trois parties : récupération de toutes les données des sommets, récupération des indices du mesh et, enfin, récupération des données matérielles pertinentes. (matériau) Les données traitées sont stockées dans l’un des trois vecteurs et, à partir de ceux-ci, un mesh est créé et renvoyé à l’appelant de la fonction.\nLa récupération des données des sommets est assez simple : nous définissons une structure Vertex que nous ajoutons au tableau des sommets après chaque itération de la boucle. Nous bouclons pour autant de sommets qu’il existe dans le mesh (récupérés via mesh-\u003emNumVertices). Au cours de l’itération, nous voulons remplir cette structure avec toutes les données pertinentes. Pour les positions des sommets, cela se fait de la manière suivante :\nglm::vec3 vector; vector.x = mesh-\u003emVertices[i].x; vector.y = mesh-\u003emVertices[i].y; vector.z = mesh-\u003emVertices[i].z; vertex.Position = vector; Notez que nous définissons un vec3 temporaire pour transférer les données d’Assimp. Ceci est nécessaire car Assimp maintient ses propres types de données pour les vecteurs, les matrices, les chaînes de caractères, etc. et ils ne se convertissent pas très bien aux types de données de glm.\nAssimp appelle son tableau de positions de vertex mVertices, ce qui n’est pas le nom le plus intuitif.\nLa procédure pour les normales n’est plus une surprise :\nvector.x = mesh-\u003emNormals[i].x; vector.y = mesh-\u003emNormals[i].y; vector.z = mesh-\u003emNormals[i].z; vertex.Normal = vector; Les coordonnées de texture sont à peu près les mêmes, mais Assimp permet à un modèle d’avoir jusqu’à 8 coordonnées de texture différentes par vertex. Nous n’allons pas en utiliser 8, nous ne nous intéresserons qu’au premier jeu de coordonnées de texture. Nous voudrons également vérifier si le mesh contient effectivement des coordonnées de texture (ce qui n’est pas toujours le cas) :\nif(mesh-\u003emTextureCoords[0]) // does the mesh contain texture coordinates? { glm::vec2 vec; vec.x = mesh-\u003emTextureCoords[0][i].x; vec.y = mesh-\u003emTextureCoords[0][i].y; vertex.TexCoords = vec; } else vertex.TexCoords = glm::vec2(0.0f, 0.0f); La structure vertex est maintenant complètement remplie avec les attributs de vertex requis et nous pouvons la pousser à l’arrière du vecteur vertices à la fin de l’itération. Ce processus est répété pour chaque sommet du mesh.\nIndices L’interface d’Assimp définit chaque mesh comme ayant un tableau de faces, où chaque face représente une seule primitive, qui dans notre cas (grâce à l’option aiProcess_Triangulate) sont toujours des triangles. Une face contient les indices des sommets que nous devons dessiner dans quel ordre pour sa primitive. Donc si nous itérons sur toutes les faces et stockons tous les indices des faces dans le vecteur indices, tout est prêt :\nfor(unsigned int i = 0; i \u003c mesh-\u003emNumFaces; i++) { aiFace face = mesh-\u003emFaces[i]; for(unsigned int j = 0; j \u003c face.mNumIndices; j++) indices.push_back(face.mIndices[j]); } Une fois la boucle externe terminée, nous disposons d’un ensemble complet de sommets et de données d’index pour dessiner le mesh via glDrawElements. Cependant, pour terminer la discussion et ajouter quelques détails au mesh, nous voulons également traiter le matériau du mesh.\nMatériau Comme les nœuds, un mesh ne contient qu’un index vers un objet matériau. Pour récupérer le matériau d’un mesh, nous devons indexer le tableau mMaterials de la scène. L’index du matériau du mesh est défini dans sa propriété mMaterialIndex, que nous pouvons également interroger pour vérifier si le mesh contient un matériau ou non :\nif(mesh-\u003emMaterialIndex \u003e= 0) { aiMaterial *material = scene-\u003emMaterials[mesh-\u003emMaterialIndex]; vector\u003cTexture\u003e diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, \"texture_diffuse\"); textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end()); vector\u003cTexture\u003e specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, \"texture_specular\"); textures.insert(textures.end(), specularMaps.begin(), specularMaps.end()); } Nous récupérons d’abord l’objet aiMaterial dans le tableau mMaterials de la scène. Ensuite, nous voulons charger les textures diffuses et/ou spéculaires du mesh. Un objet matériel stocke en interne un tableau d’emplacements de texture pour chaque type de texture. Les différents types de texture sont tous préfixés par aiTextureType_. Nous utilisons une fonction d’aide appelée loadMaterialTextures pour récupérer, charger et initialiser les textures du matériau. La fonction renvoie un vecteur de structures Texture que nous stockons à la fin du vecteur de textures du modèle.\nLa fonction loadMaterialTextures itère sur tous les emplacements de texture du type de texture donné, récupère l’emplacement du fichier de texture, puis charge et génère la texture et stocke les informations dans une structure Vertex. Voici à quoi cela ressemble :\nvector\u003cTexture\u003e loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName) { vector\u003cTexture\u003e textures; for(unsigned int i = 0; i \u003c mat-\u003eGetTextureCount(type); i++) { aiString str; mat-\u003eGetTexture(type, i, \u0026str); Texture texture; texture.id = TextureFromFile(str.C_Str(), directory); texture.type = typeName; texture.path = str; textures.push_back(texture); } return textures; } Nous vérifions d’abord la quantité de textures stockées dans le matériau via la fonction GetTextureCount qui attend un des types de texture que nous avons donnés. Nous récupérons l’emplacement de chaque fichier de texture via la fonction GetTexture qui stocke le résultat dans une chaîne de caractères aiString. Nous utilisons ensuite une autre fonction d’aide appelée TextureFromFile qui charge une texture (avec stb_image.h) pour nous et renvoie l’ID de la texture. Vous pouvez consulter la liste complète du code à la fin pour connaître son contenu si vous n’êtes pas sûr de la façon dont une telle fonction est écrite.\nNotez que nous supposons que les chemins des fichiers de texture dans les fichiers de modèle sont locaux à l’objet de modèle réel, c’est-à-dire dans le même répertoire que l’emplacement du modèle lui-même. Nous pouvons alors simplement concaténer la chaîne de l’emplacement de la texture et la chaîne du répertoire que nous avons récupérée plus tôt (dans la fonction loadModel) pour obtenir le chemin complet de la texture (c’est pourquoi la fonction GetTexture a également besoin de la chaîne du répertoire).\nCertains modèles trouvés sur Internet utilisent des chemins absolus pour l’emplacement de leurs textures, ce qui ne fonctionnera pas sur toutes les machines. Dans ce cas, vous voudrez probablement éditer manuellement le fichier pour utiliser des chemins locaux pour les textures (si possible).\nEt c’est tout ce qu’il y a à faire pour importer un modèle avec Assimp.\nUne optimisation Nous n’avons pas encore tout à fait terminé, puisqu’il reste une optimisation importante (mais pas complètement nécessaire) à faire. La plupart des scènes réutilisent plusieurs de leurs textures sur plusieurs meshes ; pensez à nouveau à une maison dont les murs sont recouverts d’une texture de granit. Cette texture pourrait également être appliquée au sol, aux plafonds, à l’escalier, à une table et peut-être même à un petit puits situé à proximité. Le chargement des textures est une opération coûteuse et, dans notre implémentation actuelle, une nouvelle texture est chargée et générée pour chaque mesh, même si la même texture a pu être chargée plusieurs fois auparavant. Cela devient rapidement le goulot d’étranglement (bottleneck) de votre implémentation de chargement de modèle.\nNous allons donc ajouter une petite modification au code du modèle en stockant globalement toutes les textures chargées. Chaque fois que nous voulons charger une texture, nous vérifions d’abord si elle n’a pas déjà été chargée. Si c’est le cas, nous prenons cette texture et sautons toute la routine de chargement, ce qui nous permet d’économiser beaucoup de puissance de traitement. Pour pouvoir comparer les textures, nous devons également stocker leur chemin d’accès :\nstruct Texture { unsigned int id; string type; string path; // we store the path of the texture to compare with other textures }; Nous stockons ensuite toutes les textures chargées dans un autre vecteur déclaré en haut du fichier de classe du modèle en tant que variable privée :\nvector\u003cTexture\u003e textures_loaded; Dans la fonction loadMaterialTextures, nous voulons comparer le chemin de texture avec toutes les textures dans le vecteur textures_loaded pour voir si le chemin de texture actuel est égal à l’une d’entre elles. Si c’est le cas, nous sautons la partie chargement/génération de la texture et utilisons simplement la structure de texture trouvée comme texture du mesh. La fonction (mise à jour) est présentée ci-dessous :\nvector\u003cTexture\u003e loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName) { vector\u003cTexture\u003e textures; for(unsigned int i = 0; i \u003c mat-\u003eGetTextureCount(type); i++) { aiString str; mat-\u003eGetTexture(type, i, \u0026str); bool skip = false; for(unsigned int j = 0; j \u003c textures_loaded.size(); j++) { if(std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0) { textures.push_back(textures_loaded[j]); skip = true; break; } } if(!skip) { // if texture hasn't been loaded already, load it Texture texture; texture.id = TextureFromFile(str.C_Str(), directory); texture.type = typeName; texture.path = str.C_Str(); textures.push_back(texture); textures_loaded.push_back(texture); // add to loaded textures } } return textures; } Certaines versions d’Assimp ont tendance à charger les modèles assez lentement lorsque vous utilisez la version debug et/ou le mode debug de votre IDE, alors assurez-vous de le tester avec les versions release si vous rencontrez des temps de chargement lents.\nVous pouvez trouver le code source complet de la classe Model ici.\nPlus de conteneurs! Alors donnons un coup de pouce à notre implémentation en important un modèle créé par de véritables artistes, et non par le génie créatif que je suis. Parce que je ne veux pas me donner trop de crédit, je vais occasionnellement permettre à d’autres artistes de rejoindre les rangs et cette fois nous allons charger cet incroyable Survival Guitar Backpack de Berk Gedik. J’ai un peu modifié le matériau et les chemins pour qu’il fonctionne directement avec la façon dont nous avons configuré le chargement du modèle. Le modèle est exporté sous la forme d’un fichier .obj accompagné d’un fichier .mtl qui renvoie aux maps de diffuse, spéculaire et normale du modèle (nous y reviendrons plus tard). Vous pouvez télécharger le modèle ajusté pour ce chapitre ici. Notez qu’il y a quelques types de textures supplémentaires que nous n’utiliserons pas encore, et que toutes les textures et le(s) fichier(s) du modèle doivent être situés dans le même répertoire pour que les textures puissent être chargées.\nLa version modifiée du sac à dos utilise des chemins de texture relatifs locaux et renomme les textures albédo et métallique en diffus et spéculaire respectivement.\nDéclarez maintenant un objet Model et indiquez l’emplacement du fichier du modèle. Le modèle devrait alors se charger automatiquement et (s’il n’y a pas d’erreurs) rendre l’objet dans la boucle de rendu en utilisant sa fonction Draw et c’est tout. Plus d’allocations de tampon, de pointeurs d’attributs et de commandes de rendu, juste une simple ligne de code. Si vous créez un ensemble simple de shaders où le shader de fragment ne produit que la texture diffuse de l’objet, le résultat ressemble un peu à ceci : Vous pouvez trouver le code source complet ici. Notez que nous demandons à stb_image.h de retourner les textures verticalement, si vous ne l’avez pas déjà fait, avant de charger le modèle. Dans le cas contraire, les textures auront l’air tout chamboulé.\nNous pouvons également être plus créatifs et introduire des lumières ponctuelles dans l’équation de rendu, comme nous l’avons appris dans les chapitres sur l’éclairage, et avec les maps de spéculaires, nous obtiendrons des résultats étonnants : Même moi, je dois admettre que c’est peut-être un peu plus fantaisiste que les conteneurs que nous avons utilisés jusqu’à présent. Assimp permet de charger des tonnes de modèles trouvés sur Internet. Il existe un grand nombre de sites Internet qui proposent des modèles 3D gratuits à télécharger dans différents formats de fichiers. Notez que certains modèles ne se chargent pas correctement, ont des chemins de texture qui ne fonctionnent pas, ou sont simplement exportés dans un format qu’Assimp ne peut pas lire.\nPour aller plus loin How-To Texture Wavefront (.obj) Models for OpenGL: excellent guide vidéo par Matthew Early sur la façon de configurer les modèles 3D dans Blender pour qu’ils fonctionnent directement avec le chargeur de modèles actuel (car la configuration des textures que nous avons choisie ne fonctionne pas toujours à l’extérieur de la boîte). ",
-  "wordCount" : "3339",
-  "inLanguage": "en",
-  "datePublished": "0001-01-01T00:00:00Z",
-  "dateModified": "0001-01-01T00:00:00Z",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://hrst4.xyz/docs/learnopengl_fr/03_model_loading/model/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "hrst4's blog",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://hrst4.xyz/favicon.ico"
-    }
-  }
-}
-</script>
-</head>
-
-<body class=" dark" id="top">
-
-<header class="header">
-    <nav class="nav">
-        <div class="logo">
-            <a href="https://hrst4.xyz/" accesskey="h" title="hrst4&#39;s blog (Alt + H)">hrst4&#39;s blog</a>
-            <div class="logo-switches">
-            </div>
-        </div>
-        <ul id="menu">
-        </ul>
-    </nav>
-</header>
-<main class="main">
-
-<article class="post-single">
-  <header class="post-header">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
     
-    <h1 class="post-title">
       
-    </h1>
-    <div class="post-meta">
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
 
-</div>
-  </header> 
-  <div class="post-content"><h1 id="modèle">Modèle<a hidden class="anchor" aria-hidden="true" href="#modèle">#</a></h1>
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+<br><br>
+<h1 id="modèle">Modèle</h1>
 <p>Il est maintenant temps de mettre la main à la pâte avec Assimp et de commencer à créer le code de chargement et de traduction. L&rsquo;objectif de ce chapitre est de créer une autre classe qui représente un modèle dans son intégralité, c&rsquo;est-à-dire un modèle qui contient plusieurs meshes, éventuellement avec plusieurs textures. <strong>Une maison qui contient un balcon en bois, une tour et peut-être une piscine peut être chargée comme un seul modèle</strong>. Nous chargerons le modèle via Assimp et le traduirons en plusieurs objets Mesh que nous avons créés dans le chapitre précédent.</p>
 <p>Sans plus attendre, je vous présente la structure de la classe Model :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Mode</span>
@@ -145,7 +65,7 @@ La fonction Draw n&rsquo;a rien de spécial et passe en boucle sur chacun des me
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> meshes.size(); i<span style="color:#f92672">++</span>)
 </span></span><span style="display:flex;"><span>        meshes[i].Draw(shader);
 </span></span><span style="display:flex;"><span>}  
-</span></span></code></pre></div><h2 id="importer-un-modèle-3d-dans-opengl">Importer un modèle 3D dans OpenGL<a hidden class="anchor" aria-hidden="true" href="#importer-un-modèle-3d-dans-opengl">#</a></h2>
+</span></span></code></pre></div><h2 id="importer-un-modèle-3d-dans-opengl">Importer un modèle 3D dans OpenGL</h2>
 <p>Pour importer un modèle et le traduire dans notre propre structure, nous devons d&rsquo;abord inclure les en-têtes appropriés d&rsquo;Assimp :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;assimp/Importer.hpp&gt;</span><span style="color:#75715e">
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;assimp/scene.h&gt;</span><span style="color:#75715e">
@@ -203,7 +123,7 @@ Un exemple d&rsquo;utilisation d&rsquo;un tel système est lorsque vous voulez t
 <p>Pour l&rsquo;instant, nous n&rsquo;utilisons pas un tel système, mais il est généralement recommandé de conserver cette approche lorsque vous souhaitez exercer un contrôle supplémentaire sur les données de votre maillage. Ces relations de type nœud sont après tout définies par les artistes qui ont créé les modèles.</p>
 </blockquote>
 <p>L&rsquo;étape suivante consiste à traiter les données d&rsquo;Assimp dans la classe <strong>Mesh</strong> du chapitre précédent.</p>
-<h2 id="assimp-vers-mesh">Assimp vers Mesh<a hidden class="anchor" aria-hidden="true" href="#assimp-vers-mesh">#</a></h2>
+<h2 id="assimp-vers-mesh">Assimp vers Mesh</h2>
 <p>Traduire un objet <code>aiMesh</code> en un objet mesh qui nous est propre n&rsquo;est pas très difficile. Tout ce que nous avons à faire, c&rsquo;est d&rsquo;accéder à chacune des propriétés pertinentes du mesh et de les stocker dans notre propre objet. La structure générale de la fonction <code>processMesh</code> devient alors :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>Mesh <span style="color:#a6e22e">processMesh</span>(aiMesh <span style="color:#f92672">*</span>mesh, <span style="color:#66d9ef">const</span> aiScene <span style="color:#f92672">*</span>scene)
 </span></span><span style="display:flex;"><span>{
@@ -255,7 +175,7 @@ Un exemple d&rsquo;utilisation d&rsquo;un tel système est lorsque vous voulez t
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
 </span></span><span style="display:flex;"><span>    vertex.TexCoords <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>vec2(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>);  
 </span></span></code></pre></div><p>La structure vertex est maintenant complètement remplie avec les attributs de vertex requis et nous pouvons la pousser à l&rsquo;arrière du vecteur <code>vertices</code> à la fin de l&rsquo;itération. Ce processus est répété pour chaque sommet du mesh.</p>
-<h2 id="indices">Indices<a hidden class="anchor" aria-hidden="true" href="#indices">#</a></h2>
+<h2 id="indices">Indices</h2>
 <p>L&rsquo;interface d&rsquo;Assimp définit chaque mesh comme ayant un tableau de faces, où chaque face représente une seule primitive, qui dans notre cas (grâce à l&rsquo;option <code>aiProcess_Triangulate</code>) sont toujours des triangles. Une face contient les indices des sommets que nous devons dessiner dans quel ordre pour sa primitive. Donc si nous itérons sur toutes les faces et stockons tous les indices des faces dans le vecteur <code>indices</code>, tout est prêt :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> mesh<span style="color:#f92672">-&gt;</span>mNumFaces; i<span style="color:#f92672">++</span>)
 </span></span><span style="display:flex;"><span>{
@@ -264,7 +184,7 @@ Un exemple d&rsquo;utilisation d&rsquo;un tel système est lorsque vous voulez t
 </span></span><span style="display:flex;"><span>        indices.push_back(face.mIndices[j]);
 </span></span><span style="display:flex;"><span>}  
 </span></span></code></pre></div><p>Une fois la boucle externe terminée, nous disposons d&rsquo;un ensemble complet de sommets et de données d&rsquo;index pour dessiner le mesh via <code>glDrawElements</code>. Cependant, pour terminer la discussion et ajouter quelques détails au mesh, nous voulons également traiter le matériau du mesh.</p>
-<h2 id="matériau">Matériau<a hidden class="anchor" aria-hidden="true" href="#matériau">#</a></h2>
+<h2 id="matériau">Matériau</h2>
 <p>Comme les nœuds, un mesh ne contient qu&rsquo;un index vers un objet matériau. Pour récupérer le matériau d&rsquo;un mesh, nous devons indexer le tableau <code>mMaterials</code> de la scène. L&rsquo;index du matériau du mesh est défini dans sa propriété <code>mMaterialIndex</code>, que nous pouvons également interroger pour vérifier si le mesh contient un matériau ou non :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(mesh<span style="color:#f92672">-&gt;</span>mMaterialIndex <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>)
 </span></span><span style="display:flex;"><span>{
@@ -301,7 +221,7 @@ Un exemple d&rsquo;utilisation d&rsquo;un tel système est lorsque vous voulez t
 <p>Certains modèles trouvés sur Internet utilisent des chemins absolus pour l&rsquo;emplacement de leurs textures, ce qui ne fonctionnera pas sur toutes les machines. Dans ce cas, vous voudrez probablement éditer manuellement le fichier pour utiliser des chemins locaux pour les textures (si possible).</p>
 </blockquote>
 <p>Et c&rsquo;est tout ce qu&rsquo;il y a à faire pour importer un modèle avec Assimp.</p>
-<h2 id="une-optimisation">Une optimisation<a hidden class="anchor" aria-hidden="true" href="#une-optimisation">#</a></h2>
+<h2 id="une-optimisation">Une optimisation</h2>
 <p>Nous n&rsquo;avons pas encore tout à fait terminé, puisqu&rsquo;il reste une optimisation importante (mais pas complètement nécessaire) à faire. La plupart des scènes réutilisent plusieurs de leurs textures sur plusieurs meshes ; pensez à nouveau à une maison dont les murs sont recouverts d&rsquo;une texture de granit. Cette texture pourrait également être appliquée au sol, aux plafonds, à l&rsquo;escalier, à une table et peut-être même à un petit puits situé à proximité. Le chargement des textures est une opération coûteuse et, dans notre implémentation actuelle, une nouvelle texture est chargée et générée pour chaque mesh, même si la même texture a pu être chargée plusieurs fois auparavant. Cela devient rapidement le goulot d&rsquo;étranglement (bottleneck) de votre implémentation de chargement de modèle.</p>
 <p>Nous allons donc ajouter une petite modification au code du modèle en stockant globalement toutes les textures chargées. Chaque fois que nous voulons charger une texture, nous vérifions d&rsquo;abord si elle n&rsquo;a pas déjà été chargée. Si c&rsquo;est le cas, nous prenons cette texture et sautons toute la routine de chargement, ce qui nous permet d&rsquo;économiser beaucoup de puissance de traitement. Pour pouvoir comparer les textures, nous devons également stocker leur chemin d&rsquo;accès :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Texture</span> {
@@ -345,7 +265,7 @@ Un exemple d&rsquo;utilisation d&rsquo;un tel système est lorsque vous voulez t
 <p>Certaines versions d&rsquo;Assimp ont tendance à charger les modèles assez lentement lorsque vous utilisez la version debug et/ou le mode debug de votre IDE, alors assurez-vous de le tester avec les versions release si vous rencontrez des temps de chargement lents.</p>
 </blockquote>
 <p>Vous pouvez trouver le code source complet de la classe <code>Model</code> <a href="https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/model.h">ici</a>.</p>
-<h2 id="plus-de-conteneurs">Plus de conteneurs!<a hidden class="anchor" aria-hidden="true" href="#plus-de-conteneurs">#</a></h2>
+<h2 id="plus-de-conteneurs">Plus de conteneurs!</h2>
 <p>Alors donnons un coup de pouce à notre implémentation en important un modèle créé par de véritables artistes, et non par le génie créatif que je suis. Parce que je ne veux pas me donner trop de crédit, je vais occasionnellement permettre à d&rsquo;autres artistes de rejoindre les rangs et cette fois nous allons charger cet incroyable <a href="https://sketchfab.com/3d-models/survival-guitar-backpack-low-poly-799f8c4511f84fab8c3f12887f7e6b36">Survival Guitar Backpack</a> de Berk Gedik. J&rsquo;ai un peu modifié le matériau et les chemins pour qu&rsquo;il fonctionne directement avec la façon dont nous avons configuré le chargement du modèle. Le modèle est exporté sous la forme d&rsquo;un fichier <code>.obj</code> accompagné d&rsquo;un fichier <code>.mtl</code> qui renvoie aux maps de diffuse, spéculaire et normale du modèle (nous y reviendrons plus tard). Vous pouvez télécharger le modèle ajusté pour ce chapitre <a href="https://learnopengl.com/data/models/backpack.zip">ici</a>. Notez qu&rsquo;il y a quelques types de textures supplémentaires que nous n&rsquo;utiliserons pas encore, et que toutes les textures et le(s) fichier(s) du modèle doivent être situés dans le même répertoire pour que les textures puissent être chargées.</p>
 <blockquote>
 <p>La version modifiée du sac à dos utilise des chemins de texture relatifs locaux et renomme les textures albédo et métallique en diffus et spéculaire respectivement.</p>
@@ -356,77 +276,19 @@ Un exemple d&rsquo;utilisation d&rsquo;un tel système est lorsque vous voulez t
 <p>Nous pouvons également être plus créatifs et introduire des lumières ponctuelles dans l&rsquo;équation de rendu, comme nous l&rsquo;avons appris dans les chapitres sur l&rsquo;éclairage, et avec les maps de spéculaires, nous obtiendrons des résultats étonnants :
 <img src="/docs/LEARNOPENGL_FR/03_Model_Loading/model_lighting.png" alt="model_lighting"/>
 Même moi, je dois admettre que c&rsquo;est peut-être un peu plus fantaisiste que les conteneurs que nous avons utilisés jusqu&rsquo;à présent. Assimp permet de charger des tonnes de modèles trouvés sur Internet. Il existe un grand nombre de sites Internet qui proposent des modèles 3D gratuits à télécharger dans différents formats de fichiers. Notez que certains modèles ne se chargent pas correctement, ont des chemins de texture qui ne fonctionnent pas, ou sont simplement exportés dans un format qu&rsquo;Assimp ne peut pas lire.</p>
-<h2 id="pour-aller-plus-loin">Pour aller plus loin<a hidden class="anchor" aria-hidden="true" href="#pour-aller-plus-loin">#</a></h2>
+<h2 id="pour-aller-plus-loin">Pour aller plus loin</h2>
 <ul>
 <li><a href="https://www.youtube.com/watch?v=4DQquG_o-Ac">How-To Texture Wavefront (.obj) Models for OpenGL</a>: excellent guide vidéo par Matthew Early sur la façon de configurer les modèles 3D dans Blender pour qu&rsquo;ils fonctionnent directement avec le chargeur de modèles actuel (car la configuration des textures que nous avons choisie ne fonctionne pas toujours à l&rsquo;extérieur de la boîte).</li>
 </ul>
 
 
-  </div>
 
-  <footer class="post-footer">
-    <ul class="post-tags">
-    </ul>
-  </footer>
-</article>
-    </main>
+      </main>
+    </div>
     
-<footer class="footer">
-    <span>&copy; 2023 <a href="https://hrst4.xyz/">hrst4&#39;s blog</a></span>
-    <span>
-        Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
-</footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
-    </svg>
-</a>
-
+<script src="/js/feather.min.js"></script>
 <script>
-    let menu = document.getElementById('menu')
-    if (menu) {
-        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
-        menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
-        });
-    });
-
+  feather.replace();
 </script>
-<script>
-    var mybutton = document.getElementById("top-link");
-    window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
-        } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
-        }
-    };
-
-</script>
-</body>
-
+  </body>
 </html>

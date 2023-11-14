@@ -1,122 +1,42 @@
-<!DOCTYPE html>
-<html lang="en" dir="auto">
-
-<head><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>hrst4&#39;s blog</title>
-<meta name="keywords" content="">
-<meta name="description" content="Gamma Correction Dès que nous avons calculé les couleurs des pixels de la scène, nous devons les afficher sur un moniteur. À l&rsquo;époque de l&rsquo;imagerie numérique, la plupart des moniteurs étaient des tubes cathodiques (CRT). Ces moniteurs avaient la propriété physique que le double de la tension d&rsquo;entrée n&rsquo;entraînait pas le double de la luminosité. Le doublement de la tension d&rsquo;entrée se traduisait par une luminosité égale à une relation exponentielle d&rsquo;environ 2,2, connue sous le nom de gamma d&rsquo;un moniteur.">
-<meta name="author" content="">
-<link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/01_gamma_correction/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
-<link rel="icon" href="https://hrst4.xyz/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://hrst4.xyz/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://hrst4.xyz/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://hrst4.xyz/apple-touch-icon.png">
-<link rel="mask-icon" href="https://hrst4.xyz/safari-pinned-tab.svg">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
-
-    </style>
-</noscript><meta property="og:title" content="" />
-<meta property="og:description" content="Gamma Correction Dès que nous avons calculé les couleurs des pixels de la scène, nous devons les afficher sur un moniteur. À l&rsquo;époque de l&rsquo;imagerie numérique, la plupart des moniteurs étaient des tubes cathodiques (CRT). Ces moniteurs avaient la propriété physique que le double de la tension d&rsquo;entrée n&rsquo;entraînait pas le double de la luminosité. Le doublement de la tension d&rsquo;entrée se traduisait par une luminosité égale à une relation exponentielle d&rsquo;environ 2,2, connue sous le nom de gamma d&rsquo;un moniteur." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/01_gamma_correction/" /><meta property="article:section" content="docs" />
-
-
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content=""/>
-<meta name="twitter:description" content="Gamma Correction Dès que nous avons calculé les couleurs des pixels de la scène, nous devons les afficher sur un moniteur. À l&rsquo;époque de l&rsquo;imagerie numérique, la plupart des moniteurs étaient des tubes cathodiques (CRT). Ces moniteurs avaient la propriété physique que le double de la tension d&rsquo;entrée n&rsquo;entraînait pas le double de la luminosité. Le doublement de la tension d&rsquo;entrée se traduisait par une luminosité égale à une relation exponentielle d&rsquo;environ 2,2, connue sous le nom de gamma d&rsquo;un moniteur."/>
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "",
-      "item": "https://hrst4.xyz/docs/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "",
-      "item": "https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/01_gamma_correction/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "",
-  "name": "",
-  "description": "Gamma Correction Dès que nous avons calculé les couleurs des pixels de la scène, nous devons les afficher sur un moniteur. À l\u0026rsquo;époque de l\u0026rsquo;imagerie numérique, la plupart des moniteurs étaient des tubes cathodiques (CRT). Ces moniteurs avaient la propriété physique que le double de la tension d\u0026rsquo;entrée n\u0026rsquo;entraînait pas le double de la luminosité. Le doublement de la tension d\u0026rsquo;entrée se traduisait par une luminosité égale à une relation exponentielle d\u0026rsquo;environ 2,2, connue sous le nom de gamma d\u0026rsquo;un moniteur.",
-  "keywords": [
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
-  ],
-  "articleBody": "Gamma Correction Dès que nous avons calculé les couleurs des pixels de la scène, nous devons les afficher sur un moniteur. À l’époque de l’imagerie numérique, la plupart des moniteurs étaient des tubes cathodiques (CRT). Ces moniteurs avaient la propriété physique que le double de la tension d’entrée n’entraînait pas le double de la luminosité. Le doublement de la tension d’entrée se traduisait par une luminosité égale à une relation exponentielle d’environ 2,2, connue sous le nom de gamma d’un moniteur. Il se trouve que (par coïncidence) cela correspond étroitement à la façon dont les êtres humains mesurent la luminosité, car la luminosité est également affichée avec une relation de puissance similaire (inverse). Pour mieux comprendre ce que cela signifie, regardez l’image suivante : La ligne supérieure ressemble à l’échelle de luminosité correcte pour l’œil humain. Si l’on double la luminosité (de 0,1 à 0,2 par exemple), on a effectivement l’impression que la lumière est deux fois plus brillante, avec de belles différences régulières. Cependant, lorsque nous parlons de la luminosité physique de la lumière, c’est-à-dire de la quantité de photons quittant une source lumineuse, l’échelle inférieure affiche en fait la luminosité correcte. Sur l’échelle inférieure, le doublement de la luminosité donne la luminosité physique correcte, mais comme nos yeux perçoivent la luminosité différemment (ils sont plus sensibles aux changements dans les couleurs sombres), l’aspect est bizarre.\nÉtant donné que les yeux humains préfèrent voir les couleurs de luminosité selon l’échelle supérieure, les moniteurs (encore aujourd’hui) utilisent une relation de puissance pour afficher les couleurs de sortie, de sorte que les couleurs de luminosité physiques d’origine sont mises en correspondance avec les couleurs de luminosité non linéaires de l’échelle supérieure.\nCe mappage non linéaire des moniteurs produit des résultats de luminosité plus agréables pour nos yeux, mais lorsqu’il s’agit de rendre des graphiques, il y a un problème : toutes les options de couleur et de luminosité que nous configurons dans nos applications sont basées sur ce que nous percevons à partir du moniteur et donc toutes les options sont en fait des options de luminosité/couleur non linéaires. Jetez un coup d’œil au graphique ci-dessous : La ligne pointillée représente les valeurs de couleur/lumière dans l’espace linéaire et la ligne continue représente l’espace de couleur que les moniteurs affichent. Si l’on double une couleur dans l’espace linéaire, le résultat est effectivement le double de la valeur. Par exemple, prenons le vecteur de couleur d’une lumière (0,5, 0,0, 0,0) qui représente une lumière rouge semi-obscure. Si nous doublons cette lumière dans l’espace linéaire, elle deviendra (1,0, 0,0, 0,0) comme vous pouvez le voir sur le graphique. Cependant, la couleur d’origine est affichée à l’écran sous la forme (0,218, 0,0, 0,0), comme vous pouvez le voir sur le graphique. C’est ici que les problèmes commencent à se poser : une fois que nous avons doublé la lumière rouge sombre dans l’espace linéaire, elle devient en fait plus de 4,5 fois plus lumineuse sur l’écran !\nJusqu’à ce chapitre, nous avons supposé que nous travaillions dans l’espace linéaire, mais nous avons en fait travaillé dans l’espace de sortie du moniteur, de sorte que toutes les couleurs et variables d’éclairage que nous avons configurées n’étaient pas physiquement correctes, mais semblaient simplement (en quelque sorte) correctes sur notre moniteur. C’est pourquoi nous (et les artistes) définissons généralement des valeurs d’éclairage beaucoup plus lumineuses qu’elles ne devraient l’être (puisque le moniteur les assombrit), ce qui rend la plupart des calculs de l’espace linéaire incorrects. Notez que le moniteur (CRT) et le graphique linéaire commencent et finissent tous deux à la même position ; ce sont les valeurs intermédiaires qui sont assombries par l’écran.\nComme les couleurs sont configurées en fonction de la sortie de l’écran, tous les calculs intermédiaires (d’éclairage) dans l’espace linéaire sont physiquement incorrects. Cela devient de plus en plus évident à mesure que des algorithmes d’éclairage plus avancés sont mis au point. Vous pouvez voir qu’avec la correction gamma, les valeurs de couleur (mises à jour) s’accordent mieux et les zones plus sombres sont plus détaillées. Dans l’ensemble, la qualité de l’image s’est améliorée grâce à quelques petites modifications.\nSi le gamma de ce moniteur n’est pas correctement corrigé, l’éclairage semblera incorrect et les artistes auront du mal à obtenir des résultats réalistes et attrayants. La solution consiste à appliquer une correction gamma.\nCorrection gamma L’idée de la correction gamma est d’appliquer l’inverse du gamma de l’écran à la couleur de sortie finale avant de l’afficher à l’écran. En regardant le graphique de la courbe gamma plus tôt dans ce chapitre, nous voyons une autre ligne en pointillés qui est l’inverse de la courbe gamma du moniteur. Nous multiplions chacune des couleurs de sortie linéaires par cette courbe gamma inverse (ce qui les rend plus lumineuses) et dès que les couleurs sont affichées sur le moniteur, la courbe gamma du moniteur est appliquée et les couleurs résultantes deviennent linéaires. Nous éclaircissons effectivement les couleurs intermédiaires de sorte que dès que l’écran les assombrit, tout s’équilibre.\nPrenons un autre exemple. Supposons que nous ayons à nouveau la couleur rouge foncé $(0.5,0.0,0.0)$. Avant d’afficher cette couleur à l’écran, nous appliquons d’abord la courbe de correction gamma à la valeur de la couleur. Les couleurs linéaires affichées par un moniteur sont grossièrement mises à l’échelle à une puissance de $2.2$, de sorte que l’inverse nécessite une mise à l’échelle des couleurs à une puissance de $1/2.2$. La couleur rouge foncé corrigée par le gamma devient donc $$ (0.5,0.0,0.0)^{1/2.2}= (0.5,0.0,0.0)^{0.45}= (0.73,0.0,0.0) $$Les couleurs corrigées sont ensuite transmises au moniteur et la couleur est affichée comme suit : $$ (0,73,0.0,0.0)^{2.2}=(0.5,0.0,0.0) $$\nVous pouvez constater qu’en utilisant la correction gamma, le moniteur affiche finalement les couleurs telles que nous les avons définies de manière linéaire dans l’application.\nUne valeur de gamma de 2.2 est une valeur de gamma par défaut qui estime grossièrement le gamma moyen de la plupart des écrans. L’espace colorimétrique résultant de ce gamma de 2.2 est appelé espace colorimétrique sRGB (il n’est pas exact à 100 %, mais il s’en rapproche). Chaque moniteur a ses propres courbes de gamma, mais une valeur de gamma de 2.2 donne de bons résultats sur la plupart des moniteurs. C’est pourquoi les jeux permettent souvent aux joueurs de modifier le paramètre gamma du jeu, qui varie légèrement d’un moniteur à l’autre.\nIl y a deux façons d’appliquer la correction gamma à votre scène :\nEn utilisant le framebuffer sRGB intégré à OpenGL. En effectuant la correction gamma nous-mêmes dans le(s) shader(s) de fragment. La première option est probablement la plus simple, mais elle vous donne également moins de contrôle. En activant GL_FRAMEBUFFER_SRGB, vous indiquez à OpenGL que chaque commande de dessin suivante doit d’abord corriger les couleurs en fonction du gamma (à partir de l’espace colorimétrique sRGB) avant de les stocker dans le(s) tampon(s) de couleurs. Le sRGB est un espace de couleur qui correspond approximativement à un gamma de $2.2$ et un standard pour la plupart des appareils. Après avoir activé GL_FRAMEBUFFER_SRGB, OpenGL effectue automatiquement une correction gamma après chaque fragment shader pour tous les framebuffers suivants, y compris le framebuffer par défaut.\nL’activation de GL_FRAMEBUFFER_SRGB est aussi simple que d’appeler glEnable :\nglEnable(GL_FRAMEBUFFER_SRGB); À partir de maintenant, vos images rendues seront corrigées en fonction du gamma et, comme cette opération est effectuée par le matériel, elle est totalement gratuite. Il convient de garder à l’esprit que cette approche (et l’autre approche) transforme (également) les couleurs de l’espace linéaire à l’espace non linéaire ; il est donc très important de n’effectuer la correction gamma qu’à la dernière étape. Si vous corrigez vos couleurs avant la sortie finale, toutes les opérations ultérieures sur ces couleurs utiliseront des valeurs incorrectes. Par exemple, si vous utilisez plusieurs framebuffers, vous voudrez probablement que les résultats intermédiaires transmis entre les framebuffers restent dans l’espace linéaire et que le dernier framebuffer applique la correction gamma avant d’être envoyé au moniteur.\nLa seconde approche nécessite un peu plus de travail, mais elle nous donne un contrôle total sur les opérations gamma. Nous appliquons la correction gamma à la fin de chaque exécution du shader de fragments afin que les couleurs finales soient corrigées avant d’être envoyées à l’écran :\nvoid main() { // do super fancy lighting in linear space [...] // apply gamma correction float gamma = 2.2; FragColor.rgb = pow(fragColor.rgb, vec3(1.0/gamma)); } La dernière ligne de code augmente effectivement chaque composante de couleur individuelle de fragColor à $1.0/gamma$, corrigeant ainsi la couleur de sortie de cette exécution du shader de fragment.\nLe problème de cette approche est que pour être cohérent, vous devez appliquer la correction gamma à chaque shader de fragment qui contribue à la sortie finale. Si vous avez une douzaine de shaders de fragment pour plusieurs objets, vous devez ajouter le code de correction gamma à chacun de ces shaders. Une solution plus simple serait d’introduire une étape de post-traitement dans votre boucle de rendu et d’appliquer la correction gamma sur le quadrant post-traité en tant qu’étape finale que vous n’auriez à faire qu’une seule fois.\nCette ligne représente la mise en œuvre technique de la correction gamma. Ce n’est pas très impressionnant, mais il y a quelques éléments supplémentaires à prendre en compte lors de la correction gamma.\nTextures sRGB Étant donné que les écrans affichent les couleurs en appliquant le gamma, chaque fois que vous dessinez, éditez ou coloriez une image sur votre ordinateur, vous choisissez les couleurs en fonction de ce que vous voyez sur l’écran. Cela signifie que toutes les images que vous créez ou modifiez ne sont pas dans l’espace linéaire, mais dans l’espace sRGB. Par exemple, doubler une couleur rouge foncé sur votre écran en se basant sur la luminosité perçue n’équivaut pas à doubler la composante rouge.\nPar conséquent, lorsque les artistes des textures créent des œuvres d’art à l’œil, toutes les valeurs des textures sont dans l’espace sRGB ; si nous utilisons ces textures telles quelles dans notre application de rendu, nous devons en tenir compte. Avant que nous ne connaissions la correction gamma, ce n’était pas vraiment un problème, car les textures étaient belles dans l’espace sRGB, qui est le même espace que celui dans lequel nous travaillons ; les textures étaient affichées exactement comme elles sont, ce qui était très bien. Cependant, maintenant que nous affichons tout dans l’espace linéaire, les couleurs des textures seront faussées comme le montre l’image suivante :\nL’image de la texture est beaucoup trop claire et cela est dû au fait qu’elle est en fait corrigée deux fois au niveau du gamma ! Lorsque nous créons une image sur la base de ce que nous voyons à l’écran, nous corrigeons effectivement les valeurs de couleur d’une image pour qu’elle s’affiche correctement à l’écran. Comme nous procédons ensuite à une nouvelle correction gamma dans le moteur de rendu, l’image finit par être beaucoup trop lumineuse.\nPour résoudre ce problème, nous devons nous assurer que les artistes de texture travaillent dans un espace linéaire. Cependant, comme il est plus facile de travailler dans l’espace sRGB et que la plupart des outils ne prennent même pas correctement en charge la texturation linéaire, ce n’est probablement pas la meilleure solution.\nL’autre solution consiste à recorriger ou à transformer ces textures sRGB en espace linéaire avant d’effectuer des calculs sur leurs valeurs de couleur. Nous pouvons procéder de la manière suivante :\nfloat gamma = 2.2; vec3 diffuseColor = pow(texture(diffuse, texCoords).rgb, vec3(gamma)); Faire cela pour chaque texture dans l’espace sRGB est assez difficile. Heureusement, OpenGL nous offre une autre solution à nos problèmes en nous donnant les formats de texture internes GL_SRGB et GL_SRGB_ALPHA.\nSi nous créons une texture dans OpenGL avec l’un de ces deux formats de texture sRGB, OpenGL corrigera automatiquement les couleurs dans l’espace linéaire dès que nous les utiliserons, ce qui nous permettra de travailler correctement dans l’espace linéaire. Nous pouvons spécifier une texture en tant que texture sRGB comme suit :\nglTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data); Si vous souhaitez également inclure des composants alpha dans votre texture, vous devrez spécifier le format interne de la texture en tant que GL_SRGB_ALPHA.\nVous devez être prudent lorsque vous spécifiez vos textures dans l’espace sRGB, car toutes les textures ne sont pas réellement dans l’espace sRGB. Les textures utilisées pour colorer les objets (comme les textures diffuses) sont presque toujours dans l’espace sRGB. Les textures utilisées pour récupérer les paramètres d’éclairage (comme les cartes spéculaires et les cartes normales) sont presque toujours dans l’espace linéaire, de sorte que si vous les configurez comme des textures sRGB, l’éclairage sera étrange. Faites attention aux textures que vous spécifiez comme sRGB.\nAvec nos textures diffuses spécifiées en tant que textures sRGB, vous obtenez à nouveau le résultat visuel que vous attendez, mais cette fois-ci, tout le gamma est corrigé une seule fois.\nAttenuation Une autre différence avec la correction gamma est l’atténuation de l’éclairage. Dans le monde physique réel, l’atténuation de l’éclairage est étroitement inversement proportionnelle au carré de la distance par rapport à la source lumineuse. En français, cela signifie simplement que l’intensité de la lumière est réduite en fonction du carré de la distance à la source lumineuse, comme ci-dessous :\nfloat attenuation = 1.0 / (distance * distance); Cependant, lorsque l’on utilise cette équation, l’effet d’atténuation est généralement beaucoup trop fort, donnant aux lumières un petit rayon qui n’a pas l’air physiquement correct. C’est pourquoi d’autres fonctions d’atténuation ont été utilisées (comme nous l’avons vu dans le chapitre sur l’éclairage de base) qui permettent un meilleur contrôle, ou l’équivalent linéaire :\nfloat attenuation = 1.0 / distance; L’équivalent linéaire donne des résultats plus plausibles que sa variante quadratique sans correction gamma, mais lorsque nous activons la correction gamma, l’atténuation linéaire semble trop faible et l’atténuation quadratique physiquement correcte donne soudain de meilleurs résultats. L’image ci-dessous montre les différences : La cause de cette différence est que les fonctions d’atténuation de la lumière modifient la luminosité, et comme nous ne visualisions pas notre scène dans un espace linéaire, nous avons choisi les fonctions d’atténuation qui semblaient les meilleures sur notre moniteur, mais qui n’étaient pas physiquement correctes. Pensez à la fonction d’atténuation au carré : si nous devions utiliser cette fonction sans correction gamma, la fonction d’atténuation devient en fait : $(1.0/distance^2)^{2.2}$ lorsqu’elle est affichée sur un moniteur. Cela crée une atténuation beaucoup plus importante que ce que nous avions prévu à l’origine. Cela explique également pourquoi l’équivalent linéaire est beaucoup plus logique sans correction gamma, car il devient en fait $(1.0/distance)^{2.2}=1.0/distance^{2.2}$, ce qui ressemble beaucoup plus à son équivalent physique.\nLa fonction d’atténuation plus avancée dont nous avons parlé dans le chapitre sur l’éclairage de base a toujours sa place dans les scènes corrigées en fonction du gamma, car elle permet de mieux contrôler l’atténuation exacte (mais nécessite bien sûr des paramètres différents dans une scène corrigée en fonction du gamma).\nVous pouvez trouver le code source de cette scène de démonstration simple ici. En appuyant sur la barre d’espacement, nous passons d’une scène corrigée en fonction du gamma à une scène non corrigée, les deux scènes utilisant leurs équivalents en termes de texture et d’atténuation. Ce n’est pas la démo la plus impressionnante, mais elle montre comment appliquer toutes les techniques.\nEn résumé, la correction gamma nous permet d’effectuer tous nos calculs d’ombrage et d’éclairage dans l’espace linéaire. Comme l’espace linéaire a un sens dans le monde physique, la plupart des équations physiques donnent maintenant de bons résultats (comme l’atténuation réelle de la lumière). Plus votre éclairage est avancé, plus il est facile d’obtenir de bons résultats (et réalistes) avec la correction gamma. C’est également la raison pour laquelle il est conseillé de ne modifier réellement les paramètres d’éclairage que lorsque la correction gamma est en place.\n",
-  "wordCount" : "2624",
-  "inLanguage": "en",
-  "datePublished": "0001-01-01T00:00:00Z",
-  "dateModified": "0001-01-01T00:00:00Z",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://hrst4.xyz/docs/learnopengl_fr/05_advanced_lighting/01_gamma_correction/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "hrst4's blog",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://hrst4.xyz/favicon.ico"
-    }
-  }
-}
-</script>
-</head>
-
-<body class=" dark" id="top">
-
-<header class="header">
-    <nav class="nav">
-        <div class="logo">
-            <a href="https://hrst4.xyz/" accesskey="h" title="hrst4&#39;s blog (Alt + H)">hrst4&#39;s blog</a>
-            <div class="logo-switches">
-            </div>
-        </div>
-        <ul id="menu">
-        </ul>
-    </nav>
-</header>
-<main class="main">
-
-<article class="post-single">
-  <header class="post-header">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
     
-    <h1 class="post-title">
       
-    </h1>
-    <div class="post-meta">
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
 
-</div>
-  </header> 
-  <div class="post-content"><h1 id="gamma-correction">Gamma Correction<a hidden class="anchor" aria-hidden="true" href="#gamma-correction">#</a></h1>
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+<br><br>
+<h1 id="gamma-correction">Gamma Correction</h1>
 <p>Dès que nous avons calculé les couleurs des pixels de la scène, nous devons les afficher sur un moniteur. À l&rsquo;époque de l&rsquo;imagerie numérique, la plupart des moniteurs étaient des tubes cathodiques (CRT). Ces moniteurs avaient la propriété physique que le double de la tension d&rsquo;entrée n&rsquo;entraînait pas le double de la luminosité. Le doublement de la tension d&rsquo;entrée se traduisait par une luminosité égale à une relation exponentielle d&rsquo;environ 2,2, connue sous le nom de gamma d&rsquo;un moniteur. Il se trouve que (par coïncidence) cela correspond étroitement à la façon dont les êtres humains mesurent la luminosité, car la luminosité est également affichée avec une relation de puissance similaire (inverse). Pour mieux comprendre ce que cela signifie, regardez l&rsquo;image suivante :
 <img src="/docs/LEARNOPENGL_FR/05_Advanced_Lighting/gamma_correction_brightness.png" alt="gamma_correction_brightness"/>
 La ligne supérieure ressemble à l&rsquo;échelle de luminosité correcte pour l&rsquo;œil humain. Si l&rsquo;on double la luminosité (de 0,1 à 0,2 par exemple), on a effectivement l&rsquo;impression que la lumière est deux fois plus brillante, avec de belles différences régulières. Cependant, lorsque nous parlons de la luminosité physique de la lumière, c&rsquo;est-à-dire de la quantité de photons quittant une source lumineuse, l&rsquo;échelle inférieure affiche en fait la luminosité correcte. Sur l&rsquo;échelle inférieure, le doublement de la luminosité donne la luminosité physique correcte, mais comme nos yeux perçoivent la luminosité différemment (ils sont plus sensibles aux changements dans les couleurs sombres), l&rsquo;aspect est bizarre.</p>
@@ -129,7 +49,7 @@ La ligne pointillée représente les valeurs de couleur/lumière dans l&rsquo;es
 <img src="/docs/LEARNOPENGL_FR/05_Advanced_Lighting/gamma_correction_example.png" alt="gamma_correction_example"/></p>
 <p>Vous pouvez voir qu&rsquo;avec la correction gamma, les valeurs de couleur (mises à jour) s&rsquo;accordent mieux et les zones plus sombres sont plus détaillées. Dans l&rsquo;ensemble, la qualité de l&rsquo;image s&rsquo;est améliorée grâce à quelques petites modifications.</p>
 <p>Si le gamma de ce moniteur n&rsquo;est pas correctement corrigé, l&rsquo;éclairage semblera incorrect et les artistes auront du mal à obtenir des résultats réalistes et attrayants. La solution consiste à appliquer une correction gamma.</p>
-<h2 id="correction-gamma">Correction gamma<a hidden class="anchor" aria-hidden="true" href="#correction-gamma">#</a></h2>
+<h2 id="correction-gamma">Correction gamma</h2>
 <p><strong>L&rsquo;idée de la correction gamma est d&rsquo;appliquer l&rsquo;inverse du gamma de l&rsquo;écran à la couleur de sortie finale avant de l&rsquo;afficher à l&rsquo;écran.</strong> En regardant le graphique de la courbe gamma plus tôt dans ce chapitre, nous voyons une autre ligne en pointillés qui est l&rsquo;inverse de la courbe gamma du moniteur. Nous multiplions chacune des couleurs de sortie linéaires par cette courbe gamma inverse (ce qui les rend plus lumineuses) et dès que les couleurs sont affichées sur le moniteur, la courbe gamma du moniteur est appliquée et les couleurs résultantes deviennent linéaires. Nous éclaircissons effectivement les couleurs intermédiaires de sorte que dès que l&rsquo;écran les assombrit, tout s&rsquo;équilibre.</p>
 <p>Prenons un autre exemple. Supposons que nous ayons à nouveau la couleur rouge foncé $(0.5,0.0,0.0)$. Avant d&rsquo;afficher cette couleur à l&rsquo;écran, nous appliquons d&rsquo;abord la courbe de correction gamma à la valeur de la couleur. Les couleurs linéaires affichées par un moniteur sont grossièrement mises à l&rsquo;échelle à une puissance de $2.2$, de sorte que l&rsquo;inverse nécessite une mise à l&rsquo;échelle des couleurs à une puissance de $1/2.2$. La couleur rouge foncé corrigée par le gamma devient donc
 $$
@@ -165,7 +85,7 @@ $$</p>
 </span></span></code></pre></div><p>La dernière ligne de code augmente effectivement chaque composante de couleur individuelle de <code>fragColor</code> à $1.0/gamma$, corrigeant ainsi la couleur de sortie de cette exécution du shader de fragment.</p>
 <p>Le problème de cette approche est que pour être cohérent, vous devez appliquer la correction gamma à chaque shader de fragment qui contribue à la sortie finale. Si vous avez une douzaine de shaders de fragment pour plusieurs objets, vous devez ajouter le code de correction gamma à chacun de ces shaders. Une solution plus simple serait d&rsquo;introduire une étape de post-traitement dans votre boucle de rendu et d&rsquo;appliquer la correction gamma sur le quadrant post-traité en tant qu&rsquo;étape finale que vous n&rsquo;auriez à faire qu&rsquo;une seule fois.</p>
 <p>Cette ligne représente la mise en œuvre technique de la correction gamma. Ce n&rsquo;est pas très impressionnant, mais il y a quelques éléments supplémentaires à prendre en compte lors de la correction gamma.</p>
-<h2 id="textures-srgb">Textures sRGB<a hidden class="anchor" aria-hidden="true" href="#textures-srgb">#</a></h2>
+<h2 id="textures-srgb">Textures sRGB</h2>
 <p>Étant donné que les écrans affichent les couleurs en appliquant le gamma, chaque fois que vous dessinez, éditez ou coloriez une image sur votre ordinateur, vous choisissez les couleurs en fonction de ce que vous voyez sur l&rsquo;écran. Cela signifie que toutes les images que vous créez ou modifiez ne sont pas dans l&rsquo;espace linéaire, mais dans l&rsquo;espace sRGB. Par exemple, doubler une couleur rouge foncé sur votre écran en se basant sur la luminosité perçue n&rsquo;équivaut pas à doubler la composante rouge.</p>
 <p>Par conséquent, lorsque les artistes des textures créent des œuvres d&rsquo;art à l&rsquo;œil, toutes les valeurs des textures sont dans l&rsquo;espace sRGB ; si nous utilisons ces textures telles quelles dans notre application de rendu, nous devons en tenir compte. Avant que nous ne connaissions la correction gamma, ce n&rsquo;était pas vraiment un problème, car les textures étaient belles dans l&rsquo;espace sRGB, qui est le même espace que celui dans lequel nous travaillons ; les textures étaient affichées exactement comme elles sont, ce qui était très bien. Cependant, maintenant que nous affichons tout dans l&rsquo;espace linéaire, les couleurs des textures seront faussées comme le montre l&rsquo;image suivante :</p>
 <p><img src="/docs/LEARNOPENGL_FR/05_Advanced_Lighting/gamma_correction_srgbtextures.png" alt="gamma_correction_srgbtextures"/>
@@ -180,7 +100,7 @@ L&rsquo;image de la texture est beaucoup trop claire et cela est dû au fait qu&
 </span></span></code></pre></div><p>Si vous souhaitez également inclure des composants alpha dans votre texture, vous devrez spécifier le format interne de la texture en tant que <code>GL_SRGB_ALPHA</code>.</p>
 <p>Vous devez être prudent lorsque vous spécifiez vos textures dans l&rsquo;espace sRGB, car toutes les textures ne sont pas réellement dans l&rsquo;espace sRGB. <strong>Les textures utilisées pour colorer les objets (comme les textures diffuses) sont presque toujours dans l&rsquo;espace sRGB. Les textures utilisées pour récupérer les paramètres d&rsquo;éclairage (comme les cartes spéculaires et les cartes normales) sont presque toujours dans l&rsquo;espace linéaire, de sorte que si vous les configurez comme des textures sRGB, l&rsquo;éclairage sera étrange. Faites attention aux textures que vous spécifiez comme sRGB.</strong></p>
 <p>Avec nos textures diffuses spécifiées en tant que textures sRGB, vous obtenez à nouveau le résultat visuel que vous attendez, mais cette fois-ci, tout le gamma est corrigé une seule fois.</p>
-<h2 id="attenuation">Attenuation<a hidden class="anchor" aria-hidden="true" href="#attenuation">#</a></h2>
+<h2 id="attenuation">Attenuation</h2>
 <p>Une autre différence avec la correction gamma est l&rsquo;atténuation de l&rsquo;éclairage. Dans le monde physique réel, l&rsquo;atténuation de l&rsquo;éclairage est étroitement inversement proportionnelle au carré de la distance par rapport à la source lumineuse. En français, cela signifie simplement que l&rsquo;intensité de la lumière est réduite en fonction du carré de la distance à la source lumineuse, comme ci-dessous :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> attenuation <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">/</span> (distance <span style="color:#f92672">*</span> distance);
 </span></span></code></pre></div><p>Cependant, lorsque l&rsquo;on utilise cette équation, l&rsquo;effet d&rsquo;atténuation est généralement beaucoup trop fort, donnant aux lumières un petit rayon qui n&rsquo;a pas l&rsquo;air physiquement correct. C&rsquo;est pourquoi d&rsquo;autres fonctions d&rsquo;atténuation ont été utilisées (comme nous l&rsquo;avons vu dans le chapitre sur l&rsquo;éclairage de base) qui permettent un meilleur contrôle, ou l&rsquo;équivalent linéaire :</p>
@@ -195,71 +115,13 @@ La cause de cette différence est que les fonctions d&rsquo;atténuation de la l
 <p>En résumé, la correction gamma nous permet d&rsquo;effectuer tous nos calculs d&rsquo;ombrage et d&rsquo;éclairage dans l&rsquo;espace linéaire. Comme l&rsquo;espace linéaire a un sens dans le monde physique, la plupart des équations physiques donnent maintenant de bons résultats (comme l&rsquo;atténuation réelle de la lumière). Plus votre éclairage est avancé, plus il est facile d&rsquo;obtenir de bons résultats (et réalistes) avec la correction gamma. C&rsquo;est également la raison pour laquelle il est conseillé de ne modifier réellement les paramètres d&rsquo;éclairage que lorsque la correction gamma est en place.</p>
 
 
-  </div>
 
-  <footer class="post-footer">
-    <ul class="post-tags">
-    </ul>
-  </footer>
-</article>
-    </main>
+      </main>
+    </div>
     
-<footer class="footer">
-    <span>&copy; 2023 <a href="https://hrst4.xyz/">hrst4&#39;s blog</a></span>
-    <span>
-        Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
-</footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
-    </svg>
-</a>
-
+<script src="/js/feather.min.js"></script>
 <script>
-    let menu = document.getElementById('menu')
-    if (menu) {
-        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
-        menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
-        });
-    });
-
+  feather.replace();
 </script>
-<script>
-    var mybutton = document.getElementById("top-link");
-    window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
-        } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
-        }
-    };
-
-</script>
-</body>
-
+  </body>
 </html>

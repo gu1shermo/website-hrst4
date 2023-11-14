@@ -1,122 +1,58 @@
-<!DOCTYPE html>
-<html lang="en" dir="auto">
-
-<head><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>hrst4&#39;s blog</title>
-<meta name="keywords" content="cg, opengl, computer graphics, cpp">
-<meta name="description" content="Basic lighting L&rsquo;éclairage dans le monde réel est extrêmement compliqué et dépend de beaucoup trop de facteurs, ce que nous ne pouvons pas nous permettre de calculer avec la puissance de traitement limitée dont nous disposons. L&rsquo;éclairage dans OpenGL est donc basé sur des approximations de la réalité en utilisant des modèles simplifiés qui sont beaucoup plus faciles à traiter et relativement similaires. Ces modèles d&rsquo;éclairage sont basés sur la physique de la lumière telle que nous la comprenons.">
-<meta name="author" content="">
-<link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/02_lighting/01_basic-lighting/basic-lighting/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
-<link rel="icon" href="https://hrst4.xyz/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://hrst4.xyz/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://hrst4.xyz/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://hrst4.xyz/apple-touch-icon.png">
-<link rel="mask-icon" href="https://hrst4.xyz/safari-pinned-tab.svg">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
-
-    </style>
-</noscript><meta property="og:title" content="" />
-<meta property="og:description" content="Basic lighting L&rsquo;éclairage dans le monde réel est extrêmement compliqué et dépend de beaucoup trop de facteurs, ce que nous ne pouvons pas nous permettre de calculer avec la puissance de traitement limitée dont nous disposons. L&rsquo;éclairage dans OpenGL est donc basé sur des approximations de la réalité en utilisant des modèles simplifiés qui sont beaucoup plus faciles à traiter et relativement similaires. Ces modèles d&rsquo;éclairage sont basés sur la physique de la lumière telle que nous la comprenons." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/02_lighting/01_basic-lighting/basic-lighting/" /><meta property="article:section" content="docs" />
-
-
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content=""/>
-<meta name="twitter:description" content="Basic lighting L&rsquo;éclairage dans le monde réel est extrêmement compliqué et dépend de beaucoup trop de facteurs, ce que nous ne pouvons pas nous permettre de calculer avec la puissance de traitement limitée dont nous disposons. L&rsquo;éclairage dans OpenGL est donc basé sur des approximations de la réalité en utilisant des modèles simplifiés qui sont beaucoup plus faciles à traiter et relativement similaires. Ces modèles d&rsquo;éclairage sont basés sur la physique de la lumière telle que nous la comprenons."/>
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "",
-      "item": "https://hrst4.xyz/docs/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "",
-      "item": "https://hrst4.xyz/docs/learnopengl_fr/02_lighting/01_basic-lighting/basic-lighting/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "",
-  "name": "",
-  "description": "Basic lighting L\u0026rsquo;éclairage dans le monde réel est extrêmement compliqué et dépend de beaucoup trop de facteurs, ce que nous ne pouvons pas nous permettre de calculer avec la puissance de traitement limitée dont nous disposons. L\u0026rsquo;éclairage dans OpenGL est donc basé sur des approximations de la réalité en utilisant des modèles simplifiés qui sont beaucoup plus faciles à traiter et relativement similaires. Ces modèles d\u0026rsquo;éclairage sont basés sur la physique de la lumière telle que nous la comprenons.",
-  "keywords": [
-    "cg", "opengl", "computer graphics", "cpp"
-  ],
-  "articleBody": "Basic lighting L’éclairage dans le monde réel est extrêmement compliqué et dépend de beaucoup trop de facteurs, ce que nous ne pouvons pas nous permettre de calculer avec la puissance de traitement limitée dont nous disposons. L’éclairage dans OpenGL est donc basé sur des approximations de la réalité en utilisant des modèles simplifiés qui sont beaucoup plus faciles à traiter et relativement similaires. Ces modèles d’éclairage sont basés sur la physique de la lumière telle que nous la comprenons. L’un de ces modèles est appelé le modèle d’éclairage Phong (Phong lighting model). Les principales composantes du modèle d’éclairage Phong sont au nombre de trois : l’éclairage ambiant, l’éclairage diffus et l’éclairage spéculaire. Vous pouvez voir ci-dessous à quoi ressemblent ces composants d’éclairage, seuls ou combinés :\nambiant : même lorsqu’il fait sombre, il reste généralement de la lumière quelque part dans le monde (la lune, une lumière lointaine), de sorte que les objets ne sont presque jamais complètement sombres. Pour simuler cela, nous utilisons une constante d’éclairage ambiant qui donne toujours de la couleur à l’objet. diffuse : simule l’impact directionnel d’un objet lumineux sur un objet. Il s’agit de la composante la plus visuellement significative du modèle d’éclairage. Plus une partie d’un objet est orientée vers la source de lumière, plus elle devient lumineuse. specular : simule le point lumineux d’une lumière qui apparaît sur les objets brillants. Les reflets spéculaires sont davantage liés à la couleur de la lumière qu’à celle de l’objet. Pour créer des scènes visuellement intéressantes, nous voulons au moins simuler ces trois composantes de l’éclairage. Nous commencerons par la plus simple : l’éclairage ambiant.\nAmbiant La lumière ne provient généralement pas d’une source lumineuse unique, mais de nombreuses sources lumineuses dispersées tout autour de nous, même lorsqu’elles ne sont pas immédiatement visibles. L’une des propriétés de la lumière est qu’elle peut se disperser et rebondir dans de nombreuses directions, atteignant des endroits qui ne sont pas directement visibles ; la lumière peut donc se refléter sur d’autres surfaces et avoir un impact indirect sur l’éclairage d’un objet. Les algorithmes qui prennent cela en considération sont appelés algorithmes d’illumination globale, mais ils sont compliqués et coûteux à calculer.\nComme nous ne sommes pas de grands amateurs d’algorithmes compliqués et coûteux, nous commencerons par utiliser un modèle très simpliste d’illumination globale, à savoir l’éclairage ambiant. Comme vous l’avez vu dans la section précédente, nous utilisons une petite couleur constante (claire) que nous ajoutons à la couleur finale des fragments de l’objet, ce qui donne l’impression qu’il y a toujours un peu de lumière diffuse même lorsqu’il n’y a pas de source de lumière directe.\nAjouter un éclairage ambiant à la scène est très simple. Nous prenons la couleur de la lumière, nous la multiplions avec un petit facteur ambiant constant, nous la multiplions avec la couleur de l’objet et nous l’utilisons comme couleur du fragment dans le shader de l’objet cube :\nvoid main() { float ambientStrength = 0.1; vec3 ambient = ambientStrength * lightColor; vec3 result = ambient * objectColor; FragColor = vec4(result, 1.0); } Si vous exécutez maintenant le programme, vous remarquerez que la première étape de l’éclairage est maintenant appliquée avec succès à l’objet. L’objet est assez sombre, mais pas complètement puisque l’éclairage ambiant est appliqué (notez que le cube de lumière n’est pas affecté car nous utilisons un shader différent). L’objet devrait ressembler à ceci :\nDiffuse L’éclairage ambiant en lui-même ne produit pas les résultats les plus intéressants, mais l’éclairage diffus commence à avoir un impact visuel significatif sur l’objet. L’éclairage diffus donne à l’objet plus de luminosité au fur et à mesure que ses fragments sont alignés sur les rayons lumineux d’une source de lumière. Pour mieux comprendre l’éclairage diffus, regardez l’image suivante : À gauche, nous trouvons une source lumineuse dont le rayon lumineux est dirigé vers un seul fragment de notre objet. Nous devons mesurer l’angle sous lequel le rayon lumineux touche le fragment. Si le rayon lumineux est perpendiculaire à la surface de l’objet, l’impact de la lumière est maximal. Pour mesurer l’angle entre le rayon lumineux et le fragment, nous utilisons ce que l’on appelle un vecteur normal, c’est-à-dire un vecteur perpendiculaire à la surface du fragment (représenté ici par une flèche jaune) ; nous y reviendrons plus tard. L’angle entre les deux vecteurs peut alors être facilement calculé à l’aide du produit de points.\nVous vous souvenez peut-être du chapitre sur les transformations que, plus l’angle entre deux vecteurs unitaires est faible, plus le produit de points tend vers une valeur de 1. Lorsque l’angle entre les deux vecteurs est de 90 degrés, le produit de points est égal à 0. Il en va de même pour θ: plus θ est grand, moins la lumière devrait avoir d’impact sur la couleur du fragment.\nNotez que pour obtenir (uniquement) le cosinus de l’angle entre les deux vecteurs, nous travaillerons avec des vecteurs unitaires (vecteurs de longueur 1). Nous devons donc nous assurer que tous les vecteurs sont normalisés, sinon le produit point renvoie plus que le cosinus (voir Transformations).\nLe produit de points résultant renvoie donc un scalaire que nous pouvons utiliser pour calculer l’impact de la lumière sur la couleur du fragment, ce qui donne des fragments éclairés différemment en fonction de leur orientation par rapport à la lumière.\nDe quoi avons-nous besoin pour calculer l’éclairage diffus ?\nVecteur normal : vecteur perpendiculaire à la surface du sommet. Le rayon lumineux dirigé : un vecteur de direction qui est le vecteur de différence entre la position de la lumière et la position du fragment. Pour calculer ce rayon lumineux, nous avons besoin du vecteur position de la lumière et du vecteur position du fragment. Vecteur normal (normale à la surface) Un vecteur normal est un vecteur (unitaire) perpendiculaire à la surface d’un sommet. Étant donné qu’un sommet n’a pas de surface en soi (c’est juste un point dans l’espace), nous récupérons un vecteur normal en utilisant les sommets qui l’entourent pour déterminer la surface du sommet. Nous pouvons utiliser une petite astuce pour calculer les vecteurs normaux pour tous les sommets du cube en utilisant le produit en croix, mais comme un cube 3D n’est pas une forme compliquée, nous pouvons simplement les ajouter manuellement aux données des sommets. Le tableau de données des sommets mis à jour se trouve ici. Essayez de visualiser que les normales sont bien des vecteurs perpendiculaires à la surface de chaque plan (un cube est constitué de 6 plans).\nPuisque nous avons ajouté des données supplémentaires au tableau de vertex, nous devons mettre à jour le vertex shader du cube :\n#version 330 core layout (location = 0) in vec3 aPos; layout (location = 1) in vec3 aNormal; Maintenant que nous avons ajouté un vecteur normal à chacun des sommets et mis à jour le vertex shader, nous devons également mettre à jour les pointeurs d’attributs de sommets. Notez que le cube de la source lumineuse utilise le même tableau de vertex pour ses données de vertex, mais que le shader de la lampe n’utilise pas les vecteurs de normalité nouvellement ajoutés. Nous n’avons pas besoin de mettre à jour les shaders ou les configurations d’attributs de la lampe, mais nous devons au moins modifier les pointeurs d’attributs de vertex pour refléter la nouvelle taille du tableau de vertex :\nglVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); glEnableVertexAttribArray(0); Nous ne voulons utiliser que les 3 premiers flottants de chaque sommet et ignorer les 3 derniers flottants. Il nous suffit donc de mettre à jour le paramètre stride à 6 fois la taille d’un flottant et le tour est joué.\nIl peut sembler inefficace d’utiliser des données de vertex qui ne sont pas complètement utilisées par le shader de la lampe, mais les données de vertex sont déjà stockées dans la mémoire du GPU à partir de l’objet conteneur, de sorte que nous n’avons pas besoin de stocker de nouvelles données dans la mémoire du GPU. Nous n’avons donc pas besoin de stocker de nouvelles données dans la mémoire du GPU. Cela est plus efficace que d’allouer un nouveau VBO (vertex buffer object) spécifiquement pour la lampe.\nTous les calculs d’éclairage sont effectués dans le fragment shader, nous devons donc transmettre les vecteurs normaux du vertex shader au fragment shader. C’est ce que nous allons faire :\nout vec3 Normal; void main() { gl_Position = projection * view * model * vec4(aPos, 1.0); Normal = aNormal; } Ce qu’il nous reste à faire est de déclarer la variable d’entrée correspondante dans le fragment shader.\nin vec3 Normal; Calculer la couleur de diffuse Nous avons maintenant le vecteur normal pour chaque sommet, mais nous avons encore besoin du vecteur de position de la lumière et du vecteur de position du fragment. Comme la position de la lumière est une variable statique unique, nous pouvons la déclarer comme uniforme dans le fragment shader :\nuniform vec3 lightPos; Puis nous mettons à jour l’uniforme dans la boucle de rendu (ou en dehors puisqu’il ne change pas par image). Nous utilisons le vecteur lightPos déclaré dans le chapitre précédent comme emplacement de la source de lumière diffuse :\nlightingShader.setVec3(\"lightPos\", lightPos); La dernière chose dont nous avons besoin est la position du fragment. Nous allons effectuer tous les calculs d’éclairage dans le world space, nous voulons donc une position de sommet qui soit d’abord dans le world space. Nous pouvons y parvenir en multipliant l’attribut de position du sommet avec la matrice du modèle uniquement (pas la matrice de vue et de projection) pour le transformer en coordonnées de world space. Cela peut être facilement réalisé dans le vertex shader, déclarons donc une variable de sortie et calculons ses coordonnées dans le world space :\nout vec3 FragPos; out vec3 Normal; void main() { gl_Position = projection * view * model * vec4(aPos, 1.0); FragPos = vec3(model * vec4(aPos, 1.0)); Normal = aNormal; } Enfin, ajoutez la variable d’entrée correspondante au fragment shader :\nin vec3 FragPos; Cette variable in sera interpolée à partir des 3 vecteurs du world space du triangle pour former le vecteur FragPos qui est la position en coordonnées world space par fragment. Maintenant que toutes les variables requises sont définies, nous pouvons commencer les calculs d’éclairage.\nLa première chose que nous devons calculer est le vecteur de direction entre la source de lumière et la position du fragment. La section précédente nous a appris que le vecteur de direction de la lumière est le vecteur de différence entre le vecteur de position de la lumière et le vecteur de position du fragment. Comme vous vous en souvenez peut-être dans le chapitre sur les transformations, nous pouvons facilement calculer cette différence en soustrayant les deux vecteurs l’un de l’autre. Nous voulons également nous assurer que tous les vecteurs pertinents sont des vecteurs unitaires, c’est pourquoi nous normalisons à la fois la normale et le vecteur de direction résultant : vec3 norm = normalize(Normal); vec3 lightDir = normalize(lightPos - FragPos); Lorsque l’on calcule l’éclairage, on ne se préoccupe généralement pas de la magnitude d’un vecteur ou de sa position, mais uniquement de sa direction. Comme nous ne nous intéressons qu’à leur direction, presque tous les calculs sont effectués avec des vecteurs unitaires, car cela simplifie la plupart des calculs (comme le produit scalaire). Par conséquent, lorsque vous effectuez des calculs d’éclairage, veillez à toujours normaliser les vecteurs concernés afin de vous assurer qu’il s’agit bien de vecteurs unitaires. Oublier de normaliser un vecteur est une erreur courante.\nEnsuite, nous devons calculer l’impact diffus de la lumière sur le fragment actuel en effectuant le produit scalaire entre les vecteurs norm et lightDir. La valeur obtenue est ensuite multipliée par la couleur de la lumière pour obtenir la composante diffuse, qui est d’autant plus sombre que l’angle entre les deux vecteurs est grand :\nfloat diff = max(dot(norm, lightDir), 0.0); vec3 diffuse = diff * lightColor; Si l’angle entre les deux vecteurs est supérieur à 90 degrés, le résultat du produit de points devient négatif et nous obtenons une composante diffuse négative. C’est pourquoi nous utilisons la fonction max, qui renvoie la valeur la plus élevée de ses deux paramètres, afin de nous assurer que la composante diffuse (et donc les couleurs) ne devient jamais négative. L’éclairage pour les couleurs négatives n’est pas vraiment défini, il est donc préférable d’éviter cela, à moins que vous ne soyez l’un de ces artistes excentriques.\nMaintenant que nous avons une composante ambiante et une composante diffuse, nous ajoutons les deux couleurs l’une à l’autre, puis nous multiplions le résultat avec la couleur de l’objet pour obtenir la couleur de sortie du fragment résultant : vec3 result = (ambient + diffuse) * objectColor; FragColor = vec4(result, 1.0); Si votre application (et vos shaders) ont été compilés avec succès, vous devriez voir quelque chose comme ceci : Vous pouvez voir qu’avec un éclairage diffus, le cube recommence à ressembler à un vrai cube. Essayez de visualiser les vecteurs normaux dans votre tête et déplacez la caméra autour du cube pour voir que plus l’angle entre le vecteur normal et le vecteur de direction de la lumière est grand, plus le fragment devient sombre.\nN’hésitez pas à comparer votre code source avec le code source complet ici si vous êtes bloqué.\nUne dernière chose Dans la section précédente, nous avons transmis le vecteur normal directement du vertex shader au fragment shader. Cependant, les calculs dans le fragment shader sont tous effectués dans le world space, donc ne devrions-nous pas transformer les vecteurs normaux en coordonnées world space également ? En principe, oui, mais ce n’est pas aussi simple que de les multiplier par une matrice de modèle.\nTout d’abord, les vecteurs normaux ne sont que des vecteurs de direction et ne représentent pas une position spécifique dans l’espace. Deuxièmement, les vecteurs normaux n’ont pas de coordonnée homogène (la composante w de la position d’un sommet). Cela signifie que les translations ne devraient pas avoir d’effet sur les vecteurs normaux. Par conséquent, si nous voulons multiplier les vecteurs normaux avec une matrice de modèle, nous voulons supprimer la partie de la matrice relative à la translation en prenant la matrice 3x3 supérieure gauche de la matrice de modèle (notez que nous pourrions également fixer la composante w d’un vecteur normal à 0 et la multiplier avec la matrice 4x4).\nDeuxièmement, si la matrice du modèle effectue une mise à l’échelle non uniforme, les sommets seront modifiés de telle sorte que le vecteur normal ne sera plus perpendiculaire à la surface. L’image suivante montre l’effet d’une telle matrice de modèle (avec une échelle non uniforme) sur un vecteur normal : Lorsque nous appliquons une échelle non uniforme (note : une échelle uniforme ne modifie que la magnitude de la normale, pas sa direction, ce qui est facilement corrigé en la normalisant), les vecteurs normaux ne sont plus perpendiculaires à la surface correspondante, ce qui déforme l’éclairage.\nL’astuce pour corriger ce comportement consiste à utiliser une matrice de modèle différente, spécialement conçue pour les vecteurs normaux. Cette matrice est appelée matrice normale et utilise quelques opérations algébriques linéaires pour supprimer l’effet de la mise à l’échelle erronée des vecteurs normaux. Si vous souhaitez savoir comment cette matrice est calculée, je vous conseille de lire l’article suivant.\nLa matrice normale est définie comme “la transposée de l’inverse de la partie supérieure gauche 3x3 de la matrice du modèle”. Si vous ne comprenez pas vraiment ce que cela signifie, ne vous inquiétez pas ; nous n’avons pas encore abordé les matrices inverse et transposée. Notez que la plupart des ressources définissent la matrice normale comme dérivée de la matrice modèle-vue, mais comme nous travaillons dans l’espace mondial (et non dans l’espace de vue), nous la déduirons de la matrice du modèle.\nDans le vertex shader, nous pouvons générer la matrice normale en utilisant les fonctions inverse et transposée du vertex shader qui fonctionnent sur n’importe quel type de matrice. Notez que nous avons transformé la matrice en une matrice 3x3 pour nous assurer qu’elle perd ses propriétés de translation et qu’elle peut se multiplier avec le vecteur normal vec3 : Normal = mat3(transpose(inverse(model))) * aNormal; L’inversion des matrices est une opération coûteuse pour les shaders, donc dans la mesure du possible, essayez d’éviter les opérations d’inversion puisqu’elles doivent être effectuées sur chaque vertex de votre scène. Pour l’apprentissage, c’est parfait, mais pour une application efficace, vous voudrez probablement calculer la matrice normale sur le processeur et l’envoyer aux shaders via un uniforme avant de dessiner (tout comme la matrice de modèle). Dans la section sur l’éclairage diffus, l’éclairage était bon parce que nous n’avons pas mis l’objet à l’échelle, de sorte qu’il n’était pas vraiment nécessaire d’utiliser une matrice normale et que nous aurions pu simplement multiplier les normales avec la matrice du modèle. Cependant, si vous effectuez une mise à l’échelle non uniforme, il est essentiel de multiplier vos vecteurs normaux avec la matrice normale.\nSpecular Si vous n’êtes pas déjà épuisé par toutes ces discussions sur l’éclairage, nous pouvons commencer à terminer le modèle d’éclairage du Phong en ajoutant des reflets spéculaires.\nComme l’éclairage diffus, **l’éclairage spéculaire est basé sur le vecteur de direction de la lumière et les vecteurs de normalité de l’objet, mais cette fois, il est également basé sur la direction de la vue, c’est-à-dire la direction à partir de laquelle l’observateur regarde le fragment.**L’éclairage spéculaire est basé sur les propriétés réfléchissantes des surfaces. Si nous considérons la surface de l’objet comme un miroir, l’éclairage spéculaire est le plus fort là où nous voyons la lumière se refléter sur la surface. Vous pouvez voir cet effet dans l’image suivante : Nous calculons un vecteur de réflexion en réfléchissant la direction de la lumière autour du vecteur normal. Nous calculons ensuite la distance angulaire entre ce vecteur de réflexion et la direction de la vue. Plus l’angle entre les deux est proche, plus l’impact de la lumière spéculaire est important. L’effet résultant est que nous voyons une sorte de surbrillance lorsque nous regardons la direction de la lumière réfléchie par la surface.\nLe vecteur de vue est la seule variable supplémentaire dont nous avons besoin pour l’éclairage spéculaire. Nous pouvons le calculer en utilisant la position de l’observateur dans le world space et la position du fragment. Nous calculons ensuite l’intensité de l’éclairage spéculaire, la multiplions par la couleur de la lumière et l’ajoutons aux composantes ambiantes et diffuses. Nous avons choisi de faire les calculs d’éclairage dans le world space, mais la plupart des gens préfèrent faire l’éclairage dans le visual space. L’avantage du visual space est que la position de l’observateur est toujours à (0,0,0), donc vous avez déjà la position de l’observateur gratuitement. Cependant, je trouve que le calcul de l’éclairage dans le world space est plus intuitif à des fins d’apprentissage. Si vous souhaitez toujours calculer l’éclairage dans le view space, vous devez transformer tous les vecteurs pertinents avec la matrice de vue (n’oubliez pas de modifier la matrice normale également).\nPour obtenir les coordonnées du spectateur dans l’espace mondial, nous prenons simplement le vecteur de position de l’objet caméra (qui est bien sûr le spectateur). Ajoutons donc un autre uniforme au fragment shader et passons le vecteur de position de la caméra au shader :\nuniform vec3 viewPos; lightingShader.setVec3(\"viewPos\", camera.Position); Maintenant que nous disposons de toutes les variables nécessaires, nous pouvons calculer l’intensité spéculaire. Nous définissons tout d’abord une valeur d’intensité spéculaire pour donner à la surbrillance spéculaire une couleur moyennement lumineuse afin qu’elle n’ait pas trop d’impact :\nfloat specularStrength = 0.5; Si nous réglions cette intensité à 1.0f, nous obtiendrions une composante spéculaire très brillante, ce qui est un peu trop pour un cube de corail. Dans le prochain chapitre, nous parlerons du réglage correct de toutes ces intensités d’éclairage et de la façon dont elles affectent les objets. Ensuite, nous calculons le vecteur de direction de la vue et le vecteur de réflexion correspondant le long de l’axe normal : vec3 viewDir = normalize(viewPos - FragPos); vec3 reflectDir = reflect(-lightDir, norm); Notez que nous rendons négatif le vecteur lightDir. La fonction reflect s’attend à ce que le premier vecteur pointe de la source lumineuse vers la position du fragment, mais le vecteur lightDir pointe actuellement dans l’autre sens : du fragment vers la source lumineuse (cela dépend de l’ordre de soustraction utilisé plus tôt lorsque nous avons calculé le vecteur lightDir). Pour être sûr d’obtenir le bon vecteur reflect, nous inversons sa direction en annulant d’abord le vecteur lightDir. Le deuxième argument attend un vecteur normal, nous fournissons donc le vecteur normalisé.\nIl ne reste plus qu’à calculer la composante spéculaire. Cette opération est réalisée à l’aide de la formule suivante : float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32); vec3 specular = specularStrength * spec * lightColor; Nous calculons d’abord le produit de points entre la direction de la vue et la direction du reflet (et nous nous assurons qu’il n’est pas négatif), puis nous l’élevons à la puissance 32. Cette valeur de 32 correspond à la valeur de brillance de la mise en évidence.** Plus la valeur de brillance d’un objet est élevée, plus il réfléchit correctement la lumière au lieu de la disperser tout autour de lui, et plus la zone de surbrillance est petite**. L’image ci-dessous montre l’impact visuel de différentes valeurs de brillance : Nous ne voulons pas que la composante spéculaire soit trop gênante, c’est pourquoi nous maintenons l’exposant à 32. Il ne reste plus qu’à l’ajouter aux composantes ambiante et diffuse et à multiplier le résultat combiné par la couleur de l’objet :\nvec3 result = (ambient + diffuse + specular) * objectColor; FragColor = vec4(result, 1.0); Nous avons maintenant calculé tous les composants d’éclairage du modèle d’éclairage Phong. En fonction de votre point de vue, vous devriez voir quelque chose comme ceci :\nVous pouvez trouver le code source complet de l’application ici.\nRemarques Dans les premiers temps des lighting shaders, les développeurs avaient l’habitude d’implémenter le modèle d’éclairage Phong dans le vertex shader. L’avantage de l’éclairage dans le vertex shader est qu’il est beaucoup plus efficace car il y a généralement beaucoup moins de sommets que de fragments, de sorte que les calculs d’éclairage (coûteux) sont effectués moins souvent. Cependant, la valeur de couleur résultante dans le vertex shader est la couleur d’éclairage résultante de ce sommet uniquement et les valeurs de couleur des fragments environnants sont alors le résultat des couleurs d’éclairage interpolées. Il en résulte que l’éclairage n’est pas très réaliste à moins d’utiliser un grand nombre de sommets.\nVous devriez maintenant commencer à voir à quel point les shaders sont puissants. Avec peu d’informations, les shaders sont capables de calculer comment l’éclairage affecte les couleurs du fragment pour tous nos objets. Dans les prochains chapitres, nous approfondirons ce que nous pouvons faire avec le modèle d’éclairage.\n",
-  "wordCount" : "3805",
-  "inLanguage": "en",
-  "datePublished": "0001-01-01T00:00:00Z",
-  "dateModified": "0001-01-01T00:00:00Z",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://hrst4.xyz/docs/learnopengl_fr/02_lighting/01_basic-lighting/basic-lighting/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "hrst4's blog",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://hrst4.xyz/favicon.ico"
-    }
-  }
-}
-</script>
-</head>
-
-<body class=" dark" id="top">
-
-<header class="header">
-    <nav class="nav">
-        <div class="logo">
-            <a href="https://hrst4.xyz/" accesskey="h" title="hrst4&#39;s blog (Alt + H)">hrst4&#39;s blog</a>
-            <div class="logo-switches">
-            </div>
-        </div>
-        <ul id="menu">
-        </ul>
-    </nav>
-</header>
-<main class="main">
-
-<article class="post-single">
-  <header class="post-header">
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
-    <h1 class="post-title">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
       
-    </h1>
-    <div class="post-meta">
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
 
-</div>
-  </header> 
-  <div class="post-content"><h1 id="basic-lighting">Basic lighting<a hidden class="anchor" aria-hidden="true" href="#basic-lighting">#</a></h1>
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cg">cg</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/opengl">opengl</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/computer-graphics">computer graphics</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cpp">cpp</a>
+  
+
+<br><br>
+<h1 id="basic-lighting">Basic lighting</h1>
 <p>L&rsquo;éclairage dans le monde réel est extrêmement compliqué et dépend de beaucoup trop de facteurs, ce que nous ne pouvons pas nous permettre de calculer avec la puissance de traitement limitée dont nous disposons. L&rsquo;éclairage dans OpenGL est donc basé sur des approximations de la réalité en utilisant des modèles simplifiés qui sont beaucoup plus faciles à traiter et relativement similaires. Ces modèles d&rsquo;éclairage sont basés sur la physique de la lumière telle que nous la comprenons. L&rsquo;un de ces modèles est appelé le modèle d&rsquo;éclairage Phong (<em>Phong lighting model</em>). Les principales composantes du modèle d&rsquo;éclairage Phong sont au nombre de trois : l&rsquo;éclairage <strong>ambiant</strong>, l&rsquo;éclairage <strong>diffus</strong> et l&rsquo;éclairage <strong>spéculaire</strong>. Vous pouvez voir ci-dessous à quoi ressemblent ces composants d&rsquo;éclairage, seuls ou combinés :</p>
 <p><img src="/docs/LEARNOPENGL_FR/02_Lighting/01_Basic%20Lighting/basicl1.png" alt="basicl1"/></p>
 <ul>
@@ -125,7 +61,7 @@
 <li><strong>specular</strong> : simule le point lumineux d&rsquo;une lumière qui apparaît sur les objets brillants. Les reflets spéculaires sont davantage liés à la couleur de la lumière qu&rsquo;à celle de l&rsquo;objet.</li>
 </ul>
 <p>Pour créer des scènes visuellement intéressantes, nous voulons au moins simuler ces trois composantes de l&rsquo;éclairage. Nous commencerons par la plus simple : l&rsquo;éclairage ambiant.</p>
-<h2 id="ambiant">Ambiant<a hidden class="anchor" aria-hidden="true" href="#ambiant">#</a></h2>
+<h2 id="ambiant">Ambiant</h2>
 <p>La lumière ne provient généralement pas d&rsquo;une source lumineuse unique, mais de nombreuses sources lumineuses dispersées tout autour de nous, même lorsqu&rsquo;elles ne sont pas immédiatement visibles. <strong>L&rsquo;une des propriétés de la lumière est qu&rsquo;elle peut se disperser et rebondir dans de nombreuses directions</strong>, atteignant des endroits qui ne sont pas directement visibles ; la lumière peut donc se refléter sur d&rsquo;autres surfaces et avoir un impact indirect sur l&rsquo;éclairage d&rsquo;un objet. <strong>Les algorithmes qui prennent cela en considération sont appelés algorithmes d&rsquo;illumination globale, mais ils sont compliqués et coûteux à calculer.</strong></p>
 <p>Comme nous ne sommes pas de grands amateurs d&rsquo;algorithmes compliqués et coûteux, <strong>nous commencerons par utiliser un modèle très simpliste d&rsquo;illumination globale, à savoir l&rsquo;éclairage ambiant</strong>. Comme vous l&rsquo;avez vu dans la section précédente, nous utilisons une petite couleur constante (claire) que nous <strong>ajoutons</strong> à la couleur finale des fragments de l&rsquo;objet, ce qui donne l&rsquo;impression qu&rsquo;il y a toujours un peu de lumière diffuse même lorsqu&rsquo;il n&rsquo;y a pas de source de lumière directe.</p>
 <p>Ajouter un éclairage ambiant à la scène est très simple. Nous prenons la couleur de la lumière, nous la multiplions avec un petit facteur ambiant constant, nous la multiplions avec la couleur de l&rsquo;objet et nous l&rsquo;utilisons comme couleur du fragment dans le shader de l&rsquo;objet cube :</p>
@@ -139,7 +75,7 @@
 </span></span><span style="display:flex;"><span>}  
 </span></span></code></pre></div><p>Si vous exécutez maintenant le programme, vous remarquerez que la première étape de l&rsquo;éclairage est maintenant appliquée avec succès à l&rsquo;objet. L&rsquo;objet est assez sombre, mais pas complètement puisque l&rsquo;éclairage ambiant est appliqué (notez que le cube de lumière n&rsquo;est pas affecté car nous utilisons un shader différent). L&rsquo;objet devrait ressembler à ceci :</p>
 <p><img src="/docs/LEARNOPENGL_FR/02_Lighting/01_Basic%20Lighting/basicl2.png" alt="basicl2"/></p>
-<h2 id="diffuse">Diffuse<a hidden class="anchor" aria-hidden="true" href="#diffuse">#</a></h2>
+<h2 id="diffuse">Diffuse</h2>
 <p>L&rsquo;éclairage ambiant en lui-même ne produit pas les résultats les plus intéressants, mais l&rsquo;éclairage diffus commence à avoir un impact visuel significatif sur l&rsquo;objet. L&rsquo;éclairage diffus donne à l&rsquo;objet plus de luminosité au fur et à mesure que ses fragments sont alignés sur les rayons lumineux d&rsquo;une source de lumière. Pour mieux comprendre l&rsquo;éclairage diffus, regardez l&rsquo;image suivante :
 <img src="/docs/LEARNOPENGL_FR/02_Lighting/01_Basic%20Lighting/basicl3.png" alt="basicl3"/>
 À gauche, nous trouvons une source lumineuse dont le rayon lumineux est dirigé vers un seul fragment de notre objet. Nous devons mesurer l&rsquo;angle sous lequel le rayon lumineux touche le fragment. Si le rayon lumineux est perpendiculaire à la surface de l&rsquo;objet, l&rsquo;impact de la lumière est maximal. Pour mesurer l&rsquo;angle entre le rayon lumineux et le fragment, nous utilisons ce que l&rsquo;on appelle un vecteur normal, c&rsquo;est-à-dire un vecteur perpendiculaire à la surface du fragment (représenté ici par une flèche jaune) ; nous y reviendrons plus tard. L&rsquo;angle entre les deux vecteurs peut alors être facilement calculé à l&rsquo;aide du produit de points.</p>
@@ -151,7 +87,7 @@
 <li>Vecteur normal : vecteur perpendiculaire à la surface du sommet.</li>
 <li>Le rayon lumineux dirigé : un vecteur de direction qui est le vecteur de différence entre la position de la lumière et la position du fragment. Pour calculer ce rayon lumineux, nous avons besoin du vecteur position de la lumière et du vecteur position du fragment.</li>
 </ul>
-<h2 id="vecteur-normal-normale-à-la-surface">Vecteur normal (normale à la surface)<a hidden class="anchor" aria-hidden="true" href="#vecteur-normal-normale-à-la-surface">#</a></h2>
+<h2 id="vecteur-normal-normale-à-la-surface">Vecteur normal (normale à la surface)</h2>
 <p>Un vecteur normal est un vecteur (<strong>unitaire</strong>) <strong>perpendiculaire</strong> à la surface d&rsquo;un sommet. Étant donné qu&rsquo;un sommet n&rsquo;a pas de surface en soi (c&rsquo;est juste un point dans l&rsquo;espace), <strong>nous récupérons un vecteur normal en utilisant les sommets qui l&rsquo;entourent pour déterminer la surface du sommet.</strong> Nous pouvons utiliser une petite astuce pour calculer les vecteurs normaux pour tous les sommets du cube en utilisant le produit en croix, mais comme un cube 3D n&rsquo;est pas une forme compliquée, nous pouvons simplement les ajouter manuellement aux données des sommets. Le tableau de données des sommets mis à jour se trouve ici. Essayez de visualiser que les normales sont bien des vecteurs perpendiculaires à la surface de chaque plan (un cube est constitué de 6 plans).</p>
 <p>Puisque nous avons ajouté des données supplémentaires au tableau de vertex, nous devons mettre à jour le vertex shader du cube :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
@@ -172,7 +108,7 @@ glEnableVertexAttribArray(0);
 </span></span><span style="display:flex;"><span>} 
 </span></span></code></pre></div><p>Ce qu&rsquo;il nous reste à faire est de déclarer la variable d&rsquo;entrée correspondante dans le fragment shader.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>in vec3 Normal;  
-</span></span></code></pre></div><h2 id="calculer-la-couleur-de-diffuse">Calculer la couleur de diffuse<a hidden class="anchor" aria-hidden="true" href="#calculer-la-couleur-de-diffuse">#</a></h2>
+</span></span></code></pre></div><h2 id="calculer-la-couleur-de-diffuse">Calculer la couleur de diffuse</h2>
 <p>Nous avons maintenant le vecteur normal pour chaque sommet, mais nous avons encore besoin du vecteur de position de la lumière et du vecteur de position du fragment. Comme la position de la lumière est une variable statique unique, nous pouvons la déclarer comme uniforme dans le fragment shader :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>uniform vec3 lightPos;  
 </span></span></code></pre></div><p>Puis nous mettons à jour l&rsquo;uniforme dans la boucle de rendu (ou en dehors puisqu&rsquo;il ne change pas par image). Nous utilisons le vecteur <strong>lightPos</strong> déclaré dans le chapitre précédent comme emplacement de la source de lumière diffuse :</p>
@@ -205,7 +141,7 @@ glEnableVertexAttribArray(0);
 <img src="/docs/LEARNOPENGL_FR/02_Lighting/01_Basic%20Lighting/basicl4.png" alt="basicl4"/></p>
 <p>Vous pouvez voir qu&rsquo;avec un éclairage diffus, le cube recommence à ressembler à un vrai cube. Essayez de visualiser les vecteurs normaux dans votre tête et déplacez la caméra autour du cube pour voir que plus l&rsquo;angle entre le vecteur normal et le vecteur de direction de la lumière est grand, plus le fragment devient sombre.</p>
 <p>N&rsquo;hésitez pas à comparer votre code source avec le code source complet <a href="https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/2.1.basic_lighting_diffuse/basic_lighting_diffuse.cpp">ici</a> si vous êtes bloqué.</p>
-<h2 id="une-dernière-chose">Une dernière chose<a hidden class="anchor" aria-hidden="true" href="#une-dernière-chose">#</a></h2>
+<h2 id="une-dernière-chose">Une dernière chose</h2>
 <p>Dans la section précédente, nous avons transmis le vecteur normal directement du vertex shader au fragment shader. Cependant, les calculs dans le fragment shader sont tous effectués dans le world space, donc ne devrions-nous pas transformer les vecteurs normaux en coordonnées world space également ? En principe, oui, mais ce n&rsquo;est pas aussi simple que de les multiplier par une matrice de modèle.</p>
 <p>Tout d&rsquo;abord, les vecteurs normaux ne sont que des vecteurs de direction et ne représentent pas une position spécifique dans l&rsquo;espace. Deuxièmement, les vecteurs normaux n&rsquo;ont pas de coordonnée homogène (la composante <em>w</em> de la position d&rsquo;un sommet). Cela signifie que les translations ne devraient pas avoir d&rsquo;effet sur les vecteurs normaux. Par conséquent, si nous voulons multiplier les vecteurs normaux avec une matrice de modèle, nous voulons supprimer la partie de la matrice relative à la translation en prenant la matrice 3x3 supérieure gauche de la matrice de modèle (notez que nous pourrions également fixer la composante w d&rsquo;un vecteur normal à 0 et la multiplier avec la matrice 4x4).</p>
 <p>Deuxièmement, si la matrice du modèle effectue une mise à l&rsquo;échelle non uniforme, les sommets seront modifiés de telle sorte que le vecteur normal ne sera plus perpendiculaire à la surface. L&rsquo;image suivante montre l&rsquo;effet d&rsquo;une telle matrice de modèle (avec une échelle non uniforme) sur un vecteur normal : </p>
@@ -217,7 +153,7 @@ glEnableVertexAttribArray(0);
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>Normal <span style="color:#f92672">=</span> mat3(transpose(inverse(model))) <span style="color:#f92672">*</span> aNormal;  
 </span></span></code></pre></div><p>L&rsquo;inversion des matrices est une opération coûteuse pour les shaders, donc dans la mesure du possible, essayez d&rsquo;éviter les opérations d&rsquo;inversion puisqu&rsquo;elles doivent être effectuées sur chaque vertex de votre scène. Pour l&rsquo;apprentissage, c&rsquo;est parfait, mais pour une application efficace, vous voudrez probablement calculer la matrice normale sur le processeur et l&rsquo;envoyer aux shaders via un uniforme avant de dessiner (tout comme la matrice de modèle). </p>
 <p>Dans la section sur l&rsquo;éclairage diffus, l&rsquo;éclairage était bon parce que nous n&rsquo;avons pas mis l&rsquo;objet à l&rsquo;échelle, de sorte qu&rsquo;il n&rsquo;était pas vraiment nécessaire d&rsquo;utiliser une matrice normale et que nous aurions pu simplement multiplier les normales avec la matrice du modèle. Cependant, si vous effectuez une mise à l&rsquo;échelle non uniforme, il est essentiel de multiplier vos vecteurs normaux avec la matrice normale.</p>
-<h1 id="specular">Specular<a hidden class="anchor" aria-hidden="true" href="#specular">#</a></h1>
+<h1 id="specular">Specular</h1>
 <p>Si vous n&rsquo;êtes pas déjà épuisé par toutes ces discussions sur l&rsquo;éclairage, nous pouvons commencer à terminer le modèle d&rsquo;éclairage du Phong en ajoutant des reflets spéculaires.</p>
 <p>Comme l&rsquo;éclairage diffus, **l&rsquo;éclairage spéculaire est basé sur le vecteur de direction de la lumière et les vecteurs de normalité de l&rsquo;objet, mais cette fois, il est également basé sur la direction de la vue, c&rsquo;est-à-dire la direction à partir de laquelle l&rsquo;observateur regarde le fragment.**L&rsquo;éclairage spéculaire est basé sur les propriétés réfléchissantes des surfaces. <strong>Si nous considérons la surface de l&rsquo;objet comme un miroir, l&rsquo;éclairage spéculaire est le plus fort là où nous voyons la lumière se refléter sur la surface.</strong> Vous pouvez voir cet effet dans l&rsquo;image suivante : 
 <img src="/docs/LEARNOPENGL_FR/02_Lighting/01_Basic%20Lighting/basicl6.png" alt="basicl6"/>
@@ -244,80 +180,18 @@ Nous ne voulons pas que la composante spéculaire soit trop gênante, c&rsquo;es
 </span></span></code></pre></div><p>Nous avons maintenant calculé tous les composants d&rsquo;éclairage du modèle d&rsquo;éclairage Phong. En fonction de votre point de vue, vous devriez voir quelque chose comme ceci :</p>
 <p><img src="/docs/LEARNOPENGL_FR/02_Lighting/01_Basic%20Lighting/basicl8.png" alt="basicl8"/>
 Vous pouvez trouver le code source complet de l&rsquo;application <a href="https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/2.2.basic_lighting_specular/basic_lighting_specular.cpp">ici</a>.</p>
-<h2 id="remarques">Remarques<a hidden class="anchor" aria-hidden="true" href="#remarques">#</a></h2>
+<h2 id="remarques">Remarques</h2>
 <p>Dans les premiers temps des lighting shaders, les développeurs avaient l&rsquo;habitude d&rsquo;implémenter le modèle d&rsquo;éclairage Phong dans le vertex shader. L&rsquo;avantage de l&rsquo;éclairage dans le vertex shader est qu&rsquo;il est beaucoup plus efficace car il y a généralement beaucoup moins de sommets que de fragments, de sorte que les calculs d&rsquo;éclairage (coûteux) sont effectués moins souvent. Cependant, la valeur de couleur résultante dans le vertex shader est la couleur d&rsquo;éclairage résultante de ce sommet uniquement et les valeurs de couleur des fragments environnants sont alors le résultat des couleurs d&rsquo;éclairage interpolées. Il en résulte que l&rsquo;éclairage n&rsquo;est pas très réaliste à moins d&rsquo;utiliser un grand nombre de sommets.</p>
 <p>Vous devriez maintenant commencer à voir à quel point les shaders sont puissants. Avec peu d&rsquo;informations, les shaders sont capables de calculer comment l&rsquo;éclairage affecte les couleurs du fragment pour tous nos objets. Dans les prochains chapitres, nous approfondirons ce que nous pouvons faire avec le modèle d&rsquo;éclairage.</p>
 
 
-  </div>
 
-  <footer class="post-footer">
-    <ul class="post-tags">
-      <li><a href="https://hrst4.xyz/tags/cg/">cg</a></li>
-      <li><a href="https://hrst4.xyz/tags/opengl/">opengl</a></li>
-      <li><a href="https://hrst4.xyz/tags/computer-graphics/">computer graphics</a></li>
-      <li><a href="https://hrst4.xyz/tags/cpp/">cpp</a></li>
-    </ul>
-  </footer>
-</article>
-    </main>
+      </main>
+    </div>
     
-<footer class="footer">
-    <span>&copy; 2023 <a href="https://hrst4.xyz/">hrst4&#39;s blog</a></span>
-    <span>
-        Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
-</footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
-    </svg>
-</a>
-
+<script src="/js/feather.min.js"></script>
 <script>
-    let menu = document.getElementById('menu')
-    if (menu) {
-        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
-        menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
-        });
-    });
-
+  feather.replace();
 </script>
-<script>
-    var mybutton = document.getElementById("top-link");
-    window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
-        } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
-        }
-    };
-
-</script>
-</body>
-
+  </body>
 </html>

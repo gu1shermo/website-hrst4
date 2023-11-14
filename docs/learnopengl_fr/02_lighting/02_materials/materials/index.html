@@ -1,122 +1,58 @@
-<!DOCTYPE html>
-<html lang="en" dir="auto">
-
-<head><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>hrst4&#39;s blog</title>
-<meta name="keywords" content="cg, opengl, computer graphics, cpp">
-<meta name="description" content="Materials Dans le monde réel, chaque objet a une réaction différente à la lumière. Les objets en acier sont souvent plus brillants qu&rsquo;un vase en argile, par exemple, et un récipient en bois ne réagit pas de la même manière à la lumière qu&rsquo;un récipient en acier. Certains objets reflètent la lumière sans trop se disperser, ce qui donne de petits reflets spéculaires, tandis que d&rsquo;autres se dispersent beaucoup, ce qui donne un plus grand rayon au reflet.">
-<meta name="author" content="">
-<link rel="canonical" href="https://hrst4.xyz/docs/learnopengl_fr/02_lighting/02_materials/materials/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
-<link rel="icon" href="https://hrst4.xyz/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://hrst4.xyz/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://hrst4.xyz/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://hrst4.xyz/apple-touch-icon.png">
-<link rel="mask-icon" href="https://hrst4.xyz/safari-pinned-tab.svg">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
-
-    </style>
-</noscript><meta property="og:title" content="" />
-<meta property="og:description" content="Materials Dans le monde réel, chaque objet a une réaction différente à la lumière. Les objets en acier sont souvent plus brillants qu&rsquo;un vase en argile, par exemple, et un récipient en bois ne réagit pas de la même manière à la lumière qu&rsquo;un récipient en acier. Certains objets reflètent la lumière sans trop se disperser, ce qui donne de petits reflets spéculaires, tandis que d&rsquo;autres se dispersent beaucoup, ce qui donne un plus grand rayon au reflet." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://hrst4.xyz/docs/learnopengl_fr/02_lighting/02_materials/materials/" /><meta property="article:section" content="docs" />
-
-
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content=""/>
-<meta name="twitter:description" content="Materials Dans le monde réel, chaque objet a une réaction différente à la lumière. Les objets en acier sont souvent plus brillants qu&rsquo;un vase en argile, par exemple, et un récipient en bois ne réagit pas de la même manière à la lumière qu&rsquo;un récipient en acier. Certains objets reflètent la lumière sans trop se disperser, ce qui donne de petits reflets spéculaires, tandis que d&rsquo;autres se dispersent beaucoup, ce qui donne un plus grand rayon au reflet."/>
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "",
-      "item": "https://hrst4.xyz/docs/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "",
-      "item": "https://hrst4.xyz/docs/learnopengl_fr/02_lighting/02_materials/materials/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "",
-  "name": "",
-  "description": "Materials Dans le monde réel, chaque objet a une réaction différente à la lumière. Les objets en acier sont souvent plus brillants qu\u0026rsquo;un vase en argile, par exemple, et un récipient en bois ne réagit pas de la même manière à la lumière qu\u0026rsquo;un récipient en acier. Certains objets reflètent la lumière sans trop se disperser, ce qui donne de petits reflets spéculaires, tandis que d\u0026rsquo;autres se dispersent beaucoup, ce qui donne un plus grand rayon au reflet.",
-  "keywords": [
-    "cg", "opengl", "computer graphics", "cpp"
-  ],
-  "articleBody": "Materials Dans le monde réel, chaque objet a une réaction différente à la lumière. Les objets en acier sont souvent plus brillants qu’un vase en argile, par exemple, et un récipient en bois ne réagit pas de la même manière à la lumière qu’un récipient en acier. Certains objets reflètent la lumière sans trop se disperser, ce qui donne de petits reflets spéculaires, tandis que d’autres se dispersent beaucoup, ce qui donne un plus grand rayon au reflet. Si nous voulons simuler plusieurs types d’objets dans OpenGL, nous devons définir des propriétés matérielles spécifiques à chaque surface.\nDans le chapitre précédent, nous avons défini un objet et une couleur de lumière pour définir la sortie visuelle de l’objet, combinée à une composante d’intensité ambiante et spéculaire. Lors de la description d’une surface, nous pouvons définir une couleur de matériau pour chacune des trois composantes d’éclairage : l’éclairage ambiant, l’éclairage diffus et l’éclairage spéculaire. En spécifiant une couleur pour chacune des composantes, nous disposons d’un contrôle fin sur la couleur de sortie de la surface. Ajoutez maintenant un composant de brillance à ces trois couleurs et vous obtenez toutes les propriétés matérielles dont vous avez besoin : #version 330 core struct Material { vec3 ambient; vec3 diffuse; vec3 specular; float shininess; }; uniform Material material; Dans le fragment shader, nous créons une structure pour stocker les propriétés matérielles de la surface. Nous pouvons également les stocker sous forme de valeurs uniformes individuelles, mais le stockage dans une structure permet de mieux les organiser. Nous définissons d’abord l’agencement de la structure, puis nous déclarons simplement une variable uniforme avec la structure nouvellement créée comme type.\nComme vous pouvez le voir, nous définissons un vecteur de couleur pour chacun des composants de l’éclairage Phong. Le vecteur de matériau ambiant définit la couleur que la surface reflète sous un éclairage ambiant ; il s’agit généralement de la même couleur que celle de la surface. Le vecteur de matériau diffus définit la couleur de la surface sous un éclairage diffus. La couleur diffuse est (comme pour l’éclairage ambiant) réglée sur la couleur de la surface souhaitée. Le vecteur de matériau spéculaire définit la couleur de l’accentuation spéculaire de la surface (ou peut même refléter une couleur spécifique à la surface). Enfin, la brillance influe sur la diffusion/le rayon de la lumière spéculaire.\nAvec ces 4 composants qui définissent le matériau d’un objet, nous pouvons simuler de nombreux matériaux du monde réel. Un tableau trouvé sur devernay.free.fr montre une liste de propriétés de matériaux qui simulent des matériaux réels trouvés dans le monde extérieur. L’image suivante montre l’effet de plusieurs de ces valeurs de matériaux du monde réel sur notre cube : Comme vous pouvez le constater, en spécifiant correctement les propriétés matérielles d’une surface, il semble que la perception que nous avons de l’objet soit modifiée. Les effets sont clairement perceptibles, mais pour obtenir des résultats plus réalistes, nous devrons remplacer le cube par quelque chose de plus compliqué. Dans les chapitres consacrés au chargement des modèles, nous aborderons des formes plus complexes.\nTrouver les bons paramètres de matériau pour un objet est une tâche difficile qui requiert principalement de l’expérimentation et beaucoup d’expérience. Il n’est pas rare de détruire complètement la qualité visuelle d’un objet à cause d’un matériau mal placé.\nEssayons d’implémenter un tel système de matériaux dans les shaders.\nImplémentation des matériaux Nous avons créé une structure de matériau uniforme dans le fragment shader. Nous allons donc modifier les calculs d’éclairage pour qu’ils soient conformes aux nouvelles propriétés du matériau. Comme toutes les variables matérielles sont stockées dans une structure, nous pouvons y accéder à partir du matériau uniforme :\nvoid main() { // ambient vec3 ambient = lightColor * material.ambient; // diffuse vec3 norm = normalize(Normal); vec3 lightDir = normalize(lightPos - FragPos); float diff = max(dot(norm, lightDir), 0.0); vec3 diffuse = lightColor * (diff * material.diffuse); // specular vec3 viewDir = normalize(viewPos - FragPos); vec3 reflectDir = reflect(-lightDir, norm); float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess); vec3 specular = lightColor * (spec * material.specular); vec3 result = ambient + diffuse + specular; FragColor = vec4(result, 1.0); } Comme vous pouvez le voir, nous accédons maintenant à toutes les propriétés de la structure matérielle là où nous en avons besoin et, cette fois, nous calculons la couleur de sortie résultante à l’aide des couleurs du matériau. Chaque attribut de matériau de l’objet est multiplié par ses composantes d’éclairage respectives.\nNous pouvons définir le matériau de l’objet dans l’application en définissant les uniformes appropriés. En GLSL, une structure n’a rien de spécial en ce qui concerne la définition des uniformes ; une structure agit uniquement comme un espace de noms pour les variables d’uniformes. Si nous voulons remplir la structure, nous devrons définir les uniformes individuels, mais avec le préfixe du nom de la structure : lightingShader.setVec3(\"material.ambient\", 1.0f, 0.5f, 0.31f); lightingShader.setVec3(\"material.diffuse\", 1.0f, 0.5f, 0.31f); lightingShader.setVec3(\"material.specular\", 0.5f, 0.5f, 0.5f); lightingShader.setFloat(\"material.shininess\", 32.0f); Nous réglons les composantes ambiante et diffuse sur la couleur que nous souhaitons donner à l’objet et nous réglons la composante spéculaire de l’objet sur une couleur moyennement lumineuse ; nous ne voulons pas que la composante spéculaire soit trop forte. Nous maintenons également la brillance à 32.\nNous pouvons maintenant facilement influencer le matériau de l’objet à partir de l’application. L’exécution du programme donne quelque chose comme ceci : Mais cela n’a pas l’air d’être le cas ?\nPropriétés de la lumiàre L’objet est beaucoup trop lumineux. La raison pour laquelle l’objet est trop lumineux est que les couleurs ambiantes, diffuses et spéculaires sont reflétées avec toute leur force par n’importe quelle source de lumière. Les sources lumineuses ont également des intensités différentes pour leurs composantes ambiantes, diffuses et spéculaires respectivement. Dans le chapitre précédent, nous avons résolu ce problème en faisant varier les intensités ambiante et spéculaire à l’aide d’une valeur de force. Nous voulons faire quelque chose de similaire, mais cette fois en spécifiant des vecteurs d’intensité pour chacune des composantes de l’éclairage. Si nous visualisions lightColor comme vec3(1.0), le code ressemblerait à ceci :\nvec3 ambient = vec3(1.0) * material.ambient; vec3 diffuse = vec3(1.0) * (diff * material.diffuse); vec3 specular = vec3(1.0) * (spec * material.specular); Ainsi, chaque propriété matérielle de l’objet est renvoyée avec une intensité complète pour chaque composante de la lumière. Ces valeurs vec3(1.0) peuvent être influencées individuellement pour chaque source de lumière et c’est généralement ce que nous voulons. En ce moment, la composante ambiante de l’objet influence complètement la couleur du cube. La composante ambiante ne devrait pas avoir un impact aussi important sur la couleur finale. Nous pouvons donc restreindre la couleur ambiante en réglant l’intensité ambiante de la lumière sur une valeur plus faible : vec3 ambient = vec3(0.1) * material.ambient; Nous pouvons influencer l’intensité diffuse et spéculaire de la source lumineuse de la même manière. Ceci est très similaire à ce que nous avons fait dans le chapitre précédent ; on pourrait dire que nous avons déjà créé des propriétés de lumière pour influencer chaque composant d’éclairage individuellement. Nous voudrons créer quelque chose de similaire à la structure matérielle pour les propriétés de lumière :\nstruct Light { vec3 position; vec3 ambient; vec3 diffuse; vec3 specular; }; uniform Light light; Une source lumineuse a une intensité différente pour ses composantes ambiante, diffuse et spéculaire.\nLa lumière ambiante est généralement réglée sur une faible intensité, car nous ne voulons pas que la couleur ambiante soit trop dominante. La composante diffuse d’une source lumineuse est généralement réglée sur la couleur exacte que l’on souhaite donner à la lumière, souvent un blanc éclatant. La composante spéculaire est généralement maintenue à vec3(1.0) et brille à pleine intensité. Notez que nous avons également ajouté le vecteur de position de la lumière à la structure.\nTout comme pour l’uniforme matériel, nous devons mettre à jour le fragment shader : vec3 ambient = light.ambient * material.ambient; vec3 diffuse = light.diffuse * (diff * material.diffuse); vec3 specular = light.specular * (spec * material.specular); Nous voulons ensuite définir les intensités lumineuses dans l’application :\nlightingShader.setVec3(\"light.ambient\", 0.2f, 0.2f, 0.2f); lightingShader.setVec3(\"light.diffuse\", 0.5f, 0.5f, 0.5f); // darken diffuse light a bit lightingShader.setVec3(\"light.specular\", 1.0f, 1.0f, 1.0f); Maintenant que nous avons modulé l’influence de la lumière sur le matériau de l’objet, nous obtenons un résultat visuel qui ressemble beaucoup à celui du chapitre précédent. Cette fois-ci, cependant, nous avons un contrôle total sur l’éclairage et le matériau de l’objet : Modifier l’aspect visuel des objets est relativement facile à l’heure actuelle. Mettons un peu de piment dans tout cela !\nDes couleurs de lumières différentes Jusqu’à présent, nous avons utilisé les couleurs de lumière pour faire varier l’intensité de leurs composants individuels en choisissant des couleurs qui vont du blanc au gris en passant par le noir, sans affecter les couleurs réelles de l’objet (seulement son intensité). Puisque nous avons maintenant un accès facile aux propriétés de la lumière, nous pouvons changer leurs couleurs au fil du temps pour obtenir des effets vraiment intéressants. Comme tout est déjà configuré dans le fragment shader, changer les couleurs de la lumière est facile et crée immédiatement des effets amusants : TODO: intégrer le .gif\nComme vous pouvez le constater, une couleur de lumière différente influence grandement la couleur de sortie de l’objet. Comme la couleur de la lumière influence directement les couleurs que l’objet peut refléter (comme vous vous en souvenez peut-être dans le chapitre sur les couleurs), elle a un impact significatif sur la sortie visuelle.\nNous pouvons facilement modifier les couleurs de la lumière au fil du temps en changeant les couleurs ambiantes et diffuses de la lumière via sin et glfwGetTime :\nglm::vec3 lightColor; lightColor.x = sin(glfwGetTime() * 2.0f); lightColor.y = sin(glfwGetTime() * 0.7f); lightColor.z = sin(glfwGetTime() * 1.3f); glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f); glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); lightingShader.setVec3(\"light.ambient\", ambientColor); lightingShader.setVec3(\"light.diffuse\", diffuseColor); Essayez et expérimentez plusieurs valeurs d’éclairage et de matériaux et voyez comment elles affectent le résultat visuel. Vous pouvez trouver le code source de l’application ici.\n",
-  "wordCount" : "1657",
-  "inLanguage": "en",
-  "datePublished": "0001-01-01T00:00:00Z",
-  "dateModified": "0001-01-01T00:00:00Z",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://hrst4.xyz/docs/learnopengl_fr/02_lighting/02_materials/materials/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "hrst4's blog",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://hrst4.xyz/favicon.ico"
-    }
-  }
-}
-</script>
-</head>
-
-<body class=" dark" id="top">
-
-<header class="header">
-    <nav class="nav">
-        <div class="logo">
-            <a href="https://hrst4.xyz/" accesskey="h" title="hrst4&#39;s blog (Alt + H)">hrst4&#39;s blog</a>
-            <div class="logo-switches">
-            </div>
-        </div>
-        <ul id="menu">
-        </ul>
-    </nav>
-</header>
-<main class="main">
-
-<article class="post-single">
-  <header class="post-header">
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
-    <h1 class="post-title">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
       
-    </h1>
-    <div class="post-meta">
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
 
-</div>
-  </header> 
-  <div class="post-content"><h1 id="materials">Materials<a hidden class="anchor" aria-hidden="true" href="#materials">#</a></h1>
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cg">cg</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/opengl">opengl</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/computer-graphics">computer graphics</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cpp">cpp</a>
+  
+
+<br><br>
+<h1 id="materials">Materials</h1>
 <p><strong>Dans le monde réel, chaque objet a une réaction différente à la lumière</strong>. Les objets en acier sont souvent plus brillants qu&rsquo;un vase en argile, par exemple, et un récipient en bois ne réagit pas de la même manière à la lumière qu&rsquo;un récipient en acier. Certains objets reflètent la lumière sans trop se disperser, ce qui donne de petits reflets spéculaires, tandis que d&rsquo;autres se dispersent beaucoup, ce qui donne un plus grand rayon au reflet. Si nous voulons simuler plusieurs types d&rsquo;objets dans OpenGL, nous devons définir des propriétés matérielles spécifiques à chaque surface.</p>
 <p>Dans le chapitre précédent, nous avons défini un objet et une couleur de lumière pour définir la sortie visuelle de l&rsquo;objet, combinée à une composante d&rsquo;intensité ambiante et spéculaire. Lors de la description d&rsquo;une surface, nous pouvons définir une couleur de matériau pour chacune des trois composantes d&rsquo;éclairage : l&rsquo;éclairage ambiant, l&rsquo;éclairage diffus et l&rsquo;éclairage spéculaire. En spécifiant une couleur pour chacune des composantes, nous disposons d&rsquo;un contrôle fin sur la couleur de sortie de la surface. Ajoutez maintenant un composant de brillance à ces trois couleurs et vous obtenez toutes les propriétés matérielles dont vous avez besoin : </p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
@@ -135,7 +71,7 @@
 Comme vous pouvez le constater, en spécifiant correctement les propriétés matérielles d&rsquo;une surface, il semble que la perception que nous avons de l&rsquo;objet soit modifiée. Les effets sont clairement perceptibles, mais pour obtenir des résultats plus réalistes, nous devrons remplacer le cube par quelque chose de plus compliqué. Dans les chapitres consacrés au chargement des modèles, nous aborderons des formes plus complexes.</p>
 <p>Trouver les bons paramètres de matériau pour un objet est une tâche difficile qui requiert principalement de l&rsquo;expérimentation et beaucoup d&rsquo;expérience. Il n&rsquo;est pas rare de détruire complètement la qualité visuelle d&rsquo;un objet à cause d&rsquo;un matériau mal placé.</p>
 <p>Essayons d&rsquo;implémenter un tel système de matériaux dans les shaders.</p>
-<h1 id="implémentation-des-matériaux">Implémentation des matériaux<a hidden class="anchor" aria-hidden="true" href="#implémentation-des-matériaux">#</a></h1>
+<h1 id="implémentation-des-matériaux">Implémentation des matériaux</h1>
 <p>Nous avons créé une structure de matériau uniforme dans le fragment shader. Nous allons donc modifier les calculs d&rsquo;éclairage pour qu&rsquo;ils soient conformes aux nouvelles propriétés du matériau. Comme toutes les variables matérielles sont stockées dans une structure, nous pouvons y accéder à partir du matériau uniforme :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
 </span></span><span style="display:flex;"><span>{    
@@ -167,7 +103,7 @@ Comme vous pouvez le constater, en spécifiant correctement les propriétés mat
 <p>Nous pouvons maintenant facilement influencer le matériau de l&rsquo;objet à partir de l&rsquo;application. L&rsquo;exécution du programme donne quelque chose comme ceci : 
 <img src="/docs/LEARNOPENGL_FR/02_Lighting/02_Materials/material2.png" alt="material2"/>
 Mais cela n&rsquo;a pas l&rsquo;air d&rsquo;être le cas ?</p>
-<h2 id="propriétés-de-la-lumiàre">Propriétés de la lumiàre<a hidden class="anchor" aria-hidden="true" href="#propriétés-de-la-lumiàre">#</a></h2>
+<h2 id="propriétés-de-la-lumiàre">Propriétés de la lumiàre</h2>
 <p><strong>L&rsquo;objet est beaucoup trop lumineux</strong>. La raison pour laquelle l&rsquo;objet est trop lumineux est que les couleurs ambiantes, diffuses et spéculaires sont reflétées avec toute leur force par n&rsquo;importe quelle source de lumière. Les sources lumineuses ont également des intensités différentes pour leurs composantes ambiantes, diffuses et spéculaires respectivement. Dans le chapitre précédent, nous avons résolu ce problème en faisant varier les intensités ambiante et spéculaire à l&rsquo;aide d&rsquo;une valeur de force. Nous voulons faire quelque chose de similaire, mais cette fois en spécifiant des vecteurs d&rsquo;intensité pour chacune des composantes de l&rsquo;éclairage. Si nous visualisions <code>lightColor</code> comme <code>vec3(1.0)</code>, le code ressemblerait à ceci :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 ambient  <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">1.0</span>) <span style="color:#f92672">*</span> material.ambient;
 </span></span><span style="display:flex;"><span>vec3 diffuse  <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">1.0</span>) <span style="color:#f92672">*</span> (diff <span style="color:#f92672">*</span> material.diffuse);
@@ -199,7 +135,7 @@ La composante spéculaire est généralement maintenue à <code>vec3(1.0)</code>
 </span></span></code></pre></div><p>Maintenant que nous avons modulé l&rsquo;influence de la lumière sur le matériau de l&rsquo;objet, nous obtenons un résultat visuel qui ressemble beaucoup à celui du chapitre précédent. Cette fois-ci, cependant, nous avons un contrôle total sur l&rsquo;éclairage et le matériau de l&rsquo;objet :
 <img src="/docs/LEARNOPENGL_FR/02_Lighting/02_Materials/material3.png" alt="material3.png"/>
 Modifier l&rsquo;aspect visuel des objets est relativement facile à l&rsquo;heure actuelle. Mettons un peu de piment dans tout cela !</p>
-<h2 id="des-couleurs-de-lumières-différentes">Des couleurs de lumières différentes<a hidden class="anchor" aria-hidden="true" href="#des-couleurs-de-lumières-différentes">#</a></h2>
+<h2 id="des-couleurs-de-lumières-différentes">Des couleurs de lumières différentes</h2>
 <p>Jusqu&rsquo;à présent, nous avons utilisé les couleurs de lumière pour faire varier l&rsquo;intensité de leurs composants individuels en choisissant des couleurs qui vont du blanc au gris en passant par le noir, sans affecter les couleurs réelles de l&rsquo;objet (seulement son intensité). Puisque nous avons maintenant un accès facile aux propriétés de la lumière, nous pouvons changer leurs couleurs au fil du temps pour obtenir des effets vraiment intéressants. Comme tout est déjà configuré dans le fragment shader, changer les couleurs de la lumière est facile et crée immédiatement des effets amusants : </p>
 <p>TODO: intégrer le .gif</p>
 <p>Comme vous pouvez le constater, une couleur de lumière différente influence grandement la couleur de sortie de l&rsquo;objet. Comme la couleur de la lumière influence directement les couleurs que l&rsquo;objet peut refléter (comme vous vous en souvenez peut-être dans le chapitre sur les couleurs), elle a un impact significatif sur la sortie visuelle.</p>
@@ -217,75 +153,13 @@ Modifier l&rsquo;aspect visuel des objets est relativement facile à l&rsquo;heu
 </span></span></code></pre></div><p>Essayez et expérimentez plusieurs valeurs d&rsquo;éclairage et de matériaux et voyez comment elles affectent le résultat visuel. Vous pouvez trouver le code source de l&rsquo;application <a href="https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/3.1.materials/materials.cpp">ici</a>.</p>
 
 
-  </div>
 
-  <footer class="post-footer">
-    <ul class="post-tags">
-      <li><a href="https://hrst4.xyz/tags/cg/">cg</a></li>
-      <li><a href="https://hrst4.xyz/tags/opengl/">opengl</a></li>
-      <li><a href="https://hrst4.xyz/tags/computer-graphics/">computer graphics</a></li>
-      <li><a href="https://hrst4.xyz/tags/cpp/">cpp</a></li>
-    </ul>
-  </footer>
-</article>
-    </main>
+      </main>
+    </div>
     
-<footer class="footer">
-    <span>&copy; 2023 <a href="https://hrst4.xyz/">hrst4&#39;s blog</a></span>
-    <span>
-        Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
-</footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
-    </svg>
-</a>
-
+<script src="/js/feather.min.js"></script>
 <script>
-    let menu = document.getElementById('menu')
-    if (menu) {
-        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
-        menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
-        });
-    });
-
+  feather.replace();
 </script>
-<script>
-    var mybutton = document.getElementById("top-link");
-    window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
-        } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
-        }
-    };
-
-</script>
-</body>
-
+  </body>
 </html>
