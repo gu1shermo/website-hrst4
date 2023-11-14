@@ -183,50 +183,46 @@ Cela se produit parce qu&rsquo;OpenGL, par défaut, ne sait pas quoi faire avec 
 <p>Bien que l&rsquo;élimination des fragments soit une bonne chose, elle ne nous donne pas la possibilité de rendre des images semi-transparentes ; soit nous rendons le fragment, soit nous l&rsquo;éliminons complètement. Pour rendre des images avec différents niveaux de transparence, nous devons activer le blending. Comme la plupart des fonctionnalités d&rsquo;OpenGL, nous pouvons activer le blending en activant <code>GL_BLEND</code> :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glEnable(GL_BLEND);  
 </span></span></code></pre></div><p>Maintenant que nous avons activé le blending, nous devons dire à OpenGL comment il doit se blendingr.</p>
-<h1 id="vecc_result">Le blending dans OpenGL se fait avec l&rsquo;équation suivante :
-$$
-\vec{C}_{result}</h1>
-<p>\vec{C}<em>{source} * F</em>{source}
-+
+<p>Le blending dans OpenGL se fait avec l&rsquo;équation suivante :</p>
+<p>$$
+\vec{C}<em>{result}=
+\vec{C}</em>{source} * F_{source}+
 \vec{C}<em>{destination} * F</em>{destination}
 $$</p>
 <ul>
-<li>$$vec{C}_{source}$ : le vecteur de couleur source. Il s&rsquo;agit de la couleur de sortie du shader de fragment.</li>
+<li>$\vec{C}_{source}$ : le vecteur de couleur source. Il s&rsquo;agit de la couleur de sortie du shader de fragment.</li>
 </ul>
 <ul>
-<li>$$vec{C}_{destination}$ : le vecteur de couleur de destination. Il s&rsquo;agit du vecteur de couleur actuellement stocké dans le tampon de couleur.</li>
+<li>$\vec{C}_{destination}$ : le vecteur de couleur de destination. Il s&rsquo;agit du vecteur de couleur actuellement stocké dans le tampon de couleur.</li>
 <li>$F_{source}$ : la valeur du facteur de source. Définit l&rsquo;impact de la valeur alpha sur la couleur source.</li>
 <li>$F_{destination}$ : valeur du facteur de destination. Définit l&rsquo;impact de la valeur alpha sur la couleur de destination.</li>
 </ul>
 <p>Une fois que le fragment shader a été exécuté et que tous les tests ont été réussis, cette équation de blending est relâchée (?) sur la sortie couleur du fragment et avec ce qui se trouve actuellement dans le tampon de couleur. Les couleurs source et destination seront automatiquement définies par OpenGL, mais les facteurs source et destination peuvent être définis à une valeur de notre choix. Commençons par un exemple simple :
 <img src="/docs/LEARNOPENGL_FR/04_Advanced_OpenGL/blending_equation.png" alt="blending_equation"/>
 Nous avons deux carrés où nous voulons dessiner le carré vert semi-transparent sur le carré rouge. Le carré rouge sera la couleur de destination (et devrait donc être le premier dans le tampon de couleurs) et nous allons maintenant dessiner le carré vert sur le carré rouge.</p>
-<h1 id="vecc_result-1"><strong>La question qui se pose alors est la suivante : à quoi devons-nous fixer les valeurs des facteurs ? Eh bien, nous voulons au moins multiplier le carré vert par sa valeur alpha, donc nous voulons fixer le facteur <code>Fsrc</code></strong> égal à la valeur alpha du vecteur de couleur source, soit $0.6$. Il est donc logique que le carré de destination ait une contribution égale au reste de la valeur alpha. Si le carré vert contribue à hauteur de 60 % à la couleur finale, nous voulons que le carré rouge contribue à hauteur de 40 % à la couleur finale, soit 1,0 - 0,6. Nous fixons donc <code>Fdestination</code> à un moins la valeur alpha du vecteur de couleur source. L&rsquo;équation devient donc :
-$$
-\vec{C}_{result}</h1>
-<p>\begin{bmatrix}
-0.0 \
-1.0 \
-0.0 \
-0.6 \
-\end{bmatrix}
-*
-0.6
-+
+<p><strong>La question qui se pose alors est la suivante : à quoi devons-nous fixer les valeurs des facteurs ? Eh bien, nous voulons au moins multiplier le carré vert par sa valeur alpha, donc nous voulons fixer le facteur <code>Fsrc</code></strong> égal à la valeur alpha du vecteur de couleur source, soit $0.6$. Il est donc logique que le carré de destination ait une contribution égale au reste de la valeur alpha. Si le carré vert contribue à hauteur de 60 % à la couleur finale, nous voulons que le carré rouge contribue à hauteur de 40 % à la couleur finale, soit 1,0 - 0,6. Nous fixons donc <code>Fdestination</code> à un moins la valeur alpha du vecteur de couleur source. L&rsquo;équation devient donc :</p>
+<p>$$
+\vec{C}_{result}=
 \begin{bmatrix}
-1.0 \
-0.0 \
-0.0 \
-1.0 \
-\end{bmatrix}
-*
+0.0 \\
+1.0 \\
+0.0 \\
+0.6 \\
+\end{bmatrix}*
+0.6+
+\begin{bmatrix}
+1.0 \\
+0.0 \\
+0.0 \\
+1.0 \\
+\end{bmatrix}*
 (1.0 - 0.6)
-$$
-Le résultat est que les fragments de carrés combinés contiennent une couleur qui est 60% verte et 40% rouge :
+$$</p>
+<p>Le résultat est que les fragments de carrés combinés contiennent une couleur qui est 60% verte et 40% rouge :
 <img src="/docs/LEARNOPENGL_FR/04_Advanced_OpenGL/blending_equation_mixed.png" alt="blending_equation_mixed"/>
 La couleur résultante est alors stockée dans le tampon de couleur, remplaçant la couleur précédente.</p>
 <p>C&rsquo;est bien beau tout ça, mais comment dire à OpenGL d&rsquo;utiliser de tels facteurs ? Il se trouve qu&rsquo;il existe une fonction pour cela, appelée <code>glBlendFunc</code>.</p>
-<p>La fonction <code>glBlendFunc(GLenum sfactor, GLenum dfactor)</code> attend deux paramètres qui définissent l&rsquo;option pour le facteur de source et de destination. OpenGL a défini un certain nombre d&rsquo;options que nous allons énumérer ci-dessous. Notez que le vecteur de couleur constante $$vec{C}_{constant}$  peut être défini séparément via la fonction <code>glBlendColor</code>.</p>
+<p>La fonction <code>glBlendFunc(GLenum sfactor, GLenum dfactor)</code> attend deux paramètres qui définissent l&rsquo;option pour le facteur de source et de destination. OpenGL a défini un certain nombre d&rsquo;options que nous allons énumérer ci-dessous. Notez que le vecteur de couleur constante $\vec{C}_{constant}$  peut être défini séparément via la fonction <code>glBlendColor</code>.</p>
 <p><img src="/docs/LEARNOPENGL_FR/04_Advanced_OpenGL/02_blending-20230816.png" alt="02_blending-20230816"/>
 Pour obtenir le résultat du blending de notre petit exemple de deux carrés, nous voulons prendre l&rsquo;<strong>alpha</strong> du vecteur de couleur source pour le facteur source et <strong>1-alpha</strong> du même vecteur de couleur pour le facteur de destination. Cela se traduit par <code>glBlendFunc</code> écrit comme suit :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
@@ -235,11 +231,11 @@ Pour obtenir le résultat du blending de notre petit exemple de deux carrés, no
 </span></span></code></pre></div><p>Cette fonction définit les composantes RVB comme nous l&rsquo;avons fait précédemment, mais ne laisse que la composante alpha résultante être influencée par la valeur alpha de la source.</p>
 <p>OpenGL nous donne encore plus de flexibilité en nous permettant de changer l&rsquo;opérateur entre la partie source et la partie destination de l&rsquo;équation. Actuellement, les composantes source et destination sont additionnées, mais nous pourrions également les soustraire si nous le souhaitions. glBlendEquation(GLenum mode) nous permet de définir cette opération et dispose de 5 options possibles :</p>
 <ul>
-<li><code>GL_FUNC_ADD</code> : la valeur par défaut, ajoute les deux couleurs l&rsquo;une à l&rsquo;autre : $$vec{C}_{result}=Src+Dst$</li>
-<li><code>GL_FUNC_SUBTRACT</code> : soustrait les deux couleurs l&rsquo;une de l&rsquo;autre : $$vec{C}_{result}=Src-Dst$</li>
-<li><code>GL_FUNC_REVERSE_SUBTRACT</code> : soustrait les deux couleurs, mais inverse l&rsquo;ordre : $$vec{C}_{result}=Dst-Src$</li>
-<li><code>GL_MIN</code> : prend le minimum en composantes des deux couleurs : $$vec{C}_{result}=min(Dst,Src)$</li>
-<li><code>GL_MAX</code> : prend le maximum des deux couleurs en fonction de leurs composantes : $$vec{C}_{result}=max(Dst,Src)$</li>
+<li><code>GL_FUNC_ADD</code> : la valeur par défaut, ajoute les deux couleurs l&rsquo;une à l&rsquo;autre : $\vec{C}_{result}=Src+Dst$</li>
+<li><code>GL_FUNC_SUBTRACT</code> : soustrait les deux couleurs l&rsquo;une de l&rsquo;autre : $\vec{C}_{result}=Src-Dst$</li>
+<li><code>GL_FUNC_REVERSE_SUBTRACT</code> : soustrait les deux couleurs, mais inverse l&rsquo;ordre : $\vec{C}_{result}=Dst-Src$</li>
+<li><code>GL_MIN</code> : prend le minimum en composantes des deux couleurs : $\vec{C}_{result}=min(Dst,Src)$</li>
+<li><code>GL_MAX</code> : prend le maximum des deux couleurs en fonction de leurs composantes : $\vec{C}_{result}=max(Dst,Src)$</li>
 </ul>
 <p>En général, nous pouvons simplement omettre d&rsquo;appeler <code>glBlendEquation</code> parce que GL_FUNC_ADD est l&rsquo;équation de blending préférée pour la plupart des opérations, mais si vous essayez vraiment de faire de votre mieux pour sortir du circuit traditionnel, n&rsquo;importe laquelle des autres équations peut répondre à vos besoins.</p>
 <h2 id="rendu-de-textures-semi-transparentes">Rendu de textures semi-transparentes</h2>

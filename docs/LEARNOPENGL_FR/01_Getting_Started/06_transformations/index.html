@@ -87,10 +87,10 @@
 <h2 id="vecteurs">Vecteurs</h2>
 <p>Dans leur définition la plus élémentaire, <strong>les vecteurs sont des directions et rien de plus</strong>. <strong>Un vecteur a une direction et une magnitude</strong> (également appelée force ou longueur). On peut comparer les vecteurs à des indications sur une carte au trésor : &ldquo;aller à gauche sur 10 pas, puis aller au nord sur 3 pas et à droite sur 5 pas&rdquo;.
 Ici, &ldquo;gauche&rdquo; est la direction et &ldquo;10 pas&rdquo; est la magnitude du vecteur. Les directions de la carte au trésor contiennent donc 3 vecteurs. <strong>Les vecteurs peuvent avoir n&rsquo;importe quelle dimension, mais nous travaillons généralement avec des dimensions de 2 à 4</strong>. Si un vecteur a 2 dimensions, il représente une direction sur un plan (pensez aux graphiques en 2D) et s&rsquo;il a 3 dimensions, il peut représenter n&rsquo;importe quelle direction dans un monde en 3D.</p>
-<p>Ci-dessous, vous verrez 3 vecteurs où chaque vecteur est représenté par des flèches (x,y) dans un graphique en 2D. Comme il est plus intuitif d&rsquo;afficher les vecteurs en 2D (plutôt qu&rsquo;en 3D), vous pouvez considérer les vecteurs 2D comme des vecteurs 3D avec une coordonnée z de 0. Comme les vecteurs représentent des directions, l&rsquo;origine du vecteur ne change pas sa valeur. Dans le graphique ci-dessous, nous pouvons voir que les vecteurs $$vec{v}$ et $$vec{w}$ sont égaux bien que leur origine soit différente :
+<p>Ci-dessous, vous verrez 3 vecteurs où chaque vecteur est représenté par des flèches (x,y) dans un graphique en 2D. Comme il est plus intuitif d&rsquo;afficher les vecteurs en 2D (plutôt qu&rsquo;en 3D), vous pouvez considérer les vecteurs 2D comme des vecteurs 3D avec une coordonnée z de 0. Comme les vecteurs représentent des directions, l&rsquo;origine du vecteur ne change pas sa valeur. Dans le graphique ci-dessous, nous pouvons voir que les vecteurs $\vec{v}$ et $\vec{w}$ sont égaux bien que leur origine soit différente :
 <img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/transfo1.png" alt="transfo1"/>
 Pour décrire les vecteurs, les mathématiciens préfèrent généralement utiliser des symboles de caractères avec une petite barre au-dessus de leur tête, comme v¯. De même, lorsque les vecteurs sont affichés dans des formules, ils sont généralement présentés comme suit :</p>
-<p>$$$vec{v} = \begin{pmatrix}
+<p>$$\vec{v} = \begin{pmatrix}
 x\
 y\
 z
@@ -99,7 +99,7 @@ Comme les vecteurs sont spécifiés en tant que directions, il est parfois diffi
 <p>Tout comme pour les nombres normaux, nous pouvons également définir plusieurs opérations sur les vecteurs (dont certaines ont déjà été vues).</p>
 <h3 id="opérations-scalaires-sur-les-vecteurs">Opérations scalaires sur les vecteurs</h3>
 <p>Un scalaire est un chiffre unique. Lors de l&rsquo;addition/soustraction/multiplication ou de la division d&rsquo;un vecteur avec un scalaire, il suffit d&rsquo;ajouter/soustraire/multiplier ou diviser chaque élément du vecteur par le scalaire. Dans le cas d&rsquo;une addition, cela donnerait ceci :
-$$$begin{pmatrix}
+$$\begin{pmatrix}
 1\
 2\
 3
@@ -165,7 +165,7 @@ $$</p>
 9
 \end{pmatrix}
 $$
-Visuellement, cela ressemble à ceci pour les vecteurs $$vec{v}=(4,2)$ et $$vec{k}=(1,2)$, où le deuxième vecteur est ajouté à l&rsquo;extrémité du premier vecteur pour trouver le point final du vecteur résultant (méthode de la tête à la queue (head to tail method)) :
+Visuellement, cela ressemble à ceci pour les vecteurs $\vec{v}=(4,2)$ et $\vec{k}=(1,2)$, où le deuxième vecteur est ajouté à l&rsquo;extrémité du premier vecteur pour trouver le point final du vecteur résultant (méthode de la tête à la queue (head to tail method)) :
 <img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/transfo2.png" alt="transfo2"/>
 Tout comme l&rsquo;addition et la soustraction normales, la soustraction de vecteurs est la même chose que l&rsquo;addition avec un second vecteur annulé :
 $$
@@ -200,12 +200,12 @@ En soustrayant deux vecteurs l&rsquo;un de l&rsquo;autre, on obtient un vecteur 
 <h3 id="longueur">Longueur</h3>
 <h1 id="vecv">Pour déterminer la longueur/magnitude d&rsquo;un vecteur, nous utilisons le théorème de Pythagore dont vous vous souvenez peut-être de vos cours de mathématiques. Un vecteur forme un triangle lorsque vous visualisez ses composantes x et y individuelles comme les deux côtés d&rsquo;un triangle :
 <img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/transfo4.png" alt="transfo4"/>
-Puisque les longueurs des deux côtés (x, y) sont connues et que nous voulons connaître la longueur du côté incliné $$vec{v}$, nous pouvons la calculer en utilisant le théorème de Pythagore comme suit :
+Puisque les longueurs des deux côtés (x, y) sont connues et que nous voulons connaître la longueur du côté incliné $\vec{v}$, nous pouvons la calculer en utilisant le théorème de Pythagore comme suit :
 $$
 ||\vec{v}||</h1>
 <h1 id="vecv-1">\sqrt{x^2 + y^2}
 $$
-Où $||\vec{v}||$  est noté comme la longueur du vecteur $$vec{v}$. Il est facile d&rsquo;étendre ce principe à la 3D en ajoutant $z^2$ à l&rsquo;équation.
+Où $||\vec{v}||$  est noté comme la longueur du vecteur $\vec{v}$. Il est facile d&rsquo;étendre ce principe à la 3D en ajoutant $z^2$ à l&rsquo;équation.
 Dans ce cas, la longueur du vecteur $(4, 2)$ est égale à :
 $$
 ||\vec{v}||</h1>
@@ -214,21 +214,21 @@ $$
 <p>\sqrt{20} = 4.47
 $$
 Ce qui donne 4.47.</p>
-<p>Il existe également un type spécial de vecteur que nous appelons <strong>vecteur unitaire</strong>. <strong>Un vecteur unitaire possède une propriété supplémentaire : sa longueur est exactement égale à 1.</strong> Nous pouvons calculer un vecteur unitaire $$hat{n}$ à partir de n&rsquo;importe quel vecteur en divisant chacune des composantes du vecteur par sa longueur :
+<p>Il existe également un type spécial de vecteur que nous appelons <strong>vecteur unitaire</strong>. <strong>Un vecteur unitaire possède une propriété supplémentaire : sa longueur est exactement égale à 1.</strong> Nous pouvons calculer un vecteur unitaire $\hat{n}$ à partir de n&rsquo;importe quel vecteur en divisant chacune des composantes du vecteur par sa longueur :
 $$
 \hat{n}
 = { \vec{v} \over ||\vec{v}|| }
 $$
 C&rsquo;est ce que nous appelons la <strong>normalisation</strong> d&rsquo;un vecteur. Les vecteurs unitaires sont affichés avec un petit toit (ou un chapeau) au-dessus de leur tête et sont généralement <strong>plus faciles à utiliser, en particulier lorsque nous ne nous intéressons qu&rsquo;à leur direction</strong> (la direction ne change pas si nous modifions la longueur d&rsquo;un vecteur).</p>
 <h3 id="multiplication-entre-les-vecteurs">Multiplication entre les vecteurs</h3>
-<p>La multiplication de deux vecteurs est un cas un peu particulier. La multiplication normale n&rsquo;est pas vraiment définie sur les vecteurs puisqu&rsquo;elle n&rsquo;a pas de signification visuelle, mais nous avons deux cas spécifiques que nous pouvons choisir lors de la multiplication : l&rsquo;un est le produit scalaire noté $$vec{v} \cdot \vec{k}$ (dot product) et l&rsquo;autre est le produit vectoriel (cross product) noté $$vec{v} \times \vec{k}$.</p>
+<p>La multiplication de deux vecteurs est un cas un peu particulier. La multiplication normale n&rsquo;est pas vraiment définie sur les vecteurs puisqu&rsquo;elle n&rsquo;a pas de signification visuelle, mais nous avons deux cas spécifiques que nous pouvons choisir lors de la multiplication : l&rsquo;un est le produit scalaire noté $\vec{v} \cdot \vec{k}$ (dot product) et l&rsquo;autre est le produit vectoriel (cross product) noté $\vec{v} \times \vec{k}$.</p>
 <h4 id="produit-scalaire-dot-product">Produit scalaire (dot product)</h4>
 <p>Le produit scalaire de deux vecteurs est égal au produit scalaire de leurs longueurs par le cosinus de l&rsquo;angle qui les sépare. Si cela vous semble confus, jetez un coup d&rsquo;œil à sa formule :
 $$
 \vec{v} \cdot \vec{k} =
 ||\vec{v}|| \cdot ||\vec{k}|| \cdot \cos{\theta}
 $$
-L&rsquo;angle qui les sépare est représenté par la valeur thêta ($$theta$). Pourquoi est-ce intéressant ? Imaginons que $$vec{v}$ et $$vec{k}$ soient des vecteurs unitaires, leur longueur serait alors égale à 1, ce qui réduirait la formule à :
+L&rsquo;angle qui les sépare est représenté par la valeur thêta ($\theta$). Pourquoi est-ce intéressant ? Imaginons que $\vec{v}$ et $\vec{k}$ soient des vecteurs unitaires, leur longueur serait alors égale à 1, ce qui réduirait la formule à :
 $$
 \hat{v} \cdot \hat{k} =
 1 \cdot 1 \cdot \cos{\theta} = \cos{\theta}
@@ -249,7 +249,7 @@ $$
 \end{pmatrix}</h1>
 <p>(0.6 * 0) + (-0.8 * 1) + (0 * 0) = -0.8
 $$
-Pour calculer le degré entre ces deux vecteurs unitaires, nous utilisons l&rsquo;inverse de la fonction cosinus $$cos{}^{-1}$, ce qui donne 143,1 degrés. Nous avons donc calculé l&rsquo;angle entre ces deux vecteurs. Le produit scalaire s&rsquo;avère très utile pour les calculs d&rsquo;éclairage ultérieurs.</p>
+Pour calculer le degré entre ces deux vecteurs unitaires, nous utilisons l&rsquo;inverse de la fonction cosinus $\cos{}^{-1}$, ce qui donne 143,1 degrés. Nous avons donc calculé l&rsquo;angle entre ces deux vecteurs. Le produit scalaire s&rsquo;avère très utile pour les calculs d&rsquo;éclairage ultérieurs.</p>
 <h4 id="produit-vectoriel-cross-product">Produit vectoriel (cross product)</h4>
 <h1 id="endpmatrix-3">Le produit vectoriel n&rsquo;est défini que dans l&rsquo;espace 3D. Il prend deux vecteurs non parallèles en entrée et produit un troisième vecteur qui est orthogonal aux deux vecteurs d&rsquo;entrée. Si les deux vecteurs d&rsquo;entrée sont également orthogonaux l&rsquo;un par rapport à l&rsquo;autre, un produit vectoriel produira trois vecteurs orthogonaux, ce qui s&rsquo;avérera utile dans les chapitres suivants. L&rsquo;image suivante montre à quoi cela ressemble dans l&rsquo;espace 3D :
 <img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/transfo5.png" alt="transfo5"/>
@@ -415,7 +415,7 @@ Le vecteur est totalement intact. Les règles de multiplication le montrent clai
 </blockquote>
 <h3 id="mise-à-léchelle-scaling">Mise à l&rsquo;échelle (scaling)</h3>
 <p>Lorsque nous mettons un vecteur à l&rsquo;échelle, nous augmentons la longueur de la flèche de la quantité que nous souhaitons mettre à l&rsquo;échelle, tout en conservant la même direction. Comme nous travaillons en 2 ou 3 dimensions, nous pouvons définir la mise à l&rsquo;échelle par un vecteur de 2 ou 3 variables de mise à l&rsquo;échelle, chacune mettant à l&rsquo;échelle un axe (x, y ou z).</p>
-<p>Essayons de mettre à l&rsquo;échelle le vecteur $$vec{v}=(3,2)$. Nous allons mettre à l&rsquo;échelle le vecteur le long de l&rsquo;axe des $x$ par $0.5$, ce qui le rendra deux fois plus étroit ; et nous allons mettre à l&rsquo;échelle le vecteur par 2 le long de l&rsquo;axe des $y$, ce qui le rendra deux fois plus haut. Voyons ce que cela donne si nous mettons le vecteur à l&rsquo;échelle $(0.5,2)$ (le résultat sera le vecteur $$vec{s}$) :
+<p>Essayons de mettre à l&rsquo;échelle le vecteur $\vec{v}=(3,2)$. Nous allons mettre à l&rsquo;échelle le vecteur le long de l&rsquo;axe des $x$ par $0.5$, ce qui le rendra deux fois plus étroit ; et nous allons mettre à l&rsquo;échelle le vecteur par 2 le long de l&rsquo;axe des $y$, ce qui le rendra deux fois plus haut. Voyons ce que cela donne si nous mettons le vecteur à l&rsquo;échelle $(0.5,2)$ (le résultat sera le vecteur $\vec{s}$) :
 <img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/transfo8.png" alt="transfo8"/>
 Gardez à l&rsquo;esprit qu&rsquo;OpenGL fonctionne généralement dans l&rsquo;espace 3D, donc pour ce cas 2D, nous pourrions mettre l&rsquo;échelle de l&rsquo;axe $z$ à 1, ce qui le laisserait intact. <strong>L&rsquo;opération de mise à l&rsquo;échelle que nous venons d&rsquo;effectuer est une mise à l&rsquo;échelle non uniforme, car le facteur d&rsquo;échelle n&rsquo;est pas le même pour chaque axe. Si le facteur d&rsquo;échelle était égal sur tous les axes, on parlerait d&rsquo;une échelle uniforme.</strong></p>
 <h1 id="endbmatrix-11">Commençons par construire une matrice de transformation qui effectue la mise à l&rsquo;échelle pour nous. Nous avons vu dans la matrice d&rsquo;identité que chacun des éléments diagonaux était multiplié par l&rsquo;élément vectoriel correspondant. Que se passerait-il si nous remplacions les 1 de la matrice d&rsquo;identité par des 3 ? Dans ce cas, nous multiplierions chacun des éléments du vecteur par une valeur de 3, ce qui aurait pour effet d&rsquo;augmenter uniformément le vecteur de 3. Si nous représentons les variables d&rsquo;échelle par $(S1,S2,S3)$ nous pouvons définir une matrice d&rsquo;échelle sur n&rsquo;importe quel vecteur $(x,y,z)$ comme suit :
@@ -481,13 +481,13 @@ Cela fonctionne parce que toutes les valeurs de translation sont multipliées pa
 <p>La plupart des fonctions de rotation nécessitent un angle en radians, mais heureusement, <strong>les degrés sont facilement convertis en radians</strong> :
 $angle en degrés = angle en radians * (180 / \pi)$
 $angle en radians = angle en degrés * (\pi / 180)$
-Où $$pi$ est égal (arrondi) à $3,14159265359$.</p>
+Où $\pi$ est égal (arrondi) à $3,14159265359$.</p>
 </blockquote>
-<p>La rotation d&rsquo;un demi-cercle nous fait tourner de $360/2 = 180$ degrés et la rotation d&rsquo;un cinquième vers la droite nous fait tourner de $360/5 = 72$ degrés vers la droite. Ceci est démontré pour un vecteur 2D de base où $$vec{v}$ est tourné de 72 degrés vers la droite, ou dans le sens des aiguilles d&rsquo;une montre, à partir de $$vec{k}$ :
+<p>La rotation d&rsquo;un demi-cercle nous fait tourner de $360/2 = 180$ degrés et la rotation d&rsquo;un cinquième vers la droite nous fait tourner de $360/5 = 72$ degrés vers la droite. Ceci est démontré pour un vecteur 2D de base où $\vec{v}$ est tourné de 72 degrés vers la droite, ou dans le sens des aiguilles d&rsquo;une montre, à partir de $\vec{k}$ :
 <img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/transfo9.png" alt="transfo9"/>
 Les rotations en 3D sont spécifiées par un angle et un axe de rotation. L&rsquo;angle spécifié fera tourner l&rsquo;objet le long de l&rsquo;axe de rotation indiqué. Essayez de visualiser cela en faisant tourner votre tête d&rsquo;un certain degré tout en regardant continuellement vers le bas un seul axe de rotation. <strong>Lorsque l&rsquo;on fait tourner des vecteurs 2D dans un monde 3D, par exemple, on fixe l&rsquo;axe de rotation sur l&rsquo;axe z</strong> (essayez de visualiser cela).</p>
-<p>En utilisant la trigonométrie, il est possible de transformer des vecteurs en vecteurs nouvellement tournés en fonction d&rsquo;un angle. Cela se fait généralement par une combinaison intelligente des fonctions sinus et cosinus (communément abrégées en $$sin$ et $$cos$). Une discussion sur la manière dont les matrices de rotation sont générées n&rsquo;entre pas dans le cadre de ce chapitre.</p>
-<p>Une matrice de rotation est définie pour chaque axe unitaire dans l&rsquo;espace 3D où l&rsquo;angle est représenté par le symbole thêta $$theta$.</p>
+<p>En utilisant la trigonométrie, il est possible de transformer des vecteurs en vecteurs nouvellement tournés en fonction d&rsquo;un angle. Cela se fait généralement par une combinaison intelligente des fonctions sinus et cosinus (communément abrégées en $\sin$ et $\cos$). Une discussion sur la manière dont les matrices de rotation sont générées n&rsquo;entre pas dans le cadre de ce chapitre.</p>
+<p>Une matrice de rotation est définie pour chaque axe unitaire dans l&rsquo;espace 3D où l&rsquo;angle est représenté par le symbole thêta $\theta$.</p>
 <h1 id="endbmatrix-13"><strong>Rotation autour de l&rsquo;axe X :</strong>
 $$
 \begin{bmatrix}

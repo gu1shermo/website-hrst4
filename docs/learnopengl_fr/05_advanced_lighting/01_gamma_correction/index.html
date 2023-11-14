@@ -132,13 +132,14 @@ La ligne pointillée représente les valeurs de couleur/lumière dans l&rsquo;es
 <p>Si le gamma de ce moniteur n&rsquo;est pas correctement corrigé, l&rsquo;éclairage semblera incorrect et les artistes auront du mal à obtenir des résultats réalistes et attrayants. La solution consiste à appliquer une correction gamma.</p>
 <h2 id="correction-gamma">Correction gamma</h2>
 <p><strong>L&rsquo;idée de la correction gamma est d&rsquo;appliquer l&rsquo;inverse du gamma de l&rsquo;écran à la couleur de sortie finale avant de l&rsquo;afficher à l&rsquo;écran.</strong> En regardant le graphique de la courbe gamma plus tôt dans ce chapitre, nous voyons une autre ligne en pointillés qui est l&rsquo;inverse de la courbe gamma du moniteur. Nous multiplions chacune des couleurs de sortie linéaires par cette courbe gamma inverse (ce qui les rend plus lumineuses) et dès que les couleurs sont affichées sur le moniteur, la courbe gamma du moniteur est appliquée et les couleurs résultantes deviennent linéaires. Nous éclaircissons effectivement les couleurs intermédiaires de sorte que dès que l&rsquo;écran les assombrit, tout s&rsquo;équilibre.</p>
-<p>Prenons un autre exemple. Supposons que nous ayons à nouveau la couleur rouge foncé $(0.5,0.0,0.0)$. Avant d&rsquo;afficher cette couleur à l&rsquo;écran, nous appliquons d&rsquo;abord la courbe de correction gamma à la valeur de la couleur. Les couleurs linéaires affichées par un moniteur sont grossièrement mises à l&rsquo;échelle à une puissance de $2.2$, de sorte que l&rsquo;inverse nécessite une mise à l&rsquo;échelle des couleurs à une puissance de $1/2.2$. La couleur rouge foncé corrigée par le gamma devient donc
-$$
+<p>Prenons un autre exemple. Supposons que nous ayons à nouveau la couleur rouge foncé $(0.5,0.0,0.0)$. Avant d&rsquo;afficher cette couleur à l&rsquo;écran, nous appliquons d&rsquo;abord la courbe de correction gamma à la valeur de la couleur. Les couleurs linéaires affichées par un moniteur sont grossièrement mises à l&rsquo;échelle à une puissance de $2.2$, de sorte que l&rsquo;inverse nécessite une mise à l&rsquo;échelle des couleurs à une puissance de $1/2.2$. La couleur rouge foncé corrigée par le gamma devient donc</p>
+<p>$$
 (0.5,0.0,0.0)^{1/2.2}=
 (0.5,0.0,0.0)^{0.45}=
 (0.73,0.0,0.0)
-$$Les couleurs corrigées sont ensuite transmises au moniteur et la couleur est affichée comme suit :
-$$
+$$</p>
+<p>Les couleurs corrigées sont ensuite transmises au moniteur et la couleur est affichée comme suit :</p>
+<p>$$
 (0,73,0.0,0.0)^{2.2}=(0.5,0.0,0.0)
 $$</p>
 <p>Vous pouvez constater qu&rsquo;en utilisant la correction gamma, le moniteur affiche finalement les couleurs telles que nous les avons définies de manière linéaire dans l&rsquo;application.</p>

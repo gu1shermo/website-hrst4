@@ -238,7 +238,9 @@ Ensuite, nous créons la fonction principale dans laquelle nous allons instancie
       <pubDate>Sat, 11 Nov 2023 00:00:00 +0000</pubDate>
       
       <guid>http://hrst4.xyz/docs/learnopengl_fr/06_pbr/03_ibl/02_specular_ibl/</guid>
-      <description>IBL Spéculaire Dans le chapitre précédent, nous avons mis en place le PBR en combinaison avec l&amp;rsquo;éclairage basé sur l&amp;rsquo;image en pré-calculant une map d&amp;rsquo;irradiance comme partie diffuse indirecte de l&amp;rsquo;éclairage. Dans ce chapitre, nous allons nous concentrer sur la partie spéculaire de l&amp;rsquo;équation de réflectance : $$ L_o(p,w_o) \int_{\Omega} ( k_d { c \over \pi } + k_s { DFG \over 4(w_on)(w_in) } L_i(p,w_i)n*w_idw_i ) $$ Vous remarquerez que la partie spéculaire de Cook-Torrance (multipliée par $k_S$) n&amp;rsquo;est pas constante sur l&amp;rsquo;intégrale et dépend de la direction de la lumière entrante, mais aussi de la direction de la vue entrante.</description>
+      <description>IBL Spéculaire Dans le chapitre précédent, nous avons mis en place le PBR en combinaison avec l&amp;rsquo;éclairage basé sur l&amp;rsquo;image en pré-calculant une map d&amp;rsquo;irradiance comme partie diffuse indirecte de l&amp;rsquo;éclairage. Dans ce chapitre, nous allons nous concentrer sur la partie spéculaire de l&amp;rsquo;équation de réflectance :
+$$ L_o(p,w_o)= \int_{\Omega} ( k_d { c \over \pi } + k_s { DFG \over 4(w_on)(w_in) } L_i(p,w_i)n*w_idw_i ) $$
+Vous remarquerez que la partie spéculaire de Cook-Torrance (multipliée par $k_S$) n&amp;rsquo;est pas constante sur l&amp;rsquo;intégrale et dépend de la direction de la lumière entrante, mais aussi de la direction de la vue entrante.</description>
     </item>
     
     <item>
@@ -377,7 +379,7 @@ La spécification OpenGL précise exactement le résultat/la sortie de chaque fo
       
       <guid>http://hrst4.xyz/docs/learnopengl_fr/06_pbr/02_lighting/</guid>
       <description>Lighting Dans le chapitre précédent, nous avons jeté les bases d&amp;rsquo;un moteur de rendu réaliste basé sur la physique. Dans ce chapitre, nous allons nous concentrer sur la traduction de la théorie discutée précédemment en un moteur de rendu réel qui utilise des sources de lumière directes (ou analytiques) : pensez aux lumières ponctuelles, aux lumières directionnelles et/ou aux projecteurs.
-Commençons par revoir l&amp;rsquo;équation de réflectance finale du chapitre précédent : $$ L_0(p,w_0) \int_{\Omega} ( k_d {c\over \pi} + { DFG \over 4(w_0 *n)(w_i * n) } L_i(p,w_i)n * w_idw_i ) $$</description>
+Commençons par revoir l&amp;rsquo;équation de réflectance finale du chapitre précédent :</description>
     </item>
     
     <item>

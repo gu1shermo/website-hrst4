@@ -118,10 +118,10 @@
 
 <br><br>
 <h1 id="ibl-spéculaire">IBL Spéculaire</h1>
-<h1 id="l_opw_o">Dans le chapitre précédent, nous avons mis en place le PBR en combinaison avec l&rsquo;éclairage basé sur l&rsquo;image en pré-calculant une map d&rsquo;irradiance comme partie diffuse indirecte de l&rsquo;éclairage. Dans ce chapitre, nous allons nous concentrer sur la partie spéculaire de l&rsquo;équation de réflectance :
-$$
-L_o(p,w_o)</h1>
-<p>\int_{\Omega}
+<p>Dans le chapitre précédent, nous avons mis en place le PBR en combinaison avec l&rsquo;éclairage basé sur l&rsquo;image en pré-calculant une map d&rsquo;irradiance comme partie diffuse indirecte de l&rsquo;éclairage. Dans ce chapitre, nous allons nous concentrer sur la partie spéculaire de l&rsquo;équation de réflectance :</p>
+<p>$$
+L_o(p,w_o)=
+\int_{\Omega}
 (
 k_d
 {
@@ -138,12 +138,12 @@ DFG
 }
 L_i(p,w_i)n*w_idw_i
 )
-$$
-Vous remarquerez que la partie spéculaire de Cook-Torrance (multipliée par $k_S$) n&rsquo;est pas constante sur l&rsquo;intégrale et dépend de la direction de la lumière entrante, mais aussi de la direction de la vue entrante. Essayer de résoudre l&rsquo;intégrale pour toutes les directions de lumière entrante, y compris toutes les directions de vue possibles, est une surcharge combinatoire et beaucoup trop coûteuse à calculer en temps réel. Epic Games a proposé une solution permettant de pré-convoluer la partie spéculaire en temps réel, moyennant quelques compromis, connue sous le nom d&rsquo;approximation de la somme divisée (<em>split sum approximation</em>).</p>
-<h1 id="l_opw_o-1">Cette approximation divise la partie spéculaire de l&rsquo;équation de réflectance en deux parties distinctes que nous pouvons convoluer individuellement et combiner plus tard dans le shader PBR pour un éclairage spéculaire indirect basé sur l&rsquo;image. De la même manière que nous avons pré-convolué la map d&rsquo;irradiance, l&rsquo;approximation de la somme divisée nécessite une map d&rsquo;environnement HDR comme entrée de convolution. Pour comprendre l&rsquo;approximation de la somme fractionnée, nous allons à nouveau examiner l&rsquo;équation de réflectance, mais en nous concentrant cette fois sur la partie spéculaire :
-$$
-L_o(p,w_o)</h1>
-<h1 id="heading">\int_{\Omega}
+$$</p>
+<p>Vous remarquerez que la partie spéculaire de Cook-Torrance (multipliée par $k_S$) n&rsquo;est pas constante sur l&rsquo;intégrale et dépend de la direction de la lumière entrante, mais aussi de la direction de la vue entrante. Essayer de résoudre l&rsquo;intégrale pour toutes les directions de lumière entrante, y compris toutes les directions de vue possibles, est une surcharge combinatoire et beaucoup trop coûteuse à calculer en temps réel. Epic Games a proposé une solution permettant de pré-convoluer la partie spéculaire en temps réel, moyennant quelques compromis, connue sous le nom d&rsquo;approximation de la somme divisée (<em>split sum approximation</em>).</p>
+<p>Cette approximation divise la partie spéculaire de l&rsquo;équation de réflectance en deux parties distinctes que nous pouvons convoluer individuellement et combiner plus tard dans le shader PBR pour un éclairage spéculaire indirect basé sur l&rsquo;image. De la même manière que nous avons pré-convolué la map d&rsquo;irradiance, l&rsquo;approximation de la somme divisée nécessite une map d&rsquo;environnement HDR comme entrée de convolution. Pour comprendre l&rsquo;approximation de la somme fractionnée, nous allons à nouveau examiner l&rsquo;équation de réflectance, mais en nous concentrant cette fois sur la partie spéculaire :</p>
+<p>$$
+L_o(p,w_o)=
+\int_{\Omega}
 (
 k_s
 {
@@ -151,31 +151,30 @@ DFG
 \over
 4(w_o<em>n)(w_i</em>n)
 }
-L_i(p,w_i)n*w_idw_i
-)</h1>
-<h1 id="f_rpw_iw_o">\int_\Omega
-f_r(p,w_i,w_o)L_i(p,w_i)n*w_idw_i
-$$
-Pour les mêmes raisons (de performance) que pour la convolution de l&rsquo;irradiance, nous ne pouvons pas résoudre la partie spéculaire de l&rsquo;intégrale en temps réel et espérer une performance raisonnable. Il serait donc préférable de pré-calculer cette intégrale pour obtenir quelque chose comme une map IBL spéculaire, d&rsquo;échantillonner cette map avec la normale du fragment et d&rsquo;en finir. Cependant, c&rsquo;est là que les choses se compliquent. Nous avons pu pré-calculer la carte d&rsquo;irradiance car l&rsquo;intégrale ne dépendait que de $$omega_i$ et nous avons pu déplacer les termes d&rsquo;albédo diffus constants hors de l&rsquo;intégrale. Cette fois, l&rsquo;intégrale ne dépend pas seulement de $$omega_i$, comme le montre la BRDF :
-$$
-f_r(p,w_i,w_o)</h1>
-<p>{
+L_i(p,w_i)n<em>w_idw_i
+)=
+\int_\Omega
+f_r(p,w_i,w_o)L_i(p,w_i)n</em>w_idw_i
+$$</p>
+<p>Pour les mêmes raisons (de performance) que pour la convolution de l&rsquo;irradiance, nous ne pouvons pas résoudre la partie spéculaire de l&rsquo;intégrale en temps réel et espérer une performance raisonnable. Il serait donc préférable de pré-calculer cette intégrale pour obtenir quelque chose comme une map IBL spéculaire, d&rsquo;échantillonner cette map avec la normale du fragment et d&rsquo;en finir. Cependant, c&rsquo;est là que les choses se compliquent. Nous avons pu pré-calculer la carte d&rsquo;irradiance car l&rsquo;intégrale ne dépendait que de $\omega_i$ et nous avons pu déplacer les termes d&rsquo;albédo diffus constants hors de l&rsquo;intégrale. Cette fois, l&rsquo;intégrale ne dépend pas seulement de $\omega_i$, comme le montre la BRDF :</p>
+<p>$$
+f_r(p,w_i,w_o)=
+{
 DFG
 \over
 4(w_o<em>n)(w_i</em>n)
 }
-$$
-L&rsquo;intégrale dépend également de $w_o$, et nous ne pouvons pas vraiment échantillonner un cubemap pré-calculé avec deux vecteurs de direction. La position $p$ n&rsquo;est pas pertinente ici, comme décrit dans le chapitre précédent. Le calcul préalable de cette intégrale pour toutes les combinaisons possibles de $ω_i$ et $ω_o$ n&rsquo;est pas pratique dans un environnement en temps réel.</p>
-<h1 id="l_opw_o-2">L&rsquo;approximation de la somme divisée d&rsquo;Epic Games résout le problème en divisant le pré-calcul en deux parties individuelles que nous pouvons ensuite combiner pour obtenir le résultat pré-calculé que nous recherchons. L&rsquo;approximation de la somme divisée divise l&rsquo;intégrale spéculaire en deux intégrales distinctes :
-$$
-L_o(p,w_o)</h1>
-<p>\int_\Omega
-L_i(p,w_i)dw_i
-*
+$$</p>
+<p>L&rsquo;intégrale dépend également de $w_o$, et nous ne pouvons pas vraiment échantillonner un cubemap pré-calculé avec deux vecteurs de direction. La position $p$ n&rsquo;est pas pertinente ici, comme décrit dans le chapitre précédent. Le calcul préalable de cette intégrale pour toutes les combinaisons possibles de $ω_i$ et $ω_o$ n&rsquo;est pas pratique dans un environnement en temps réel.</p>
+<p>L&rsquo;approximation de la somme divisée d&rsquo;Epic Games résout le problème en divisant le pré-calcul en deux parties individuelles que nous pouvons ensuite combiner pour obtenir le résultat pré-calculé que nous recherchons. L&rsquo;approximation de la somme divisée divise l&rsquo;intégrale spéculaire en deux intégrales distinctes :</p>
+<p>$$
+L_o(p,w_o)=
+\int_\Omega
+L_i(p,w_i)dw_i*
 \int_\Omega
 f_r(p,w_i,w_o)n * w_idw_i
-$$
-La première partie (lorsqu&rsquo;elle est convoluée) est connue sous le nom de <strong>map d&rsquo;environnement pré-filtrée</strong>. Il s&rsquo;agit (comme pour la map d&rsquo;irradiance) d&rsquo;une carte de convolution d&rsquo;environnement pré-calculée, mais qui prend cette fois en compte la rugosité. Pour des niveaux de rugosité croissants, la map d&rsquo;environnement est convoluée avec davantage de vecteurs d&rsquo;échantillons dispersés, ce qui crée des réflexions plus floues. Pour chaque niveau de rugosité que nous convoluons, nous stockons les résultats séquentiellement plus flous dans les niveaux mipmap de la map pré-filtrée. Par exemple, une map d&rsquo;environnement pré-filtrée stockant le résultat pré-convolué de 5 valeurs de rugosité différentes dans ses 5 niveaux mipmap se présente comme suit :
+$$</p>
+<p>La première partie (lorsqu&rsquo;elle est convoluée) est connue sous le nom de <strong>map d&rsquo;environnement pré-filtrée</strong>. Il s&rsquo;agit (comme pour la map d&rsquo;irradiance) d&rsquo;une carte de convolution d&rsquo;environnement pré-calculée, mais qui prend cette fois en compte la rugosité. Pour des niveaux de rugosité croissants, la map d&rsquo;environnement est convoluée avec davantage de vecteurs d&rsquo;échantillons dispersés, ce qui crée des réflexions plus floues. Pour chaque niveau de rugosité que nous convoluons, nous stockons les résultats séquentiellement plus flous dans les niveaux mipmap de la map pré-filtrée. Par exemple, une map d&rsquo;environnement pré-filtrée stockant le résultat pré-convolué de 5 valeurs de rugosité différentes dans ses 5 niveaux mipmap se présente comme suit :
 <img src="/docs/LEARNOPENGL_FR/06_PBR/03_IBL/02_specular_ibl-20230910-pbribl1.png" alt="02_specular_ibl-20230910-pbribl1.png"/>
 Nous générons les vecteurs d&rsquo;échantillonnage et leur quantité de diffusion en utilisant la fonction de distribution normale (NDF) de la BRDF de Cook-Torrance qui prend en entrée la normale et la direction de la vue. Comme nous ne connaissons pas à l&rsquo;avance la direction de la vue lors de la convolution de la map de l&rsquo;environnement, Epic Games fait une approximation supplémentaire en supposant que la direction de la vue (et donc la direction de la réflexion spéculaire) est égale à la direction de l&rsquo;échantillon de sortie $ω_o$. Cela se traduit par le code suivant :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 N <span style="color:#f92672">=</span> normalize(w_o);
@@ -183,7 +182,7 @@ Nous générons les vecteurs d&rsquo;échantillonnage et leur quantité de diffu
 </span></span><span style="display:flex;"><span>vec3 V <span style="color:#f92672">=</span> R;
 </span></span></code></pre></div><p>De cette façon, la convolution pré-filtrée de l&rsquo;environnement n&rsquo;a pas besoin d&rsquo;être consciente de la direction de la vue. Cela signifie que nous n&rsquo;obtenons pas de belles réflexions spéculaires rasantes lorsque nous regardons des réflexions de surface spéculaire depuis un angle, comme le montre l&rsquo;image ci-dessous (avec l&rsquo;autorisation de l&rsquo;article Moving Frostbite to PBR) ; ceci est cependant généralement considéré comme un compromis acceptable :
 <img src="/docs/LEARNOPENGL_FR/06_PBR/03_IBL/02_specular_ibl-20230910-pbribl2.png" alt="02_specular_ibl-20230910-pbribl2.png"/>
-La deuxième partie de l&rsquo;équation de la somme fractionnée est égale à la partie BRDF de l&rsquo;intégrale spéculaire. Si nous supposons que la radiance entrante est complètement blanche pour chaque direction (donc $L(p,x)=1.0$), nous pouvons pré-calculer la réponse de la BRDF en fonction d&rsquo;une rugosité d&rsquo;entrée et d&rsquo;un angle d&rsquo;entrée entre la normale $$vec{n}$ et la direction de la lumière $ω_i$, ou $n⋅ω_i$. Epic Games stocke la réponse précalculée de la BRDF à chaque combinaison de normale et de direction de la lumière sur des valeurs de rugosité variables dans une texture de consultation 2D (LUT) connue sous le nom de map d&rsquo;intégration de la BRDF. La texture de consultation 2D fournit une échelle (rouge) et une valeur de biais (verte) à la réponse de Fresnel de la surface, ce qui nous donne la deuxième partie de l&rsquo;intégrale spéculaire divisée :
+La deuxième partie de l&rsquo;équation de la somme fractionnée est égale à la partie BRDF de l&rsquo;intégrale spéculaire. Si nous supposons que la radiance entrante est complètement blanche pour chaque direction (donc $L(p,x)=1.0$), nous pouvons pré-calculer la réponse de la BRDF en fonction d&rsquo;une rugosité d&rsquo;entrée et d&rsquo;un angle d&rsquo;entrée entre la normale $\vec{n}$ et la direction de la lumière $ω_i$, ou $n⋅ω_i$. Epic Games stocke la réponse précalculée de la BRDF à chaque combinaison de normale et de direction de la lumière sur des valeurs de rugosité variables dans une texture de consultation 2D (LUT) connue sous le nom de map d&rsquo;intégration de la BRDF. La texture de consultation 2D fournit une échelle (rouge) et une valeur de biais (verte) à la réponse de Fresnel de la surface, ce qui nous donne la deuxième partie de l&rsquo;intégrale spéculaire divisée :
 <img src="/docs/LEARNOPENGL_FR/06_PBR/03_IBL/02_specular_ibl-20230910-pbribl3.png" alt="02_specular_ibl-20230910-pbribl3.png"/>
 Nous générons la texture de recherche en traitant la coordonnée de texture horizontale (comprise entre $0.0$ et $1.0$) d&rsquo;un plan comme l&rsquo;entrée $n⋅ω_i$ de la BRDF, et sa coordonnée de texture verticale comme la valeur de rugosité d&rsquo;entrée. Avec cette map d&rsquo;intégration de la BRDF et la map d&rsquo;environnement pré-filtrée, nous pouvons combiner les deux pour obtenir le résultat de l&rsquo;intégrale spéculaire :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> lod             <span style="color:#f92672">=</span> getMipLevelFromRoughness(roughness);
@@ -209,7 +208,7 @@ Nous générons la texture de recherche en traitant la coordonnée de texture ho
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 </span></span></code></pre></div><p>Notez qu&rsquo;étant donné que nous prévoyons d&rsquo;échantillonner les mipmaps de <code>prefilterMap</code>, vous devrez vous assurer que son filtre de minification est réglé sur <code>GL_LINEAR_MIPMAP_LINEAR</code> afin d&rsquo;activer le filtrage trilinéaire. Nous stockons les réflexions spéculaires pré-filtrées dans une résolution par face de 128 par 128 au niveau du mip de base. Cela devrait suffire pour la plupart des réflexions, mais si vous avez un grand nombre de matériaux lisses (pensez aux réflexions des voitures), vous voudrez peut-être augmenter la résolution.</p>
-<p>Dans le chapitre précédent, nous avons convolué la carte de l&rsquo;environnement en générant des vecteurs d&rsquo;échantillonnage uniformément répartis sur l&rsquo;hémisphère $$Omega$ en utilisant des coordonnées sphériques. Si cette méthode fonctionne parfaitement pour l&rsquo;irradiation, elle est moins efficace pour les réflexions spéculaires. En ce qui concerne les réflexions spéculaires, en fonction de la rugosité d&rsquo;une surface, la lumière se reflète de près ou de loin autour d&rsquo;un vecteur de réflexion $$vec{r}$ sur une normale $$vec{n}$, mais (à moins que la surface ne soit extrêmement rugueuse) autour du vecteur de réflexion tout de même :
+<p>Dans le chapitre précédent, nous avons convolué la carte de l&rsquo;environnement en générant des vecteurs d&rsquo;échantillonnage uniformément répartis sur l&rsquo;hémisphère $\Omega$ en utilisant des coordonnées sphériques. Si cette méthode fonctionne parfaitement pour l&rsquo;irradiation, elle est moins efficace pour les réflexions spéculaires. En ce qui concerne les réflexions spéculaires, en fonction de la rugosité d&rsquo;une surface, la lumière se reflète de près ou de loin autour d&rsquo;un vecteur de réflexion $\vec{r}$ sur une normale $\vec{n}$, mais (à moins que la surface ne soit extrêmement rugueuse) autour du vecteur de réflexion tout de même :
 <img src="/docs/LEARNOPENGL_FR/06_PBR/03_IBL/02_specular_ibl-20230910-pblibr4.png" alt="02_specular_ibl-20230910-pblibr4.png"/>
 La forme générale des réflexions possibles de la lumière sortante est connue sous le nom de <strong>lobe spéculaire</strong>. Plus la rugosité augmente, plus la taille du lobe spéculaire augmente ; et la forme du lobe spéculaire change en fonction de la direction de la lumière entrante. La forme du lobe spéculaire dépend donc fortement du matériau.</p>
 <p>En ce qui concerne le modèle de microsurface, nous pouvons imaginer le lobe spéculaire comme l&rsquo;orientation de la réflexion autour des vecteurs de la micro-facette en fonction de la direction de la lumière entrante. Étant donné que la plupart des rayons lumineux aboutissent à un lobe spéculaire réfléchi autour des vecteurs médians de la micro-facette, il est logique de générer les vecteurs d&rsquo;échantillonnage d&rsquo;une manière similaire, car la plupart d&rsquo;entre eux seraient sinon gaspillés. Ce processus est connu sous le nom d&rsquo;échantillonnage d&rsquo;importance.</p>
@@ -217,8 +216,8 @@ La forme générale des réflexions possibles de la lumière sortante est connue
 <p>Pour bien comprendre l&rsquo;importance de l&rsquo;échantillonnage, il convient d&rsquo;abord de se pencher sur la construction mathématique connue sous le nom d&rsquo;<strong>intégration de Monte Carlo</strong>. L&rsquo;intégration de Monte Carlo repose principalement sur une combinaison de statistiques et de théorie des probabilités. Monte Carlo nous aide à résoudre discrètement le problème de la détermination d&rsquo;une statistique ou d&rsquo;une valeur d&rsquo;une population sans avoir à prendre en considération l&rsquo;ensemble de la population.</p>
 <p>Par exemple, supposons que vous souhaitiez calculer la taille moyenne de tous les citoyens d&rsquo;un pays. Pour obtenir votre résultat, vous pourriez mesurer chaque citoyen et faire la moyenne de sa taille, ce qui vous donnerait la réponse exacte que vous recherchez. Cependant, étant donné que la plupart des pays ont une population considérable, cette approche n&rsquo;est pas réaliste : elle nécessiterait trop d&rsquo;efforts et de temps.</p>
 <p>Une approche différente consiste à choisir un sous-ensemble beaucoup plus petit et totalement aléatoire (sans biais) de cette population, à mesurer leur taille et à faire la moyenne des résultats. Cette population peut se limiter à une centaine de personnes. Bien que la réponse ne soit pas aussi précise que la réponse exacte, vous obtiendrez une réponse relativement proche de la vérité de terrain. C&rsquo;est ce qu&rsquo;on appelle <strong>la loi des grands nombres</strong>. L&rsquo;idée est que si vous mesurez un ensemble plus petit de taille $N$ d&rsquo;échantillons réellement aléatoires de la population totale, le résultat sera relativement proche de la vraie réponse et se rapprochera au fur et à mesure que le nombre d&rsquo;échantillons $N$ augmente.</p>
-<p>L&rsquo;intégration de Monte Carlo s&rsquo;appuie sur cette loi des grands nombres et adopte la même approche pour résoudre une intégrale. Plutôt que de résoudre une intégrale pour toutes les valeurs possibles (théoriquement infinies) de l&rsquo;échantillon $x$ il suffit de générer $N$ valeurs d&rsquo;échantillon choisies au hasard dans la population totale et d&rsquo;en faire la moyenne. Au fur et à mesure que $N$ augmente, nous sommes assurés d&rsquo;obtenir un résultat plus proche de la réponse exacte de l&rsquo;intégrale :
-$$
+<p>L&rsquo;intégration de Monte Carlo s&rsquo;appuie sur cette loi des grands nombres et adopte la même approche pour résoudre une intégrale. Plutôt que de résoudre une intégrale pour toutes les valeurs possibles (théoriquement infinies) de l&rsquo;échantillon $x$ il suffit de générer $N$ valeurs d&rsquo;échantillon choisies au hasard dans la population totale et d&rsquo;en faire la moyenne. Au fur et à mesure que $N$ augmente, nous sommes assurés d&rsquo;obtenir un résultat plus proche de la réponse exacte de l&rsquo;intégrale :</p>
+<p>$$
 O=
 \int_a^bf(x)dx=
 {
@@ -232,13 +231,13 @@ f(x)
 \over
 pdf(x)
 }
-$$
-Pour résoudre l&rsquo;intégrale, nous prélevons $N$ échantillons aléatoires sur la population $a$ à $b$, nous les additionnons et nous les divisons par le nombre total d&rsquo;échantillons pour en faire la moyenne. La <strong>pdf</strong> est la fonction de densité de probabilité qui nous indique la probabilité qu&rsquo;un échantillon spécifique se produise sur l&rsquo;ensemble des échantillons. Par exemple, la <strong>pdf</strong> de la taille d&rsquo;une population ressemblerait à ceci :
+$$</p>
+<p>Pour résoudre l&rsquo;intégrale, nous prélevons $N$ échantillons aléatoires sur la population $a$ à $b$, nous les additionnons et nous les divisons par le nombre total d&rsquo;échantillons pour en faire la moyenne. La <strong>pdf</strong> est la fonction de densité de probabilité qui nous indique la probabilité qu&rsquo;un échantillon spécifique se produise sur l&rsquo;ensemble des échantillons. Par exemple, la <strong>pdf</strong> de la taille d&rsquo;une population ressemblerait à ceci :
 <img src="/docs/LEARNOPENGL_FR/06_PBR/03_IBL/02_specular_ibl-20230910-pbribl7.png" alt="02_specular_ibl-20230910-pbribl7.png"/>
 Ce graphique montre que si l&rsquo;on prend un échantillon aléatoire de la population, il y a plus de chances d&rsquo;obtenir un échantillon d&rsquo;une personne de taille $1.70$ que de chances d&rsquo;obtenir un échantillon d&rsquo;une personne de taille $1.50$.</p>
 <p>En ce qui concerne l&rsquo;intégration de Monte Carlo, certains échantillons peuvent avoir une probabilité plus élevée d&rsquo;être générés que d&rsquo;autres. C&rsquo;est pourquoi, pour toute estimation Monte Carlo générale, nous divisons ou multiplions la valeur échantillonnée par la probabilité de l&rsquo;échantillon, conformément à une $pdf$. Jusqu&rsquo;à présent, dans chacun de nos cas d&rsquo;estimation d&rsquo;une intégrale, les échantillons que nous avons générés étaient uniformes, c&rsquo;est-à-dire qu&rsquo;ils avaient exactement la même probabilité d&rsquo;être générés. Nos estimations jusqu&rsquo;à présent étaient sans biais, ce qui signifie qu&rsquo;avec un nombre toujours croissant d&rsquo;échantillons, nous finirons par converger vers la solution exacte de l&rsquo;intégrale.</p>
 <p><strong>Cependant, certains estimateurs de Monte Carlo sont biaisés</strong>, ce qui signifie que les échantillons générés ne sont pas complètement aléatoires, mais orientés vers une valeur ou une direction spécifique. Ces estimateurs de Monte Carlo biaisés ont un taux de convergence plus rapide, ce qui signifie qu&rsquo;ils peuvent converger vers la solution exacte à un rythme beaucoup plus rapide, mais en raison de leur nature biaisée, il est probable qu&rsquo;ils ne convergent jamais vers la solution exacte. Il s&rsquo;agit généralement d&rsquo;un compromis acceptable, en particulier dans le domaine de l&rsquo;infographie, car la solution exacte n&rsquo;est pas très importante tant que les résultats sont visuellement acceptables. Comme nous le verrons bientôt avec l&rsquo;échantillonnage d&rsquo;importance (qui utilise un estimateur biaisé), les échantillons générés sont biaisés vers des directions spécifiques, auquel cas nous en tenons compte en multipliant ou en divisant chaque échantillon par sa <strong>pdf</strong> correspondante.</p>
-<p>L&rsquo;intégration de Monte Carlo est très répandue dans l&rsquo;infographie, car c&rsquo;est un moyen assez intuitif d&rsquo;approximer des intégrales continues d&rsquo;une manière discrète et efficace : prenez une zone/un volume quelconque à échantillonner (comme l&rsquo;hémisphère $$Omega$), générer un nombre $N$ d&rsquo;échantillons aléatoires à l&rsquo;intérieur de la zone/du volume, et additionner et pondérer la contribution de chaque échantillon au résultat final.</p>
+<p>L&rsquo;intégration de Monte Carlo est très répandue dans l&rsquo;infographie, car c&rsquo;est un moyen assez intuitif d&rsquo;approximer des intégrales continues d&rsquo;une manière discrète et efficace : prenez une zone/un volume quelconque à échantillonner (comme l&rsquo;hémisphère $\Omega$), générer un nombre $N$ d&rsquo;échantillons aléatoires à l&rsquo;intérieur de la zone/du volume, et additionner et pondérer la contribution de chaque échantillon au résultat final.</p>
 <p>L&rsquo;intégration de Monte Carlo est un sujet mathématique très vaste et je ne m&rsquo;attarderai pas sur les détails, mais nous mentionnerons qu&rsquo;il existe plusieurs façons de générer les échantillons aléatoires. Par défaut, chaque échantillon est complètement (pseudo)aléatoire, comme nous en avons l&rsquo;habitude, mais en utilisant certaines propriétés des séquences semi-aléatoires, nous pouvons générer des vecteurs d&rsquo;échantillons qui sont toujours aléatoires, mais qui ont des propriétés intéressantes. Par exemple, nous pouvons effectuer une intégration Monte Carlo sur ce que l&rsquo;on appelle des <strong>séquences à faible discrépance</strong> (?), qui génèrent toujours des échantillons aléatoires, mais chaque échantillon est distribué plus uniformément (image fournie par James Heald) :
 <img src="/docs/LEARNOPENGL_FR/06_PBR/03_IBL/02_specular_ibl-20230910-pbribl8.png" alt="02_specular_ibl-20230910-pbribl8.png"/>
 Lorsque l&rsquo;on utilise une séquence à faible discrépance pour générer les vecteurs d&rsquo;échantillonnage de Monte Carlo, le processus est connu sous le nom d&rsquo;<strong>intégration Quasi-Monte Carlo</strong>. <strong>Les méthodes de Quasi-Monte Carlo ont un taux de convergence plus rapide, ce qui les rend intéressantes pour les applications gourmandes en performances.</strong></p>
@@ -295,7 +294,7 @@ Lorsque l&rsquo;on utilise une séquence à faible discrépance pour générer l
 <p>Notez qu&rsquo;en raison des restrictions de boucle GLSL dans le matériel plus ancien, la séquence boucle sur tous les 32 bits possibles. Cette version est moins performante, mais fonctionne sur tout le matériel si vous vous retrouvez sans opérateurs de bits.</p>
 </blockquote>
 <h3 id="ggx-échantillonnage-de-limportance">GGX Échantillonnage de l&rsquo;importance</h3>
-<p>Au lieu de générer uniformément ou aléatoirement (Monte Carlo) des vecteurs d&rsquo;échantillonnage sur l&rsquo;hémisphère $$Omega$ de l&rsquo;intégrale, nous générerons des vecteurs d&rsquo;échantillonnage biaisés en fonction de l&rsquo;orientation générale de la réflexion du vecteur à mi-chemin de la microsurface, basé sur la rugosité de la surface. Le processus d&rsquo;échantillonnage sera similaire à ce que nous avons vu auparavant : commencer une grande boucle, générer une valeur de séquence aléatoire (à faible discrépance), prendre la valeur de séquence pour générer un vecteur d&rsquo;échantillon dans l&rsquo;espace tangent, transformer en espace monde et échantillonner la radiance de la scène. Ce qui est différent, c&rsquo;est que nous utilisons maintenant une valeur de séquence à faible discrépance comme entrée pour générer un vecteur d&rsquo;échantillonnage :</p>
+<p>Au lieu de générer uniformément ou aléatoirement (Monte Carlo) des vecteurs d&rsquo;échantillonnage sur l&rsquo;hémisphère $\Omega$ de l&rsquo;intégrale, nous générerons des vecteurs d&rsquo;échantillonnage biaisés en fonction de l&rsquo;orientation générale de la réflexion du vecteur à mi-chemin de la microsurface, basé sur la rugosité de la surface. Le processus d&rsquo;échantillonnage sera similaire à ce que nous avons vu auparavant : commencer une grande boucle, générer une valeur de séquence aléatoire (à faible discrépance), prendre la valeur de séquence pour générer un vecteur d&rsquo;échantillon dans l&rsquo;espace tangent, transformer en espace monde et échantillonner la radiance de la scène. Ce qui est différent, c&rsquo;est que nous utilisons maintenant une valeur de séquence à faible discrépance comme entrée pour générer un vecteur d&rsquo;échantillonnage :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> uint SAMPLE_COUNT <span style="color:#f92672">=</span> <span style="color:#ae81ff">4096u</span>;
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(uint i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0u</span>; i <span style="color:#f92672">&lt;</span> SAMPLE_COUNT; <span style="color:#f92672">++</span>i)
 </span></span><span style="display:flex;"><span>{
@@ -434,26 +433,25 @@ Une option consiste à augmenter le nombre d&rsquo;échantillons, mais cela ne s
 </span></span><span style="display:flex;"><span>glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 </span></span></code></pre></div><p>Cette méthode fonctionne étonnamment bien et devrait permettre d&rsquo;éliminer la plupart, voire la totalité, des points de votre map de pré filtre sur les surfaces plus rugueuses.</p>
 <h2 id="précalcul-de-la-brdf">Précalcul de la BRDF</h2>
-<h1 id="l_opomega_o">L&rsquo;environnement pré-filtré étant opérationnel, nous pouvons nous concentrer sur la deuxième partie de l&rsquo;approximation de la somme fractionnée : la BRDF. Revenons brièvement sur l&rsquo;approximation de la somme fractionnée spéculaire :
-$$
-L_o(p,\omega_o)</h1>
-<h1 id="int_omega-f_rpomega_iomega_on-cdot-omega_idomega_i">\int_\Omega L_i(p,\omega_i)d\omega_i
-*
+<p>L&rsquo;environnement pré-filtré étant opérationnel, nous pouvons nous concentrer sur la deuxième partie de l&rsquo;approximation de la somme fractionnée : la BRDF. Revenons brièvement sur l&rsquo;approximation de la somme fractionnée spéculaire :</p>
+<p>$$
+L_o(p,\omega_o)=
+\int_\Omega L_i(p,\omega_i)d\omega_i*
 \int_\Omega f_r(p,\omega_i,\omega_o)n \cdot \omega_id\omega_i
-$$
-Nous avons pré-calculé la partie gauche de l&rsquo;approximation de la somme fractionnée dans la map de pré-filtrage pour différents niveaux de rugosité. La partie droite nous oblige à convoluer l&rsquo;équation de la BRDF sur l&rsquo;angle $n⋅\omega_o$, la rugosité de la surface et le $F_0$ de Fresnel. Ceci est similaire à l&rsquo;intégration de la BRDF spéculaire avec un environnement blanc solide ou une radiance constante $L_i$ de $1.0$. Convoluer la BRDF sur 3 variables est un peu trop, mais nous pouvons essayer de sortir $F_0$ de l&rsquo;équation de la BRDF spéculaire :
-$$
-\int_\Omega f_r(p,\omega_i,\omega_o)n \cdot \omega_id\omega_i</h1>
-<p>\int_\Omega f_r(p,\omega_i,\omega_o)
+$$</p>
+<p>Nous avons pré-calculé la partie gauche de l&rsquo;approximation de la somme fractionnée dans la map de pré-filtrage pour différents niveaux de rugosité. La partie droite nous oblige à convoluer l&rsquo;équation de la BRDF sur l&rsquo;angle $n⋅\omega_o$, la rugosité de la surface et le $F_0$ de Fresnel. Ceci est similaire à l&rsquo;intégration de la BRDF spéculaire avec un environnement blanc solide ou une radiance constante $L_i$ de $1.0$. Convoluer la BRDF sur 3 variables est un peu trop, mais nous pouvons essayer de sortir $F_0$ de l&rsquo;équation de la BRDF spéculaire :</p>
+<p>$$
+\int_\Omega f_r(p,\omega_i,\omega_o)n \cdot \omega_id\omega_i=
+\int_\Omega f_r(p,\omega_i,\omega_o)
 {
 F(\omega_o,h)
 \over
 F(\omega_o,h)
 }
 n \cdot \omega_id\omega_i
-$$
-F étant l&rsquo;équation de Fresnel. En déplaçant le dénominateur de Fresnel vers la BRDF, on obtient l&rsquo;équation équivalente suivante :
-$$
+$$</p>
+<p>F étant l&rsquo;équation de Fresnel. En déplaçant le dénominateur de Fresnel vers la BRDF, on obtient l&rsquo;équation équivalente suivante :</p>
+<p>$$
 \int_\Omega
 {
 f_r(p,\omega_i,\omega_o)
@@ -461,9 +459,9 @@ f_r(p,\omega_i,\omega_o)
 F(\omega_o,h)
 }
 F(\omega_o,h)n \cdot \omega_id\omega_i
-$$
-En remplaçant le F le plus à droite par l&rsquo;approximation de Fresnel-Schlick, on obtient :
-$$
+$$</p>
+<p>En remplaçant le F le plus à droite par l&rsquo;approximation de Fresnel-Schlick, on obtient :</p>
+<p>$$
 \int_\Omega
 {
 f_r(p,\omega_i,\omega_o)
@@ -471,9 +469,9 @@ f_r(p,\omega_i,\omega_o)
 F(\omega_o,h)
 }
 (F_0 + (1-F_0)(1-\omega_o \cdot h)⁵)n \cdot \omega_id\omega_i
-$$
-Remplaçons $(1-\omega_o \cdot h)^5$ par $$alpha$ pour faciliter la résolution de $F_0$.
-$$
+$$</p>
+<p>Remplaçons $(1-\omega_o \cdot h)^5$ par $\alpha$ pour faciliter la résolution de $F_0$.</p>
+<p>$$
 \int_\Omega
 {
 f_r(p,\omega_i,\omega_o)
@@ -481,8 +479,8 @@ f_r(p,\omega_i,\omega_o)
 F(\omega_o,h)
 }
 (F_0 + (1-F_0)\alpha)n \cdot \omega_id\omega_i
-$$
-$$
+$$</p>
+<p>$$
 \int_\Omega
 {
 f_r(p,\omega_i,\omega_o)
@@ -490,8 +488,8 @@ f_r(p,\omega_i,\omega_o)
 F(\omega_o,h)
 }
 (F_0 + 1*\alpha - F_0*\alpha)n \cdot \omega_id\omega_i
-$$
-$$
+$$</p>
+<p>$$
 \int_\Omega
 {
 f_r(p,\omega_i,\omega_o)
@@ -499,17 +497,16 @@ f_r(p,\omega_i,\omega_o)
 F(\omega_o,h)
 }
 (F_0(1-\alpha) + \alpha)n \cdot \omega_id\omega_i
-$$
-Ensuite, nous divisons la fonction de Fresnel $F$ en deux intégrales :
-$$
+$$</p>
+<p>Ensuite, nous divisons la fonction de Fresnel $F$ en deux intégrales :</p>
+<p>$$
 \int_\Omega
 {
 f_r(p,\omega_i,\omega_o)
 \over
 F(\omega_o,h)
 }
-(F_0(1-\alpha))n \cdot \omega_id\omega_i
-+
+(F_0(1-\alpha))n \cdot \omega_id\omega_i+
 \int_\Omega
 {
 f_r(p,\omega_i,\omega_o)
@@ -517,20 +514,19 @@ f_r(p,\omega_i,\omega_o)
 F(\omega_o,h)
 }
 (\alpha)n \cdot \omega_id\omega_i
-$$
-De cette façon, $F_0$ est constant sur l&rsquo;intégrale et nous pouvons retirer $F_0$ de l&rsquo;intégrale. Ensuite, nous remplaçons $$alpha$ par sa forme originale, ce qui nous donne l&rsquo;équation finale de la somme fractionnée de la BRDF :</p>
+$$</p>
+<p>De cette façon, $F_0$ est constant sur l&rsquo;intégrale et nous pouvons retirer $F_0$ de l&rsquo;intégrale. Ensuite, nous remplaçons $\alpha$ par sa forme originale, ce qui nous donne l&rsquo;équation finale de la somme fractionnée de la BRDF :</p>
 <p>$$
 F_0
-\int_\Omega</p>
-<p>f_r(p,\omega_i,\omega_o)
-(1-(1 -\omega_o \cdot h)⁵)n \cdot \omega_id\omega_i
-+
-\int_\Omega</p>
-<p>f_r(p,\omega_i,\omega_o)
-(1 -\omega_o \cdot h)⁵n \cdot \omega_id\omega_i</p>
-<p>$$
-Les deux intégrales résultantes représentent respectivement une échelle et un biais par rapport à $F_0$. Notez que comme $f_r(p,\omega_i,\omega_o)$ contient déjà un terme pour $F$, ils s&rsquo;annulent tous les deux, supprimant $F$ de $f_r$.</p>
-<p>De la même manière que pour les maps d&rsquo;environnement convoluées précédentes, nous pouvons convoluer les équations de la BRDF sur leurs entrées : l&rsquo;angle entre $n$ et $$omega_o$ et la rugosité. Nous stockons les résultats convolués dans une lookup texture 2D (LUT) connue sous le nom de map d&rsquo;intégration BRDF que nous utilisons ensuite dans notre shader d&rsquo;éclairage PBR pour obtenir le résultat spéculaire indirect convolué final.</p>
+\int_\Omega
+f_r(p,\omega_i,\omega_o)
+(1-(1 -\omega_o \cdot h)⁵)n \cdot \omega_id\omega_i+
+\int_\Omega
+f_r(p,\omega_i,\omega_o)
+(1 -\omega_o \cdot h)⁵n \cdot \omega_id\omega_i
+$$</p>
+<p>Les deux intégrales résultantes représentent respectivement une échelle et un biais par rapport à $F_0$. Notez que comme $f_r(p,\omega_i,\omega_o)$ contient déjà un terme pour $F$, ils s&rsquo;annulent tous les deux, supprimant $F$ de $f_r$.</p>
+<p>De la même manière que pour les maps d&rsquo;environnement convoluées précédentes, nous pouvons convoluer les équations de la BRDF sur leurs entrées : l&rsquo;angle entre $n$ et $\omega_o$ et la rugosité. Nous stockons les résultats convolués dans une lookup texture 2D (LUT) connue sous le nom de map d&rsquo;intégration BRDF que nous utilisons ensuite dans notre shader d&rsquo;éclairage PBR pour obtenir le résultat spéculaire indirect convolué final.</p>
 <p>Le shader de convolution BRDF opère sur un plan 2D, en utilisant ses coordonnées de texture 2D directement comme entrées pour la convolution BRDF (<code>NdotV</code> et rugosité). Le code de convolution est largement similaire à la convolution pré-filtre, sauf qu&rsquo;il traite maintenant le vecteur d&rsquo;échantillon selon la fonction géométrique de notre BRDF et l&rsquo;approximation de Fresnel-Schlick :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec2 <span style="color:#a6e22e">IntegrateBRDF</span>(<span style="color:#66d9ef">float</span> NdotV, <span style="color:#66d9ef">float</span> roughness)
 </span></span><span style="display:flex;"><span>{
@@ -575,25 +571,25 @@ Les deux intégrales résultantes représentent respectivement une échelle et u
 </span></span><span style="display:flex;"><span>    vec2 integratedBRDF <span style="color:#f92672">=</span> IntegrateBRDF(TexCoords.x, TexCoords.y);
 </span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> integratedBRDF;
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Comme vous pouvez le constater, la convolution de la BRDF est une traduction directe des mathématiques en code. Nous prenons l&rsquo;angle $$theta$ et la rugosité en entrée, générons un vecteur d&rsquo;échantillon avec un échantillonnage d&rsquo;importance, le traitons sur la géométrie et le terme de Fresnel dérivé de la BRDF, et produisons à la fois une échelle et un biais pour $F_0$ pour chaque échantillon, en faisant la moyenne à la fin.</p>
-<h1 id="k_direct">Vous vous souvenez peut-être du chapitre sur la théorie que le terme géométrique de la BRDF est légèrement différent lorsqu&rsquo;il est utilisé avec l&rsquo;IBL, car sa variable $k$ a une interprétation légèrement différente :
-$$
-k_{direct}</h1>
-<h1 id="k_ibl">{
+</span></span></code></pre></div><p>Comme vous pouvez le constater, la convolution de la BRDF est une traduction directe des mathématiques en code. Nous prenons l&rsquo;angle $\theta$ et la rugosité en entrée, générons un vecteur d&rsquo;échantillon avec un échantillonnage d&rsquo;importance, le traitons sur la géométrie et le terme de Fresnel dérivé de la BRDF, et produisons à la fois une échelle et un biais pour $F_0$ pour chaque échantillon, en faisant la moyenne à la fin.</p>
+<p>Vous vous souvenez peut-être du chapitre sur la théorie que le terme géométrique de la BRDF est légèrement différent lorsqu&rsquo;il est utilisé avec l&rsquo;IBL, car sa variable $k$ a une interprétation légèrement différente :</p>
+<p>$$
+k_{direct}=
+{
 (\alpha+1)²
 \over
 8
 }
-$$
-$$
-k_{IBL}</h1>
-<p>{
+$$</p>
+<p>$$
+k_{IBL}=
+{
 \alpha²
 \over
 2
 }
-$$
-Comme la convolution de la BRDF fait partie de l&rsquo;intégrale de l&rsquo;IBL spéculaire, nous utiliserons $k_{IBL}$ pour la fonction géométrique Schlick-GGX :</p>
+$$</p>
+<p>Comme la convolution de la BRDF fait partie de l&rsquo;intégrale de l&rsquo;IBL spéculaire, nous utiliserons $k_{IBL}$ pour la fonction géométrique Schlick-GGX :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">GeometrySchlickGGX</span>(<span style="color:#66d9ef">float</span> NdotV, <span style="color:#66d9ef">float</span> roughness)
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> a <span style="color:#f92672">=</span> roughness;

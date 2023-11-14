@@ -130,11 +130,11 @@ Ici le problème devrait apparaître. L&rsquo;image de gauche montre les réflex
 <img src="/docs/LEARNOPENGL_FR/05_Advanced_Lighting/advanced_lighting_halfway_vector.png" alt="advanced_lighting_halfway_vector"/></p>
 <p>Lorsque la direction de la vue est parfaitement alignée avec le vecteur de réflexion (maintenant imaginaire), le vecteur médian s&rsquo;aligne parfaitement avec le vecteur normal. Plus la direction de la vue est proche de la direction de réflexion originale, plus l&rsquo;accentuation spéculaire est forte.</p>
 <p>Ici, vous pouvez constater que, quelle que soit la direction d&rsquo;observation, l&rsquo;angle entre le vecteur médian et la normale de la surface ne dépasse jamais 90 degrés (à moins que la lumière ne se trouve très en dessous de la surface, bien entendu). Les résultats sont légèrement différents des réflexions de Phong, mais ils sont généralement plus plausibles sur le plan visuel, en particulier lorsque l&rsquo;exposant spéculaire est faible. Le modèle d&rsquo;ombrage de Blinn-Phong est également le modèle d&rsquo;ombrage exact utilisé dans l&rsquo;ancien pipeline de fonctions fixes d&rsquo;OpenGL.</p>
-<p>Il est facile d&rsquo;obtenir le vecteur de mi-chemin, nous ajoutons le vecteur de direction de la lumière et le vecteur de vue ensemble et nous normalisons le résultat :
-$$
+<p>Il est facile d&rsquo;obtenir le vecteur de mi-chemin, nous ajoutons le vecteur de direction de la lumière et le vecteur de vue ensemble et nous normalisons le résultat :</p>
+<p>$$
 \vec{H} = { {\vec{L} + \vec{V}}\over{||\vec{L} + \vec{V}||} }
-$$
-Cela se traduit par le code GLSL suivant :</p>
+$$</p>
+<p>Cela se traduit par le code GLSL suivant :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 lightDir   <span style="color:#f92672">=</span> normalize(lightPos <span style="color:#f92672">-</span> FragPos);
 </span></span><span style="display:flex;"><span>vec3 viewDir    <span style="color:#f92672">=</span> normalize(viewPos <span style="color:#f92672">-</span> FragPos);
 </span></span><span style="display:flex;"><span>vec3 halfwayDir <span style="color:#f92672">=</span> normalize(lightDir <span style="color:#f92672">+</span> viewDir);

@@ -315,15 +315,15 @@ La scène entière a maintenant toutes ses couleurs inversées avec une seule li
 Vous ne remarquerez probablement pas la différence tout de suite, mais avec des scènes plus complexes, un tel effet d&rsquo;échelle de gris pondérée tend à être plus réaliste.</p>
 <h3 id="effets-kernel">Effets Kernel</h3>
 <p>Un autre avantage du post-traitement sur une seule image de texture est qu&rsquo;il est possible d&rsquo;échantillonner des valeurs de couleur à partir d&rsquo;autres parties de la texture qui ne sont pas spécifiques à ce fragment. Nous pouvons par exemple prendre une petite zone autour de la coordonnée de texture actuelle et échantillonner plusieurs valeurs de texture autour de la valeur de texture actuelle. Nous pouvons ensuite créer des effets intéressants en les combinant de manière créative.</p>
-<p>Un kernel (ou matrice de convolution) est un petit tableau matriciel de valeurs centrées sur le pixel courant qui multiplie les valeurs des pixels environnants par ses valeurs de kernel et les additionne pour former une valeur unique. Nous ajoutons un petit décalage aux coordonnées de la texture dans les directions environnantes du pixel actuel et nous combinons les résultats en fonction du kernel. Un exemple de kernel est donné ci-dessous :
-$$
+<p>Un kernel (ou matrice de convolution) est un petit tableau matriciel de valeurs centrées sur le pixel courant qui multiplie les valeurs des pixels environnants par ses valeurs de kernel et les additionne pour former une valeur unique. Nous ajoutons un petit décalage aux coordonnées de la texture dans les directions environnantes du pixel actuel et nous combinons les résultats en fonction du kernel. Un exemple de kernel est donné ci-dessous :</p>
+<p>$$
 \begin{bmatrix}
-2 &amp; 2 &amp; 2 \
-2 &amp; -15 &amp; 2 \
-2 &amp; 2 &amp; 2 \
+2 &amp; 2 &amp; 2 \\
+2 &amp; -15 &amp; 2 \\
+2 &amp; 2 &amp; 2 \\
 \end{bmatrix}
-$$
-Ce kernel prend 8 valeurs de pixels environnants et les multiplie par 2 et le pixel actuel par -15. Cet exemple de kernel multiplie les pixels environnants par plusieurs poids déterminés dans le kernel et équilibre le résultat en multipliant le pixel actuel par un poids négatif important.</p>
+$$</p>
+<p>Ce kernel prend 8 valeurs de pixels environnants et les multiplie par 2 et le pixel actuel par -15. Cet exemple de kernel multiplie les pixels environnants par plusieurs poids déterminés dans le kernel et équilibre le résultat en multipliant le pixel actuel par un poids négatif important.</p>
 <p><strong>La plupart des kernels que vous trouverez sur Internet sont tous égaux à 1 si vous additionnez tous les poids. Si la somme n&rsquo;est pas égale à 1, cela signifie que la couleur de la texture résultante est plus claire ou plus foncée que la valeur de la texture d&rsquo;origine</strong>.</p>
 <p>Les kernels sont un outil extrêmement utile pour le post-traitement car ils sont assez faciles à utiliser et à expérimenter, et de nombreux exemples peuvent être trouvés en ligne. Nous devons légèrement adapter le fragment shader pour qu&rsquo;il prenne en charge les kernels. Nous supposons que chaque kernel que nous utiliserons est un kernel 3x3 (ce qui est le cas de la plupart des kernels) :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> offset <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">300.0</span>;  
@@ -364,17 +364,16 @@ Ce kernel prend 8 valeurs de pixels environnants et les multiplie par 2 et le pi
 <p><img src="/docs/LEARNOPENGL_FR/04_Advanced_OpenGL/framebuffers_sharpen%201.png" alt="framebuffers_sharpen 1"/>
 Cela peut être à la base d&rsquo;effets intéressants lorsque votre joueur se lance dans une aventure narcotique.</p>
 <h3 id="blur-flou">Blur (flou)</h3>
-<p>Un kernel qui crée un effet de flou est défini comme suit :
-$$
+<p>Un kernel qui crée un effet de flou est défini comme suit :</p>
+<p>$$
 \begin{bmatrix}
-1 &amp; 2 &amp; 1 \
-2 &amp; 4 &amp; 2 \
-1 &amp; 2 &amp; 1 \
-\end{bmatrix}
-/
+1 &amp; 2 &amp; 1 \\
+2 &amp; 4 &amp; 2 \\
+1 &amp; 2 &amp; 1 \\
+\end{bmatrix}/
 16
-$$
-Comme toutes les valeurs sont égales à 16, le fait de renvoyer directement les couleurs échantillonnées combinées donnerait une couleur extrêmement brillante. Nous devons donc diviser chaque valeur du kernel par 16. Le tableau de kernel résultant devient alors :</p>
+$$</p>
+<p>Comme toutes les valeurs sont égales à 16, le fait de renvoyer directement les couleurs échantillonnées combinées donnerait une couleur extrêmement brillante. Nous devons donc diviser chaque valeur du kernel par 16. Le tableau de kernel résultant devient alors :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> kernel[<span style="color:#ae81ff">9</span>] <span style="color:#f92672">=</span> <span style="color:#66d9ef">float</span>[](
 </span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">2.0</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">16</span>,
 </span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">2.0</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">4.0</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">2.0</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">16</span>,
@@ -388,11 +387,11 @@ Comme toutes les valeurs sont égales à 16, le fait de renvoyer directement les
 <p>Vous trouverez ci-dessous un kernel de détection des contours qui est similaire au kernel d&rsquo;affinage (sharpen kernel):</p>
 <p>$$
 \begin{bmatrix}
-1 &amp; 1 &amp; 1 \
-1 &amp; -8 &amp; 1 \
-1 &amp; 1 &amp; 1 \
-\end{bmatrix}</p>
-<p>$$</p>
+1 &amp; 1 &amp; 1 \\
+1 &amp; -8 &amp; 1 \\
+1 &amp; 1 &amp; 1 \\
+\end{bmatrix}
+$$</p>
 <p>Ce kernel met en évidence tous les contours et assombrit le reste, ce qui est très utile lorsque l&rsquo;on ne s&rsquo;intéresse qu&rsquo;aux contours d&rsquo;une image.</p>
 <p>Il n&rsquo;est probablement pas surprenant que des kernels de ce type soient utilisés comme outils/filtres de manipulation d&rsquo;images dans des outils tels que Photoshop. <strong>Grâce à la capacité d&rsquo;une carte graphique à traiter des fragments avec des capacités parallèles extrêmes, nous pouvons manipuler des images par pixel en temps réel avec une relative facilité. Les outils d&rsquo;édition d&rsquo;images ont donc tendance à utiliser des cartes graphiques pour le traitement des images.</strong></p>
 

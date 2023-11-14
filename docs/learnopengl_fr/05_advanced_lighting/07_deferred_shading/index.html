@@ -334,31 +334,31 @@ Vous pouvez trouver le code source complet de la démo <a href="https://learnope
 <p>L&rsquo;astuce de cette approche consiste principalement à déterminer la taille ou le rayon du volume de lumière d&rsquo;une source lumineuse.</p>
 <h3 id="calculer-le-rayon-ou-le-volume-dune-lumière">Calculer le rayon ou le volume d&rsquo;une lumière</h3>
 <p>Pour obtenir le rayon de volume d&rsquo;une lumière, nous devons résoudre l&rsquo;équation d&rsquo;atténuation pour le moment où sa contribution lumineuse devient $0.0$. Pour la fonction d&rsquo;atténuation, nous utiliserons la fonction introduite dans le chapitre sur les <a href="projecteurs%20de%20lumi%c3%a8re">projecteurs de lumière</a> (todo: link) :</p>
-<h1 id="f_light">$$
-F_{light}</h1>
-<p>{
+<p>$$
+F_{light}=
+{
 1
 \over
 {
 K_c + K_l * d + K_q * d²
 }
 }
-$$
-Ce que nous voulons faire, c&rsquo;est résoudre cette équation lorsque $F_{light}$ est égal à $0.0$. Cependant, cette équation n&rsquo;atteindra jamais exactement la valeur $0.0$, et il n&rsquo;y aura donc pas de solution. Ce que nous pouvons faire cependant, c&rsquo;est ne pas résoudre l&rsquo;équation pour $0.0$, mais la résoudre pour une valeur de luminosité qui est proche de $0.0$ mais qui est toujours perçue comme sombre. La valeur de luminosité de $5/256$ serait acceptable pour la scène de démonstration de ce chapitre ; divisée par 256 car le framebuffer 8 bits par défaut ne peut afficher que ce nombre d&rsquo;intensités par composant.</p>
+$$</p>
+<p>Ce que nous voulons faire, c&rsquo;est résoudre cette équation lorsque $F_{light}$ est égal à $0.0$. Cependant, cette équation n&rsquo;atteindra jamais exactement la valeur $0.0$, et il n&rsquo;y aura donc pas de solution. Ce que nous pouvons faire cependant, c&rsquo;est ne pas résoudre l&rsquo;équation pour $0.0$, mais la résoudre pour une valeur de luminosité qui est proche de $0.0$ mais qui est toujours perçue comme sombre. La valeur de luminosité de $5/256$ serait acceptable pour la scène de démonstration de ce chapitre ; divisée par 256 car le framebuffer 8 bits par défaut ne peut afficher que ce nombre d&rsquo;intensités par composant.</p>
 <blockquote>
 <p>La fonction d&rsquo;atténuation utilisée est principalement sombre dans sa plage visible. Si nous devions la limiter à une luminosité encore plus sombre que $5/256$, le volume de lumière deviendrait trop important et donc moins efficace. Tant qu&rsquo;un utilisateur ne peut pas voir une coupure soudaine d&rsquo;une source lumineuse à ses limites de volume, tout va bien. Bien sûr, cela dépend toujours du type de scène ; un seuil de luminosité plus élevé permet d&rsquo;obtenir des volumes de lumière plus petits et donc une meilleure efficacité, mais peut produire des artefacts perceptibles lorsque l&rsquo;éclairage semble se briser aux limites d&rsquo;un volume.</p>
 </blockquote>
-<h1 id="heading">L&rsquo;équation d&rsquo;atténuation que nous devons résoudre devient:
-$$
+<p>L&rsquo;équation d&rsquo;atténuation que nous devons résoudre devient:</p>
+<p>$$
 {
 5 \over 256
-}</h1>
-<p>{
+}=
+{
 I_{max}
 \over
 Attenuation
-}</p>
-<p>$$</p>
+}
+$$</p>
 <p>Ici, I_{max} est la composante de couleur la plus lumineuse de la source lumineuse. Nous utilisons la composante de couleur la plus brillante d&rsquo;une source lumineuse pour résoudre l&rsquo;équation de la valeur d&rsquo;intensité la plus brillante d&rsquo;une lumière qui reflète le mieux le rayon de volume lumineux idéal.</p>
 <p>À partir de là, nous continuons à résoudre l&rsquo;équation :</p>
 <p><img src="/docs/LEARNOPENGL_FR/05_Advanced_Lighting/07_deferred_shading-20230904-deferred7.png" alt="07_deferred_shading-20230904-deferred7.png"/></p>
