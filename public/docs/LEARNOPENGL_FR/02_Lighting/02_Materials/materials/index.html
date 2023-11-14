@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cg">cg</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/opengl">opengl</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/computer-graphics">computer graphics</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cpp">cpp</a>
+  
+
+<br><br>
+<h1 id="materials">Materials</h1>
+<p><strong>Dans le monde réel, chaque objet a une réaction différente à la lumière</strong>. Les objets en acier sont souvent plus brillants qu&rsquo;un vase en argile, par exemple, et un récipient en bois ne réagit pas de la même manière à la lumière qu&rsquo;un récipient en acier. Certains objets reflètent la lumière sans trop se disperser, ce qui donne de petits reflets spéculaires, tandis que d&rsquo;autres se dispersent beaucoup, ce qui donne un plus grand rayon au reflet. Si nous voulons simuler plusieurs types d&rsquo;objets dans OpenGL, nous devons définir des propriétés matérielles spécifiques à chaque surface.</p>
+<p>Dans le chapitre précédent, nous avons défini un objet et une couleur de lumière pour définir la sortie visuelle de l&rsquo;objet, combinée à une composante d&rsquo;intensité ambiante et spéculaire. Lors de la description d&rsquo;une surface, nous pouvons définir une couleur de matériau pour chacune des trois composantes d&rsquo;éclairage : l&rsquo;éclairage ambiant, l&rsquo;éclairage diffus et l&rsquo;éclairage spéculaire. En spécifiant une couleur pour chacune des composantes, nous disposons d&rsquo;un contrôle fin sur la couleur de sortie de la surface. Ajoutez maintenant un composant de brillance à ces trois couleurs et vous obtenez toutes les propriétés matérielles dont vous avez besoin : </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Material</span> {
+</span></span><span style="display:flex;"><span>    vec3 ambient;
+</span></span><span style="display:flex;"><span>    vec3 diffuse;
+</span></span><span style="display:flex;"><span>    vec3 specular;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> shininess;
+</span></span><span style="display:flex;"><span>}; 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>uniform Material material;
+</span></span></code></pre></div><p>Dans le fragment shader, nous créons une structure pour stocker les propriétés matérielles de la surface. Nous pouvons également les stocker sous forme de valeurs uniformes individuelles, mais le stockage dans une structure permet de mieux les organiser. Nous définissons d&rsquo;abord l&rsquo;agencement de la structure, puis nous déclarons simplement une variable uniforme avec la structure nouvellement créée comme type.</p>
+<p>Comme vous pouvez le voir, nous définissons un vecteur de couleur pour chacun des composants de l&rsquo;éclairage Phong. Le vecteur de matériau ambiant définit la couleur que la surface reflète sous un éclairage ambiant ; il s&rsquo;agit généralement de la même couleur que celle de la surface. Le vecteur de matériau diffus définit la couleur de la surface sous un éclairage diffus. La couleur diffuse est (comme pour l&rsquo;éclairage ambiant) réglée sur la couleur de la surface souhaitée. Le vecteur de matériau spéculaire définit la couleur de l&rsquo;accentuation spéculaire de la surface (ou peut même refléter une couleur spécifique à la surface). Enfin, la brillance influe sur la diffusion/le rayon de la lumière spéculaire.</p>
+<p>Avec ces 4 composants qui définissent le matériau d&rsquo;un objet, nous pouvons simuler de nombreux matériaux du monde réel. Un tableau trouvé sur <a href="devernay.free.fr">devernay.free.fr</a> montre une liste de propriétés de matériaux qui simulent des matériaux réels trouvés dans le monde extérieur. L&rsquo;image suivante montre l&rsquo;effet de plusieurs de ces valeurs de matériaux du monde réel sur notre cube :
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c02_Materials%5cmaterial1.png" alt="material1"/>
+Comme vous pouvez le constater, en spécifiant correctement les propriétés matérielles d&rsquo;une surface, il semble que la perception que nous avons de l&rsquo;objet soit modifiée. Les effets sont clairement perceptibles, mais pour obtenir des résultats plus réalistes, nous devrons remplacer le cube par quelque chose de plus compliqué. Dans les chapitres consacrés au chargement des modèles, nous aborderons des formes plus complexes.</p>
+<p>Trouver les bons paramètres de matériau pour un objet est une tâche difficile qui requiert principalement de l&rsquo;expérimentation et beaucoup d&rsquo;expérience. Il n&rsquo;est pas rare de détruire complètement la qualité visuelle d&rsquo;un objet à cause d&rsquo;un matériau mal placé.</p>
+<p>Essayons d&rsquo;implémenter un tel système de matériaux dans les shaders.</p>
+<h1 id="implémentation-des-matériaux">Implémentation des matériaux</h1>
+<p>Nous avons créé une structure de matériau uniforme dans le fragment shader. Nous allons donc modifier les calculs d&rsquo;éclairage pour qu&rsquo;ils soient conformes aux nouvelles propriétés du matériau. Comme toutes les variables matérielles sont stockées dans une structure, nous pouvons y accéder à partir du matériau uniforme :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ambient
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 ambient <span style="color:#f92672">=</span> lightColor <span style="color:#f92672">*</span> material.ambient;
+</span></span><span style="display:flex;"><span>  	
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// diffuse 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 norm <span style="color:#f92672">=</span> normalize(Normal);
+</span></span><span style="display:flex;"><span>    vec3 lightDir <span style="color:#f92672">=</span> normalize(lightPos <span style="color:#f92672">-</span> FragPos);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> diff <span style="color:#f92672">=</span> max(dot(norm, lightDir), <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>    vec3 diffuse <span style="color:#f92672">=</span> lightColor <span style="color:#f92672">*</span> (diff <span style="color:#f92672">*</span> material.diffuse);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// specular
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 viewDir <span style="color:#f92672">=</span> normalize(viewPos <span style="color:#f92672">-</span> FragPos);
+</span></span><span style="display:flex;"><span>    vec3 reflectDir <span style="color:#f92672">=</span> reflect(<span style="color:#f92672">-</span>lightDir, norm);  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> spec <span style="color:#f92672">=</span> pow(max(dot(viewDir, reflectDir), <span style="color:#ae81ff">0.0</span>), material.shininess);
+</span></span><span style="display:flex;"><span>    vec3 specular <span style="color:#f92672">=</span> lightColor <span style="color:#f92672">*</span> (spec <span style="color:#f92672">*</span> material.specular);  
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>    vec3 result <span style="color:#f92672">=</span> ambient <span style="color:#f92672">+</span> diffuse <span style="color:#f92672">+</span> specular;
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(result, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Comme vous pouvez le voir, nous accédons maintenant à toutes les propriétés de la structure matérielle là où nous en avons besoin et, cette fois, nous calculons la couleur de sortie résultante à l&rsquo;aide des couleurs du matériau. Chaque attribut de matériau de l&rsquo;objet est multiplié par ses composantes d&rsquo;éclairage respectives.</p>
+<p>Nous pouvons définir le matériau de l&rsquo;objet dans l&rsquo;application en définissant les uniformes appropriés. En GLSL, une structure n&rsquo;a rien de spécial en ce qui concerne la définition des uniformes ; une structure agit uniquement comme un espace de noms pour les variables d&rsquo;uniformes. Si nous voulons remplir la structure, nous devrons définir les uniformes individuels, mais avec le préfixe du nom de la structure : </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>lightingShader.setVec3(<span style="color:#e6db74">&#34;material.ambient&#34;</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.31f</span>);
+</span></span><span style="display:flex;"><span>lightingShader.setVec3(<span style="color:#e6db74">&#34;material.diffuse&#34;</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.31f</span>);
+</span></span><span style="display:flex;"><span>lightingShader.setVec3(<span style="color:#e6db74">&#34;material.specular&#34;</span>, <span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.5f</span>);
+</span></span><span style="display:flex;"><span>lightingShader.setFloat(<span style="color:#e6db74">&#34;material.shininess&#34;</span>, <span style="color:#ae81ff">32.0f</span>);
+</span></span></code></pre></div><p>Nous réglons les composantes ambiante et diffuse sur la couleur que nous souhaitons donner à l&rsquo;objet et nous réglons la composante spéculaire de l&rsquo;objet sur une couleur moyennement lumineuse ; nous ne voulons pas que la composante spéculaire soit trop forte. Nous maintenons également la brillance à 32.</p>
+<p>Nous pouvons maintenant facilement influencer le matériau de l&rsquo;objet à partir de l&rsquo;application. L&rsquo;exécution du programme donne quelque chose comme ceci : 
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c02_Materials%5cmaterial2.png" alt="material2"/>
+Mais cela n&rsquo;a pas l&rsquo;air d&rsquo;être le cas ?</p>
+<h2 id="propriétés-de-la-lumiàre">Propriétés de la lumiàre</h2>
+<p><strong>L&rsquo;objet est beaucoup trop lumineux</strong>. La raison pour laquelle l&rsquo;objet est trop lumineux est que les couleurs ambiantes, diffuses et spéculaires sont reflétées avec toute leur force par n&rsquo;importe quelle source de lumière. Les sources lumineuses ont également des intensités différentes pour leurs composantes ambiantes, diffuses et spéculaires respectivement. Dans le chapitre précédent, nous avons résolu ce problème en faisant varier les intensités ambiante et spéculaire à l&rsquo;aide d&rsquo;une valeur de force. Nous voulons faire quelque chose de similaire, mais cette fois en spécifiant des vecteurs d&rsquo;intensité pour chacune des composantes de l&rsquo;éclairage. Si nous visualisions <code>lightColor</code> comme <code>vec3(1.0)</code>, le code ressemblerait à ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 ambient  <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">1.0</span>) <span style="color:#f92672">*</span> material.ambient;
+</span></span><span style="display:flex;"><span>vec3 diffuse  <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">1.0</span>) <span style="color:#f92672">*</span> (diff <span style="color:#f92672">*</span> material.diffuse);
+</span></span><span style="display:flex;"><span>vec3 specular <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">1.0</span>) <span style="color:#f92672">*</span> (spec <span style="color:#f92672">*</span> material.specular); 
+</span></span></code></pre></div><p>Ainsi, chaque propriété matérielle de l&rsquo;objet est renvoyée avec une intensité complète pour chaque composante de la lumière. Ces valeurs <code>vec3(1.0)</code> peuvent être influencées individuellement pour chaque source de lumière et c&rsquo;est généralement ce que nous voulons. En ce moment, la composante ambiante de l&rsquo;objet influence complètement la couleur du cube. La composante ambiante ne devrait pas avoir un impact aussi important sur la couleur finale. Nous pouvons donc restreindre la couleur ambiante en réglant l&rsquo;intensité ambiante de la lumière sur une valeur plus faible : </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 ambient <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">0.1</span>) <span style="color:#f92672">*</span> material.ambient;  
+</span></span></code></pre></div><p>Nous pouvons influencer l&rsquo;intensité diffuse et spéculaire de la source lumineuse de la même manière. Ceci est très similaire à ce que nous avons fait dans le chapitre précédent ; on pourrait dire que nous avons déjà créé des propriétés de lumière pour influencer chaque composant d&rsquo;éclairage individuellement. Nous voudrons créer quelque chose de similaire à la structure matérielle pour les propriétés de lumière :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Light</span> {
+</span></span><span style="display:flex;"><span>    vec3 position;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    vec3 ambient;
+</span></span><span style="display:flex;"><span>    vec3 diffuse;
+</span></span><span style="display:flex;"><span>    vec3 specular;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform Light light;  
+</span></span></code></pre></div><p>Une source lumineuse a une intensité différente pour ses composantes ambiante, diffuse et spéculaire.</p>
+<p><strong>La lumière ambiante est généralement réglée sur une faible intensité, car nous ne voulons pas que la couleur ambiante soit trop dominante.
+La composante diffuse d&rsquo;une source lumineuse est généralement réglée sur la couleur exacte que l&rsquo;on souhaite donner à la lumière, souvent un blanc éclatant.
+La composante spéculaire est généralement maintenue à <code>vec3(1.0)</code> et brille à pleine intensité.</strong> Notez que nous avons également ajouté le vecteur de position de la lumière à la structure.</p>
+<p>Tout comme pour l&rsquo;uniforme matériel, nous devons mettre à jour le fragment shader : </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 ambient  <span style="color:#f92672">=</span> light.ambient <span style="color:#f92672">*</span> material.ambient;
+</span></span><span style="display:flex;"><span>vec3 diffuse  <span style="color:#f92672">=</span> light.diffuse <span style="color:#f92672">*</span> (diff <span style="color:#f92672">*</span> material.diffuse);
+</span></span><span style="display:flex;"><span>vec3 specular <span style="color:#f92672">=</span> light.specular <span style="color:#f92672">*</span> (spec <span style="color:#f92672">*</span> material.specular);  
+</span></span></code></pre></div><p>Nous voulons ensuite définir les intensités lumineuses dans l&rsquo;application :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>lightingShader.setVec3(<span style="color:#e6db74">&#34;light.ambient&#34;</span>,  <span style="color:#ae81ff">0.2f</span>, <span style="color:#ae81ff">0.2f</span>, <span style="color:#ae81ff">0.2f</span>);
+</span></span><span style="display:flex;"><span>lightingShader.setVec3(<span style="color:#e6db74">&#34;light.diffuse&#34;</span>,  <span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.5f</span>); <span style="color:#75715e">// darken diffuse light a bit
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>lightingShader.setVec3(<span style="color:#e6db74">&#34;light.specular&#34;</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">1.0f</span>); 
+</span></span></code></pre></div><p>Maintenant que nous avons modulé l&rsquo;influence de la lumière sur le matériau de l&rsquo;objet, nous obtenons un résultat visuel qui ressemble beaucoup à celui du chapitre précédent. Cette fois-ci, cependant, nous avons un contrôle total sur l&rsquo;éclairage et le matériau de l&rsquo;objet :
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c02_Materials%5cmaterial3.png" alt="material3.png"/>
+Modifier l&rsquo;aspect visuel des objets est relativement facile à l&rsquo;heure actuelle. Mettons un peu de piment dans tout cela !</p>
+<h2 id="des-couleurs-de-lumières-différentes">Des couleurs de lumières différentes</h2>
+<p>Jusqu&rsquo;à présent, nous avons utilisé les couleurs de lumière pour faire varier l&rsquo;intensité de leurs composants individuels en choisissant des couleurs qui vont du blanc au gris en passant par le noir, sans affecter les couleurs réelles de l&rsquo;objet (seulement son intensité). Puisque nous avons maintenant un accès facile aux propriétés de la lumière, nous pouvons changer leurs couleurs au fil du temps pour obtenir des effets vraiment intéressants. Comme tout est déjà configuré dans le fragment shader, changer les couleurs de la lumière est facile et crée immédiatement des effets amusants : </p>
+<p>TODO: intégrer le .gif</p>
+<p>Comme vous pouvez le constater, une couleur de lumière différente influence grandement la couleur de sortie de l&rsquo;objet. Comme la couleur de la lumière influence directement les couleurs que l&rsquo;objet peut refléter (comme vous vous en souvenez peut-être dans le chapitre sur les couleurs), elle a un impact significatif sur la sortie visuelle.</p>
+<p>Nous pouvons facilement modifier les couleurs de la lumière au fil du temps en changeant les couleurs ambiantes et diffuses de la lumière via <code>sin</code> et <code>glfwGetTime</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 lightColor;
+</span></span><span style="display:flex;"><span>lightColor.x <span style="color:#f92672">=</span> sin(glfwGetTime() <span style="color:#f92672">*</span> <span style="color:#ae81ff">2.0f</span>);
+</span></span><span style="display:flex;"><span>lightColor.y <span style="color:#f92672">=</span> sin(glfwGetTime() <span style="color:#f92672">*</span> <span style="color:#ae81ff">0.7f</span>);
+</span></span><span style="display:flex;"><span>lightColor.z <span style="color:#f92672">=</span> sin(glfwGetTime() <span style="color:#f92672">*</span> <span style="color:#ae81ff">1.3f</span>);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 diffuseColor <span style="color:#f92672">=</span> lightColor   <span style="color:#f92672">*</span> glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.5f</span>); 
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 ambientColor <span style="color:#f92672">=</span> diffuseColor <span style="color:#f92672">*</span> glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.2f</span>); 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>lightingShader.setVec3(<span style="color:#e6db74">&#34;light.ambient&#34;</span>, ambientColor);
+</span></span><span style="display:flex;"><span>lightingShader.setVec3(<span style="color:#e6db74">&#34;light.diffuse&#34;</span>, diffuseColor);
+</span></span></code></pre></div><p>Essayez et expérimentez plusieurs valeurs d&rsquo;éclairage et de matériaux et voyez comment elles affectent le résultat visuel. Vous pouvez trouver le code source de l&rsquo;application <a href="https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/3.1.materials/materials.cpp">ici</a>.</p>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

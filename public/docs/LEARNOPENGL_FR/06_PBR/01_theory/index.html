@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cg">cg</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/opengl">opengl</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/computer-graphics">computer graphics</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cpp">cpp</a>
+  
+
+<br><br>
+<h1 id="théorie">Théorie</h1>
+<p>Le PBR, ou plus communément appelé rendu basé sur la physique (physically based renderer), est un ensemble de techniques de rendu plus ou moins basées sur la même théorie sous-jacente qui correspond plus étroitement à celle du monde physique.
+Comme le rendu basé sur la physique vise à imiter la lumière d&rsquo;une manière physiquement plausible, il semble généralement plus réaliste que nos algorithmes d&rsquo;éclairage originaux tels que Phong et Blinn-Phong. Non seulement l&rsquo;aspect est meilleur, mais comme il se rapproche de la physique réelle, nous (et surtout les artistes) pouvons créer des matériaux de surface basés sur des paramètres physiques sans avoir à recourir à des bidouillages et des ajustements bon marché pour que l&rsquo;éclairage ait l&rsquo;air correct.
+L&rsquo;un des principaux avantages de la création de matériaux basés sur des paramètres physiques est que ces matériaux sont corrects quelles que soient les conditions d&rsquo;éclairage, ce qui n&rsquo;est pas le cas dans les pipelines non-PBR.</p>
+<p>Le rendu basé sur des paramètres physiques reste néanmoins une approximation de la réalité (basée sur les principes de la physique), c&rsquo;est pourquoi on ne l&rsquo;appelle pas shading physique, mais shading basé sur des paramètres physiques. Pour qu&rsquo;un modèle d&rsquo;éclairage PBR soit considéré comme basé sur la physique, il doit satisfaire aux trois conditions suivantes (ne vous inquiétez pas, nous y reviendrons bientôt) :</p>
+<ol>
+<li>Se fonder sur le modèle de la surface de la microfacette.</li>
+<li>Conserver l&rsquo;énergie.</li>
+<li>Utiliser une BRDF basée sur la physique.
+Dans les prochains chapitres sur le PBR, nous nous concentrerons sur l&rsquo;approche PBR telle qu&rsquo;elle a été explorée à l&rsquo;origine par Disney et adoptée pour l&rsquo;affichage en temps réel par Epic Games. Leur approche, basée sur le flux de travail métallique, est bien documentée, largement adoptée sur la plupart des moteurs populaires, et est visuellement étonnante. À la fin de ces chapitres, nous aurons quelque chose qui ressemblera à ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5cpbr1.png" alt="pbr1"/>
+Gardez à l&rsquo;esprit que les sujets abordés dans ces chapitres sont plutôt avancés et qu&rsquo;il est donc conseillé d&rsquo;avoir une bonne compréhension d&rsquo;OpenGL et des shaders d&rsquo;éclairage. Les connaissances les plus avancées dont vous aurez besoin pour cette série sont : les framebuffers, les cubemaps, la correction gamma, le HDR et le normal mapping. Nous nous plongerons également dans des mathématiques avancées, mais je ferai de mon mieux pour expliquer les concepts aussi clairement que possible.</li>
+</ol>
+<h1 id="le-modèle-de-microfacettes">Le modèle de microfacettes</h1>
+<p>Toutes les techniques PBR sont basées sur la théorie des microfacettes. Selon cette théorie, toute surface à l&rsquo;échelle microscopique peut être décrite par de minuscules petits miroirs parfaitement réfléchissants appelés microfacettes. En fonction de la rugosité de la surface, l&rsquo;alignement de ces minuscules miroirs peut varier considérablement :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5cpbr2.png" alt="pbr2"/>
+Plus une surface est rugueuse (rough), plus chaque microfacette est alignée de manière chaotique le long de la surface. L&rsquo;effet de ces alignements de miroirs minuscules est que, lorsqu&rsquo;on parle spécifiquement d&rsquo;éclairage/réflexion spéculaire, les rayons lumineux entrants sont plus susceptibles de se disperser dans des directions complètement différentes sur les surfaces rugueuses, ce qui entraîne une réflexion spéculaire plus étendue. En revanche, sur une surface lisse, les rayons lumineux sont plus susceptibles de se refléter à peu près dans la même direction, ce qui donne des reflets plus petits et plus nets :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5cpbr3.png" alt="pbr3"/>
+Aucune surface n&rsquo;est complètement lisse au niveau microscopique, mais comme ces microfaces sont suffisamment petites pour que nous ne puissions pas les distinguer par pixel, nous obtenons une approximation statistique de la rugosité des microfaces de la surface à l&rsquo;aide d&rsquo;un paramètre de rugosité. Sur la base de la rugosité d&rsquo;une surface, nous pouvons calculer le ratio de microfacettes grossièrement alignées sur un certain vecteur $h$. Ce vecteur $h$ est le vecteur médian qui se situe à mi-chemin entre le vecteur de la lumière $l$ et le vecteur de la vue $v$. Nous avons déjà discuté du vecteur médian dans le chapitre sur l&rsquo;éclairage avancé, qui est calculé comme la somme de $l$ et de $v$ divisée par sa longueur :
+$$
+h = { {l + v} \over {||l + v||} }
+$$
+Plus les microfacettes sont alignées sur le vecteur médian, plus la réflexion spéculaire est nette et forte. Avec un paramètre de rugosité variant entre 0 et 1, nous pouvons obtenir une approximation statistique de l&rsquo;alignement des microfacettes :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5cpbr4.png" alt="pbr4"/>
+Nous pouvons constater que les valeurs de rugosité les plus élevées présentent une forme de réflexion spéculaire beaucoup plus grande, contrairement à la forme de réflexion spéculaire plus petite et plus nette des surfaces lisses.</p>
+<h1 id="conservation-de-lénergie">Conservation de l&rsquo;énergie</h1>
+<p>L&rsquo;approximation de la microfacette utilise une forme de conservation de l&rsquo;énergie : <strong>l&rsquo;énergie lumineuse sortante ne doit jamais dépasser l&rsquo;énergie lumineuse entrante</strong> (à l&rsquo;exclusion des surfaces émissives). L&rsquo;image ci-dessus montre que la surface de réflexion spéculaire augmente, mais aussi que sa luminosité diminue lorsque les niveaux de rugosité augmentent. Si l&rsquo;intensité spéculaire était la même à chaque pixel (quelle que soit la taille de la forme spéculaire), les surfaces plus rugueuses émettraient beaucoup plus d&rsquo;énergie, ce qui violerait le principe de conservation de l&rsquo;énergie. <strong>C&rsquo;est pourquoi les réflexions spéculaires sont plus intenses sur les surfaces lisses et plus faibles sur les surfaces rugueuses.</strong>
+Pour que la conservation de l&rsquo;énergie soit possible, nous devons faire une distinction claire entre la lumière diffuse et la lumière spéculaire. <strong>Dès qu&rsquo;un rayon lumineux touche une surface, il se divise en deux parties, la réfraction et la réflexion</strong>. <strong>La partie réflexion est la lumière qui est directement réfléchie et qui ne pénètre pas dans la surface ; c&rsquo;est ce que nous appelons l&rsquo;éclairage spéculaire. La partie réfractée est le reste de la lumière qui pénètre dans la surface et qui est absorbée ; c&rsquo;est ce que l&rsquo;on appelle l&rsquo;éclairage diffus</strong>.
+Il y a quelques nuances ici, car la lumière réfractée n&rsquo;est pas immédiatement absorbée au contact de la surface. <strong>En physique, nous savons que la lumière peut être modélisée comme un faisceau d&rsquo;énergie qui continue à avancer jusqu&rsquo;à ce qu&rsquo;il perde toute son énergie ; la façon dont un faisceau de lumière perd de l&rsquo;énergie est par collision</strong>. Chaque matériau est constitué de minuscules particules qui peuvent entrer en collision avec le rayon lumineux, comme le montre l&rsquo;image suivante. Les particules absorbent une partie ou la totalité de l&rsquo;énergie de la lumière à chaque collision, ce qui est converti en chaleur.
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5cpbr5.png" alt="pbr5"/>
+En général, toute l&rsquo;énergie n&rsquo;est pas absorbée et la lumière continue à se disperser dans une direction (le plus souvent) aléatoire. <strong>Elle entre alors en collision avec d&rsquo;autres particules jusqu&rsquo;à ce que son énergie soit épuisée ou qu&rsquo;elle quitte à nouveau la surface. Les rayons lumineux qui ré-émergent de la surface contribuent à la couleur observée (diffuse) de la surface</strong>. Cependant, dans le rendu basé sur la physique (PBR), nous faisons l&rsquo;hypothèse simplificatrice que toute la lumière réfractée est absorbée et dispersée dans une très petite zone d&rsquo;impact, en ignorant l&rsquo;effet des rayons lumineux dispersés qui auraient quitté la surface à une certaine distance. Les techniques de shaders spécifiques qui tiennent compte de ce phénomène sont connues sous le nom de techniques de diffusion sous la surface (subsurface scattering). Elles améliorent considérablement la qualité visuelle de matériaux tels que la peau, le marbre ou la cire, mais au prix d&rsquo;une baisse des performances.
+<strong>Les surfaces métalliques constituent une subtilité supplémentaire en matière de réflexion et de réfraction</strong>. Les surfaces métalliques réagissent différemment à la lumière par rapport aux surfaces non métalliques (également connues sous le nom de diélectriques). <strong>Les surfaces métalliques suivent les mêmes principes de réflexion et de réfraction, mais toute la lumière réfractée est directement absorbée sans être diffusée</strong>. Cela signifie que les surfaces métalliques ne laissent que de la lumière réfléchie ou spéculaire ; <strong>les surfaces métalliques ne présentent pas de couleurs diffuses</strong>. <strong>En raison de cette distinction apparente entre les métaux et les diélectriques, ils sont tous deux traités différemment dans le pipeline PBR,</strong> que nous aborderons plus loin dans ce chapitre.
+<strong>Cette distinction entre la lumière réfléchie et la lumière réfractée nous amène à une autre observation concernant la conservation de l&rsquo;énergie : elles s&rsquo;excluent mutuellement</strong>. L&rsquo;énergie lumineuse réfléchie ne sera plus absorbée par le matériau lui-même. <strong>Par conséquent, l&rsquo;énergie qui pénètre dans la surface sous forme de lumière réfractée est directement l&rsquo;énergie résultante après prise en compte de la réflexion.</strong>
+Nous préservons cette relation de conservation de l&rsquo;énergie en calculant d&rsquo;abord la fraction spéculaire qui représente le pourcentage de l&rsquo;énergie de la lumière entrante qui est réfléchie. La fraction de lumière réfractée est alors directement calculée à partir de la fraction spéculaire comme suit :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> kS <span style="color:#f92672">=</span> calculateSpecularComponent(...); <span style="color:#75715e">// reflection/specular fraction
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">float</span> kD <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> kS;  
+</span></span></code></pre></div><p>De cette façon, nous connaissons à la fois la quantité de lumière réfléchie et la quantité de lumière réfractée, tout en respectant le principe de conservation de l&rsquo;énergie. Avec cette approche, il est impossible que la contribution réfractée/diffuse et réfléchie/spéculaire soit supérieure à 1,0, ce qui garantit que l<strong>a somme de leur énergie ne dépasse jamais l&rsquo;énergie de la lumière entrante</strong>. Un aspect que nous n&rsquo;avons pas pris en compte dans les chapitres précédents sur l&rsquo;éclairage.</p>
+<h2 id="léquation-de-la-réflectance-reflectance-equation">L&rsquo;équation de la réflectance (reflectance equation)</h2>
+<p>Cela nous amène à ce que l&rsquo;on appelle l&rsquo;équation de rendu, une équation élaborée que des gens très intelligents ont mise au point et qui est actuellement le meilleur modèle dont nous disposons pour simuler les effets visuels de la lumière. Le rendu basé sur la physique suit fortement une version plus spécialisée de l&rsquo;équation de rendu connue sous le nom d&rsquo;équation de réflectance. Pour bien comprendre le PBR, il est important de commencer par acquérir une solide compréhension de l&rsquo;équation de la réflectance :
+$$
+L_o(p, w_o) = \int_{\Omega}^{}f_r(p,w_i,w_o)L_i(p,w_i)n \cdot w_idw_i
+$$
+L&rsquo;équation de la réflectance semble décourageante au premier abord, mais au fur et à mesure que nous la décortiquerons, vous verrez qu&rsquo;elle prend peu à peu tout son sens. Pour comprendre l&rsquo;équation, nous devons nous plonger dans un peu de <strong>radiométrie</strong>. La radiométrie est la mesure du rayonnement électromagnétique, y compris la lumière visible. Il existe plusieurs grandeurs radiométriques que l&rsquo;on peut utiliser pour mesurer la lumière sur des surfaces et dans des directions différentes, mais nous n&rsquo;en aborderons qu&rsquo;une seule qui est pertinente pour l&rsquo;équation de réflectance : la <strong>radiance</strong>, désignée ici par <strong>L</strong>. <strong>La radiance est utilisée pour quantifier l&rsquo;ampleur ou l&rsquo;intensité de la lumière provenant d&rsquo;une seule direction.</strong> Il est un peu difficile à comprendre au début, car la radiance est une combinaison de plusieurs grandeurs physiques, c&rsquo;est pourquoi nous nous concentrerons d&rsquo;abord sur celles-ci :</p>
+<p><strong>Flux radiant</strong> (radiant flux) : <strong>le flux radiant $\Phi$ est l&rsquo;énergie transmise par une source lumineuse</strong>, mesurée en watts. La lumière est une somme collective d&rsquo;énergie répartie sur plusieurs longueurs d&rsquo;onde différentes, chaque longueur d&rsquo;onde étant associée à une couleur (visible) particulière. <strong>L&rsquo;énergie émise par une source lumineuse peut donc être considérée comme une fonction de toutes ses différentes longueurs d&rsquo;onde</strong>. Les longueurs d&rsquo;onde comprises entre 390 nm et 700 nm (nanomètres) sont considérées comme faisant partie du spectre de la lumière visible, c&rsquo;est-à-dire des longueurs d&rsquo;onde que l&rsquo;œil humain est capable de percevoir. Vous trouverez ci-dessous une image des différentes énergies par longueur d&rsquo;onde de la lumière du jour :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5cpbr6.png" alt="pbr6"/>
+Le flux radiant mesure la surface totale de cette fonction de différentes longueurs d&rsquo;onde. Il n&rsquo;est pas très pratique de prendre directement cette mesure des longueurs d&rsquo;onde en entrée, c&rsquo;est pourquoi nous simplifions souvent la représentation du flux radiant, non pas comme une fonction de différentes longueurs d&rsquo;onde, mais comme un triplet de couleurs codé en RVB (ou comme nous l&rsquo;appelons communément : couleur de la lumière). Ce codage s&rsquo;accompagne d&rsquo;une perte d&rsquo;informations, mais celle-ci est généralement négligeable pour les aspects visuels.</p>
+<p><strong>Angle solide</strong> (solid angle): l&rsquo;angle solide, noté $\omega$, <strong>indique la taille ou la surface d&rsquo;une forme projetée sur une sphère unitaire</strong>. L&rsquo;aire de la forme projetée sur cette sphère unitaire est connue sous le nom d&rsquo;angle solide ; vous pouvez visualiser l&rsquo;angle solide comme une direction avec un volume :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5cpbr7.png" alt="pbr7"/>
+Imaginez que vous êtes un observateur au centre de cette sphère unitaire et que vous regardez dans la direction de la forme ; la taille de la silhouette que vous en faites est l&rsquo;angle solide.</p>
+<p><strong>Intensité rayonnante</strong> (radiant intensity) : <strong>l&rsquo;intensité rayonnante mesure la quantité de flux rayonnant par angle solide</strong>, ou l&rsquo;intensité d&rsquo;une source lumineuse sur une surface projetée sur la sphère unité. Par exemple, pour une lumière omnidirectionnelle qui rayonne de manière égale dans toutes les directions, l&rsquo;intensité rayonnante peut nous donner son énergie sur une zone spécifique (angle solide) :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5cpbr8.png" alt="pbr8"/>
+L&rsquo;équation décrivant l&rsquo;intensité du rayonnement est définie comme suit :
+$$
+I = { {d\Phi}\over{d\omega} }
+$$
+Où $I$ est le flux de rayonnement $Φ$ sur l&rsquo;angle solide $ω$.</p>
+<p>En connaissant le flux de rayonnement, l&rsquo;intensité du rayonnement et l&rsquo;angle solide, nous pouvons enfin décrire l&rsquo;équation de la radiance. La radiance est décrite comme l&rsquo;énergie totale observée dans une zone $A$ sur l&rsquo;angle solide $ω$ d&rsquo;une lumière d&rsquo;intensité radiante $Φ$ :
+$$
+L = { {d^2\Phi}\over{dAd\omega cos(\theta)} }
+$$
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5cpbr9.png" alt="pbr9"/></p>
+<p>La radiance est une mesure radiométrique de la quantité de lumière dans une zone, mise à l&rsquo;échelle par l&rsquo;angle d&rsquo;incidence (ou d&rsquo;arrivée) θ de la lumière par rapport à la normale de la surface sous la forme de cosθ : la lumière est d&rsquo;autant plus faible qu&rsquo;elle rayonne moins directement sur la surface, et d&rsquo;autant plus forte qu&rsquo;elle est directement perpendiculaire à la surface. Ceci est similaire à notre perception de l&rsquo;éclairage diffus dans le chapitre sur l&rsquo;éclairage de base, car le cosθ correspond directement au produit scalaire entre le vecteur de direction de la lumière et la normale de la surface :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> cosTheta <span style="color:#f92672">=</span> dot(lightDir, N);  
+</span></span></code></pre></div><p>L&rsquo;équation de la radiance est très utile car elle contient la plupart des quantités physiques qui nous intéressent. Si nous considérons que l&rsquo;angle solide $ω$ et la surface $A$ sont infiniment petits, nous pouvons utiliser la radiance pour mesurer le flux d&rsquo;un seul rayon de lumière frappant un seul point dans l&rsquo;espace. Cette relation nous permet de calculer la radiance d&rsquo;un seul rayon lumineux influençant un seul point (fragment) ; nous traduisons effectivement l&rsquo;angle solide $ω$ en un vecteur de direction $ω$, et $A$ en un point $p$. De cette façon, nous pouvons directement utiliser la radiance dans nos shaders pour calculer la contribution d&rsquo;un seul rayon lumineux par fragment.</p>
+<p>En fait, lorsqu&rsquo;il s&rsquo;agit de radiance, nous nous intéressons généralement à l&rsquo;ensemble de la lumière entrant en un point $p$, qui est la somme de toutes les radiances, connue sous le nom d&rsquo;irradiance. En connaissant à la fois la radiance et l&rsquo;irradiance, nous pouvons revenir à l&rsquo;équation de la réflectance :
+$$
+L_o(p, w_o) = \int_{\Omega}^{}f_r(p,w_i,w_o)L_i(p,w_i)n \cdot w_idw_i
+$$
+Nous savons maintenant que $L$ dans l&rsquo;équation de rendu représente la radiance d&rsquo;un point $p$ et d&rsquo;un angle solide infiniment petit $ω_i$, qui peut être considéré comme un vecteur de direction entrant $ω_i$. Rappelons que le $cos(θ)$ échelonne l&rsquo;énergie en fonction de l&rsquo;angle d&rsquo;incidence de la lumière sur la surface, que l&rsquo;on retrouve dans l&rsquo;équation de réflectance sous la forme $n \cdot ω_i$. L&rsquo;équation de réflectance calcule la somme de la radiance réfléchie $L_o(p,ω_o)$ d&rsquo;un point $p$ dans la direction $ω_o$, qui est la direction de sortie vers l&rsquo;observateur. En d&rsquo;autres termes, $L_o$ mesure la somme réfléchie des lumières : $L_o$ mesure la somme réfléchie de l&rsquo;irradiance des lumières sur le point $p$ vu depuis $ω_o$.</p>
+<p>L&rsquo;équation de la réflectance est basée sur l&rsquo;irradiance, qui est la somme de toutes les radiations entrantes dont nous mesurons la lumière. Non seulement d&rsquo;une seule direction de lumière entrante, mais de toutes les directions de lumière entrante à l&rsquo;intérieur d&rsquo;un hémisphère $\Omega$ centré sur le point $p$. Un hémisphère peut être décrit comme une demi-sphère alignée autour de la normale $n$ d&rsquo;une surface :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5cpbr10.png" alt="pbr10"/>
+Pour calculer le total des valeurs à l&rsquo;intérieur d&rsquo;une zone ou (dans le cas d&rsquo;un hémisphère) d&rsquo;un volume, nous utilisons une construction mathématique appelée intégrale, désignée dans l&rsquo;équation de réflectance par $\int$ sur toutes les directions entrantes $dω_i$ à l&rsquo;intérieur de l&rsquo;hémisphère $Ω$ . Une intégrale mesure l&rsquo;aire d&rsquo;une fonction, qui peut être calculée analytiquement ou numériquement. Comme il n&rsquo;existe pas de solution analytique à l&rsquo;équation de rendu et de réflectance, nous voulons résoudre numériquement l&rsquo;intégrale de façon discrète. Cela revient à prendre le résultat de petits pas discrets de l&rsquo;équation de réflectance sur l&rsquo;hémisphère $Ω$ et à faire la moyenne de leurs résultats sur la taille du pas. C&rsquo;est ce que l&rsquo;on appelle <strong>la somme de Riemann</strong>, que l&rsquo;on peut grossièrement visualiser en code comme suit :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> steps <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> sum <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0f</span>;
+</span></span><span style="display:flex;"><span>vec3 P    <span style="color:#f92672">=</span> ...;
+</span></span><span style="display:flex;"><span>vec3 Wo   <span style="color:#f92672">=</span> ...;
+</span></span><span style="display:flex;"><span>vec3 N    <span style="color:#f92672">=</span> ...;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> dW  <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0f</span> <span style="color:#f92672">/</span> steps;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> steps; <span style="color:#f92672">++</span>i) 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    vec3 Wi <span style="color:#f92672">=</span> getNextIncomingLightDir(i);
+</span></span><span style="display:flex;"><span>    sum <span style="color:#f92672">+=</span> Fr(P, Wi, Wo) <span style="color:#f92672">*</span> L(P, Wi) <span style="color:#f92672">*</span> dot(N, Wi) <span style="color:#f92672">*</span> dW;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>En mettant à l&rsquo;échelle les étapes par $dW$, la somme sera égale à la surface ou au volume total de la fonction intégrale. Le $dW$ pour mettre à l&rsquo;échelle chaque étape discrète peut être considéré comme $dω_i$ dans l&rsquo;équation de réflectance. Mathématiquement, $dω_i$ est le symbole continu sur lequel nous calculons l&rsquo;intégrale et, bien qu&rsquo;il ne soit pas directement lié à $dW$ dans le code (puisqu&rsquo;il s&rsquo;agit d&rsquo;une étape discrète de la somme de Riemann), il est utile d&rsquo;y penser de cette manière. Gardez à l&rsquo;esprit que les étapes discrètes nous donneront toujours une approximation de l&rsquo;aire totale de la fonction. Un lecteur attentif remarquera que nous pouvons augmenter la précision de la somme de Riemann en augmentant le nombre d&rsquo;étapes.
+L&rsquo;équation de réflectance somme la radiance de toutes les directions de lumière entrante $ω_i$ sur l&rsquo;hémisphère $Ω$ à l&rsquo;échelle de $f_r$ qui ont atteint le point $p$ et renvoie la somme de la lumière réfléchie $L_o$ dans la direction de l&rsquo;observateur. La radiance entrante peut provenir de sources lumineuses, comme nous le savons, ou d&rsquo;une carte de l&rsquo;environnement mesurant la radiance de chaque direction entrante, comme nous le verrons dans les chapitres consacrés à l&rsquo;IBL.
+La seule inconnue restante est le symbole $f_r$, connu sous le nom de BRDF (bidirectional reflective distribution function), qui gradue ou pondère la radiance entrante en fonction des propriétés des matériaux de la surface.</p>
+<h2 id="brdf">BRDF</h2>
+<p>La BRDF, ou fonction de distribution bidirectionnelle de la réflexion, est une fonction qui prend en entrée la direction d&rsquo;entrée (lumière) $ω_i$, la direction de sortie (vue) $ω_o$, la normale à la surface $n$ et un paramètre de surface $a$ qui représente la rugosité de la microsurface. La BRDF donne une approximation de la contribution de chaque rayon lumineux $ω_i$ à la lumière réfléchie finale d&rsquo;une surface opaque, compte tenu de ses propriétés matérielles. Par exemple, si la surface est parfaitement lisse (comme un miroir), la fonction BRDF renvoie $0.0$ pour tous les rayons lumineux entrants $ω_i$, à l&rsquo;exception du rayon qui a le même angle (réfléchi) que le rayon sortant $ω_o$ pour lequel la fonction renvoie $1.0$.</p>
+<p>Une BRDF donne une approximation des propriétés de réflexion et de réfraction du matériau sur la base de la théorie des microfacettes discutée précédemment. Pour qu&rsquo;une BRDF soit physiquement plausible, elle doit respecter la loi de conservation de l&rsquo;énergie, c&rsquo;est-à-dire que la somme de la lumière réfléchie ne doit jamais dépasser la quantité de lumière entrante. Techniquement, Blinn-Phong est considéré comme une BRDF prenant les mêmes $ω_i$ et $ω_o$ comme données d&rsquo;entrée.
+Cependant, Blinn-Phong n&rsquo;est pas considéré comme physiquement fondé car il n&rsquo;adhère pas au principe de conservation de l&rsquo;énergie. Il existe plusieurs BRDF basées sur la physique qui permettent d&rsquo;approximer la réaction de la surface à la lumière. Cependant, presque tous les pipelines de rendu PBR en temps réel utilisent une BRDF connue sous le nom de BRDF de Cook-Torrance.</p>
+<p>La BRDF de Cook-Torrance contient une partie diffuse et une partie spéculaire :
+$$
+f_r = k_d * f_{lambert} + k_s * f_{cook-lambert}
+$$
+Ici, $k_d$ est le rapport mentionné précédemment entre l&rsquo;énergie lumineuse entrante qui est réfractée et $k_s$ qui est réfléchie. Le côté gauche de la BRDF indique la partie diffuse de l&rsquo;équation, désignée ici par $f_{lambert}$. C&rsquo;est ce que l&rsquo;on appelle la diffusion lambertienne, similaire à celle que nous utilisons pour l&rsquo;ombrage diffus, qui est un facteur constant désigné par :
+$$
+f_{lambert} = {c \over \pi}
+$$
+$c$ étant l&rsquo;albédo ou la couleur de la surface (pensez à la texture de la surface diffuse). La division par $\pi$ sert à normaliser la lumière diffuse, car l&rsquo;intégrale susmentionnée qui contient la BRDF est mise à l&rsquo;échelle par $\pi$ (nous y reviendrons dans les chapitres consacrés à l&rsquo;IBL).</p>
+<blockquote>
+<p>Vous vous demandez peut-être quel est le rapport entre cette diffusion lambertienne et l&rsquo;éclairage diffus que nous avons utilisé précédemment : la couleur de la surface multipliée par le produit scalaire entre la normale de la surface et la direction de la lumière. Le produit scalaire est toujours présent, mais il a été déplacé hors de la BRDF puisque nous trouvons $n*ω_i$ à la fin de l&rsquo;intégrale de $L_o$.</p>
+</blockquote>
+<p>Il existe différentes équations pour la partie diffuse de la BRDF qui tendent à être plus réalistes, mais qui sont également plus coûteuses en termes de calcul. Comme l&rsquo;a conclu Epic Games, la diffusion lambertienne est suffisante pour la plupart des rendus en temps réel.</p>
+<p>La partie spéculaire de la BRDF est un peu plus avancée et est décrite comme suit :
+$$
+f_{CookTorrance} = { DFG\over {4(w_o * n)(w_i * n)}}
+$$
+La BRDF spéculaire de Cook-Torrance est composée de trois fonctions et d&rsquo;un facteur de normalisation au dénominateur.Chacun des symboles $D$, $F$ et $G$ représente un type de fonction qui approxime une partie spécifique des propriétés de réflexion de la surface. Il s&rsquo;agit de la fonction de distribution normale, de l&rsquo;équation de Fresnel et de la fonction géométrique :</p>
+<ul>
+<li><strong>Fonction de distribution normale</strong> : approximation de l&rsquo;alignement des microfaces de la surface par rapport au vecteur médian, influencée par la rugosité de la surface ; il s&rsquo;agit de la principale fonction d&rsquo;approximation des microfaces.</li>
+<li><strong>Fonction géométrique</strong> : décrit la propriété d&rsquo;auto-ombrage des microfaces. Lorsqu&rsquo;une surface est relativement rugueuse, les microfaces de la surface peuvent éclipser d&rsquo;autres microfaces, ce qui réduit la lumière réfléchie par la surface.</li>
+<li><strong>Équation de Fresnel</strong> : L&rsquo;équation de Fresnel décrit le rapport de réflexion de la surface à différents angles.</li>
+</ul>
+<p>Chacune de ces fonctions est une approximation de leurs équivalents physiques et vous trouverez plus d&rsquo;une version de chacune d&rsquo;entre elles qui vise à approximer la physique sous-jacente de différentes manières ; certaines sont plus réalistes, d&rsquo;autres plus efficaces. Vous pouvez tout à fait choisir la version approximative de ces fonctions que vous souhaitez utiliser.
+Brian Karis d&rsquo;Epic Games a fait de nombreuses recherches sur les différents types d&rsquo;approximations. Nous allons choisir les mêmes fonctions que celles utilisées par l&rsquo;Unreal Engine 4 d&rsquo;Epic Game, à savoir le GGX de Trowbridge-Reitz pour $D$, l&rsquo;approximation de Fresnel-Schlick pour $F$ et le GGX de Smith-Schlick pour $G$.</p>
+<h2 id="fonction-de-distribution-normale">Fonction de distribution normale</h2>
+<h1 id="ndf_ggxxtrnhalpha">La fonction de distribution normale D donne une approximation statistique de la surface relative des microfacettes exactement alignées sur le vecteur (à mi-chemin) $\vec{h}$. Il existe une multitude de fonctions de distribution normale qui donnent une approximation statistique de l&rsquo;alignement général des microfacettes en fonction d&rsquo;un certain paramètre de rugosité ; celle que nous utiliserons est connue sous le nom de GGX de Trowbridge-Reitz:
+$$
+NDF_{GGXXTR}(n,h,\alpha)</h1>
+<p>{
+\alpha²
+\over
+{
+\pi
+(
+(n*h)²
+(\alpha²-1)
++1
+)²
+}
+}
+$$
+Ici, $\vec{h}$ est le vecteur médian à mesurer par rapport aux microfacettes de la surface, $a$ étant une mesure de la rugosité de la surface. Si nous prenons $\vec{h}$ comme vecteur à mi-chemin entre la normale de la surface et la direction de la lumière pour différents paramètres de rugosité, nous obtenons le résultat visuel suivant :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5ctheory-20230909-pbrth-1.png" alt="theory-20230909-pbrth-1.png"/>
+Lorsque la rugosité est faible (la surface est donc lisse), un nombre très concentré de microfacettes est aligné sur des vecteurs à mi-chemin sur un petit rayon. En raison de cette forte concentration, le NDF affiche une tache très brillante. En revanche, sur une surface rugueuse, où les microfacettes sont alignées dans des directions beaucoup plus aléatoires, vous trouverez un nombre beaucoup plus important de vecteurs à mi-chemin $\vec{h}$ quelque peu alignés sur les microfacettes (mais moins concentrés), ce qui donne des résultats plus grisâtres.</p>
+<p>En GLSL, la fonction de distribution normale de Trowbridge-Reitz GGX se traduit par le code suivant :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">DistributionGGX</span>(vec3 N, vec3 H, <span style="color:#66d9ef">float</span> a)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> a2     <span style="color:#f92672">=</span> a<span style="color:#f92672">*</span>a;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> NdotH  <span style="color:#f92672">=</span> max(dot(N, H), <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> NdotH2 <span style="color:#f92672">=</span> NdotH<span style="color:#f92672">*</span>NdotH;
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> nom    <span style="color:#f92672">=</span> a2;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> denom  <span style="color:#f92672">=</span> (NdotH2 <span style="color:#f92672">*</span> (a2 <span style="color:#f92672">-</span> <span style="color:#ae81ff">1.0</span>) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>    denom        <span style="color:#f92672">=</span> PI <span style="color:#f92672">*</span> denom <span style="color:#f92672">*</span> denom;
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> nom <span style="color:#f92672">/</span> denom;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="fonction-géométrique">Fonction géométrique</h2>
+<h1 id="g_schlickggxnvk">La fonction géométrique donne une approximation statistique de la surface relative où ses micro-détails de surface se recouvrent les uns les autres, provoquant l&rsquo;occultation des rayons lumineux.
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5ctheory-20230909-pbrth2.png" alt="theory-20230909-pbrth2.png"/>
+À l&rsquo;instar de la fonction NDF, la fonction Géométrie prend en compte le paramètre de rugosité d&rsquo;un matériau, les surfaces plus rugueuses ayant une probabilité plus élevée d&rsquo;éclipser les microfaces. La fonction géométrique que nous utiliserons est une combinaison de l&rsquo;approximation GGX et Schlick-Beckmann, connue sous le nom de Schlick-GGX :
+$$
+G_{SchlickGGX}(n,v,k)</h1>
+<h1 id="k_direct">{
+n<em>v
+\over
+(n</em>v)(1-k)+k
+}
+$$
+Ici, k est un remappage de $\alpha$ basé sur l&rsquo;utilisation de la fonction géométrique pour l&rsquo;éclairage direct ou l&rsquo;éclairage IBL :
+$$
+k_{direct}</h1>
+<p>{
+(\alpha + 1)²
+\over
+8
+}
+$$
+$$
+k_{IBL} =
+{
+\alpha²
+\over
+2
+}
+$$
+Notez que la valeur de $\alpha$ peut varier en fonction de la façon dont votre moteur traduit la rugosité en $\alpha$.</p>
+<p>Dans les chapitres suivants, nous examinerons en détail comment et où ce remappage devient pertinent.</p>
+<h1 id="g_nvlk">Pour approximer efficacement la géométrie, nous devons prendre en compte à la fois la direction de la vue (obstruction de la géométrie) et le vecteur de direction de la lumière (ombrage de la géométrie). La méthode de Smith permet de prendre en compte ces deux éléments :
+$$
+G_{n,v,l,k}</h1>
+<p>G_{sub}(n,v,k)G_{sub}(n,l,k)
+$$
+L&rsquo;utilisation de la méthode de Smith avec Schlick-GGX comme $G_{sub}$ donne l&rsquo;aspect visuel suivant pour différentes rugosités $R$ :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5ctheory-20230909-pbrth3.png" alt="theory-20230909-pbrth3.png"/>
+La fonction géométrique est un multiplicateur entre $[0.0, 1.0]$, $1.0$ (ou blanc) mesurant l&rsquo;absence d&rsquo;ombrage des microfaces et $0.0$ (ou noir) l&rsquo;ombrage complet des microfaces.</p>
+<p>En GLSL, la fonction géométrique se traduit par le code suivant :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">GeometrySchlickGGX</span>(<span style="color:#66d9ef">float</span> NdotV, <span style="color:#66d9ef">float</span> k)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> nom   <span style="color:#f92672">=</span> NdotV;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> denom <span style="color:#f92672">=</span> NdotV <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> k) <span style="color:#f92672">+</span> k;
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> nom <span style="color:#f92672">/</span> denom;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">GeometrySmith</span>(vec3 N, vec3 V, vec3 L, <span style="color:#66d9ef">float</span> k)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> NdotV <span style="color:#f92672">=</span> max(dot(N, V), <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> NdotL <span style="color:#f92672">=</span> max(dot(N, L), <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> ggx1 <span style="color:#f92672">=</span> GeometrySchlickGGX(NdotV, k);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> ggx2 <span style="color:#f92672">=</span> GeometrySchlickGGX(NdotL, k);
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> ggx1 <span style="color:#f92672">*</span> ggx2;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="equation-de-fresnel">Equation de Fresnel</h2>
+<p>L&rsquo;équation de Fresnel (prononcée Freh-nel) décrit le rapport entre la lumière réfléchie et la lumière réfractée, qui varie en fonction de l&rsquo;angle d&rsquo;observation d&rsquo;une surface. Au moment où la lumière touche une surface, l&rsquo;équation de Fresnel indique le pourcentage de lumière réfléchie en fonction de l&rsquo;angle de vue de la surface. À partir de ce taux de réflexion et du principe de conservation de l&rsquo;énergie, nous pouvons obtenir directement la partie réfractée de la lumière.</p>
+<p>Chaque surface ou matériau possède un niveau de réflectivité de base lorsqu&rsquo;on regarde sa surface en face, mais lorsqu&rsquo;on regarde la surface sous un angle, toutes les réflexions deviennent plus apparentes par rapport à la réflectivité de base de la surface. Vous pouvez le vérifier par vous-même en regardant votre bureau (probablement) en bois ou en métal qui présente un certain niveau de réflectivité de base à partir d&rsquo;un angle de vue perpendiculaire, mais en regardant votre bureau à partir d&rsquo;un angle de près de 90 degrés, vous verrez que les reflets deviennent beaucoup plus apparents. En théorie, toutes les surfaces réfléchissent entièrement la lumière si elles sont observées sous un angle parfait de 90 degrés. Ce phénomène est connu sous le nom de Fresnel et est décrit par l&rsquo;équation de Fresnel.</p>
+<h1 id="f_schlickhvf_0">L&rsquo;équation de Fresnel est une équation assez complexe, mais heureusement, elle peut être approximée à l&rsquo;aide de l&rsquo;approximation de Fresnel-Schlick :
+$$
+F_{Schlick}(h,v,F_0)</h1>
+<p>F_0
++
+(1-F_0)
+(1-(h*v))⁵
+$$
+$F_0$ représente la réflectivité de base de la surface, que nous calculons à l&rsquo;aide de ce que l&rsquo;on appelle les <strong>indices de réfraction</strong> ou IOR. Comme on peut le voir sur une surface sphérique, plus on regarde vers l&rsquo;extérieur, plus les angles rasants de la surface sont importants:
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5ctheory-20230909-pbrfresnel1.png" alt="theory-20230909-pbrfresnel1.png"/>
+L&rsquo;équation de Fresnel comporte quelques subtilités. L&rsquo;une d&rsquo;entre elles est que l&rsquo;approximation de Fresnel-Schlick n&rsquo;est réellement définie que pour les surfaces diélectriques ou non métalliques. Pour les surfaces conductrices (métaux), le calcul de la réflectivité de base avec les indices de réfraction ne fonctionne pas correctement et nous devons utiliser une équation de Fresnel différente pour les conducteurs. Comme cela n&rsquo;est pas pratique, nous procédons à une approximation supplémentaire en calculant au préalable la réponse de la surface à l&rsquo;incidence normale ($F_0$) à un angle de 0 degré, comme si l&rsquo;on regardait directement une surface. Nous interpolons cette valeur en fonction de l&rsquo;angle de vue, conformément à l&rsquo;approximation de Fresnel-Schlick, de sorte que nous pouvons utiliser la même équation pour les métaux et les non-métaux.</p>
+<p>La réponse de la surface à l&rsquo;incidence normale, ou la réflectivité de base, peut être trouvée dans de grandes bases de données comme celles-ci. Certaines des valeurs les plus courantes sont énumérées ci-dessous, d&rsquo;après les notes de cours de Naty Hoffman :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5ctheory-20230909-pbrfresnel2.png" alt="theory-20230909-pbrfresnel2.png"/>
+Il est intéressant d&rsquo;observer que pour toutes les surfaces diélectriques, la réflectivité de base ne dépasse jamais $0.17$, ce qui est l&rsquo;exception plutôt que la règle, alors que pour les conducteurs, la réflectivité de base commence beaucoup plus haut et varie (le plus souvent) entre $0.5$ et $1.0$. En outre, pour les conducteurs (ou les surfaces métalliques), la réflectivité de base est teintée. C&rsquo;est pourquoi $F_0$ est présenté comme un triplet RVB (la réflectivité à l&rsquo;incidence normale peut varier selon la longueur d&rsquo;onde) ; c&rsquo;est quelque chose que l&rsquo;on ne voit que sur les surfaces métalliques.</p>
+<p>Ces attributs spécifiques des surfaces métalliques par rapport aux surfaces diélectriques ont donné naissance à ce que l&rsquo;on appelle le flux de travail métallique. Dans le flux de travail métallique, nous créons des matériaux de surface avec un paramètre supplémentaire appelé &ldquo;metalness&rdquo; qui décrit si une surface est métallique ou non métallique.</p>
+<blockquote>
+<p>Théoriquement, la métallicité d&rsquo;un matériau est binaire : il s&rsquo;agit soit d&rsquo;un métal, soit d&rsquo;un non-métal ; il ne peut pas y avoir les deux. Cependant, la plupart des pipelines de rendu permettent de configurer la métallicité d&rsquo;une surface de manière linéaire entre $0.0$ et $1.0$. Cela s&rsquo;explique principalement par le manque de précision des textures des matériaux. Par exemple, une surface présentant de petites particules (non métalliques) de poussière, de sable ou d&rsquo;éraflures sur une surface métallique est difficile à rendre avec des valeurs binaires de métallicité.</p>
+</blockquote>
+<p>En calculant au préalable $F_0$ pour les diélectriques et les conducteurs, nous pouvons utiliser la même approximation de Fresnel-Schlick pour les deux types de surfaces, mais nous devons teinter la réflectivité de base si nous avons une surface métallique. Nous procédons généralement de la manière suivante :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 F0 <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">0.04</span>);
+</span></span><span style="display:flex;"><span>F0      <span style="color:#f92672">=</span> mix(F0, surfaceColor.rgb, metalness);
+</span></span></code></pre></div><p>Nous définissons une réflectivité de base qui est approximative pour la plupart des surfaces diélectriques. Il s&rsquo;agit encore d&rsquo;une autre approximation, car la moyenne de $F_0$ est calculée pour les diélectriques les plus courants. Une réflectivité de base de $0.04$ est valable pour la plupart des diélectriques et produit des résultats physiquement plausibles sans avoir à autoriser un paramètre de surface supplémentaire. Ensuite, en fonction du degré de métallisation d&rsquo;une surface, nous prenons soit la réflectivité de base du diélectrique, soit $F_0$
+créé en tant que couleur de surface. Comme les surfaces métalliques absorbent toute la lumière réfractée, elles n&rsquo;ont pas de réflexions diffuses et nous pouvons directement utiliser la texture de la couleur de la surface comme réflectivité de base.</p>
+<p>En code, l&rsquo;approximation de Fresnel Schlick se traduit par :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 <span style="color:#a6e22e">fresnelSchlick</span>(<span style="color:#66d9ef">float</span> cosTheta, vec3 F0)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> F0 <span style="color:#f92672">+</span> (<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> F0) <span style="color:#f92672">*</span> pow(<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> cosTheta, <span style="color:#ae81ff">5.0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Avec <code>cosTheta</code> qui est le produit scalaire entre la normale n de la surface et la direction $\vec{h}$ (ou $\vec{v}$) de la demi-vue.</p>
+<h2 id="équation-de-réflectance-cook-torrance">Équation de réflectance Cook-Torrance</h2>
+<p>Chaque composante de la BRDF de Cook-Torrance étant décrite, nous pouvons inclure la BRDF physique dans l&rsquo;équation de réflectance finale :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5ctheory-20230909-pbr5.png" alt="theory-20230909-pbr5.png"/>
+Cette équation n&rsquo;est cependant pas tout à fait correcte d&rsquo;un point de vue mathématique. Vous vous souvenez peut-être que le terme de Fresnel $F$ représente le rapport de la lumière qui est réfléchie sur une surface. Il s&rsquo;agit en fait de notre rapport $k_s$, ce qui signifie que la partie spéculaire (BRDF) de l&rsquo;équation de réflectance contient implicitement le rapport de réflectance $k_s$. Compte tenu de ce qui précède, notre équation de réflectance finale devient :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5ctheory-20230909-pbrth6.png" alt="theory-20230909-pbrth6.png"/>
+Cette équation décrit maintenant complètement un modèle de rendu basé sur la physique qui est généralement reconnu comme ce que nous appelons communément le rendu basé sur la physique, ou PBR. Ne vous inquiétez pas si vous n&rsquo;avez pas encore bien compris comment nous allons devoir intégrer toutes les mathématiques discutées dans le code. Dans les prochains chapitres, nous étudierons comment utiliser l&rsquo;équation de réflectance pour obtenir des résultats physiquement plus plausibles dans notre rendu d&rsquo;éclairage et tous les éléments devraient commencer à s&rsquo;emboîter.</p>
+<h2 id="authoring-pbr-materials">Authoring PBR materials</h2>
+<p>Avec la connaissance du modèle mathématique sous-jacent de la PBR, nous terminerons la discussion en décrivant comment les artistes créent généralement les propriétés physiques d&rsquo;une surface que nous pouvons directement introduire dans les équations de la PBR. Chacun des paramètres de surface dont nous avons besoin pour un pipeline PBR peut être défini ou modélisé par des textures. L&rsquo;utilisation de textures nous permet de contrôler par fragment la façon dont chaque point de la surface doit réagir à la lumière : si ce point est métallique, rugueux ou lisse, ou comment la surface réagit aux différentes longueurs d&rsquo;onde de la lumière.</p>
+<p>Vous trouverez ci-dessous une liste de textures que vous trouverez fréquemment dans un pipeline PBR, ainsi que leur résultat visuel s&rsquo;il est fourni à un moteur de rendu PBR :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5ctheory-20230909-pbrth7.png" alt="theory-20230909-pbrth7.png"/>
+<em>Albédo</em> : la texture d&rsquo;albédo spécifie pour chaque texel la couleur de la surface, ou la réflectivité de base si ce texel est métallique. Cette texture est en grande partie similaire à celle que nous avons utilisée précédemment comme texture diffuse, mais toutes les informations relatives à l&rsquo;éclairage sont extraites de la texture. Les textures diffuses ont souvent de légères ombres ou des crevasses sombres à l&rsquo;intérieur de l&rsquo;image, ce qui n&rsquo;est pas souhaitable pour une texture d&rsquo;albédo ; <em>elle ne doit contenir que la couleur</em> (ou les coefficients d&rsquo;absorption réfractée) de la surface.</p>
+<p><em>Normale</em> : la texture de la carte normale est exactement la même que celle que nous avons utilisée précédemment dans le chapitre sur le mapping de normale. Elle nous permet de spécifier, pour chaque fragment, une normale unique afin de donner l&rsquo;illusion qu&rsquo;une surface est plus bosselée que sa contrepartie plane.</p>
+<p><em>Métallique</em> : la carte métallique spécifie, par texel, si un texel est métallique ou non. En fonction de la configuration du moteur PBR, les artistes peuvent définir la métallicité sous la forme de valeurs en niveaux de gris ou de valeurs binaires (noir ou blanc).</p>
+<p><em>Rugosité</em> : la map de rugosité spécifie le degré de rugosité d&rsquo;une surface par texel. La valeur échantillonnée de la rugosité influence les orientations statistiques des microfacettes de la surface. Une surface rugueuse produit des reflets plus larges et plus flous, tandis qu&rsquo;une surface lisse produit des reflets clairs et précis. Certains moteurs PBR prévoient une carte de lissage au lieu d&rsquo;une carte de rugosité, ce que certains artistes trouvent plus intuitif. Ces valeurs sont ensuite converties ($1.0$ - lissage) en rugosité au moment où elles sont échantillonnées.</p>
+<p><em>AO</em> : l&rsquo;occlusion ambiante ou la carte AO spécifie un facteur d&rsquo;ombrage supplémentaire de la surface et potentiellement de la géométrie environnante. Si nous avons une surface en briques par exemple, la texture d&rsquo;albédo ne devrait pas contenir d&rsquo;informations sur l&rsquo;ombrage à l&rsquo;intérieur des fissures de la brique. La carte d&rsquo;AO spécifie cependant ces bords assombris car il est plus difficile pour la lumière de s&rsquo;échapper. La prise en compte de l&rsquo;occlusion ambiante à la fin de l&rsquo;étape d&rsquo;éclairage peut considérablement améliorer la qualité visuelle de votre scène. La map d&rsquo;occlusion ambiante d&rsquo;un mesh ou d&rsquo;une surface est soit générée manuellement, soit pré calculée dans les programmes de modélisation 3D.</p>
+<p>Les artistes définissent et ajustent ces valeurs d&rsquo;entrée physiques par texel et peuvent baser leurs valeurs de texture sur les propriétés physiques de surface des matériaux du monde réel. C&rsquo;est l&rsquo;un des principaux avantages d&rsquo;un pipeline de rendu PBR, car les propriétés physiques d&rsquo;une surface restent les mêmes, quel que soit l&rsquo;environnement ou la configuration de l&rsquo;éclairage, ce qui permet aux artistes d&rsquo;obtenir plus facilement des résultats physiquement plausibles. Les surfaces créées dans un pipeline PBR peuvent facilement être partagées entre différents moteurs de rendu PBR, elles auront l&rsquo;air correct quel que soit l&rsquo;environnement dans lequel elles se trouvent et, par conséquent, elles auront l&rsquo;air beaucoup plus naturelles.</p>
+<h1 id="pour-en-savoir-plus">Pour en savoir plus</h1>
+<ul>
+<li><a href="http://blog.selfshadow.com/publications/s2013-shading-course/hoffman/s2013_pbs_physics_math_notes.pdf">Background : Physics and Math of Shading by Naty Hoffmann</a> : il y a trop de théorie pour en parler dans un seul article, donc la théorie ici ne fait qu&rsquo;effleurer la surface ; si vous voulez en savoir plus sur la physique de la lumière et comment elle est liée à la théorie du PBR <strong>c&rsquo;est</strong> la ressource que vous voulez lire.</li>
+<li><a href="http://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf">Real shading in Unreal Engine 4</a> : traite du modèle PBR adopté par Epic Games dans leur quatrième version d&rsquo;Unreal Engine. Le système PBR sur lequel nous nous concentrerons dans ces chapitres est basé sur ce modèle PBR.</li>
+<li><a href="https://www.shadertoy.com/view/4sSfzK">[SH17C] Physically Based Shading, by knarkowicz</a> : excellente présentation de tous les éléments PBR individuels dans une démo ShaderToy interactive.</li>
+<li><a href="https://www.marmoset.co/toolbag/learn/pbr-theory">Marmoset : PBR Theory</a> : une introduction à la PBR principalement destinée aux artistes, mais néanmoins une bonne lecture.</li>
+<li><a href="http://www.codinglabs.net/article_physically_based_rendering.aspx">Coding Labs : Physically based rendering</a> : une introduction à l&rsquo;équation de rendu et à son rapport avec le PBR.</li>
+<li><a href="http://www.codinglabs.net/article_physically_based_rendering_cook_torrance.aspx">Coding Labs : Physically Based Rendering - Cook-Torrance</a> : une introduction à la BRDF de Cook-Torrance.</li>
+<li><a href="http://blog.wolfire.com/2015/10/Physically-based-rende">Wolfire Games - Physically based rendering</a> : introduction à la BRDF de Cook-Torrance.</li>
+</ul>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

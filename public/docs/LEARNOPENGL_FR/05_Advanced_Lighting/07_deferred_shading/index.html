@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+<br><br>
+<h1 id="ombrage-différé">Ombrage différé</h1>
+<p>La méthode d&rsquo;éclairage utilisée jusqu&rsquo;à présent s&rsquo;appelait &ldquo;<strong>forward rendering</strong>&rdquo; ou &ldquo;<strong>forward shading</strong>&rdquo;. Il s&rsquo;agit d&rsquo;une approche simple qui consiste à effectuer le rendu d&rsquo;un objet et à l&rsquo;éclairer en fonction de toutes les sources lumineuses de la scène. Nous faisons cela pour chaque objet individuellement pour chaque objet de la scène. Bien qu&rsquo;elle soit facile à comprendre et à mettre en œuvre, cette approche est également très coûteuse en termes de performances, car chaque objet rendu doit itérer sur chaque source de lumière pour chaque fragment rendu, ce qui est beaucoup ! Le forward rendering a également tendance à gaspiller beaucoup de shaders de fragments dans les scènes avec une grande complexité de profondeur (plusieurs objets couvrent le même pixel de l&rsquo;écran) car les sorties des shaders de fragments sont remplacées par des sorties de shaders de fragments.</p>
+<p>L&rsquo;ombrage différé ou le rendu différé vise à surmonter ces problèmes en changeant radicalement la façon dont nous rendons les objets. Cela nous donne plusieurs nouvelles options pour optimiser de manière significative les scènes avec un grand nombre de lumières, nous permettant de rendre des centaines (ou même des milliers) de lumières avec un framerate acceptable. <strong>L&rsquo;image suivante est une scène avec 1847 lumières ponctuelles rendues avec un ombrage différé</strong> (image fournie par Hannes Nevalainen) ; quelque chose qui ne serait pas possible avec un rendu direct.
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c07_deferred_shading-20230903-deferred1.png" alt="07_deferred_shading-20230903-deferred1.png"/>
+L&rsquo;ombrage différé est basé sur l&rsquo;idée que nous différons ou reportons la majeure partie du rendu lourd (comme l&rsquo;éclairage) à un stade ultérieur. L**&lsquo;ombrage différé consiste en deux passes : dans la première passe, appelée passe géométrique, nous effectuons le rendu de la scène une fois et récupérons toutes sortes d&rsquo;informations géométriques des objets que nous stockons dans une collection de textures appelée G-buffer ; pensez aux vecteurs de position, aux vecteurs de couleur, aux vecteurs de normalité et/ou aux valeurs spéculaires**. <strong>Les informations géométriques d&rsquo;une scène stockées dans le G-buffer sont ensuite utilisées pour des calculs d&rsquo;éclairage (plus complexes)</strong>. Voici le contenu du tampon G d&rsquo;une seule image :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c07_deferred_shading-20230903-deferred2.png" alt="07_deferred_shading-20230903-deferred2.png"/>
+Nous utilisons les textures du tampon G dans une deuxième passe appelée <strong>passe d&rsquo;éclairage</strong> où nous rendons un quad qui remplit l&rsquo;écran et calculons l&rsquo;éclairage de la scène pour chaque fragment en utilisant les informations géométriques stockées dans le tampon G ; pixel par pixel, nous itérons sur le tampon G. Au lieu de faire passer chaque objet du vertex shader au fragment shader, nous découplons les processus avancés de fragmentation à un stade ultérieur. Les calculs d&rsquo;éclairage sont exactement les mêmes, mais cette fois-ci, nous prenons toutes les variables d&rsquo;entrée nécessaires dans les textures correspondantes du G-buffer, au lieu du vertex shader (plus quelques variables uniformes).</p>
+<p>L&rsquo;image ci-dessous illustre bien le processus d&rsquo;ombrage différé.</p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c07_deferred_shading-20230903-deferred3.png" alt="07_deferred_shading-20230903-deferred3.png"/></p>
+<p>L&rsquo;un des principaux avantages de cette approche est que, quel que soit le fragment qui se retrouve dans le tampon G, ce sont les informations relatives au fragment qui se retrouvent sous la forme d&rsquo;un pixel à l&rsquo;écran. Le test de profondeur a déjà conclu que ce fragment était le dernier et le plus élevé. Cela garantit que pour chaque pixel que nous traitons dans la passe d&rsquo;éclairage, nous ne calculons l&rsquo;éclairage qu&rsquo;une seule fois. En outre, le rendu différé ouvre la voie à d&rsquo;autres optimisations qui nous permettent de rendre un nombre beaucoup plus important de sources lumineuses par rapport au rendu direct.</p>
+<p>Il présente également quelques inconvénients car le G-buffer nous oblige à stocker une quantité relativement importante de données de scène dans ses tampons de couleur de texture. Cela consomme de la mémoire, d&rsquo;autant plus que les données de scène telles que les vecteurs de position nécessitent une grande précision. Un autre inconvénient est qu&rsquo;il ne supporte pas le blending (car nous n&rsquo;avons que des informations sur le fragment le plus haut) et que le MSAA ne fonctionne plus. Il existe plusieurs solutions de contournement que nous aborderons à la fin de ce chapitre.</p>
+<p>Remplir le tampon G (dans la passe géométrique) n&rsquo;est pas trop coûteux car nous stockons directement les informations de l&rsquo;objet comme la position, la couleur ou les normales dans un framebuffer avec une quantité de traitement faible ou nulle. En utilisant des cibles de rendu multiples (MRT), nous pouvons même faire tout cela en une seule passe de rendu.</p>
+<h2 id="le-g-buffer">Le G-Buffer</h2>
+<p>Le G-buffer est le terme collectif de toutes les textures utilisées pour stocker les données relatives à l&rsquo;éclairage pour la passe d&rsquo;éclairage finale. Prenons le temps de passer brièvement en revue toutes les données dont nous avons besoin pour éclairer un fragment avec le rendu direct :</p>
+<ul>
+<li>Un vecteur de <strong>position</strong> dans l&rsquo;espace-monde 3D pour calculer la variable de position du fragment (interpolée) utilisée pour <code>lightDir</code> et <code>viewDir</code>.</li>
+<li>Un vecteur de <strong>couleur</strong> diffuse RVB également connu sous le nom d&rsquo;<strong>albédo</strong>.</li>
+<li>Un vecteur <strong>normal</strong> 3D pour déterminer la pente d&rsquo;une surface.</li>
+<li>Un vecteur <strong>intensité spéculaire</strong> flottant.</li>
+<li>Tous les vecteurs de position et de couleur des sources lumineuses.</li>
+<li>Le vecteur de position du joueur ou du spectateur.</li>
+</ul>
+<p>Avec ces variables (par fragment) à notre disposition, nous sommes en mesure de calculer l&rsquo;éclairage (Blinn-)Phong auquel nous sommes habitués. Les positions et les couleurs des sources de lumière, ainsi que la position de la vue du joueur, peuvent être configurées en utilisant des variables uniformes, mais les autres variables sont toutes spécifiques à un fragment. Si nous pouvons d&rsquo;une manière ou d&rsquo;une autre passer les mêmes données à la passe d&rsquo;éclairage différée finale, nous pouvons calculer les mêmes effets d&rsquo;éclairage, même si nous rendons des fragments d&rsquo;un quad en 2D.</p>
+<p>Il n&rsquo;y a pas de limite dans OpenGL à ce que nous pouvons stocker dans une texture, il est donc logique de stocker toutes les données par fragment dans une ou plusieurs textures remplies à l&rsquo;écran du G-buffer et de les utiliser plus tard dans la passe d&rsquo;éclairage. Comme les textures du tampon G auront la même taille que le quad 2D de la passe d&rsquo;éclairage, nous obtenons exactement les mêmes données de fragment que nous aurions eues dans le cadre d&rsquo;un rendu direct, mais cette fois dans la passe d&rsquo;éclairage ; il y a une correspondance un à un.</p>
+<p>En pseudo-code, l&rsquo;ensemble du processus ressemble à ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">while</span>(...) <span style="color:#75715e">// render loop
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 1. geometry pass: render all geometric/color data to g-buffer 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+</span></span><span style="display:flex;"><span>    glClearColor(<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>); <span style="color:#75715e">// keep it black so it doesn&#39;t leak into g-buffer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    glClear(GL_COLOR_BUFFER_BIT <span style="color:#f92672">|</span> GL_DEPTH_BUFFER_BIT);
+</span></span><span style="display:flex;"><span>    gBufferShader.use();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(Object obj : Objects)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        ConfigureShaderTransformsAndUniforms();
+</span></span><span style="display:flex;"><span>        obj.Draw();
+</span></span><span style="display:flex;"><span>    }  
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 2. lighting pass: use g-buffer to calculate the scene&#39;s lighting
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    glBindFramebuffer(GL_FRAMEBUFFER, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>    lightingPassShader.use();
+</span></span><span style="display:flex;"><span>    BindAllGBufferTextures();
+</span></span><span style="display:flex;"><span>    SetLightingUniforms();
+</span></span><span style="display:flex;"><span>    RenderQuad();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Les données que nous devrons stocker pour chaque fragment sont un vecteur de position, un vecteur de normale, un vecteur de couleur et une valeur d&rsquo;intensité spéculaire. Dans la passe géométrique, nous devons effectuer le rendu de tous les objets de la scène et stocker ces composants de données dans le tampon G. Nous pouvons à nouveau utiliser des cibles de rendu multiples pour effectuer le rendu dans plusieurs tampons de couleur en une seule passe de rendu ; ceci a été brièvement discuté dans le chapitre sur le Bloom.</p>
+<p>Pour la passe de géométrie, nous devons initialiser un objet framebuffer que nous appellerons <code>gBuffer</code>, auquel sont attachés plusieurs tampons de couleur et un seul objet <code>renderbuffer</code> de profondeur. Pour la position et la texture normale, nous utiliserons de préférence une texture de haute précision (16 ou 32 bits flottants par composant). Pour les valeurs d&rsquo;albédo et de spéculaire, nous nous contenterons de la précision de texture par défaut (précision de 8 bits par composant). Notez que nous utilisons <code>GL_RGBA16F</code> plutôt que <code>GL_RGB16F</code> car les GPU préfèrent généralement les formats à 4 composantes aux formats à 3 composantes en raison de l&rsquo;alignement des octets ; certains pilotes peuvent échouer à compléter le framebuffer dans le cas contraire.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> gBuffer;
+</span></span><span style="display:flex;"><span>glGenFramebuffers(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>gBuffer);
+</span></span><span style="display:flex;"><span>glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> gPosition, gNormal, gColorSpec;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// - position color buffer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glGenTextures(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>gPosition);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_2D, gPosition);
+</span></span><span style="display:flex;"><span>glTexImage2D(GL_TEXTURE_2D, <span style="color:#ae81ff">0</span>, GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, <span style="color:#ae81ff">0</span>, GL_RGBA, GL_FLOAT, NULL);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+</span></span><span style="display:flex;"><span>glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// - normal color buffer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glGenTextures(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>gNormal);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_2D, gNormal);
+</span></span><span style="display:flex;"><span>glTexImage2D(GL_TEXTURE_2D, <span style="color:#ae81ff">0</span>, GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, <span style="color:#ae81ff">0</span>, GL_RGBA, GL_FLOAT, NULL);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+</span></span><span style="display:flex;"><span>glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// - color + specular color buffer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glGenTextures(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>gAlbedoSpec);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
+</span></span><span style="display:flex;"><span>glTexImage2D(GL_TEXTURE_2D, <span style="color:#ae81ff">0</span>, GL_RGBA, SCR_WIDTH, SCR_HEIGHT, <span style="color:#ae81ff">0</span>, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+</span></span><span style="display:flex;"><span>glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpec, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// - tell OpenGL which color attachments we&#39;ll use (of this framebuffer) for rendering 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> attachments[<span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+</span></span><span style="display:flex;"><span>glDrawBuffers(<span style="color:#ae81ff">3</span>, attachments);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// then also add render buffer object as depth buffer and check for completeness.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>[...]
+</span></span></code></pre></div><p>Puisque nous utilisons plusieurs cibles de rendu, nous devons explicitement indiquer à OpenGL lequel des tampons de couleur associés à <code>GBuffer</code> nous souhaitons utiliser pour le rendu avec <code>glDrawBuffers</code>. Il est également intéressant de noter que nous combinons les données de couleur et d&rsquo;intensité spéculaire dans une seule texture RGBA ; cela nous évite d&rsquo;avoir à déclarer une texture de tampon de couleur supplémentaire. Au fur et à mesure que votre pipeline d&rsquo;ombrage différé devient plus complexe et nécessite plus de données, vous trouverez rapidement de nouvelles façons de combiner les données dans des textures individuelles.</p>
+<p>Ensuite, nous devons effectuer le rendu dans le tampon G. En supposant que chaque objet possède une texture diffuse, normale et spéculaire, nous utiliserons quelque chose comme le fragment shader suivant pour effectuer le rendu dans le G-buffer :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) out vec3 gPosition;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>) out vec3 gNormal;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>) out vec4 gAlbedoSpec;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>in vec2 TexCoords;
+</span></span><span style="display:flex;"><span>in vec3 FragPos;
+</span></span><span style="display:flex;"><span>in vec3 Normal;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform sampler2D texture_diffuse1;
+</span></span><span style="display:flex;"><span>uniform sampler2D texture_specular1;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// store the fragment position vector in the first gbuffer texture
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    gPosition <span style="color:#f92672">=</span> FragPos;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// also store the per-fragment normals into the gbuffer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    gNormal <span style="color:#f92672">=</span> normalize(Normal);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// and the diffuse per-fragment color
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    gAlbedoSpec.rgb <span style="color:#f92672">=</span> texture(texture_diffuse1, TexCoords).rgb;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// store specular intensity in gAlbedoSpec&#39;s alpha component
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    gAlbedoSpec.a <span style="color:#f92672">=</span> texture(texture_specular1, TexCoords).r;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Comme nous utilisons plusieurs cibles de rendu, le spécificateur de disposition indique à OpenGL dans quel tampon de couleur du framebuffer actif nous effectuons le rendu. Notez que nous ne stockons pas l&rsquo;intensité spéculaire dans une seule texture de tampon de couleur car nous pouvons stocker sa valeur flottante dans la composante alpha de l&rsquo;une des autres textures de tampon de couleur.</p>
+<blockquote>
+<p>Gardez à l&rsquo;esprit que pour les calculs d&rsquo;éclairage, il est extrêmement important de conserver toutes les variables pertinentes dans le même espace de coordonnées. Dans ce cas, nous stockons (et calculons) toutes les variables dans l&rsquo;espace monde.</p>
+</blockquote>
+<p>Si nous devions maintenant rendre une grande collection d&rsquo;objets sac à dos dans le framebuffer <code>gBuffer</code> et visualiser son contenu en projetant chaque tampon de couleur un par un sur un quad qui remplit l&rsquo;écran, nous obtiendrions quelque chose comme ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c07_deferred_shading-20230904-deferred4.png" alt="07_deferred_shading-20230904-deferred4.png"/>
+Essayez de visualiser que les vecteurs de position et de normalité de l&rsquo;espace monde sont effectivement corrects. Par exemple, les vecteurs normaux pointant vers la droite seront plus alignés sur une couleur rouge, de même pour les vecteurs de position qui pointent de l&rsquo;origine de la scène vers la droite. Dès que vous êtes satisfait du contenu du tampon G, il est temps de passer à l&rsquo;étape suivante : la passe d&rsquo;éclairage.</p>
+<h2 id="la-passe-déclairage-différée">La passe d&rsquo;éclairage différée</h2>
+<p>Avec une large collection de données de fragments dans le G-Buffer à notre disposition, nous avons la possibilité de calculer complètement les couleurs éclairées finales de la scène. Pour ce faire, nous itérons sur chacune des textures du G-Buffer, pixel par pixel, et utilisons leur contenu comme entrée des algorithmes d&rsquo;éclairage. Comme les valeurs des textures du tampon G représentent toutes les valeurs finales des fragments transformés, nous n&rsquo;avons à effectuer les opérations d&rsquo;éclairage coûteuses qu&rsquo;une fois par pixel. Ceci est particulièrement utile dans les scènes complexes où nous pourrions facilement invoquer plusieurs appels coûteux de shaders de fragments par pixel dans un contexte de rendu direct.</p>
+<p>Pour la passe d&rsquo;éclairage, nous allons effectuer le rendu d&rsquo;un quad 2D qui remplit l&rsquo;écran (un peu comme un effet de post-traitement) et exécuter un shader de fragment d&rsquo;éclairage coûteux sur chaque pixel :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glClear(GL_COLOR_BUFFER_BIT <span style="color:#f92672">|</span> GL_DEPTH_BUFFER_BIT);
+</span></span><span style="display:flex;"><span>glActiveTexture(GL_TEXTURE0);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_2D, gPosition);
+</span></span><span style="display:flex;"><span>glActiveTexture(GL_TEXTURE1);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_2D, gNormal);
+</span></span><span style="display:flex;"><span>glActiveTexture(GL_TEXTURE2);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// also send light relevant uniforms
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>shaderLightingPass.use();
+</span></span><span style="display:flex;"><span>SendAllLightUniformsToShader(shaderLightingPass);
+</span></span><span style="display:flex;"><span>shaderLightingPass.setVec3(<span style="color:#e6db74">&#34;viewPos&#34;</span>, camera.Position);
+</span></span><span style="display:flex;"><span>RenderQuad();  
+</span></span></code></pre></div><p>Nous lions toutes les textures pertinentes du tampon G avant le rendu et envoyons également les variables uniformes relatives à l&rsquo;éclairage au shader.</p>
+<p>Le fragment shader de la passe d&rsquo;éclairage est largement similaire aux shaders de chapitre d&rsquo;éclairage que nous avons utilisés jusqu&rsquo;à présent. La nouveauté réside dans la méthode d&rsquo;obtention des variables d&rsquo;entrée de l&rsquo;éclairage, que nous échantillonnons désormais directement à partir du G-buffer :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>in vec2 TexCoords;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform sampler2D gPosition;
+</span></span><span style="display:flex;"><span>uniform sampler2D gNormal;
+</span></span><span style="display:flex;"><span>uniform sampler2D gAlbedoSpec;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Light</span> {
+</span></span><span style="display:flex;"><span>    vec3 Position;
+</span></span><span style="display:flex;"><span>    vec3 Color;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> NR_LIGHTS <span style="color:#f92672">=</span> <span style="color:#ae81ff">32</span>;
+</span></span><span style="display:flex;"><span>uniform Light lights[NR_LIGHTS];
+</span></span><span style="display:flex;"><span>uniform vec3 viewPos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{             
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// retrieve data from G-buffer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 FragPos <span style="color:#f92672">=</span> texture(gPosition, TexCoords).rgb;
+</span></span><span style="display:flex;"><span>    vec3 Normal <span style="color:#f92672">=</span> texture(gNormal, TexCoords).rgb;
+</span></span><span style="display:flex;"><span>    vec3 Albedo <span style="color:#f92672">=</span> texture(gAlbedoSpec, TexCoords).rgb;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> Specular <span style="color:#f92672">=</span> texture(gAlbedoSpec, TexCoords).a;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// then calculate lighting as usual
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 lighting <span style="color:#f92672">=</span> Albedo <span style="color:#f92672">*</span> <span style="color:#ae81ff">0.1</span>; <span style="color:#75715e">// hard-coded ambient component
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 viewDir <span style="color:#f92672">=</span> normalize(viewPos <span style="color:#f92672">-</span> FragPos);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> NR_LIGHTS; <span style="color:#f92672">++</span>i)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// diffuse
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        vec3 lightDir <span style="color:#f92672">=</span> normalize(lights[i].Position <span style="color:#f92672">-</span> FragPos);
+</span></span><span style="display:flex;"><span>        vec3 diffuse <span style="color:#f92672">=</span> max(dot(Normal, lightDir), <span style="color:#ae81ff">0.0</span>) <span style="color:#f92672">*</span> Albedo <span style="color:#f92672">*</span> lights[i].Color;
+</span></span><span style="display:flex;"><span>        lighting <span style="color:#f92672">+=</span> diffuse;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(lighting, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>Le shader de la passe d&rsquo;éclairage accepte 3 textures uniformes qui représentent le tampon G et contiennent toutes les données que nous avons stockées dans la passe de géométrie. Si nous échantillonnions ces textures avec les coordonnées de la texture du fragment actuel, nous obtiendrions exactement les mêmes valeurs de fragment que si nous rendions la géométrie directement. Notez que nous récupérons à la fois la couleur albédo et l&rsquo;intensité spéculaire à partir de la texture unique <code>gAlbedoSpec</code>.</p>
+<p>Comme nous disposons maintenant des variables par fragment (et des variables uniformes correspondantes) nécessaires au calcul de l&rsquo;éclairage Blinn-Phong, nous n&rsquo;avons pas besoin de modifier le code d&rsquo;éclairage. La seule chose que nous changeons ici dans l&rsquo;ombrage différé est la méthode d&rsquo;obtention des variables d&rsquo;entrée de l&rsquo;éclairage.</p>
+<p>L&rsquo;exécution d&rsquo;une démo simple avec un total de 32 petites lumières ressemble un peu à ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c07_deferred_shading-20230904-deffered5.png" alt="07_deferred_shading-20230904-deffered5.png"/>
+L&rsquo;un des inconvénients de l&rsquo;ombrage différé est qu&rsquo;il n&rsquo;est pas possible d&rsquo;effectuer des blendings, car toutes les valeurs du tampon G proviennent de fragments uniques, et les mélanges opèrent sur la combinaison de fragments multiples. Un autre inconvénient est que l&rsquo;ombrage différé vous oblige à utiliser le même algorithme d&rsquo;éclairage pour la plupart des éclairages de votre scène ; vous pouvez pallier ce problème en incluant plus de données spécifiques aux matériaux dans le tampon G.</p>
+<p>Pour surmonter ces inconvénients (en particulier le blending), nous divisons souvent le moteur de rendu en deux parties : une partie de rendu différé, et l&rsquo;autre une partie de rendu direct spécifiquement destinée au mélange ou à des effets de shaders spéciaux qui ne conviennent pas à un pipeline de rendu différé. Pour illustrer comment cela fonctionne, nous rendrons les sources lumineuses sous forme de petits cubes en utilisant un moteur de rendu différé, car les cubes lumineux nécessitent un shader spécial (il suffit de produire une seule couleur de lumière).</p>
+<h2 id="combiner-le-rendu-différé-et-le-rendu-anticipé">Combiner le rendu différé et le rendu anticipé</h2>
+<p>Supposons que nous voulions rendre chacune des sources de lumière sous la forme d&rsquo;un cube 3D positionné à l&rsquo;emplacement de la source de lumière et émettant la couleur de la lumière. La première idée qui nous vient à l&rsquo;esprit est de simplement effectuer le rendu de toutes les sources de lumière sur le quad d&rsquo;éclairage différé à la fin du pipeline d&rsquo;ombrage différé. En fait, nous rendons les cubes comme nous le ferions normalement, mais seulement après avoir terminé les opérations de rendu différé. Dans le code, cela ressemblera un peu à ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// deferred lighting pass
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>[...]
+</span></span><span style="display:flex;"><span>RenderQuad();
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// now render all light cubes with forward rendering as we&#39;d normally do
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>shaderLightBox.use();
+</span></span><span style="display:flex;"><span>shaderLightBox.setMat4(<span style="color:#e6db74">&#34;projection&#34;</span>, projection);
+</span></span><span style="display:flex;"><span>shaderLightBox.setMat4(<span style="color:#e6db74">&#34;view&#34;</span>, view);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> lightPositions.size(); i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>mat4(<span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>translate(model, lightPositions[i]);
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>scale(model, glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.25f</span>));
+</span></span><span style="display:flex;"><span>    shaderLightBox.setMat4(<span style="color:#e6db74">&#34;model&#34;</span>, model);
+</span></span><span style="display:flex;"><span>    shaderLightBox.setVec3(<span style="color:#e6db74">&#34;lightColor&#34;</span>, lightColors[i]);
+</span></span><span style="display:flex;"><span>    RenderCube();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Cependant, ces cubes rendus ne tiennent pas compte de la profondeur géométrique stockée dans le moteur de rendu différé et sont, par conséquent, toujours rendus au-dessus des objets rendus précédemment ; ce n&rsquo;est pas le résultat que nous recherchions.
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c07_deferred_shading-20230904-deferred6.png" alt="07_deferred_shading-20230904-deferred6.png"/>
+Ce que nous devons faire, c&rsquo;est d&rsquo;abord copier les informations de profondeur stockées dans la passe géométrique dans le tampon de profondeur du framebuffer par défaut et ensuite seulement rendre les cubes de lumière. De cette manière, les fragments des cubes de lumière ne sont rendus que lorsqu&rsquo;ils se trouvent au-dessus de la géométrie rendue précédemment.</p>
+<p>Nous pouvons copier le contenu d&rsquo;un framebuffer dans le contenu d&rsquo;un autre framebuffer à l&rsquo;aide de <code>glBlitFramebuffer</code>, une fonction que nous avons également utilisée dans le chapitre sur l&rsquo;anticrénelage pour résoudre les framebuffers multi-échantillonnés. La fonction <code>glBlitFramebuffer</code> nous permet de copier une région définie par l&rsquo;utilisateur d&rsquo;un framebuffer dans une région définie par l&rsquo;utilisateur d&rsquo;un autre framebuffer.</p>
+<p>Nous avons stocké la profondeur de tous les objets rendus dans la passe de géométrie différée dans le FBO <code>gBuffer</code>. Si nous copions le contenu de son tampon de profondeur dans le tampon de profondeur du framebuffer par défaut, les cubes de lumière seraient alors rendus comme si toute la géométrie de la scène était rendue avec le rendu différé. Comme nous l&rsquo;avons brièvement expliqué dans le chapitre sur l&rsquo;<a href="anti%20aliasing">anti aliasing</a> (todo: link), nous devons spécifier un framebuffer en tant que framebuffer de lecture et spécifier de la même manière un framebuffer en tant que framebuffer d&rsquo;écriture :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
+</span></span><span style="display:flex;"><span>glBindFramebuffer(GL_DRAW_FRAMEBUFFER, <span style="color:#ae81ff">0</span>); <span style="color:#75715e">// write to default framebuffer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glBlitFramebuffer(
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, SCR_WIDTH, SCR_HEIGHT, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, SCR_WIDTH, SCR_HEIGHT, GL_DEPTH_BUFFER_BIT, GL_NEAREST
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>glBindFramebuffer(GL_FRAMEBUFFER, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// now render light cubes as before
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>[...]  
+</span></span></code></pre></div><p>Ici, nous copions tout le contenu du tampon de profondeur du framebuffer lu dans le tampon de profondeur du framebuffer par défaut ; cela peut être fait de la même manière pour les tampons de couleur et les tampons de stencil. Si nous effectuons ensuite le rendu des cubes de lumière, les cubes s&rsquo;affichent correctement sur la géométrie de la scène :</p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c07_deferred_shading-20230904-deferred6-1.png" alt="07_deferred_shading-20230904-deferred6-1.png"/>
+Vous pouvez trouver le code source complet de la démo <a href="https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/8.1.deferred_shading/deferred_shading.cpp">ici</a>.</p>
+<p>Avec cette approche, nous pouvons facilement combiner l&rsquo;ombrage différé avec l&rsquo;ombrage direct. C&rsquo;est une excellente chose car nous pouvons encore appliquer des mélanges et rendre des objets qui nécessitent des effets de shaders spéciaux, ce qui n&rsquo;est pas possible dans un contexte de rendu différé pur.</p>
+<h2 id="un-plus-grand-nombre-de-lumières">Un plus grand nombre de lumières</h2>
+<p>Ce pour quoi le rendu différé est souvent loué, c&rsquo;est sa capacité à rendre une énorme quantité de sources lumineuses sans que cela ait un coût important en termes de performances. Le rendu différé en lui-même ne permet pas d&rsquo;obtenir un très grand nombre de sources lumineuses, car nous devrions toujours calculer la composante d&rsquo;éclairage de chaque fragment pour chacune des sources lumineuses de la scène. <strong>Ce qui rend possible une grande quantité de sources lumineuses est une optimisation très soignée que nous pouvons appliquer au pipeline de rendu différé : celle des volumes de lumière.</strong></p>
+<p>Normalement, lorsque nous effectuons le rendu d&rsquo;un fragment dans une grande scène éclairée, nous calculons la contribution de chaque source lumineuse de la scène, quelle que soit sa distance par rapport au fragment. Une grande partie de ces sources lumineuses n&rsquo;atteindra jamais le fragment, alors pourquoi gaspiller tous ces calculs d&rsquo;éclairage ?</p>
+<p>L&rsquo;idée derrière les volumes de lumière est de calculer le rayon, ou le volume, d&rsquo;une source de lumière, c&rsquo;est-à-dire la zone où sa lumière est capable d&rsquo;atteindre les fragments. Comme la plupart des sources lumineuses utilisent une certaine forme d&rsquo;atténuation, nous pouvons l&rsquo;utiliser pour calculer la distance maximale ou le rayon que leur lumière est capable d&rsquo;atteindre. Nous n&rsquo;effectuons alors les calculs d&rsquo;éclairage coûteux que si un fragment se trouve à l&rsquo;intérieur d&rsquo;un ou de plusieurs de ces volumes de lumière. Cela peut nous permettre d&rsquo;économiser une quantité considérable de calculs, car nous ne calculons plus l&rsquo;éclairage que là où c&rsquo;est nécessaire.</p>
+<p>L&rsquo;astuce de cette approche consiste principalement à déterminer la taille ou le rayon du volume de lumière d&rsquo;une source lumineuse.</p>
+<h3 id="calculer-le-rayon-ou-le-volume-dune-lumière">Calculer le rayon ou le volume d&rsquo;une lumière</h3>
+<p>Pour obtenir le rayon de volume d&rsquo;une lumière, nous devons résoudre l&rsquo;équation d&rsquo;atténuation pour le moment où sa contribution lumineuse devient $0.0$. Pour la fonction d&rsquo;atténuation, nous utiliserons la fonction introduite dans le chapitre sur les <a href="projecteurs%20de%20lumi%c3%a8re">projecteurs de lumière</a> (todo: link) :</p>
+<h1 id="f_light">$$
+F_{light}</h1>
+<p>{
+1
+\over
+{
+K_c + K_l * d + K_q * d²
+}
+}
+$$
+Ce que nous voulons faire, c&rsquo;est résoudre cette équation lorsque $F_{light}$ est égal à $0.0$. Cependant, cette équation n&rsquo;atteindra jamais exactement la valeur $0.0$, et il n&rsquo;y aura donc pas de solution. Ce que nous pouvons faire cependant, c&rsquo;est ne pas résoudre l&rsquo;équation pour $0.0$, mais la résoudre pour une valeur de luminosité qui est proche de $0.0$ mais qui est toujours perçue comme sombre. La valeur de luminosité de $5/256$ serait acceptable pour la scène de démonstration de ce chapitre ; divisée par 256 car le framebuffer 8 bits par défaut ne peut afficher que ce nombre d&rsquo;intensités par composant.</p>
+<blockquote>
+<p>La fonction d&rsquo;atténuation utilisée est principalement sombre dans sa plage visible. Si nous devions la limiter à une luminosité encore plus sombre que $5/256$, le volume de lumière deviendrait trop important et donc moins efficace. Tant qu&rsquo;un utilisateur ne peut pas voir une coupure soudaine d&rsquo;une source lumineuse à ses limites de volume, tout va bien. Bien sûr, cela dépend toujours du type de scène ; un seuil de luminosité plus élevé permet d&rsquo;obtenir des volumes de lumière plus petits et donc une meilleure efficacité, mais peut produire des artefacts perceptibles lorsque l&rsquo;éclairage semble se briser aux limites d&rsquo;un volume.</p>
+</blockquote>
+<h1 id="heading">L&rsquo;équation d&rsquo;atténuation que nous devons résoudre devient:
+$$
+{
+5 \over 256
+}</h1>
+<p>{
+I_{max}
+\over
+Attenuation
+}</p>
+<p>$$</p>
+<p>Ici, I_{max} est la composante de couleur la plus lumineuse de la source lumineuse. Nous utilisons la composante de couleur la plus brillante d&rsquo;une source lumineuse pour résoudre l&rsquo;équation de la valeur d&rsquo;intensité la plus brillante d&rsquo;une lumière qui reflète le mieux le rayon de volume lumineux idéal.</p>
+<p>À partir de là, nous continuons à résoudre l&rsquo;équation :</p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c07_deferred_shading-20230904-deferred7.png" alt="07_deferred_shading-20230904-deferred7.png"/></p>
+<p>La dernière équation est une équation de la forme $ax^2+bx+c=0$, que nous pouvons résoudre à l&rsquo;aide de l&rsquo;équation quadratique :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c07_deferred_shading-20230904-deferred8.png" alt="07_deferred_shading-20230904-deferred8.png"/>
+Nous obtenons ainsi une équation générale qui nous permet de calculer x, c&rsquo;est-à-dire le rayon du volume de lumière pour la source lumineuse, en fonction d&rsquo;un paramètre constant, linéaire et quadratique :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> constant  <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span>; 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> linear    <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.7</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> quadratic <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.8</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> lightMax  <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>fmaxf(std<span style="color:#f92672">::</span>fmaxf(lightColor.r, lightColor.g), lightColor.b);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> radius    <span style="color:#f92672">=</span> 
+</span></span><span style="display:flex;"><span>  (<span style="color:#f92672">-</span>linear <span style="color:#f92672">+</span>  std<span style="color:#f92672">::</span>sqrtf(linear <span style="color:#f92672">*</span> linear <span style="color:#f92672">-</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">*</span> quadratic <span style="color:#f92672">*</span> (constant <span style="color:#f92672">-</span> (<span style="color:#ae81ff">256.0</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">5.0</span>) <span style="color:#f92672">*</span> lightMax))) 
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">/</span> (<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> quadratic);  
+</span></span></code></pre></div><p>Nous calculons ce rayon pour chaque source lumineuse de la scène et l&rsquo;utilisons pour calculer l&rsquo;éclairage de cette source lumineuse uniquement si un fragment se trouve à l&rsquo;intérieur du volume de la source lumineuse. Ci-dessous se trouve le fragment shader de la passe d&rsquo;éclairage mis à jour qui prend en compte les volumes de lumière calculés. Notez que cette approche n&rsquo;est utilisée qu&rsquo;à des fins pédagogiques et n&rsquo;est pas viable dans un contexte pratique, comme nous le verrons bientôt :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Light</span> {
+</span></span><span style="display:flex;"><span>    [...]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> Radius;
+</span></span><span style="display:flex;"><span>}; 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    [...]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> NR_LIGHTS; <span style="color:#f92672">++</span>i)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// calculate distance between light source and current fragment
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">float</span> distance <span style="color:#f92672">=</span> length(lights[i].Position <span style="color:#f92672">-</span> FragPos);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span>(distance <span style="color:#f92672">&lt;</span> lights[i].Radius)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// do expensive lighting
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            [...]
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }   
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Les résultats sont exactement les mêmes qu&rsquo;auparavant, mais cette fois-ci, chaque lumière ne calcule l&rsquo;éclairage que pour les sources lumineuses dans le volume où elle se trouve.</p>
+<p>Vous pouvez trouver le code source final de la démo <a href="https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/8.2.deferred_shading_volumes/deferred_shading_volumes.cpp">ici</a>.</p>
+<h3 id="comment-nous-utilisons-réellement-les-volumes-de-lumière">Comment nous utilisons réellement les volumes de lumière</h3>
+<p>Le fragment shader présenté ci-dessus ne fonctionne pas vraiment en pratique et illustre seulement comment nous pouvons en quelque sorte utiliser le volume d&rsquo;une lumière pour réduire les calculs d&rsquo;éclairage. <strong>La réalité est que votre GPU et GLSL sont assez mauvais pour optimiser les boucles et les branches. La raison en est que l&rsquo;exécution des shaders sur le GPU est hautement parallèle et que la plupart des architectures ont l&rsquo;obligation d&rsquo;exécuter exactement le même code de shaders pour un grand nombre de threads afin d&rsquo;être efficaces</strong>. Cela signifie souvent qu&rsquo;un shader qui exécute toutes les branches d&rsquo;une instruction <code>if</code> pour s&rsquo;assurer que l&rsquo;exécution du shader est la même pour ce groupe de threads, ce qui rend notre précédente optimisation de vérification du rayon complètement inutile ; nous calculerions toujours l&rsquo;éclairage pour toutes les sources de lumière !</p>
+<p>L&rsquo;approche appropriée pour utiliser les volumes de lumière consiste à rendre des sphères réelles, mises à l&rsquo;échelle par le rayon du volume de lumière. Les centres de ces sphères sont positionnés à l&rsquo;emplacement de la source de lumière, et lorsqu&rsquo;elle est mise à l&rsquo;échelle par le rayon du volume de lumière, la sphère englobe exactement le volume visible de la lumière. C&rsquo;est là qu&rsquo;intervient l&rsquo;astuce : nous utilisons le shader d&rsquo;éclairage différé pour le rendu des sphères. Comme une sphère rendue produit des invocations de shader de fragment qui correspondent exactement aux pixels affectés par la source de lumière, nous ne rendons que les pixels concernés et sautons tous les autres pixels. L&rsquo;image ci-dessous l&rsquo;illustre :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c07_deferred_shading-20230904-deferred9.png" alt="07_deferred_shading-20230904-deferred9.png"/>
+Cette opération est effectuée pour chaque source lumineuse de la scène, et les fragments résultants sont mélangés de manière additive. Le résultat est alors exactement la même scène que précédemment, mais cette fois-ci en ne rendant que les fragments pertinents par source lumineuse. Cela réduit effectivement les calculs de $nr_{objets} * nr_{lumières}$ à $nr_{objets} + nr_{lumières}$, ce qui le rend incroyablement efficace dans les scènes avec un grand nombre de lumières. C&rsquo;est cette approche qui rend le rendu différé si adapté au rendu d&rsquo;un grand nombre de lumières.</p>
+<p><strong>Il y a encore un problème avec cette approche : le face culling doit être activé</strong> (sinon nous rendrions l&rsquo;effet d&rsquo;une lumière deux fois) et lorsqu&rsquo;il est activé, l&rsquo;utilisateur peut entrer dans le volume d&rsquo;une source de lumière après quoi le volume n&rsquo;est plus rendu (à cause du back-face culling), supprimant l&rsquo;influence de la source de lumière ; nous pouvons résoudre ce problème en ne rendant que les faces arrières des sphères.</p>
+<p>Le rendu des volumes de lumière a un impact sur les performances, et bien qu&rsquo;il soit généralement beaucoup plus rapide que l&rsquo;ombrage différé normal pour le rendu d&rsquo;un grand nombre de lumières, nous pouvons encore l&rsquo;optimiser. Il existe deux autres extensions populaires (et plus efficaces) de l&rsquo;ombrage différé : l&rsquo;éclairage différé et l&rsquo;ombrage différé basé sur les tuiles (?) (<strong>deferred lighting</strong> et <strong>tile-based deferred shading</strong>). Elles sont encore plus efficaces pour le rendu de grandes quantités de lumière et permettent également un MSAA relativement efficace.</p>
+<h2 id="rendu-différé-ou-rendu-direct">Rendu différé ou rendu direct</h2>
+<p>En soi (sans volumes de lumière), l&rsquo;ombrage différé est une bonne optimisation car chaque pixel n&rsquo;exécute qu&rsquo;un seul shader de fragment, par rapport au rendu direct où le shader de fragment est souvent exécuté plusieurs fois par pixel. Le rendu différé présente cependant quelques inconvénients : une surcharge mémoire importante, pas de MSAA, et le mélange doit toujours être effectué avec le rendu direct.</p>
+<p>Lorsque la scène est petite et qu&rsquo;il n&rsquo;y a pas trop de lumières, le rendu différé n&rsquo;est pas nécessairement plus rapide, et parfois même plus lent, car la surcharge l&rsquo;emporte alors sur les avantages du rendu différé. Dans les scènes plus complexes, le rendu différé devient rapidement une optimisation significative, en particulier avec les extensions d&rsquo;optimisation les plus avancées. En outre, certains effets de rendu (en particulier les effets de post-traitement) deviennent moins coûteux avec un pipeline de rendu différé, car de nombreuses entrées de la scène sont déjà disponibles dans le tampon G.</p>
+<p>Pour finir, j&rsquo;aimerais mentionner que pratiquement tous les effets qui peuvent être réalisés avec le rendu direct peuvent également être implémentés dans un contexte de rendu différé ; cela ne nécessite souvent qu&rsquo;une petite étape de traduction. Par exemple, si nous voulons utiliser le normal mapping dans un moteur de rendu différé, nous modifierons les shaders de la passe géométrique pour produire une normale à l&rsquo;espace monde extraite d&rsquo;une carte de normales (en utilisant une matrice TBN) au lieu de la normale à la surface ; les calculs d&rsquo;éclairage dans la passe d&rsquo;éclairage n&rsquo;ont pas besoin d&rsquo;être modifiés du tout. Et si vous voulez que le parallax mapping fonctionne, vous devez d&rsquo;abord déplacer les coordonnées de texture dans la passe géométrique avant d&rsquo;échantillonner les textures diffuses, spéculaires et normales d&rsquo;un objet. Une fois que vous avez compris l&rsquo;idée derrière le rendu différé, il n&rsquo;est pas trop difficile de faire preuve de créativité.</p>
+<h1 id="ressources-supplémentaires">Ressources supplémentaires</h1>
+<ul>
+<li><a href="http://ogldev.atspace.co.uk/www/tutorial35/tutorial35.html">Tutoriel 35 : Deferred Shading - Part 1</a> : un tutoriel en trois parties sur l&rsquo;ombrage différé par OGLDev.</li>
+<li><a href="https://software.intel.com/sites/default/files/m/d/4/1/d/8/lauritzen_deferred_shading_siggraph_2010.pdf">Deferred Rendering for Current and Future Rendering Pipelines</a> : diapositives d&rsquo;Andrew Lauritzen sur l&rsquo;ombrage différé et l&rsquo;éclairage différé de haut niveau basés sur les tuiles.</li>
+</ul>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

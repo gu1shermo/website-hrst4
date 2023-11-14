@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cg">cg</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/opengl">opengl</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/computer-graphics">computer graphics</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cpp">cpp</a>
+  
+
+<br><br>
+<h1 id="textures">Textures</h1>
+<p>Nous avons appris que pour ajouter plus de détails à nos objets, nous pouvons utiliser des couleurs pour chaque sommet afin de créer des images intéressantes. Cependant, pour obtenir un certain réalisme, nous devons avoir beaucoup de sommets afin de pouvoir spécifier un grand nombre de couleurs. Cela représente un surcoût considérable, car chaque modèle nécessite beaucoup plus de sommets et, pour chacun d&rsquo;eux, un attribut de couleur.</p>
+<p>Les artistes et les programmeurs préfèrent généralement utiliser une texture. <strong>Une texture est une image 2D (il existe même des textures 1D et 3D) utilisée pour ajouter des détails à un objet</strong>. Pensez à une texture comme à un morceau de papier avec une belle image de brique (par exemple) pliée proprement sur votre maison 3D pour donner l&rsquo;impression que votre maison a un extérieur en pierre. Comme nous pouvons insérer beaucoup de détails dans une seule image, nous pouvons donner l&rsquo;illusion que l&rsquo;objet est extrêmement détaillé sans avoir à spécifier des sommets supplémentaires.</p>
+<blockquote>
+<p>Outre les images, les textures peuvent également être utilisées pour stocker une grande collection de données arbitraires à envoyer aux shaders, mais nous laisserons cela pour un autre sujet.</p>
+</blockquote>
+<p>Vous trouverez ci-dessous une image de texture d&rsquo;un <a href="https://learnopengl.com/img/textures/wall.jpg">mur de briques</a> mappée sur le triangle du chapitre précédent.
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/textures1.png" alt="textures1"/>
+Afin d&rsquo;appliquer une texture au triangle, nous devons indiquer à chaque sommet du triangle à quelle partie de la texture il correspond. <strong>Chaque sommet doit donc être associé à une coordonnée de texture qui spécifie la partie de l&rsquo;image de texture à échantillonner.</strong> <strong>L&rsquo;interpolation des fragments fait ensuite le reste pour les autres fragments.</strong></p>
+<p><strong>Les coordonnées de texture sont comprises entre 0 et 1 sur les axes x et y (n&rsquo;oubliez pas que nous utilisons des images de texture en 2D). L&rsquo;extraction de la couleur de la texture à l&rsquo;aide des coordonnées de la texture s&rsquo;appelle l&rsquo;échantillonnage (ou sampling)</strong>. Les coordonnées de texture commencent à (0,0) pour le coin inférieur gauche d&rsquo;une image de texture et à (1,1) pour le coin supérieur droit d&rsquo;une image de texture. L&rsquo;image suivante montre comment nous faisons correspondre les coordonnées de texture au triangle :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/textures2.png" alt="textures2"/>
+Nous spécifions 3 points de coordonnées de texture pour le triangle. Nous voulons que le côté inférieur gauche du triangle corresponde au côté inférieur gauche de la texture. Nous utilisons donc la coordonnée de texture (0,0) pour le sommet inférieur gauche du triangle. Il en va de même pour le côté inférieur droit avec une coordonnée de texture (1,0). Le sommet du triangle doit correspondre au centre supérieur de l&rsquo;image de texture, nous prenons donc (0.5,1.0) comme coordonnée de texture. <strong>Il suffit de transmettre 3 coordonnées de texture au vertex shader, qui les transmet ensuite au fragment shader qui interpole proprement toutes les coordonnées de texture pour chaque fragment.</strong></p>
+<p>Les coordonnées de texture résultantes ressembleraient alors à ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> texCoords[] <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>,  <span style="color:#75715e">// lower-left corner  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>,  <span style="color:#75715e">// lower-right corner
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">1.0f</span>   <span style="color:#75715e">// top-center corner
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>};
+</span></span></code></pre></div><p>L&rsquo;échantillonnage des textures est interprété de manière très large et peut être réalisé de différentes manières. C&rsquo;est donc à nous de dire à OpenGL comment il doit échantillonner ses textures.</p>
+<h2 id="texture-wrapping-emballage-de-la-texture">Texture wrapping (emballage de la texture)</h2>
+<p><strong>Les coordonnées de texture sont généralement comprises entre (0,0) et (1,1), mais que se passe-t-il si nous spécifions des coordonnées en dehors de cette plage ? Le comportement par défaut d&rsquo;OpenGL est de répéter les images de texture</strong> (nous ignorons la partie entière de la coordonnée de texture en virgule flottante), mais OpenGL offre d&rsquo;autres options :</p>
+<ul>
+<li><code>GL_REPEAT</code> : Comportement par défaut pour les textures. Répète l&rsquo;image de la texture.</li>
+<li><code>GL_MIRRORED_REPEAT</code> : Identique à GL_REPEAT mais l&rsquo;image est répétée à chaque fois.</li>
+<li><code>GL_CLAMP_TO_EDGE</code> : Fixe les coordonnées entre <code>0</code> et <code>1</code>. Le résultat est que les coordonnées les plus élevées sont collées au bord, ce qui donne un motif de bord étiré.</li>
+<li><code>GL_CLAMP_TO_BORDER</code> : Les coordonnées en dehors de la plage reçoivent maintenant une couleur de bordure spécifiée par l&rsquo;utilisateur.</li>
+</ul>
+<p>Chacune de ces options a un rendu visuel différent lorsque l&rsquo;on utilise des coordonnées de texture en dehors de la plage par défaut. Voyons ce que cela donne sur un exemple d&rsquo;image de texture (image originale de Hólger Rezende) :</p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/textures3.png" alt="textures3"/>
+Chacune des options susmentionnées peut être définie par axe de coordonnées (s, t (et r si vous utilisez des textures 3D) équivalent à x,y,z) avec la fonction <code>glTexParameter*</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+</span></span></code></pre></div><p>Le premier argument spécifie la cible de texture ; nous travaillons avec des textures 2D, la cible de texture est donc <code>GL_TEXTURE_2D</code>.
+Le deuxième argument nous demande d&rsquo;indiquer l&rsquo;option que nous voulons définir et pour quel axe de texture ; nous voulons le configurer pour les axes S et T.
+Le dernier argument nous demande de passer le mode d&rsquo;habillage de la texture que nous souhaitons et dans ce cas, OpenGL définira son option d&rsquo;habillage de la texture sur la texture active avec <code>GL_MIRRORED_REPEAT</code>.</p>
+<p>Si nous choisissons l&rsquo;option <code>GL_CLAMP_TO_BORDER</code>, nous devons également spécifier une couleur de bordure. Ceci est fait en utilisant l&rsquo;équivalent <code>fv</code> de la fonction <code>glTexParameter</code> avec <code>GL_TEXTURE_BORDER_COLOR</code> comme option où nous passons un tableau de flottants de la valeur de la couleur de la bordure :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> borderColor[] <span style="color:#f92672">=</span> { <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span> };
+</span></span><span style="display:flex;"><span>glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor); 
+</span></span></code></pre></div><h2 id="texture-filtering-filtrage-des-textures">Texture filtering (filtrage des textures)</h2>
+<p>Les coordonnées de la texture ne dépendent pas de la résolution mais peuvent être n&rsquo;importe quelle valeur à virgule flottante. OpenGL doit donc déterminer à quel pixel de la texture (également connu sous le nom de <strong>texel</strong>) mapper les coordonnées de la texture. Cela devient particulièrement important si vous avez un objet très grand et une texture à faible résolution. Vous avez probablement deviné qu&rsquo;OpenGL dispose également d&rsquo;options pour le filtrage de la texture. Il y a plusieurs options disponibles, mais pour l&rsquo;instant nous allons discuter des options les plus importantes : <code>GL_NEAREST</code> et <code>GL_LINEAR</code>.</p>
+<p><code>GL_NEAREST</code> (également connu sous le nom de plus proche voisin ou de filtrage ponctuel) est la méthode de filtrage de texture par défaut d&rsquo;OpenGL. Lorsqu&rsquo;il est réglé sur <code>GL_NEAREST</code>, OpenGL sélectionne le texel dont le centre est le plus proche de la coordonnée de la texture. Ci-dessous, vous pouvez voir 4 pixels où la croix représente la coordonnée exacte de la texture. Le texel en haut à gauche a son centre le plus proche de la coordonnée de texture et est donc choisi comme couleur échantillonnée :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/textures4.png" alt="textures4"/>
+<code>GL_LINEAR</code> (également connu sous le nom de filtrage (bi)linéaire) prend une valeur interpolée à partir des texels voisins de la coordonnée de texture, approximant une couleur entre les texels. Plus la distance entre la coordonnée de texture et le centre d&rsquo;un texel est faible, plus la couleur de ce texel contribue à la couleur échantillonnée. Ci-dessous, nous pouvons voir qu&rsquo;une couleur mélangée des pixels voisins est renvoyée :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/textures5.png" alt="textures5"/>
+Mais quel est l&rsquo;effet visuel d&rsquo;une telle méthode de filtrage des textures ? Voyons comment ces méthodes fonctionnent lorsqu&rsquo;on utilise une texture de faible résolution sur un objet de grande taille (la texture est donc mise à l&rsquo;échelle vers le haut et les texels individuels sont perceptibles) :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/textures6.png" alt="textures6"/>
+<code>GL_NEAREST</code> produit des motifs bloqués où l&rsquo;on peut clairement voir les pixels qui forment la texture, tandis que <code>GL_LINEAR</code> produit un motif plus lisse où les pixels individuels sont moins visibles. <code>GL_LINEAR</code> produit un résultat plus réaliste, mais certains développeurs préfèrent un aspect plus 8 bits et choisissent donc l&rsquo;option <code>GL_NEAREST</code>.</p>
+<p>Le filtrage des textures peut être défini pour les opérations d&rsquo;agrandissement et de réduction (lors de la mise à l&rsquo;échelle vers le haut ou vers le bas). Vous pouvez donc, par exemple, utiliser le filtrage du plus proche voisin lorsque les textures sont mises à l&rsquo;échelle vers le bas et le filtrage linéaire pour les textures mises à l&rsquo;échelle vers le haut. Nous devons donc spécifier la méthode de filtrage pour les deux options via <code>glTexParameter*</code>. Le code devrait ressembler à la définition de la méthode de wrapping :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+</span></span></code></pre></div><h2 id="mipmaps">Mipmaps</h2>
+<p>Imaginons que nous ayons une grande pièce avec des milliers d&rsquo;objets, chacun avec une texture attachée. Il y aura des objets très éloignés qui auront la même texture haute résolution que les objets proches de l&rsquo;observateur. <strong>Puisque les objets sont éloignés et ne produisent probablement que quelques fragments, OpenGL a des difficultés à récupérer la bonne valeur de couleur pour son fragment à partir de la texture haute résolution, puisqu&rsquo;il doit choisir une couleur de texture pour un fragment qui s&rsquo;étend sur une grande partie de la texture</strong>. <strong>Cela produira des artefacts visibles sur les petits objets, sans parler du gaspillage de la bande passante de la mémoire en utilisant des textures à haute résolution sur de petits objets.</strong></p>
+<p><strong>Pour résoudre ce problème, OpenGL utilise un concept appelé mipmaps</strong>, qui est en fait <strong>une collection d&rsquo;images de texture où chaque texture suivante est deux fois plus petite que la précédente</strong>. L&rsquo;idée derrière les mipmaps devrait être facile à comprendre : après un certain seuil de distance de l&rsquo;observateur, OpenGL utilisera une texture mipmap différente qui correspond le mieux à la distance de l&rsquo;objet. Comme l&rsquo;objet est éloigné, la résolution plus faible ne sera pas perceptible par l&rsquo;utilisateur. OpenGL est alors capable d&rsquo;échantillonner les bons texels, et il y a moins de mémoire cache impliquée dans l&rsquo;échantillonnage de cette partie des mipmaps. Regardons de plus près à quoi ressemble une texture mipmap :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/textures7.png" alt="textures7"/>
+Créer une collection de textures mipmap pour chaque image de texture est lourd à faire manuellement, mais <strong>heureusement OpenGL est capable de faire tout le travail pour nous avec un seul appel à <code>glGenerateMipmap</code> après que nous ayons créé une texture</strong>.</p>
+<p>Lorsque l&rsquo;on passe d&rsquo;un niveau de mipmap à l&rsquo;autre pendant le rendu, OpenGL peut montrer des artefacts comme des bords nets visibles entre les deux couches de mipmap. <strong>Tout comme le filtrage normal des textures, il est également possible de filtrer entre les niveaux de mipmap en utilisant les filtres <code>NEAREST</code> et <code>LINEAR</code> pour passer d&rsquo;un niveau de mipmap à l&rsquo;autre.</strong> Pour spécifier la méthode de filtrage entre les niveaux des mipmaps, nous pouvons remplacer les méthodes de filtrage originales par l&rsquo;une des quatre options suivantes :</p>
+<ul>
+<li><code>GL_NEAREST_MIPMAP_NEAREST</code> : prend la mipmap la plus proche de la taille du pixel et utilise l&rsquo;interpolation du plus proche voisin pour l&rsquo;échantillonnage de la texture.</li>
+<li><code>GL_LINEAR_MIPMAP_NEAREST</code> : prend le niveau de mipmap le plus proche et échantillonne ce niveau par interpolation linéaire.</li>
+<li><code>GL_NEAREST_MIPMAP_LINEAR</code> : interpole linéairement entre les deux mipmaps les plus proches de la taille d&rsquo;un pixel et échantillonne le niveau interpolé par interpolation du plus proche voisin.</li>
+<li><code>GL_LINEAR_MIPMAP_LINEAR</code> : interpole linéairement entre les deux cartes les plus proches et échantillonne le niveau interpolé par interpolation linéaire.
+Tout comme pour le filtrage des textures, nous pouvons définir la méthode de filtrage sur l&rsquo;une des quatre méthodes susmentionnées à l&rsquo;aide de <code>glTexParameteri</code> :</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+</span></span></code></pre></div><p>Une erreur courante consiste à définir l&rsquo;une des options de filtrage mipmap comme filtre d&rsquo;agrandissement. Cela n&rsquo;a aucun effet puisque les mipmaps sont principalement utilisées lorsque les textures sont mises à l&rsquo;échelle : l&rsquo;agrandissement de texture n&rsquo;utilise pas les mipmaps et lui donner une option de filtrage mipmap générera un code d&rsquo;erreur OpenGL <code>GL_INVALID_ENUM</code>.</p>
+<h2 id="charger-et-créer-des-textures">Charger et créer des textures</h2>
+<p>La première chose à faire pour utiliser les textures est de les charger dans notre application. Les images de textures peuvent être stockées dans des dizaines de formats de fichiers, chacun ayant sa propre structure et son propre ordre de données. Une solution serait de choisir un format de fichier que nous aimerions utiliser, par exemple <code>.PNG</code>, et d&rsquo;écrire notre propre chargeur d&rsquo;images pour convertir le format d&rsquo;image en un grand tableau d&rsquo;octets. Bien qu&rsquo;il ne soit pas très difficile d&rsquo;écrire son propre chargeur d&rsquo;images, cela reste encombrant et que se passe-t-il si l&rsquo;on souhaite prendre en charge d&rsquo;autres formats de fichiers ? Vous devrez alors écrire un chargeur d&rsquo;images pour chaque format que vous souhaitez prendre en charge.</p>
+<p><strong>Une autre solution, probablement la meilleure, est d&rsquo;utiliser une bibliothèque de chargement d&rsquo;images qui supporte plusieurs formats populaires et qui fait tout le travail à notre place. Une bibliothèque comme <code>stb_image.h</code>.</strong></p>
+<h3 id="stb_imageh">stb_image.h</h3>
+<p><code>stb_image.h</code> est une bibliothèque de chargement d&rsquo;images à en-tête unique très populaire de Sean Barrett, capable de charger les formats de fichiers les plus courants et facile à intégrer dans vos projets. <code>stb_image.h</code> peut être téléchargé à partir d&rsquo;<a href="https://github.com/nothings/stb/blob/master/stb_image.h">ici</a>. Téléchargez simplement le fichier d&rsquo;en-tête, ajoutez-le à votre projet en tant que <code>stb_image.h</code>, et créez un fichier C++ supplémentaire avec le code suivant :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#define STB_IMAGE_IMPLEMENTATION
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;stb_image.h&#34;</span><span style="color:#75715e">
+</span></span></span></code></pre></div><p>En définissant <code>STB_IMAGE_IMPLEMENTATION</code>, le préprocesseur modifie le fichier d&rsquo;en-tête de manière à ce qu&rsquo;il ne contienne que le code source de la définition concernée, transformant ainsi le fichier d&rsquo;en-tête en fichier <code>.cpp</code>, et c&rsquo;est à peu près tout. Il suffit maintenant d&rsquo;inclure <code>stb_image.h</code> quelque part dans votre programme et de compiler.</p>
+<p>Pour les sections suivantes sur les textures, nous allons utiliser l&rsquo;image d&rsquo;un conteneur en bois. Pour charger une image à l&rsquo;aide de <code>stb_image.h</code>, nous utilisons la fonction <code>stbi_load</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> width, height, nrChannels;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>data <span style="color:#f92672">=</span> stbi_load(<span style="color:#e6db74">&#34;container.jpg&#34;</span>, <span style="color:#f92672">&amp;</span>width, <span style="color:#f92672">&amp;</span>height, <span style="color:#f92672">&amp;</span>nrChannels, <span style="color:#ae81ff">0</span>);
+</span></span></code></pre></div><p>La fonction prend d&rsquo;abord en entrée l&rsquo;emplacement d&rsquo;un fichier image. Elle s&rsquo;attend ensuite à ce que vous donniez trois ints comme deuxième, troisième et quatrième argument que <code>stb_image.h</code> remplira avec la largeur, la hauteur et le nombre de canaux de couleur de l&rsquo;image résultante. Nous avons besoin de la largeur et de la hauteur de l&rsquo;image pour générer des textures plus tard.</p>
+<h3 id="générer-une-texture">Générer une texture</h3>
+<p>Comme tous les objets précédents d&rsquo;OpenGL, les textures sont référencées par un ID ; créons-en un :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> texture;
+</span></span><span style="display:flex;"><span>glGenTextures(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>texture);  
+</span></span></code></pre></div><p>La fonction <code>glGenTextures</code> prend d&rsquo;abord en entrée le nombre de textures que nous voulons générer et les stocke dans un tableau <code>unsigned int</code> donné comme second argument (dans notre cas, un seul unsigned int). Comme pour les autres objets, nous devons lier les textures afin que toute commande de texture ultérieure configure la texture actuellement liée :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_2D, texture);  
+</span></span></code></pre></div><p>Maintenant que la texture est liée, nous pouvons commencer à générer une texture en utilisant les données de l&rsquo;image précédemment chargée. Les textures sont générées avec <code>glTexImage2D</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glTexImage2D(GL_TEXTURE_2D, <span style="color:#ae81ff">0</span>, GL_RGB, width, height, <span style="color:#ae81ff">0</span>, GL_RGB, GL_UNSIGNED_BYTE, data);
+</span></span><span style="display:flex;"><span>glGenerateMipmap(GL_TEXTURE_2D);
+</span></span></code></pre></div><p>Il s&rsquo;agit d&rsquo;une fonction importante qui comporte un certain nombre de paramètres, nous allons donc les examiner étape par étape :</p>
+<ul>
+<li>Le premier argument spécifie la cible de la texture ; mettre ceci à GL_TEXTURE_2D signifie que cette opération va générer une texture sur l&rsquo;objet de texture actuellement lié à la même cible (donc toutes les textures liées aux cibles GL_TEXTURE_1D ou GL_TEXTURE_3D ne seront pas affectées).</li>
+<li>Le second argument spécifie le niveau de mipmap pour lequel nous voulons créer une texture, si vous voulez définir chaque niveau de mipmap manuellement, mais nous le laisserons au niveau de base qui est <code>0</code>.</li>
+<li>Le troisième argument indique à OpenGL dans quel type de format nous voulons stocker la texture. Notre image n&rsquo;a que des valeurs <code>RGB</code>, donc nous stockerons la texture avec des valeurs <code>RGB</code> également.</li>
+<li>Les 4ème et 5ème arguments définissent la largeur et la hauteur de la texture résultante. Nous les avons stockés plus tôt lors du chargement de l&rsquo;image, nous utiliserons donc les variables correspondantes.</li>
+<li>L&rsquo;argument suivant devrait toujours être <code>0</code> (quelques trucs anciens).</li>
+<li>Les 7ème et 8ème arguments spécifient le format et le type de données de l&rsquo;image source. Nous avons chargé l&rsquo;image avec des valeurs <code>RGB</code> et les avons stockées sous forme de <code>char</code>s (octets), nous allons donc passer les valeurs correspondantes.</li>
+<li>Le dernier argument est la donnée réelle de l&rsquo;image.</li>
+</ul>
+<p>Une fois que <code>glTexImage2D</code> est appelée, l&rsquo;objet de texture actuellement lié a maintenant l&rsquo;image de texture attachée à lui. Cependant, il n&rsquo;a actuellement que le niveau de base de l&rsquo;image de texture chargée et si nous voulons utiliser des mipmaps, nous devons spécifier toutes les images différentes manuellement (en incrémentant continuellement le deuxième argument) ou nous pourrions appeler <code>glGenerateMipmap</code> après avoir généré la texture. Cela génèrera automatiquement toutes les images mipmap requises pour la texture actuellement liée.</p>
+<p>Après avoir généré la texture et les mipmaps correspondants, il est bon de libérer la mémoire de l&rsquo;image :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>stbi_image_free(data);
+</span></span></code></pre></div><p>L&rsquo;ensemble du processus de génération d&rsquo;une texture se présente donc comme suit :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> texture;
+</span></span><span style="display:flex;"><span>glGenTextures(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>texture);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_2D, texture);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// set the texture wrapping/filtering options (on the currently bound texture object)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// load and generate the texture
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> width, height, nrChannels;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>data <span style="color:#f92672">=</span> stbi_load(<span style="color:#e6db74">&#34;container.jpg&#34;</span>, <span style="color:#f92672">&amp;</span>width, <span style="color:#f92672">&amp;</span>height, <span style="color:#f92672">&amp;</span>nrChannels, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (data)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    glTexImage2D(GL_TEXTURE_2D, <span style="color:#ae81ff">0</span>, GL_RGB, width, height, <span style="color:#ae81ff">0</span>, GL_RGB, GL_UNSIGNED_BYTE, data);
+</span></span><span style="display:flex;"><span>    glGenerateMipmap(GL_TEXTURE_2D);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Failed to load texture&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>stbi_image_free(data);
+</span></span></code></pre></div><h2 id="appliquer-les-textures">Appliquer les textures</h2>
+<p>Pour les sections suivantes, nous utiliserons le rectangle dessiné avec <code>glDrawElements</code> dans la dernière partie du chapitre <a href="/docs/learnopengl_fr/01_getting_started/03_hello-triangle/">03_hello triangle</a>. Nous devons informer OpenGL de la manière d&rsquo;échantillonner la texture, nous devrons donc mettre à jour les données des vertex avec les coordonnées de la texture :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> vertices[] <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// positions          // colors           // texture coords
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     <span style="color:#ae81ff">0.5f</span>,  <span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.0f</span>,   <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>,   <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">1.0f</span>,   <span style="color:#75715e">// top right
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     <span style="color:#ae81ff">0.5f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.0f</span>,   <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>,   <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>,   <span style="color:#75715e">// bottom right
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">-</span><span style="color:#ae81ff">0.5f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.0f</span>,   <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>,   <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>,   <span style="color:#75715e">// bottom left
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">-</span><span style="color:#ae81ff">0.5f</span>,  <span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.0f</span>,   <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>,   <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>    <span style="color:#75715e">// top left 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>};
+</span></span></code></pre></div><p>Puisque nous avons ajouté un attribut de sommet supplémentaire, nous devons à nouveau informer OpenGL du nouveau format de sommet :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/textures8.png" alt="textures8"/></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glVertexAttribPointer(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, GL_FLOAT, GL_FALSE, <span style="color:#ae81ff">8</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>), (<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>)(<span style="color:#ae81ff">6</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>)));
+</span></span><span style="display:flex;"><span>glEnableVertexAttribArray(<span style="color:#ae81ff">2</span>); 
+</span></span></code></pre></div><p>Notez que nous devons également ajuster le paramètre <strong>stride</strong> des deux attributs de vertex précédents à <code>8 * sizeof(float)</code>.</p>
+<p>Ensuite, nous devons modifier le vertex shader pour qu&rsquo;il accepte les coordonnées de texture en tant qu&rsquo;attribut de vertex et qu&rsquo;il transmette ensuite les coordonnées au fragment shader :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec3 aPos;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>) in vec3 aColor;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>) in vec2 aTexCoord;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>out vec3 ourColor;
+</span></span><span style="display:flex;"><span>out vec2 TexCoord;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>    ourColor <span style="color:#f92672">=</span> aColor;
+</span></span><span style="display:flex;"><span>    TexCoord <span style="color:#f92672">=</span> aTexCoord;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Le fragment shader doit alors accepter la variable de sortie <code>TexCoord</code> comme variable d&rsquo;entrée.</p>
+<p>Le fragment shader doit également avoir accès à l&rsquo;objet texture, mais comment transmettre l&rsquo;objet texture au fragment shader ? GLSL dispose d&rsquo;un type de données intégré pour les objets de texture, appelé <strong>sampler</strong>, qui prend comme postfixe le type de texture souhaité, par exemple <code>sampler1D</code>, <code>sampler3D</code> ou, dans notre cas, <code>sampler2D</code>. Nous pouvons alors ajouter une texture au fragment shader en déclarant simplement un <code>sampler2D</code> uniforme auquel nous assignerons plus tard notre texture.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>in vec3 ourColor;
+</span></span><span style="display:flex;"><span>in vec2 TexCoord;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform sampler2D ourTexture;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> texture(ourTexture, TexCoord);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Pour échantillonner la couleur d&rsquo;une texture, nous utilisons la fonction <code>texture</code> intégrée de GLSL qui prend comme premier argument un sample de texture et comme second argument les coordonnées de la texture correspondante. La fonction de texture échantillonne ensuite la valeur de couleur correspondante en utilisant les paramètres de texture que nous avons définis plus tôt. La sortie de ce fragment shader est alors la couleur (filtrée) de la texture à la coordonnée de texture (interpolée).</p>
+<p>Il ne reste plus qu&rsquo;à lier la texture avant d&rsquo;appeler <code>glDrawElements</code>, qui affectera automatiquement la texture à sample du fragment shader :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_2D, texture);
+</span></span><span style="display:flex;"><span>glBindVertexArray(VAO);
+</span></span><span style="display:flex;"><span>glDrawElements(GL_TRIANGLES, <span style="color:#ae81ff">6</span>, GL_UNSIGNED_INT, <span style="color:#ae81ff">0</span>);
+</span></span></code></pre></div><p>Si vous avez tout fait correctement, vous devriez voir l&rsquo;image suivante :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/textures9.png" alt="textures9"/>
+Si votre rectangle est complètement blanc ou noir, vous avez probablement commis une erreur en cours de route. Vérifiez les journaux des shaders et essayez de comparer votre code avec le <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/4.1.textures/textures.cpp">code source</a> de l&rsquo;application.</p>
+<blockquote>
+<p>Si votre code de texture ne fonctionne pas ou s&rsquo;il est complètement noir, continuez à lire et travaillez jusqu&rsquo;au dernier exemple qui devrait fonctionner. Sur certains pilotes, il est nécessaire d&rsquo;assigner une unité de texture à chaque uniforme d&rsquo;échantillonneur, ce dont nous parlerons plus loin dans ce chapitre.</p>
+</blockquote>
+<p>Pour un peu d&rsquo;originalité, nous pouvons également mélanger la couleur de texture résultante avec les couleurs de vertex. Nous multiplions simplement la couleur de texture résultante avec la couleur de vertex dans le fragment shader pour mélanger les deux couleurs :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>FragColor <span style="color:#f92672">=</span> texture(ourTexture, TexCoord) <span style="color:#f92672">*</span> vec4(ourColor, <span style="color:#ae81ff">1.0</span>);  
+</span></span></code></pre></div><p>Le résultat doit être un mélange de la couleur du sommet et de la couleur de la texture :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/textures10.png" alt="textures10"/>
+On peut dire que notre conteneur aime la disco.</p>
+<h2 id="unités-de-texture-unit-textures">Unités de texture (unit textures)</h2>
+<p>Vous vous êtes probablement demandé pourquoi la variable <strong>sampler2D</strong> est un uniforme si nous ne lui avons pas assigné de valeur avec <code>glUniform</code>. En utilisant <code>glUniform1i</code>, nous pouvons en fait assigner une valeur d&rsquo;emplacement à l&rsquo;échantillonneur de texture afin de pouvoir définir plusieurs textures à la fois dans un fragment shader. <strong>L&rsquo;emplacement d&rsquo;une texture est plus communément appelé unité de texture</strong>. <strong>L&rsquo;unité de texture par défaut pour une texture est 0, qui est l&rsquo;unité de texture active par défaut, de sorte que nous n&rsquo;avons pas eu besoin d&rsquo;assigner un emplacement dans la section précédente</strong> ; notez que tous les pilotes graphiques n&rsquo;assignent pas une unité de texture par défaut, de sorte que la section précédente n&rsquo;a peut-être pas été rendue pour vous.</p>
+<p><strong>L&rsquo;objectif principal des unités de texture est de nous permettre d&rsquo;utiliser plus d&rsquo;une texture dans nos shaders</strong>. En assignant des unités de texture aux samplers, nous pouvons lier plusieurs textures à la fois, à condition d&rsquo;activer d&rsquo;abord l&rsquo;unité de texture correspondante. Tout comme <code>glBindTexture</code>, nous pouvons activer les unités de texture en utilisant <code>glActiveTexture</code> en passant par l&rsquo;unité de texture que nous souhaitons utiliser :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glActiveTexture(GL_TEXTURE0); <span style="color:#75715e">// activate the texture unit first before binding texture
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glBindTexture(GL_TEXTURE_2D, texture);
+</span></span></code></pre></div><p>Après avoir activé une unité de texture, un appel ultérieur à <code>glBindTexture</code> liera cette texture à l&rsquo;unité de texture actuellement active. L&rsquo;unité de texture <code>GL_TEXTURE0</code> est toujours activée par défaut, de sorte que nous n&rsquo;avons pas eu à activer d&rsquo;unités de texture dans l&rsquo;exemple précédent lors de l&rsquo;utilisation de <code>glBindTexture</code>.</p>
+<blockquote>
+<p>OpenGL devrait avoir un minimum de 16 unités de texture que vous pouvez activer en utilisant <code>GL_TEXTURE0</code> à <code>GL_TEXTURE15</code>. Elles sont définies dans l&rsquo;ordre, de sorte que nous pouvons également obtenir <code>GL_TEXTURE8</code> via <code>GL_TEXTURE0 + 8</code> par exemple, ce qui est utile lorsque nous devons passer en boucle sur plusieurs unités de texture.</p>
+</blockquote>
+<p>Il nous reste cependant à modifier le fragment shader pour qu&rsquo;il accepte un autre sampler. Cela devrait être relativement simple maintenant :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>version <span style="color:#ae81ff">330</span> core
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform sampler2D texture1;
+</span></span><span style="display:flex;"><span>uniform sampler2D texture2;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> mix(texture(texture1, TexCoord), texture(texture2, TexCoord), <span style="color:#ae81ff">0.2</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>La couleur de sortie finale est maintenant la combinaison de deux textures. La fonction de mélange intégrée à GLSL (<code>mix</code>) prend deux valeurs en entrée et interpole linéairement entre elles sur la base de son troisième argument. Si la troisième valeur est 0.0, elle renvoie la première entrée ; si elle est 1.0, elle renvoie la deuxième valeur d&rsquo;entrée. Une valeur de 0,2 renverra 80 % de la première couleur d&rsquo;entrée et 20 % de la seconde, ce qui donnera un mélange de nos deux textures.</p>
+<p>Nous voulons maintenant charger et créer une autre texture ; vous devriez maintenant être familier avec les étapes. Assurez-vous de créer un autre objet texture, de charger l&rsquo;image et de générer la texture finale à l&rsquo;aide de glTexImage2D. Pour la seconde texture, nous utiliserons une image de <a href="https://learnopengl.com/img/textures/awesomeface.png">votre expression faciale pendant l&rsquo;apprentissage d&rsquo;OpenGL</a> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>data <span style="color:#f92672">=</span> stbi_load(<span style="color:#e6db74">&#34;awesomeface.png&#34;</span>, <span style="color:#f92672">&amp;</span>width, <span style="color:#f92672">&amp;</span>height, <span style="color:#f92672">&amp;</span>nrChannels, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (data)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    glTexImage2D(GL_TEXTURE_2D, <span style="color:#ae81ff">0</span>, GL_RGB, width, height, <span style="color:#ae81ff">0</span>, GL_RGBA, GL_UNSIGNED_BYTE, data);
+</span></span><span style="display:flex;"><span>    glGenerateMipmap(GL_TEXTURE_2D);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Notez que nous chargeons maintenant une image <code>.png</code> qui inclut un canal alpha (transparence). Cela signifie que nous devons maintenant spécifier que les données de l&rsquo;image contiennent également un canal alpha en utilisant <code>GL_RGBA</code> ; <strong>sinon OpenGL interprétera incorrectement les données de l&rsquo;image.</strong></p>
+<p>Pour utiliser la seconde texture (et la première), nous devons modifier la procédure de rendu en liant les deux textures à l&rsquo;unité de texture correspondante : </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glActiveTexture(GL_TEXTURE0);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_2D, texture1);
+</span></span><span style="display:flex;"><span>glActiveTexture(GL_TEXTURE1);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_2D, texture2);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>glBindVertexArray(VAO);
+</span></span><span style="display:flex;"><span>glDrawElements(GL_TRIANGLES, <span style="color:#ae81ff">6</span>, GL_UNSIGNED_INT, <span style="color:#ae81ff">0</span>); 
+</span></span></code></pre></div><p>Nous devons également indiquer à OpenGL à quelle unité de texture appartient chaque échantillonneur de shader en définissant chaque échantillonneur à l&rsquo;aide de <code>glUniform1i</code>. Nous ne devons le faire qu&rsquo;une seule fois, donc nous pouvons le faire avant d&rsquo;entrer dans la boucle de rendu :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>ourShader.use(); <span style="color:#75715e">// don&#39;t forget to activate the shader before setting uniforms!  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glUniform1i(glGetUniformLocation(ourShader.ID, <span style="color:#e6db74">&#34;texture1&#34;</span>), <span style="color:#ae81ff">0</span>); <span style="color:#75715e">// set it manually
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>ourShader.setInt(<span style="color:#e6db74">&#34;texture2&#34;</span>, <span style="color:#ae81ff">1</span>); <span style="color:#75715e">// or with shader class
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span>(...) 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    [...]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>En définissant les échantillonneurs via <code>glUniform1i</code>, nous nous assurons que chaque échantillonneur uniforme correspond à l&rsquo;unité de texture appropriée. Vous devriez obtenir le résultat suivant :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/textures11.png" alt="textures11"/>
+Vous avez probablement remarqué que la texture est inversée ! Cela se produit parce qu&rsquo;OpenGL s&rsquo;attend à ce que la coordonnée 0.0 sur l&rsquo;axe des y soit en bas de l&rsquo;image, mais les images ont généralement 0.0 en haut de l&rsquo;axe des y. Heureusement pour nous, <code>stb_image.h</code> peut inverser l&rsquo;axe des y pendant le chargement de l&rsquo;image en ajoutant la déclaration suivante avant de charger une image :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>stbi_set_flip_vertically_on_load(true);  
+</span></span></code></pre></div><p>Après avoir demandé à <code>stb_image.h</code> d&rsquo;inverser l&rsquo;axe des ordonnées lors du chargement des images, vous devriez obtenir le résultat suivant :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/textures12.png" alt="textures12"/>
+Si vous voyez un conteneur heureux, c&rsquo;est que vous avez bien fait les choses. Vous pouvez le comparer avec le <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/4.2.textures_combined/textures_combined.cpp">code source</a>.</p>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

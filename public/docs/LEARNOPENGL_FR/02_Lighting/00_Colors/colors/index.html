@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cg">cg</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/opengl">opengl</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/computer-graphics">computer graphics</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cpp">cpp</a>
+  
+
+<br><br>
+<h1 id="couleurs">Couleurs</h1>
+<p>Nous avons brièvement utilisé et manipulé les couleurs dans les chapitres précédents, mais nous ne les avons jamais définies correctement. Nous allons ici discuter de ce que sont les couleurs et commencer à construire la scène pour les prochains chapitres sur l&rsquo;éclairage.</p>
+<p>Dans le monde réel, les couleurs peuvent prendre n&rsquo;importe quelle valeur connue, chaque objet ayant sa propre couleur. Dans le monde numérique, nous devons convertir les couleurs réelles (infinies) en valeurs numériques (limitées) et, par conséquent, toutes les couleurs du monde réel ne peuvent pas être représentées numériquement. Les couleurs sont représentées numériquement à l&rsquo;aide d&rsquo;une composante rouge, verte et bleue, communément abrégée en RVB. En utilisant différentes combinaisons de ces trois valeurs, dans une plage de <code>[0,1]</code>, nous pouvons représenter presque toutes les couleurs. Par exemple, pour obtenir une couleur corail, nous définissons un vecteur de couleur comme suit :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 coral(<span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.31f</span>);   
+</span></span></code></pre></div><p><strong>La couleur d&rsquo;un objet que nous voyons dans la vie réelle n&rsquo;est pas la couleur qu&rsquo;il a réellement, mais la couleur réfléchie par l&rsquo;objet</strong>. Les couleurs qui ne sont pas absorbées (rejetées) par l&rsquo;objet sont celles que nous percevons. Par exemple, la lumière du soleil est perçue comme une lumière blanche qui est la somme combinée de nombreuses couleurs différentes (comme vous pouvez le voir sur l&rsquo;image). Si nous éclairons un jouet bleu avec cette lumière blanche, il absorbera toutes les sous-couleurs de la couleur blanche, à l&rsquo;exception de la couleur bleue. Comme le jouet n&rsquo;absorbe pas la partie bleue, la lumière est réfléchie. Cette lumière réfléchie pénètre dans notre œil, ce qui donne l&rsquo;impression que le jouet a une couleur bleue. L&rsquo;image suivante illustre ce phénomène pour un jouet de couleur corail qui reflète plusieurs couleurs avec une intensité variable :
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c00_Colors%5ccolor1.png" alt="color1"/>
+Vous pouvez voir que la lumière blanche du soleil est un ensemble de toutes les couleurs visibles et que l&rsquo;objet absorbe une grande partie de ces couleurs. Il ne reflète que les couleurs qui représentent la couleur de l&rsquo;objet et c&rsquo;est la combinaison de ces couleurs que nous percevons (dans ce cas, une couleur corail).</p>
+<p>Techniquement, c&rsquo;est un peu plus compliqué, mais nous y reviendrons dans les chapitres consacrés au PBR (physical based renderer).</p>
+<p>Ces règles de réflexion des couleurs s&rsquo;appliquent directement au domaine graphique. Lorsque nous définissons une source de lumière dans OpenGL, nous voulons lui donner une couleur. Dans le paragraphe précédent, nous avions une couleur blanche, nous allons donc donner à la source de lumière une couleur blanche également. Si nous multiplions ensuite la couleur de la source lumineuse avec la valeur de la couleur d&rsquo;un objet, la couleur résultante sera la couleur réfléchie de l&rsquo;objet (et donc sa couleur perçue). Reprenons notre jouet (cette fois avec une valeur corail) et voyons comment nous pourrions calculer sa couleur perçue dans le monde graphique. Nous obtenons le vecteur de couleur résultant en effectuant une multiplication par composantes entre les vecteurs de couleur de la lumière et de l&rsquo;objet :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 lightColor(<span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 toyColor(<span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.31f</span>);
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 result <span style="color:#f92672">=</span> lightColor <span style="color:#f92672">*</span> toyColor; <span style="color:#75715e">// = (1.0f, 0.5f, 0.31f);
+</span></span></span></code></pre></div><p>Nous pouvons voir que la couleur du jouet absorbe une grande partie de la lumière blanche, mais reflète plusieurs valeurs de rouge, de vert et de bleu en fonction de sa propre valeur de couleur. <strong>Il s&rsquo;agit d&rsquo;une représentation de la manière dont les couleurs fonctionnent dans la vie réelle.</strong> Nous pouvons donc définir la couleur d&rsquo;un objet comme la quantité de chaque composante de couleur qu&rsquo;il reflète à partir d&rsquo;une source lumineuse. Que se passerait-il si nous utilisions une lumière verte ?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 lightColor(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>);
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 toyColor(<span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.31f</span>);
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 result <span style="color:#f92672">=</span> lightColor <span style="color:#f92672">*</span> toyColor; <span style="color:#75715e">// = (0.0f, 0.5f, 0.0f);
+</span></span></span></code></pre></div><p>Comme nous pouvons le voir, le jouet n&rsquo;a pas de lumière rouge et bleue à absorber et/ou à réfléchir. Le jouet absorbe également la moitié de la valeur verte de la lumière, mais réfléchit également la moitié de la valeur verte de la lumière. La couleur du jouet que nous percevons est donc une couleur vert foncé. Nous pouvons constater que si nous utilisons une lumière verte, seules les composantes de la couleur verte peuvent être réfléchies et donc perçues ; les couleurs rouge et bleue ne sont pas perçues. Par conséquent, l&rsquo;objet corail devient soudainement un objet de couleur vert foncé. Essayons un autre exemple avec une lumière vert olive foncé :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 lightColor(<span style="color:#ae81ff">0.33f</span>, <span style="color:#ae81ff">0.42f</span>, <span style="color:#ae81ff">0.18f</span>);
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 toyColor(<span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.31f</span>);
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 result <span style="color:#f92672">=</span> lightColor <span style="color:#f92672">*</span> toyColor; <span style="color:#75715e">// = (0.33f, 0.21f, 0.06f);
+</span></span></span></code></pre></div><p>Comme vous pouvez le constater, il est possible d&rsquo;obtenir des couleurs intéressantes à partir d&rsquo;objets en utilisant différentes couleurs de lumière. Il n&rsquo;est pas difficile d&rsquo;être créatif avec les couleurs.</p>
+<p>Mais assez parlé de couleurs, commençons à construire une scène dans laquelle nous pourrons expérimenter.</p>
+<h2 id="une-scène-éclairée">Une scène éclairée</h2>
+<p>Dans les prochains chapitres, nous créerons des images intéressantes en simulant l&rsquo;éclairage du monde réel et en faisant un usage intensif des couleurs. Puisque nous allons utiliser des sources de lumière, nous voulons les afficher en tant qu&rsquo;objets visuels dans la scène et ajouter au moins un objet pour simuler l&rsquo;éclairage.</p>
+<p>La première chose dont nous avons besoin est un objet sur lequel projeter la lumière et nous utiliserons le fameux cube conteneur des chapitres précédents. Nous aurons également besoin d&rsquo;un objet lumière pour montrer où se trouve la source de lumière dans la scène 3D. Pour des raisons de simplicité, nous représenterons la source de lumière par un cube (nous avons déjà les données des vertex, n&rsquo;est-ce pas ?).</p>
+<p>Remplir un objet tampon de vertex (VBO), définir des pointeurs d&rsquo;attributs de vertex et tout le reste devrait vous être familier maintenant, nous n&rsquo;allons donc pas vous guider à travers ces étapes. Si vous n&rsquo;avez toujours aucune idée de ce qui se passe, je vous suggère de revoir les chapitres précédents, et de travailler sur les exercices si possible, avant de continuer.</p>
+<p>La première chose dont nous avons besoin est un vertex shader pour dessiner le conteneur. Les positions des vertex du conteneur restent les mêmes (bien que nous n&rsquo;ayons pas besoin des coordonnées de texture cette fois-ci), le code n&rsquo;a donc rien de nouveau. Nous utiliserons une version simplifiée du vertex shader des derniers chapitres :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec3 aPos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform mat4 model;
+</span></span><span style="display:flex;"><span>uniform mat4 view;
+</span></span><span style="display:flex;"><span>uniform mat4 projection;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> projection <span style="color:#f92672">*</span> view <span style="color:#f92672">*</span> model <span style="color:#f92672">*</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>Veillez à mettre à jour les données de vertex et les pointeurs d&rsquo;attributs pour qu&rsquo;ils correspondent au nouveau vertex shader (si vous le souhaitez, vous pouvez garder les données de texture et les pointeurs d&rsquo;attributs actifs ; nous ne les utilisons pas pour l&rsquo;instant).</p>
+<p>Comme nous allons également effectuer le rendu d&rsquo;un cube de source lumineuse, nous voulons générer un nouveau <strong>VAO</strong> spécifiquement pour la source lumineuse. Nous pourrions effectuer le rendu de la source lumineuse avec le même <strong>VAO</strong>, puis <strong>effectuer</strong> quelques transformations de la position de la lumière sur la matrice du modèle, mais dans les prochains chapitres, nous modifierons assez souvent les données de vertex et les pointeurs d&rsquo;attributs de l&rsquo;objet conteneur et nous ne voulons pas que ces changements se propagent à l&rsquo;objet source lumineuse (nous ne nous soucions que des positions de vertex du cube lumineux), nous allons donc créer un nouveau <strong>VAO</strong> : </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> lightVAO;
+</span></span><span style="display:flex;"><span>glGenVertexArrays(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>lightVAO);
+</span></span><span style="display:flex;"><span>glBindVertexArray(lightVAO);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// we only need to bind to the VBO, the container&#39;s VBO&#39;s data already contains the data.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glBindBuffer(GL_ARRAY_BUFFER, VBO);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// set the vertex attribute 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glVertexAttribPointer(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>, GL_FLOAT, GL_FALSE, <span style="color:#ae81ff">3</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>), (<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>)<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>glEnableVertexAttribArray(<span style="color:#ae81ff">0</span>);
+</span></span></code></pre></div><p>Le code devrait être relativement simple. Maintenant que nous avons créé le conteneur et le cube de la source lumineuse, il ne reste plus qu&rsquo;à définir le fragment shader pour le conteneur et la source lumineuse :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>uniform vec3 objectColor;
+</span></span><span style="display:flex;"><span>uniform vec3 lightColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(lightColor <span style="color:#f92672">*</span> objectColor, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Le fragment shader accepte à la fois une couleur d&rsquo;objet et une couleur de lumière à partir d&rsquo;une variable uniforme. Ici, nous multiplions la couleur de la lumière avec la couleur de l&rsquo;objet (réfléchie) comme nous l&rsquo;avons vu au début de ce chapitre. Encore une fois, ce shader devrait être facile à comprendre. Réglons la couleur de l&rsquo;objet sur la couleur corail de la dernière section avec une lumière blanche : </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// don&#39;t forget to use the corresponding shader program first (to set the uniform)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>lightingShader.use();
+</span></span><span style="display:flex;"><span>lightingShader.setVec3(<span style="color:#e6db74">&#34;objectColor&#34;</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.31f</span>);
+</span></span><span style="display:flex;"><span>lightingShader.setVec3(<span style="color:#e6db74">&#34;lightColor&#34;</span>,  <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">1.0f</span>);
+</span></span></code></pre></div><p>Une chose à noter est que lorsque nous commencerons à mettre à jour ces shaders d&rsquo;éclairage dans les prochains chapitres, le cube de la source de lumière sera également affecté et ce n&rsquo;est pas ce que nous voulons. Nous ne voulons pas que la couleur de l&rsquo;objet source de lumière soit affectée par les calculs d&rsquo;éclairage, mais plutôt que la source de lumière soit isolée du reste. <strong>Nous voulons que la source de lumière ait une couleur claire constante, non affectée par les autres changements de couleur (cela donne l&rsquo;impression que le cube de la source de lumière est vraiment la source de la lumière).</strong></p>
+<p><strong>Pour ce faire, nous devons créer un deuxième ensemble de shaders que nous utiliserons pour dessiner le cube de la source lumineuse, à l&rsquo;abri de toute modification des shaders d&rsquo;éclairage.</strong> Le vertex shader est le même que le vertex shader d&rsquo;éclairage, vous pouvez donc simplement copier le code source. <strong>Le fragment shader du cube source de lumière s&rsquo;assure que la couleur du cube reste claire en définissant une couleur blanche constante sur la lampe</strong> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(<span style="color:#ae81ff">1.0</span>); <span style="color:#75715e">// set all 4 vector values to 1.0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>Lorsque nous voulons effectuer un rendu, nous voulons effectuer un rendu de l&rsquo;objet conteneur (ou éventuellement de nombreux autres objets) en utilisant le shader d&rsquo;éclairage que nous venons de définir, et lorsque nous voulons dessiner la source de lumière, nous utilisons les shaders de la source de lumière. Au cours des chapitres consacrés à l&rsquo;éclairage, nous mettrons progressivement à jour les shaders d&rsquo;éclairage afin d&rsquo;obtenir des résultats plus réalistes.</p>
+<p>L&rsquo;objectif principal du cube de la source lumineuse est de montrer d&rsquo;où vient la lumière. Nous définissons généralement la position d&rsquo;une source de lumière quelque part dans la scène, mais il s&rsquo;agit simplement d&rsquo;une position qui n&rsquo;a aucune signification visuelle. Pour montrer où se trouve réellement la source de lumière, nous créons un cube au même endroit que la source de lumière. Nous effectuons le rendu de ce cube avec le shader cube source de lumière pour nous assurer que le cube reste toujours blanc, quelles que soient les conditions de luminosité de la scène.</p>
+<p>Déclarons donc une variable globale <code>vec3</code> qui représente l&rsquo;emplacement de la source lumineuse dans les coordonnées world space :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 lightPos(<span style="color:#ae81ff">1.2f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">2.0f</span>);
+</span></span></code></pre></div><p>Nous traduisons ensuite le cube de la source lumineuse en fonction de la position de la source lumineuse et nous le réduisons à l&rsquo;échelle avant d&rsquo;effectuer le rendu :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>mat4(<span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>translate(model, lightPos);
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>scale(model, glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.2f</span>)); 
+</span></span></code></pre></div><p>Le code de rendu résultant pour le cube de la source lumineuse devrait alors ressembler à ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>lightCubeShader.use();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// set the model, view and projection matrix uniforms
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>[...]
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// draw the light cube object
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glBindVertexArray(lightCubeVAO);
+</span></span><span style="display:flex;"><span>glDrawArrays(GL_TRIANGLES, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">36</span>);	
+</span></span></code></pre></div><p>L&rsquo;injection de tous les fragments de code à leurs emplacements appropriés aboutirait alors à une application OpenGL propre, correctement configurée pour expérimenter l&rsquo;éclairage. Si tout se compile, cela devrait ressembler à ceci :</p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c00_Colors%5ccolors2.png" alt="colors2"/>
+Il n&rsquo;y a pas grand-chose à voir pour l&rsquo;instant, mais je vous promets que cela deviendra plus intéressant dans les prochains chapitres.</p>
+<p>Si vous avez des difficultés à trouver où tous les extraits de code s&rsquo;intègrent dans l&rsquo;application dans son ensemble, consultez le code source <a href="https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/1.colors/colors.cpp">ici</a> et travaillez soigneusement dans le code/commentaires.</p>
+<p>Maintenant que nous avons acquis quelques connaissances sur les couleurs et que nous avons créé une scène de base pour expérimenter l&rsquo;éclairage, nous pouvons passer au chapitre suivant où la vraie magie commence. </p>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

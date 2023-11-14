@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cg">cg</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/opengl">opengl</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/computer-graphics">computer graphics</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cpp">cpp</a>
+  
+
+<br><br>
+<h1 id="transformations">Transformations</h1>
+<p>Nous savons maintenant comment créer des objets, les colorer et/ou leur donner une apparence détaillée à l&rsquo;aide de textures, mais ils ne sont toujours pas très intéressants puisqu&rsquo;il s&rsquo;agit d&rsquo;objets statiques. Nous pourrions essayer de les faire bouger en changeant leurs sommets et en reconfigurant leurs buffers à chaque image, <strong>mais c&rsquo;est lourd et coûteux en puissance de traitement</strong>. <strong>Il existe de bien meilleures façons de transformer un objet, et c&rsquo;est en utilisant des objets matriciels</strong> (multiples). Cela ne signifie pas que nous allons parler de Kung Fu et d&rsquo;un vaste monde artificiel numérique.  (jeu de mot avec matrix)</p>
+<p>Les matrices sont des constructions mathématiques très puissantes qui semblent effrayantes au début, mais qui se révèlent extrêmement utiles une fois que l&rsquo;on s&rsquo;y est habitué. Lorsque nous parlerons des matrices, nous devrons faire une petite plongée dans les mathématiques et pour les lecteurs les plus enclins aux mathématiques, je publierai des ressources supplémentaires pour une lecture plus approfondie.</p>
+<p>Toutefois, pour bien comprendre les transformations, nous devons d&rsquo;abord approfondir la question des vecteurs avant d&rsquo;aborder celle des matrices. L&rsquo;objectif de ce chapitre est de vous donner un bagage mathématique de base pour les sujets dont nous aurons besoin plus tard. Si les sujets sont difficiles, essayez de les comprendre autant que possible et revenez à ce chapitre plus tard pour revoir les concepts lorsque vous en aurez besoin.</p>
+<h2 id="vecteurs">Vecteurs</h2>
+<p>Dans leur définition la plus élémentaire, <strong>les vecteurs sont des directions et rien de plus</strong>. <strong>Un vecteur a une direction et une magnitude</strong> (également appelée force ou longueur). On peut comparer les vecteurs à des indications sur une carte au trésor : &ldquo;aller à gauche sur 10 pas, puis aller au nord sur 3 pas et à droite sur 5 pas&rdquo;.
+Ici, &ldquo;gauche&rdquo; est la direction et &ldquo;10 pas&rdquo; est la magnitude du vecteur. Les directions de la carte au trésor contiennent donc 3 vecteurs. <strong>Les vecteurs peuvent avoir n&rsquo;importe quelle dimension, mais nous travaillons généralement avec des dimensions de 2 à 4</strong>. Si un vecteur a 2 dimensions, il représente une direction sur un plan (pensez aux graphiques en 2D) et s&rsquo;il a 3 dimensions, il peut représenter n&rsquo;importe quelle direction dans un monde en 3D.</p>
+<p>Ci-dessous, vous verrez 3 vecteurs où chaque vecteur est représenté par des flèches (x,y) dans un graphique en 2D. Comme il est plus intuitif d&rsquo;afficher les vecteurs en 2D (plutôt qu&rsquo;en 3D), vous pouvez considérer les vecteurs 2D comme des vecteurs 3D avec une coordonnée z de 0. Comme les vecteurs représentent des directions, l&rsquo;origine du vecteur ne change pas sa valeur. Dans le graphique ci-dessous, nous pouvons voir que les vecteurs $\vec{v}$ et $\vec{w}$ sont égaux bien que leur origine soit différente :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/transfo1.png" alt="transfo1"/>
+Pour décrire les vecteurs, les mathématiciens préfèrent généralement utiliser des symboles de caractères avec une petite barre au-dessus de leur tête, comme v¯. De même, lorsque les vecteurs sont affichés dans des formules, ils sont généralement présentés comme suit :</p>
+<p>$$\vec{v} = \begin{pmatrix}
+x\
+y\
+z
+\end{pmatrix}$$
+Comme les vecteurs sont spécifiés en tant que directions, il est parfois difficile de les visualiser en tant que positions. Si nous voulons visualiser les vecteurs comme des positions, nous pouvons imaginer que l&rsquo;origine du vecteur de direction est (0,0,0) et qu&rsquo;il pointe ensuite vers une certaine direction qui spécifie le point, ce qui en fait un vecteur de position (nous pourrions également spécifier une origine différente et dire : &ldquo;ce vecteur pointe vers ce point dans l&rsquo;espace à partir de cette origine&rdquo;). Le vecteur position (3,5) pointerait alors vers (3,5) sur le graphique dont l&rsquo;origine est (0,0). <strong>Les vecteurs permettent donc de décrire des directions et des positions dans l&rsquo;espace en 2D et en 3D.</strong></p>
+<p>Tout comme pour les nombres normaux, nous pouvons également définir plusieurs opérations sur les vecteurs (dont certaines ont déjà été vues).</p>
+<h3 id="opérations-scalaires-sur-les-vecteurs">Opérations scalaires sur les vecteurs</h3>
+<p>Un scalaire est un chiffre unique. Lors de l&rsquo;addition/soustraction/multiplication ou de la division d&rsquo;un vecteur avec un scalaire, il suffit d&rsquo;ajouter/soustraire/multiplier ou diviser chaque élément du vecteur par le scalaire. Dans le cas d&rsquo;une addition, cela donnerait ceci :
+$$\begin{pmatrix}
+1\
+2\
+3
+\end{pmatrix} + x
+= \begin{pmatrix}
+1\
+2\
+3
+\end{pmatrix} +
+\begin{pmatrix}
+x\
+x\
+x
+\end{pmatrix} =
+\begin{pmatrix}
+1 + x\
+2 + x\
+3 + x
+\end{pmatrix}
+$$
+Où $+$ peut être $+$, $-$, $⋅$ ou $÷$ où $⋅$ est l&rsquo;opérateur de multiplication.</p>
+<h3 id="négation-du-vecteur">Négation du vecteur</h3>
+<p><strong>La négation d&rsquo;un vecteur entraîne l&rsquo;apparition d&rsquo;un vecteur dans la direction inverse</strong>. Un vecteur pointant vers le nord-est pointera vers le sud-ouest après la négation. Pour inverser un vecteur, nous ajoutons un signe moins à chaque composante (vous pouvez également le représenter comme une multiplication scalaire vectorielle avec une valeur scalaire de -1) :
+$$
+-\vec{v}
+= -\begin{pmatrix}
+v_x\
+v_y\
+v_z
+\end{pmatrix} =
+\begin{pmatrix}
+-v_x\
+-v_y\
+-v_z
+\end{pmatrix}
+$$</p>
+<h3 id="addition-et-soustraction">Addition et soustraction</h3>
+<p>L&rsquo;addition de deux vecteurs est définie comme une addition par composante, c&rsquo;est-à-dire que chaque composante d&rsquo;un vecteur est ajoutée à la même composante de l&rsquo;autre vecteur de la manière suivante :</p>
+<h1 id="endpmatrix">$$
+\vec{v}
+= \begin{pmatrix}
+1\
+2\
+3
+\end{pmatrix}
+,
+\vec{k}
+= \begin{pmatrix}
+4\
+5\
+6
+\end{pmatrix}
+=&gt;
+\vec{v} + \vec{k} =
+\begin{pmatrix}
+1 + 4\
+2 + 5\
+3 + 6
+\end{pmatrix}</h1>
+<h1 id="endpmatrix-1">\begin{pmatrix}
+5\
+7\
+9
+\end{pmatrix}
+$$
+Visuellement, cela ressemble à ceci pour les vecteurs $\vec{v}=(4,2)$ et $\vec{k}=(1,2)$, où le deuxième vecteur est ajouté à l&rsquo;extrémité du premier vecteur pour trouver le point final du vecteur résultant (méthode de la tête à la queue (head to tail method)) :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/transfo2.png" alt="transfo2"/>
+Tout comme l&rsquo;addition et la soustraction normales, la soustraction de vecteurs est la même chose que l&rsquo;addition avec un second vecteur annulé :
+$$
+\vec{v}
+= \begin{pmatrix}
+1\
+2\
+3
+\end{pmatrix}
+,
+\vec{k}
+= \begin{pmatrix}
+4\
+5\
+6
+\end{pmatrix}
+=&gt;
+\vec{v} + -\vec{k} =
+\begin{pmatrix}
+1 + (-4)\
+2 + (-5)\
+3 + (-6)
+\end{pmatrix}</h1>
+<p>\begin{pmatrix}
+-3\
+-3\
+-3
+\end{pmatrix}
+$$
+En soustrayant deux vecteurs l&rsquo;un de l&rsquo;autre, on obtient un vecteur qui est la différence des positions vers lesquelles pointent les deux vecteurs. Cela s&rsquo;avère utile dans certains cas où nous devons récupérer un vecteur qui est la différence entre deux points.
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/transfo3.png" alt="transfo3"/></p>
+<h3 id="longueur">Longueur</h3>
+<h1 id="vecv">Pour déterminer la longueur/magnitude d&rsquo;un vecteur, nous utilisons le théorème de Pythagore dont vous vous souvenez peut-être de vos cours de mathématiques. Un vecteur forme un triangle lorsque vous visualisez ses composantes x et y individuelles comme les deux côtés d&rsquo;un triangle :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/transfo4.png" alt="transfo4"/>
+Puisque les longueurs des deux côtés (x, y) sont connues et que nous voulons connaître la longueur du côté incliné $\vec{v}$, nous pouvons la calculer en utilisant le théorème de Pythagore comme suit :
+$$
+||\vec{v}||</h1>
+<h1 id="vecv-1">\sqrt{x^2 + y^2}
+$$
+Où $||\vec{v}||$  est noté comme la longueur du vecteur $\vec{v}$. Il est facile d&rsquo;étendre ce principe à la 3D en ajoutant $z^2$ à l&rsquo;équation.
+Dans ce cas, la longueur du vecteur $(4, 2)$ est égale à :
+$$
+||\vec{v}||</h1>
+<h1 id="sqrt42--22">\sqrt{4^2 + 2^2}</h1>
+<h1 id="sqrt16--4">\sqrt{16 + 4}</h1>
+<p>\sqrt{20} = 4.47
+$$
+Ce qui donne 4.47.</p>
+<p>Il existe également un type spécial de vecteur que nous appelons <strong>vecteur unitaire</strong>. <strong>Un vecteur unitaire possède une propriété supplémentaire : sa longueur est exactement égale à 1.</strong> Nous pouvons calculer un vecteur unitaire $\hat{n}$ à partir de n&rsquo;importe quel vecteur en divisant chacune des composantes du vecteur par sa longueur :
+$$
+\hat{n}
+= { \vec{v} \over ||\vec{v}|| }
+$$
+C&rsquo;est ce que nous appelons la <strong>normalisation</strong> d&rsquo;un vecteur. Les vecteurs unitaires sont affichés avec un petit toit (ou un chapeau) au-dessus de leur tête et sont généralement <strong>plus faciles à utiliser, en particulier lorsque nous ne nous intéressons qu&rsquo;à leur direction</strong> (la direction ne change pas si nous modifions la longueur d&rsquo;un vecteur).</p>
+<h3 id="multiplication-entre-les-vecteurs">Multiplication entre les vecteurs</h3>
+<p>La multiplication de deux vecteurs est un cas un peu particulier. La multiplication normale n&rsquo;est pas vraiment définie sur les vecteurs puisqu&rsquo;elle n&rsquo;a pas de signification visuelle, mais nous avons deux cas spécifiques que nous pouvons choisir lors de la multiplication : l&rsquo;un est le produit scalaire noté $\vec{v} \cdot \vec{k}$ (dot product) et l&rsquo;autre est le produit vectoriel (cross product) noté $\vec{v} \times \vec{k}$.</p>
+<h4 id="produit-scalaire-dot-product">Produit scalaire (dot product)</h4>
+<p>Le produit scalaire de deux vecteurs est égal au produit scalaire de leurs longueurs par le cosinus de l&rsquo;angle qui les sépare. Si cela vous semble confus, jetez un coup d&rsquo;œil à sa formule :
+$$
+\vec{v} \cdot \vec{k} =
+||\vec{v}|| \cdot ||\vec{k}|| \cdot \cos{\theta}
+$$
+L&rsquo;angle qui les sépare est représenté par la valeur thêta ($\theta$). Pourquoi est-ce intéressant ? Imaginons que $\vec{v}$ et $\vec{k}$ soient des vecteurs unitaires, leur longueur serait alors égale à 1, ce qui réduirait la formule à :
+$$
+\hat{v} \cdot \hat{k} =
+1 \cdot 1 \cdot \cos{\theta} = \cos{\theta}
+$$
+Le produit scalaire ne définit plus que l&rsquo;angle entre les deux vecteurs. Vous vous souvenez peut-être que la fonction cosinus ou cos devient 0 lorsque l&rsquo;angle est de 90 degrés ou 1 lorsque l&rsquo;angle est de 0. <strong>Cela nous permet de tester facilement si les deux vecteurs sont orthogonaux ou parallèles l&rsquo;un à l&rsquo;autre à l&rsquo;aide du produit scalaire</strong> (orthogonal signifie que les vecteurs sont à angle droit l&rsquo;un par rapport à l&rsquo;autre). Si vous souhaitez en savoir plus sur les fonctions sin et cos, je vous conseille les vidéos suivantes de la <a href="https://www.khanacademy.org/math/trigonometry/basic-trigonometry/basic_trig_ratios/v/basic-trigonometry">Khan Academy</a> sur la trigonométrie de base.</p>
+<h1 id="endpmatrix-2">Comment calculer le produit scalaire ? Le produit scalaire est une multiplication par composantes où l&rsquo;on additionne les résultats. Voici à quoi cela ressemble avec deux vecteurs unitaires (vous pouvez vérifier que leurs longueurs respectives sont exactement égales à 1 :
+$$
+\begin{pmatrix}
+0.6\
+-0.8\
+0
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+0\
+1\
+0
+\end{pmatrix}</h1>
+<p>(0.6 * 0) + (-0.8 * 1) + (0 * 0) = -0.8
+$$
+Pour calculer le degré entre ces deux vecteurs unitaires, nous utilisons l&rsquo;inverse de la fonction cosinus $\cos{}^{-1}$, ce qui donne 143,1 degrés. Nous avons donc calculé l&rsquo;angle entre ces deux vecteurs. Le produit scalaire s&rsquo;avère très utile pour les calculs d&rsquo;éclairage ultérieurs.</p>
+<h4 id="produit-vectoriel-cross-product">Produit vectoriel (cross product)</h4>
+<h1 id="endpmatrix-3">Le produit vectoriel n&rsquo;est défini que dans l&rsquo;espace 3D. Il prend deux vecteurs non parallèles en entrée et produit un troisième vecteur qui est orthogonal aux deux vecteurs d&rsquo;entrée. Si les deux vecteurs d&rsquo;entrée sont également orthogonaux l&rsquo;un par rapport à l&rsquo;autre, un produit vectoriel produira trois vecteurs orthogonaux, ce qui s&rsquo;avérera utile dans les chapitres suivants. L&rsquo;image suivante montre à quoi cela ressemble dans l&rsquo;espace 3D :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/transfo5.png" alt="transfo5"/>
+Contrairement aux autres opérations, le produit vectoriel n&rsquo;est pas vraiment intuitif si l&rsquo;on ne se plonge pas dans l&rsquo;algèbre linéaire. Il est donc préférable de mémoriser la formule et de s&rsquo;en sortir (ou de ne pas le faire, vous vous en sortirez probablement aussi). Vous trouverez ci-dessous le produit vectoriel de deux vecteurs orthogonaux A et B :
+$$
+\begin{pmatrix}
+A_x\
+A_y\
+A_z
+\end{pmatrix}
+\times
+\begin{pmatrix}
+B_x\
+B_y\
+B_z
+\end{pmatrix}</h1>
+<p>\begin{pmatrix}
+A_y \cdot B_z - A_z \cdot B_y \
+A_z \cdot B_x - A_x \cdot B_z \
+A_x \cdot B_y - A_y \cdot B_x
+\end{pmatrix}
+$$
+Comme vous pouvez le constater, cela n&rsquo;a pas vraiment de sens. Cependant, si vous suivez ces étapes, vous obtiendrez un autre vecteur orthogonal à vos vecteurs d&rsquo;entrée.</p>
+<h2 id="matrices">Matrices</h2>
+<p>Maintenant que nous avons abordé la quasi-totalité des vecteurs, il est temps d&rsquo;entrer dans la matrice ! Une matrice est un tableau rectangulaire de nombres, de symboles et/ou d&rsquo;expressions mathématiques. Chaque élément d&rsquo;une matrice est appelé élément de la matrice. Voici un exemple de matrice de 2 x 3 :
+$$
+\begin{bmatrix}
+1 &amp; 2 &amp; 3\
+4 &amp; 5 &amp; 6 \
+\end{bmatrix}
+$$
+Les matrices sont indexées par $(i,j)$ où $i$ est la ligne et  $j$ est la colonne, c&rsquo;est pourquoi la matrice ci-dessus est appelée une matrice $2\times3$ (3 colonnes et 2 lignes, également connues comme les dimensions de la matrice). C&rsquo;est l&rsquo;inverse de ce à quoi vous êtes habitué lorsque vous indexez des graphiques 2D comme $(x,y)$. Pour récupérer la valeur 4, nous devrions l&rsquo;indexer comme (2,1) (deuxième ligne, première colonne).</p>
+<p>Les matrices ne sont rien d&rsquo;autre que des tableaux rectangulaires d&rsquo;expressions mathématiques. Elles possèdent un ensemble de propriétés mathématiques très intéressantes et, tout comme les vecteurs, nous pouvons définir plusieurs opérations sur les matrices, à savoir: l&rsquo;addition, la soustraction et la multiplication.</p>
+<h3 id="addition-et-soustraction-1">Addition et soustraction</h3>
+<h1 id="endbmatrix">L&rsquo;addition et la soustraction entre deux matrices s&rsquo;effectuent par élément. Les règles générales applicables sont donc les mêmes que celles que nous connaissons pour les nombres normaux, mais elles s&rsquo;appliquent aux éléments des deux matrices ayant le même indice. Cela signifie que l&rsquo;addition et la soustraction ne sont définies que pour les matrices de même dimension. Une matrice 3x2 et une matrice 2x3 (ou une matrice 3x3 et une matrice 4x4) ne peuvent pas être additionnées ou soustraites ensemble. Voyons comment fonctionne l&rsquo;addition de matrices sur deux matrices 2x2 :
+$$
+\begin{bmatrix}
+1 &amp; 2\
+3 &amp; 4
+\end{bmatrix}
++
+\begin{bmatrix}
+5 &amp; 6\
+7 &amp; 8
+\end{bmatrix}</h1>
+<h1 id="endbmatrix-1">\begin{bmatrix}
+1+5 &amp; 2+6\
+3+7 &amp; 4+8
+\end{bmatrix}</h1>
+<h2 id="endbmatrix-2">\begin{bmatrix}
+6 &amp; 8\
+10 &amp; 12
+\end{bmatrix}
+$$
+Les mêmes règles s&rsquo;appliquent à la soustraction de la matrice :
+$$
+\begin{bmatrix}
+4 &amp; 2\
+1 &amp; 6
+\end{bmatrix}</h2>
+<h1 id="endbmatrix-3">\begin{bmatrix}
+2 &amp; 4\
+0 &amp; 1
+\end{bmatrix}</h1>
+<h1 id="endbmatrix-4">\begin{bmatrix}
+4-2 &amp; 2-4\
+1-0 &amp; 6-1
+\end{bmatrix}</h1>
+<p>\begin{bmatrix}
+2 &amp; -2\
+1 &amp; 5
+\end{bmatrix}
+$$</p>
+<h3 id="produit-scalaire-de-matrices">Produit scalaire de matrices</h3>
+<p>Un produit matrice-scalaire multiplie chaque élément de la matrice par un scalaire. L&rsquo;exemple suivant illustre la multiplication :</p>
+<h1 id="endbmatrix-5">$$
+2
+\cdot
+\begin{bmatrix}
+1 &amp; 2\
+3 &amp; 4
+\end{bmatrix}</h1>
+<h1 id="endbmatrix-6">\begin{bmatrix}
+2\cdot1 &amp; 2\cdot2\
+2\cdot3 &amp; 2\cdot4
+\end{bmatrix}</h1>
+<p>\begin{bmatrix}
+2 &amp; 4\
+6 &amp; 8
+\end{bmatrix}</p>
+<p>$$
+On comprend maintenant pourquoi ces nombres uniques sont appelés scalaires. <strong>Un scalaire met à l&rsquo;échelle tous les éléments de la matrice en fonction de sa valeur</strong>. Dans l&rsquo;exemple précédent, tous les éléments ont été mis à l&rsquo;échelle par 2.</p>
+<p>Jusqu&rsquo;à présent, tout va bien, tous nos cas ne sont pas trop compliqués. Enfin, jusqu&rsquo;à ce que nous nous attaquions à la multiplication matrice-matrice.</p>
+<h3 id="multiplication-entre-matrices">Multiplication entre matrices</h3>
+<p>La multiplication des matrices n&rsquo;est pas nécessairement complexe, mais il est plutôt difficile de s&rsquo;y habituer. La multiplication matricielle consiste essentiellement à suivre un ensemble de règles prédéfinies lors de la multiplication. Il existe cependant quelques restrictions :</p>
+<ol>
+<li><strong>Vous ne pouvez multiplier deux matrices que si le nombre de colonnes de la matrice de gauche est égal au nombre de lignes de la matrice de droite.</strong></li>
+<li>La multiplication des matrices n&rsquo;est pas commutative, c&rsquo;est-à-dire $A⋅B ≠ B⋅A$</li>
+</ol>
+<h1 id="endbmatrix-7">Commençons par un exemple de multiplication de 2 matrices <code>2x2</code> :
+$$
+\begin{bmatrix}
+1 &amp; 2\
+3 &amp; 4
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+5 &amp; 6\
+7 &amp; 8
+\end{bmatrix}</h1>
+<h1 id="endbmatrix-8">\begin{bmatrix}
+1\cdot5 + 2\cdot7 &amp; 1\cdot6 + 2\cdot8\
+3\cdot5 + 4\cdot7 &amp; 3\cdot6 + 4\cdot8
+\end{bmatrix}</h1>
+<h1 id="endbmatrix-9">\begin{bmatrix}
+5+14 &amp; 6+16\
+15+28 &amp; 18+32
+\end{bmatrix}</h1>
+<p>\begin{bmatrix}
+19 &amp; 22\
+43 &amp; 50
+\end{bmatrix}
+$$
+À l&rsquo;heure actuelle, vous essayez probablement de comprendre ce qui vient de se passer ? La multiplication matricielle est une combinaison de la multiplication normale et de l&rsquo;addition utilisant les lignes de la matrice gauche avec les colonnes de la matrice droite. Essayons d&rsquo;en discuter à l&rsquo;aide de l&rsquo;image suivante :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/transfo6.png" alt="transfo6"/>
+Nous prenons d&rsquo;abord la ligne supérieure de la matrice de gauche, puis une colonne de la matrice de droite. La ligne et la colonne que nous avons choisies déterminent la valeur de sortie de la matrice <code>2x2</code> résultante que nous allons calculer. Si nous prenons la première ligne de la matrice de gauche, la valeur résultante se retrouvera dans la première ligne de la matrice de résultat, puis nous choisissons une colonne et s&rsquo;il s&rsquo;agit de la première colonne, la valeur résultante se retrouvera dans la première colonne de la matrice de résultat. C&rsquo;est exactement le cas du chemin rouge. Pour calculer le résultat en bas à droite, nous prenons la ligne inférieure de la première matrice et la colonne la plus à droite de la deuxième matrice.</p>
+<p>Pour calculer la valeur résultante, nous multiplions le premier élément de la ligne et de la colonne en utilisant la multiplication normale, nous faisons de même pour les deuxième éléments, troisième, quatrième, etc. Les résultats des multiplications individuelles sont ensuite additionnés et nous obtenons notre résultat. Il est logique que l&rsquo;une des conditions requises soit que la taille des colonnes de la matrice de gauche et celle des lignes de la matrice de droite soient égales, sinon nous ne pouvons pas terminer les opérations !</p>
+<p><strong>Le résultat est donc une matrice dont les dimensions sont <code>(n,m)</code> où <code>n</code> est égal au nombre de lignes de la matrice de gauche et <code>m</code> est égal aux colonnes de la matrice de droite.</strong></p>
+<p>Ne vous inquiétez pas si vous avez du mal à imaginer les multiplications dans votre tête. Essayez simplement de faire les calculs à la main et revenez à cette page chaque fois que vous rencontrez des difficultés. Avec le temps, la multiplication matricielle deviendra pour vous une seconde nature.</p>
+<p>Terminons la discussion sur la multiplication matrice-matrice avec un exemple plus large. Essayez de visualiser le modèle à l&rsquo;aide des couleurs. À titre d&rsquo;exercice utile, voyez si vous pouvez trouver votre propre réponse à la multiplication, puis comparez-la avec la matrice résultante (une fois que vous aurez essayé de faire une multiplication matricielle à la main, vous comprendrez rapidement ce que c&rsquo;est).
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/transfo7.png" alt="transfo7"/></p>
+<p>Comme vous pouvez le constater, la multiplication matrice-matrice est un processus assez lourd et très sujet aux erreurs (c&rsquo;est pourquoi nous laissons généralement les ordinateurs s&rsquo;en charger) et cela devient rapidement problématique lorsque les matrices deviennent plus grandes. Si vous avez encore soif d&rsquo;en savoir plus et que vous êtes curieux de découvrir d&rsquo;autres propriétés mathématiques des matrices, je vous suggère vivement de jeter un coup d&rsquo;œil à ces vidéos de la <a href="https://www.khanacademy.org/math/algebra-home/alg-matrices">Khan Academy</a> sur les matrices.</p>
+<p>Quoi qu&rsquo;il en soit, maintenant que nous savons comment multiplier des matrices entre elles, nous pouvons passer aux choses sérieuses.</p>
+<h3 id="multiplication-matrice-vecteur">Multiplication Matrice-Vecteur</h3>
+<p>Jusqu&rsquo;à présent, nous avons eu notre part de vecteurs. Nous les avons utilisés pour représenter des positions, des couleurs et même des coordonnées de texture. Allons un peu plus loin et disons qu&rsquo;un vecteur est en fait une matrice $N\times1$ où $N$ est le nombre de composantes du vecteur (également connu sous le nom de vecteur à $N$ dimensions). Si vous y réfléchissez bien, c&rsquo;est tout à fait logique. Les vecteurs sont comme les matrices, un tableau de nombres, mais avec une seule colonne. En quoi cette nouvelle information peut-elle nous être utile ? Eh bien, si nous avons une matrice $M\times N$, nous pouvons multiplier cette matrice avec notre vecteur $N\times 1$, puisque les colonnes de la matrice sont égales au nombre de lignes du vecteur, ce qui définit la multiplication matricielle.</p>
+<p>Mais pourquoi se soucier de savoir si l&rsquo;on peut multiplier des matrices avec un vecteur ? Eh bien, il se trouve qu&rsquo;il existe de nombreuses transformations 2D/3D intéressantes que l&rsquo;on peut placer à l&rsquo;intérieur d&rsquo;une matrice, et le fait de multiplier cette matrice par un vecteur transforme alors ce vecteur. Au cas où vous seriez encore un peu confus, commençons par quelques exemples et vous comprendrez vite ce que nous voulons dire.</p>
+<h3 id="matrice-identité">Matrice identité</h3>
+<h1 id="endbmatrix-10"><strong>Dans OpenGL, nous travaillons généralement avec des matrices de transformation $4\times 4$</strong> pour plusieurs raisons, l&rsquo;une d&rsquo;entre elles étant que la plupart des vecteurs sont de taille 4. La matrice de transformation la plus simple à laquelle nous pouvons penser est la matrice identité. La matrice identité est une matrice $N\times N$ quine contient que des 0 sauf sur sa diagonale. Comme vous le verrez, cette matrice de transformation laisse un vecteur complètement intact :
+$$
+\begin{bmatrix}
+1 &amp; 0 &amp; 0 &amp; 0\
+0 &amp; 1 &amp; 0 &amp; 0\
+0 &amp; 0 &amp; 1 &amp; 0\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+1\
+2\
+3\
+4
+\end{bmatrix}</h1>
+<p>\begin{bmatrix}
+1\
+2\
+3\
+4
+\end{bmatrix}
+$$
+Le vecteur est totalement intact. Les règles de multiplication le montrent clairement : le premier élément du résultat est chaque élément individuel de la première ligne de la matrice multiplié par chaque élément du vecteur. Étant donné que tous les éléments de la ligne sont égaux à 0, à l&rsquo;exception du premier, nous obtenons : $1⋅1+0⋅2+0⋅3+0⋅4=1$ et il en va de même pour les 3 autres éléments du vecteur.</p>
+<blockquote>
+<p>Vous vous demandez peut-être à quoi sert une matrice de transformation qui ne se transforme pas ? <strong>La matrice identité est généralement un point de départ pour générer d&rsquo;autres matrices de transformation et, si nous creusons encore plus loin dans l&rsquo;algèbre linéaire, une matrice très utile pour prouver des théorèmes et résoudre des équations linéaires.</strong></p>
+</blockquote>
+<h3 id="mise-à-léchelle-scaling">Mise à l&rsquo;échelle (scaling)</h3>
+<p>Lorsque nous mettons un vecteur à l&rsquo;échelle, nous augmentons la longueur de la flèche de la quantité que nous souhaitons mettre à l&rsquo;échelle, tout en conservant la même direction. Comme nous travaillons en 2 ou 3 dimensions, nous pouvons définir la mise à l&rsquo;échelle par un vecteur de 2 ou 3 variables de mise à l&rsquo;échelle, chacune mettant à l&rsquo;échelle un axe (x, y ou z).</p>
+<p>Essayons de mettre à l&rsquo;échelle le vecteur $\vec{v}=(3,2)$. Nous allons mettre à l&rsquo;échelle le vecteur le long de l&rsquo;axe des $x$ par $0.5$, ce qui le rendra deux fois plus étroit ; et nous allons mettre à l&rsquo;échelle le vecteur par 2 le long de l&rsquo;axe des $y$, ce qui le rendra deux fois plus haut. Voyons ce que cela donne si nous mettons le vecteur à l&rsquo;échelle $(0.5,2)$ (le résultat sera le vecteur $\vec{s}$) :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/transfo8.png" alt="transfo8"/>
+Gardez à l&rsquo;esprit qu&rsquo;OpenGL fonctionne généralement dans l&rsquo;espace 3D, donc pour ce cas 2D, nous pourrions mettre l&rsquo;échelle de l&rsquo;axe $z$ à 1, ce qui le laisserait intact. <strong>L&rsquo;opération de mise à l&rsquo;échelle que nous venons d&rsquo;effectuer est une mise à l&rsquo;échelle non uniforme, car le facteur d&rsquo;échelle n&rsquo;est pas le même pour chaque axe. Si le facteur d&rsquo;échelle était égal sur tous les axes, on parlerait d&rsquo;une échelle uniforme.</strong></p>
+<h1 id="endbmatrix-11">Commençons par construire une matrice de transformation qui effectue la mise à l&rsquo;échelle pour nous. Nous avons vu dans la matrice d&rsquo;identité que chacun des éléments diagonaux était multiplié par l&rsquo;élément vectoriel correspondant. Que se passerait-il si nous remplacions les 1 de la matrice d&rsquo;identité par des 3 ? Dans ce cas, nous multiplierions chacun des éléments du vecteur par une valeur de 3, ce qui aurait pour effet d&rsquo;augmenter uniformément le vecteur de 3. Si nous représentons les variables d&rsquo;échelle par $(S1,S2,S3)$ nous pouvons définir une matrice d&rsquo;échelle sur n&rsquo;importe quel vecteur $(x,y,z)$ comme suit :
+$$
+\begin{bmatrix}
+S1 &amp; 0 &amp; 0 &amp; 0\
+0 &amp; S2 &amp; 0 &amp; 0\
+0 &amp; 0 &amp; S3 &amp; 0\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+x\
+y\
+z\
+1
+\end{bmatrix}</h1>
+<p>\begin{bmatrix}
+x \cdot S1\
+y \cdot S2\
+z \cdot S3\
+1
+\end{bmatrix}
+$$
+<strong>Notez que nous conservons la 4e valeur d&rsquo;échelle 1. La composante $w$ est utilisée à d&rsquo;autres fins, comme nous le verrons plus loin.</strong></p>
+<h3 id="translation">Translation</h3>
+<p><strong>La translation consiste à ajouter un autre vecteur au vecteur d&rsquo;origine pour obtenir un nouveau vecteur avec une position différente, déplaçant ainsi le vecteur sur la base d&rsquo;un vecteur de translation.</strong> Nous avons déjà abordé la question de l&rsquo;addition des vecteurs, ce qui ne devrait pas être trop nouveau.</p>
+<h1 id="endbmatrix-12">Tout comme la matrice de mise à l&rsquo;échelle, il existe plusieurs emplacements sur une matrice 4 par 4 que nous pouvons utiliser pour effectuer certaines opérations et, p<strong>our la translation, il s&rsquo;agit des trois premières valeurs de la quatrième colonne.</strong> Si nous représentons le vecteur de translation par $(T_x,T_y,T_z)$ nous pouvons définir la matrice de translation comme suit :
+$$
+\begin{bmatrix}
+1 &amp; 0 &amp; 0 &amp; T_x\
+0 &amp; 1 &amp; 0 &amp; T_y\
+0 &amp; 0 &amp; 1 &amp; T_z\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+x\
+y\
+z\
+1
+\end{bmatrix}</h1>
+<p>\begin{bmatrix}
+x + T_x\
+y + T_y\
+z + T_z\
+1
+\end{bmatrix}
+$$
+Cela fonctionne parce que toutes les valeurs de translation sont multipliées par la colonne $w$ du vecteur et ajoutées aux valeurs originales du vecteur (rappelez-vous les règles de multiplication des matrices). Cela n&rsquo;aurait pas été possible avec une matrice $3 \times 3$.</p>
+<blockquote>
+<p><strong>Coordonnées homogènes</strong><br>
+<strong>La composante $w$ d&rsquo;un vecteur est également appelée coordonnée homogène</strong>. <strong>Pour obtenir le vecteur 3D à partir d&rsquo;un vecteur homogène, nous divisons les coordonnées x, y et z par la coordonnée w</strong>. Nous ne le remarquons généralement pas, car la composante $w$ est généralement égale à 1,0. <strong>L&rsquo;utilisation de coordonnées homogènes présente plusieurs avantages : elle nous permet d&rsquo;effectuer des translations matricielles sur des vecteurs 3D (sans composante w, nous ne pouvons pas translater les vecteurs) et, dans le chapitre suivant, nous utiliserons la valeur w pour créer une perspective 3D.</strong></p>
+</blockquote>
+<blockquote>
+<p>De plus, <strong>lorsque la coordonnée homogène est égale à 0, le vecteur est spécifiquement appelé vecteur de direction</strong>, car un vecteur dont la coordonnée w est égale à 0 ne peut pas être translaté.</p>
+</blockquote>
+<p>Une matrice de translation permet de déplacer des objets dans n&rsquo;importe laquelle des trois directions $(x, y, z)$, ce qui en fait une matrice de transformation très utile pour notre boîte à outils de transformation.</p>
+<h3 id="rotation">Rotation</h3>
+<p>Les dernières transformations étaient relativement faciles à comprendre et à visualiser dans l&rsquo;espace 2D ou 3D, mais <strong>les rotations sont un peu plus délicates</strong>. Si vous voulez savoir exactement comment ces matrices sont construites, je vous recommande de regarder les éléments de rotation des vidéos d&rsquo;<a href="https://www.khanacademy.org/math/linear-algebra/matrix_transformations">algèbre linéaire</a> de Khan Academy.</p>
+<p>Tout d&rsquo;abord, définissons ce qu&rsquo;est une rotation d&rsquo;un vecteur. <strong>Une rotation en 2D ou 3D est représentée par un angle. Un angle peut être exprimé en degrés ou en radians, un cercle entier ayant 360 degrés ou 2 PI radians. Je préfère expliquer les rotations en utilisant les degrés, car nous y sommes généralement plus habitués.</strong></p>
+<blockquote>
+<p>La plupart des fonctions de rotation nécessitent un angle en radians, mais heureusement, <strong>les degrés sont facilement convertis en radians</strong> :
+$angle en degrés = angle en radians * (180 / \pi)$
+$angle en radians = angle en degrés * (\pi / 180)$
+Où $\pi$ est égal (arrondi) à $3,14159265359$.</p>
+</blockquote>
+<p>La rotation d&rsquo;un demi-cercle nous fait tourner de $360/2 = 180$ degrés et la rotation d&rsquo;un cinquième vers la droite nous fait tourner de $360/5 = 72$ degrés vers la droite. Ceci est démontré pour un vecteur 2D de base où $\vec{v}$ est tourné de 72 degrés vers la droite, ou dans le sens des aiguilles d&rsquo;une montre, à partir de $\vec{k}$ :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/transfo9.png" alt="transfo9"/>
+Les rotations en 3D sont spécifiées par un angle et un axe de rotation. L&rsquo;angle spécifié fera tourner l&rsquo;objet le long de l&rsquo;axe de rotation indiqué. Essayez de visualiser cela en faisant tourner votre tête d&rsquo;un certain degré tout en regardant continuellement vers le bas un seul axe de rotation. <strong>Lorsque l&rsquo;on fait tourner des vecteurs 2D dans un monde 3D, par exemple, on fixe l&rsquo;axe de rotation sur l&rsquo;axe z</strong> (essayez de visualiser cela).</p>
+<p>En utilisant la trigonométrie, il est possible de transformer des vecteurs en vecteurs nouvellement tournés en fonction d&rsquo;un angle. Cela se fait généralement par une combinaison intelligente des fonctions sinus et cosinus (communément abrégées en $\sin$ et $\cos$). Une discussion sur la manière dont les matrices de rotation sont générées n&rsquo;entre pas dans le cadre de ce chapitre.</p>
+<p>Une matrice de rotation est définie pour chaque axe unitaire dans l&rsquo;espace 3D où l&rsquo;angle est représenté par le symbole thêta $\theta$.</p>
+<h1 id="endbmatrix-13"><strong>Rotation autour de l&rsquo;axe X :</strong>
+$$
+\begin{bmatrix}
+1 &amp; 0 &amp; 0 &amp; 0\
+0 &amp; \cos{\theta} &amp; -\sin{\theta} &amp; 0\
+0 &amp; \sin{\theta} &amp; \cos{\theta} &amp; 0\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+x\
+y\
+z\
+1
+\end{bmatrix}</h1>
+<h1 id="endbmatrix-14">\begin{bmatrix}
+x\
+\cos{\theta} \cdot y - \sin{\theta} \cdot z\
+\sin{\theta} \cdot y + \sin{\theta} \cdot z\\
+1
+\end{bmatrix}
+$$
+<strong>Rotation autour de l&rsquo;axe Y :</strong>
+$$
+\begin{bmatrix}
+\cos{\theta} &amp; 0 &amp; \sin{\theta} &amp; 0\
+0 &amp; 1 &amp; 0 &amp; 0\
+-\sin{\theta} &amp; 0 &amp; \cos{\theta} &amp; 0\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+x\
+y\
+z\
+1
+\end{bmatrix}</h1>
+<p>\begin{bmatrix}</p>
+<h1 id="endbmatrix-15">\cos{\theta} \cdot x + \sin{\theta} \cdot z\
+y\
+-\sin{\theta} \cdot x + \cos{\theta} \cdot z\
+1
+\end{bmatrix}
+$$
+Rotation autour de l&rsquo;axe Z :
+$$
+\begin{bmatrix}
+\cos{\theta} &amp; -\sin{\theta} &amp; 0 &amp; 0\
+\sin{\theta} &amp;  \cos{\theta} &amp; 0 &amp; 0\
+0 &amp; 0 &amp; 1 &amp; 0\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+x\
+y\
+z\
+1
+\end{bmatrix}</h1>
+<p>\begin{bmatrix}
+\cos{\theta} \cdot x - \sin{\theta} \cdot y\
+\sin{\theta} \cdot x + \cos{\theta} \cdot y\
+z\
+1
+\end{bmatrix}
+$$</p>
+<p>En utilisant les matrices de rotation, nous pouvons transformer nos vecteurs de position autour de l&rsquo;un des trois axes unitaires. <strong>Pour tourner autour d&rsquo;un axe 3D arbitraire, nous pouvons les combiner tous les trois en tournant d&rsquo;abord autour de l&rsquo;axe $X$, puis $Y$ et enfin $Z$, par exemple. Cependant, cela introduit rapidement un problème appelé &ldquo;Gimbal lock&rdquo;.</strong>
+Nous ne discuterons pas des détails, mais <strong>une meilleure solution consiste à effectuer une rotation autour d&rsquo;un axe unitaire arbitraire, par exemple $(0,662,0,2,0,722)$ (notez qu&rsquo;il s&rsquo;agit d&rsquo;un vecteur unitaire), au lieu de combiner les matrices de rotation</strong>. Une telle matrice (verbeuse) existe et est donnée ci-dessous avec $(R_x,R_y,R_z)$ comme axe de rotation arbitraire :</p>
+<p>$$
+\begin{bmatrix}
+\cos{\theta} + {R_x}^{2}(1 - \cos{\theta}) &amp;
+R_xR_y(1 - \cos{\theta}) - R_z\sin{\theta} &amp;
+R_xR_z(1 - \cos{\theta}) + R_y\sin{\theta} &amp;
+0\
+R_yR_x(1 - \cos{\theta}) + R_z\sin{\theta} &amp;
+\cos{\theta} + {R_y}^{2}(1 - \cos{\theta}) &amp;
+R_yR_z(1 - \cos{\theta}) - R_x\sin{\theta} &amp;
+0\
+R_zR_x(1 - \cos{\theta}) - R_y\sin{\theta} &amp;
+R_zR_y(1 - \cos{\theta}) + R_x\sin{\theta} &amp;
+\cos{\theta} + {R_z}^{2}(1 - \cos{\theta}) &amp;
+0\
+0&amp;0&amp;0&amp;1
+\end{bmatrix}
+$$
+Une discussion mathématique sur la création d&rsquo;une telle matrice n&rsquo;entre pas dans le cadre de ce chapitre. Gardez à l&rsquo;esprit que même cette matrice n&rsquo;empêche pas complètement le gimbal lock (bien qu&rsquo;il devienne beaucoup plus difficile à réaliser). Pour éviter réellement les gimbal locks (blocages de cadran), nous devons représenter les rotations à l&rsquo;aide de <strong>quaternions</strong>, qui sont non seulement <strong>plus sûrs, mais aussi plus faciles à calculer</strong>. Cependant, une discussion sur les quaternions n&rsquo;entre pas dans le cadre de ce chapitre.</p>
+<h3 id="combiner-les-matrices">Combiner les matrices</h3>
+<h1 id="trans-cdot-scale"><strong>La véritable puissance de l&rsquo;utilisation des matrices pour les transformations réside dans le fait que nous pouvons combiner plusieurs transformations dans une seule matrice grâce à la multiplication matrice-matrice.</strong> Voyons si nous pouvons générer une matrice de transformation qui combine plusieurs transformations. Supposons que nous ayons un vecteur $(x,y,z)$ et que nous voulions le mettre à l&rsquo;échelle par 2 puis le translater par $(1,2,3)$. Nous avons besoin d&rsquo;une matrice de translation et d&rsquo;une matrice de mise à l&rsquo;échelle pour les étapes requises. La matrice de transformation résultante ressemblerait alors à:
+$$
+Trans \cdot Scale</h1>
+<h1 id="endbmatrix-16">\begin{bmatrix}
+1 &amp; 0 &amp; 0 &amp; 1\
+0 &amp; 1 &amp; 0 &amp; 2\
+0 &amp; 0 &amp; 1 &amp; 3\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+2 &amp; 0 &amp; 0 &amp; 0\
+0 &amp; 2 &amp; 0 &amp; 0\
+0 &amp; 0 &amp; 2 &amp; 0\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}</h1>
+<p>\begin{bmatrix}
+2 &amp; 0 &amp; 0 &amp; 1\
+0 &amp; 2 &amp; 0 &amp; 2\
+0 &amp; 0 &amp; 2 &amp; 3\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}
+$$
+<strong>Notez que nous effectuons d&rsquo;abord une translation et ensuite une transformation d&rsquo;échelle lorsque nous multiplions des matrices. La multiplication des matrices n&rsquo;est pas commutative, ce qui signifie que leur ordre est important.</strong> <strong>Lors de la multiplication de matrices, la matrice la plus à droite est d&rsquo;abord multipliée par le vecteur, vous devez donc lire les multiplications de droite à gauche.</strong> Il est conseillé d&rsquo;effectuer <strong>d&rsquo;abord les opérations de mise à l&rsquo;échelle, puis les rotations et enfin les translations</strong> lors de la combinaison de matrices, car elles peuvent avoir un effet (négatif) l&rsquo;une sur l&rsquo;autre. Par exemple, si vous effectuez d&rsquo;abord une translation, puis une mise à l&rsquo;échelle, le vecteur de translation sera également mis à l&rsquo;échelle !
+En appliquant la matrice de transformation finale à notre vecteur, on obtient le vecteur suivant :</p>
+<h1 id="endbmatrix-17">$$
+\begin{bmatrix}
+2 &amp; 0 &amp; 0 &amp; 1\
+0 &amp; 2 &amp; 0 &amp; 2\
+0 &amp; 0 &amp; 2 &amp; 3\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+x\
+y\
+z\
+1
+\end{bmatrix}</h1>
+<p>\begin{bmatrix}
+2x + 1\
+2y + 2\
+2z + 3\
+1
+\end{bmatrix}
+$$
+Superbe ! Le vecteur est d&rsquo;abord mis à l&rsquo;échelle par deux, puis translaté par (1,2,3).</p>
+<h2 id="en-pratique">En pratique</h2>
+<p>Maintenant que nous avons expliqué toute la théorie derrière les transformations, il est temps de voir comment nous pouvons utiliser ces connaissances à notre avantage. OpenGL n&rsquo;intègre aucune forme de connaissance des matrices ou des vecteurs, nous devons donc définir nos propres classes et fonctions mathématiques. Dans ce livre, nous préférons nous abstraire de tous les petits détails mathématiques et utiliser simplement des bibliothèques mathématiques pré-faites. Heureusement, il existe une bibliothèque mathématique facile à utiliser et adaptée à OpenGL, appelée <strong>GLM</strong>.</p>
+<h3 id="glm">GLM</h3>
+<p>GLM signifie OpenGL Mathematics et est une bibliothèque d&rsquo;en-tête seulement, ce qui signifie qu&rsquo;il suffit d&rsquo;inclure les fichiers d&rsquo;en-tête appropriés et le tour est joué ; aucune liaison ni compilation n&rsquo;est nécessaire. GLM peut être téléchargé depuis leur <a href="https://glm.g-truc.net/0.9.8/index.html">site web</a>. Copiez le répertoire racine des fichiers d&rsquo;en-tête dans votre dossier includes et c&rsquo;est parti.</p>
+<p>La plupart des fonctionnalités de GLM dont nous avons besoin se trouvent dans 3 fichiers d&rsquo;en-tête que nous inclurons comme suit :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;glm/glm.hpp&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;glm/gtc/matrix_transform.hpp&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;glm/gtc/type_ptr.hpp&gt;</span><span style="color:#75715e">
+</span></span></span></code></pre></div><p>Voyons si nous pouvons mettre à profit nos connaissances en matière de transformation en translatant un vecteur $(1,0,0)$ par $(1,1,0)$ (notez que nous le définissons comme un <code>glm::vec4</code> dont la coordonnée homogène est fixée à $1.0$) :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec4 vec(<span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>mat4 trans <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>mat4(<span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>trans <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>translate(trans, glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>));
+</span></span><span style="display:flex;"><span>vec <span style="color:#f92672">=</span> trans <span style="color:#f92672">*</span> vec;
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> vec.x <span style="color:#f92672">&lt;&lt;</span> vec.y <span style="color:#f92672">&lt;&lt;</span> vec.z <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span></code></pre></div><p>Nous définissons d&rsquo;abord un vecteur nommé <code>vec</code> en utilisant la classe vectorielle intégrée de GLM. Ensuite, nous définissons une <code>mat4</code> et l&rsquo;initialisons explicitement à la matrice identité en initialisant les diagonales de la matrice à 1,0 ; <strong>si nous ne l&rsquo;initialisons pas à la matrice identité, la matrice sera une matrice nulle (tous les éléments sont à 0) et toutes les opérations matricielles ultérieures aboutiront également à une matrice nulle.</strong></p>
+<p>L&rsquo;étape suivante consiste à créer une matrice de transformation en passant notre matrice identité à la fonction <code>glm::translate</code>, ainsi qu&rsquo;un vecteur de translation (la matrice donnée est alors multipliée par une matrice de translation et la matrice résultante est renvoyée).<br>
+Ensuite, nous multiplions notre vecteur par la matrice de transformation et nous renvoyons le résultat. Si nous nous souvenons encore de la manière dont fonctionne la translation des matrices, le vecteur résultant devrait être $(1+1,0+1,0+0)$, ce qui correspond à $(2,1,0)$. Cet extrait de code produit $210$, ce qui signifie que la matrice de transformation a fait son travail.</p>
+<p>Faisons quelque chose de plus intéressant et mettons à l&rsquo;échelle et pivotons l&rsquo;objet conteneur du chapitre précédent :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>mat4 trans <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>mat4(<span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>trans <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>rotate(trans, glm<span style="color:#f92672">::</span>radians(<span style="color:#ae81ff">90.0f</span>), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>));
+</span></span><span style="display:flex;"><span>trans <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>scale(trans, glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">0.5</span>));  
+</span></span></code></pre></div><p>Nous commençons par mettre à l&rsquo;échelle le conteneur de $0.5$ sur chaque axe, puis nous le faisons pivoter de 90 degrés autour de l&rsquo;axe $Z$. GLM attend ses angles en radians, nous convertissons donc les degrés en radians en utilisant <code>glm::radians</code>. Notez que le rectangle texturé est sur le plan $XY$ et que nous voulons donc le faire pivoter autour de l&rsquo;axe $Z$. Gardez à l&rsquo;esprit que l&rsquo;axe autour duquel nous effectuons la rotation doit être un vecteur unitaire, donc assurez-vous de normaliser le vecteur d&rsquo;abord si vous n&rsquo;effectuez pas de rotation autour de l&rsquo;axe $X$, $Y$ ou $Z$. Comme nous transmettons la matrice à chacune des fonctions de GLM, GLM multiplie automatiquement les matrices entre elles, ce qui donne une matrice de transformation qui combine toutes les transformations.</p>
+<p>La prochaine grande question est la suivante : <strong>comment transmettre la matrice de transformation aux shaders ?</strong> Nous avons déjà mentionné que GLSL possède également un type <code>mat4</code>. <strong>Nous allons donc adapter le vertex shader pour qu&rsquo;il accepte une variable uniforme mat4 et qu&rsquo;il multiplie le vecteur de position par la matrice uniforme</strong> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec3 aPos;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>) in vec2 aTexCoord;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>out vec2 TexCoord;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>uniform mat4 transform;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> transform <span style="color:#f92672">*</span> vec4(aPos, <span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>    TexCoord <span style="color:#f92672">=</span> vec2(aTexCoord.x, aTexCoord.y);
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><blockquote>
+<p>GLSL dispose également des types <code>mat2</code> et <code>mat3</code> qui permettent d&rsquo;effectuer des opérations de type <strong>swizzling</strong>, tout comme les vecteurs. Toutes les opérations mathématiques mentionnées ci-dessus (comme la multiplication scalaire-matrice, la multiplication matrice-vecteur et la multiplication matrice-matrice) sont autorisées sur ces types de matrice. Lorsque des opérations matricielles spéciales seront utilisées, nous veillerons à expliquer ce qui se passe.</p>
+</blockquote>
+<p>Nous avons ajouté l&rsquo;uniforme et multiplié le vecteur de position avec la matrice de transformation avant de le passer à <code>gl_Position</code>. Notre conteneur devrait maintenant être deux fois plus petit et tourné de 90 degrés (incliné vers la gauche). Nous devons encore passer la matrice de transformation au shader :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> transformLoc <span style="color:#f92672">=</span> glGetUniformLocation(ourShader.ID, <span style="color:#e6db74">&#34;transform&#34;</span>);
+</span></span><span style="display:flex;"><span>glUniformMatrix4fv(transformLoc, <span style="color:#ae81ff">1</span>, GL_FALSE, glm<span style="color:#f92672">::</span>value_ptr(trans));
+</span></span></code></pre></div><p>Nous demandons d&rsquo;abord l&rsquo;emplacement de la variable uniforme, puis nous envoyons les données matricielles aux shaders en utilisant <code>glUniform</code> avec <code>Matrix4fv</code> comme postfixe.</p>
+<ul>
+<li>Le premier argument devrait être familier maintenant, il s&rsquo;agit de <strong>l&rsquo;emplacement de l&rsquo;uniforme</strong></li>
+<li>Le deuxième argument indique à OpenGL <strong>le nombre de matrices à envoyer</strong>, qui est de 1.</li>
+<li>Le troisième argument nous demande si nous voulons transposer notre matrice, c&rsquo;est-à-dire intervertir les colonnes et les lignes. Les développeurs d&rsquo;OpenGL utilisent souvent une disposition interne de la matrice appelée ordre colonne-majeur (column-major) qui est la disposition par défaut de la matrice dans GLM, il n&rsquo;y a donc pas besoin de transposer les matrices ; nous pouvons garder <code>GL_FALSE</code>.</li>
+<li>Le dernier paramètre est <strong>la donnée réelle de la matrice</strong>, mais GLM stocke les données de ses matrices d&rsquo;une manière qui ne correspond pas toujours aux attentes d&rsquo;OpenGL, <strong>donc nous convertissons d&rsquo;abord les données avec la fonction intégrée <code>value_ptr</code> de GLM</strong>.</li>
+</ul>
+<p>Nous avons créé une matrice de transformation, déclaré un uniforme dans le vertex shader et envoyé la matrice aux shaders où nous transformons les coordonnées de nos vertex. Le résultat devrait ressembler à ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/transfo10.png" alt="transfo10"/>
+C&rsquo;est parfait ! Notre conteneur est en effet incliné vers la gauche et deux fois plus petit, la transformation est donc réussie. Soyons un peu plus funky et voyons si nous pouvons faire pivoter le conteneur dans le temps, et pour le plaisir nous allons aussi repositionner le conteneur en bas à droite de la fenêtre. Pour faire pivoter le conteneur dans le temps, nous devons mettre à jour la matrice de transformation dans la boucle de rendu, car elle doit être mise à jour à chaque image. Nous utilisons la fonction temps de GLFW pour obtenir un angle dans le temps :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>mat4 trans <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>mat4(<span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>trans <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>translate(trans, glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.5f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.0f</span>));
+</span></span><span style="display:flex;"><span>trans <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>rotate(trans, (<span style="color:#66d9ef">float</span>)glfwGetTime(), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>));
+</span></span></code></pre></div><p>Gardez à l&rsquo;esprit que dans le cas précédent, nous pouvions déclarer la matrice de transformation n&rsquo;importe où, mais que maintenant nous devons la créer à chaque itération pour mettre à jour la rotation en permanence. Cela signifie que nous devons recréer la matrice de transformation à chaque itération de la boucle de rendu. Habituellement, lors du rendu de scènes, nous avons plusieurs matrices de transformation qui sont recréées avec de nouvelles valeurs à chaque image.</p>
+<p>Ici, nous faisons d&rsquo;abord pivoter le conteneur autour de l&rsquo;origine $(0,0,0)$ et une fois qu&rsquo;il a pivoté, nous traduisons sa version pivotée dans le coin inférieur droit de l&rsquo;écran. <strong>N&rsquo;oubliez pas que l&rsquo;ordre de transformation réel doit être lu à l&rsquo;envers : même si, dans le code, nous effectuons d&rsquo;abord une translation, puis une rotation, les transformations réelles appliquent d&rsquo;abord une rotation, puis une translation.</strong> Il est difficile de comprendre toutes ces combinaisons de transformations et la manière dont elles s&rsquo;appliquent aux objets. Essayez d&rsquo;expérimenter avec des transformations comme celles-ci et vous comprendrez rapidement.</p>
+<p>Si vous avez bien fait les choses, vous devriez obtenir le résultat suivant :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cvideo/transfo_video1.mp4" alt="transfo_video1"/>
+Et voilà. Un conteneur translaté qui pivote au fil du temps, le tout grâce à une seule matrice de transformation ! Vous comprenez maintenant pourquoi les matrices sont si puissantes dans le domaine du graphisme. Nous pouvons définir un nombre infini de transformations et les combiner dans une seule matrice que nous pouvons réutiliser aussi souvent que nous le souhaitons. <strong>L&rsquo;utilisation de transformations comme celle-ci dans le vertex shader nous évite de redéfinir les données des vertex et nous fait également gagner du temps de traitement, puisque nous n&rsquo;avons pas à renvoyer nos données en permanence (ce qui est assez lent) ; tout ce que nous avons à faire, c&rsquo;est de mettre à jour l&rsquo;uniforme de transformation.</strong></p>
+<p>Si vous n&rsquo;avez pas obtenu le bon résultat ou si vous êtes bloqué à un autre endroit, jetez un coup d&rsquo;œil au <a href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/5.1.transformations/transformations.cpp">code source</a> et à la <a href="https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/shader_m.h">classe de shader</a> mise à jour.</p>
+<p>Dans le prochain chapitre, nous verrons comment utiliser les matrices pour définir différents espaces de coordonnées pour nos sommets. Ce sera notre premier pas dans le graphisme 3D !</p>
+<h2 id="pour-en-savoir-plus">Pour en savoir plus</h2>
+<ul>
+<li><a href="https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab">Essence of Linear Algebra</a>: une grande série de tutoriels vidéo par Grant Sanderson sur les mathématiques sous-jacentes des transformations et de l&rsquo;algèbre linéaire.</li>
+</ul>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

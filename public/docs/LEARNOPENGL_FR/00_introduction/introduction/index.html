@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+<br><br>
+<h1 id="introduction">Introduction</h1>
+<p>Depuis que vous êtes arrivé ici, vous voulez probablement apprendre les rouages de l&rsquo;infographie et faire tous les trucs que les jeunes cool font par eux-mêmes. Faire les choses par soi-même est extrêmement amusant et plein de ressources, et cela vous permet d&rsquo;acquérir une excellente compréhension de la programmation graphique. Cependant, il y a quelques points à prendre en considération avant de commencer votre voyage.</p>
+<h2 id="prérequis">Prérequis</h2>
+<p>Comme OpenGL est une API graphique et non une plateforme propre, il nécessite un langage pour fonctionner et le langage de choix est le C++. Par conséquent, une connaissance décente du langage de programmation C++ est requise pour ces chapitres. Il n&rsquo;est donc pas nécessaire d&rsquo;être un expert en C++, mais vous devriez être capable d&rsquo;écrire plus qu&rsquo;un simple programme &ldquo;Hello World&rdquo;. Si vous n&rsquo;avez pas beaucoup d&rsquo;expérience en C++, je vous recommande les tutoriels gratuits sur <a href="https://www.learncpp.com">www.learncpp.com</a>.</p>
+<p>Nous utiliserons également des mathématiques (<strong>algèbre linéaire, géométrie et trigonométrie</strong>) tout au long du projet et j&rsquo;essaierai d&rsquo;expliquer tous les concepts mathématiques requis. Cependant, je ne suis pas un mathématicien dans l&rsquo;âme et même si mes explications sont faciles à comprendre, elles seront très probablement incomplètes. C&rsquo;est pourquoi, si nécessaire, je fournirai des pointeurs vers de bonnes ressources qui expliquent la matière de manière plus complète. Ne soyez pas effrayé par les connaissances mathématiques requises avant de commencer votre voyage dans OpenGL ; presque tous les concepts peuvent être compris avec un bagage mathématique de base et j&rsquo;essaierai de réduire les mathématiques au minimum dans la mesure du possible. La plupart des fonctionnalités n&rsquo;exigent même pas que vous compreniez toutes les mathématiques tant que vous savez comment les utiliser.</p>
+<h2 id="structure">Structure</h2>
+<p>LearnOpenGL est divisé en plusieurs sections générales. Chaque section contient plusieurs chapitres qui expliquent différents concepts en détail. Chacun des chapitres peut être trouvé dans le menu à votre gauche. Les concepts sont enseignés de manière linéaire (il est donc conseillé de commencer de haut en bas, sauf indication contraire) où chaque chapitre explique la théorie de base et les aspects pratiques.</p>
+<p>Pour faciliter le suivi des concepts et leur donner une structure supplémentaire, le livre contient des encadrés, des blocs de code, des indications de couleur et des références de fonctions.</p>
+<h3 id="encadrés">Encadrés</h3>
+<blockquote>
+<p>Les encadrés verts englobent des notes ou des caractéristiques/conseils utiles concernant OpenGL ou le sujet en question.</p>
+</blockquote>
+<blockquote>
+<p>Les encadrés rouges contiennent des avertissements ou d&rsquo;autres éléments auxquels vous devez faire très attention.</p>
+</blockquote>
+<h3 id="code">Code</h3>
+<p>Vous trouverez de nombreux petits morceaux de code dans le site web qui sont situés dans des boîtes gris foncé avec du code mis en évidence par la syntaxe, comme vous pouvez le voir ci-dessous :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// This box contains code    
+</span></span></span></code></pre></div><p>Comme il ne s&rsquo;agit que d&rsquo;extraits de code, je fournirai, si nécessaire, un lien vers l&rsquo;ensemble du code source requis pour un sujet donné.</p>
+<h3 id="color-hints-conseils-de-couleur">Color hints (conseils de couleur)</h3>
+<p>Certains mots sont affichés dans une couleur différente afin de mettre en évidence leur signification particulière :</p>
+<ul>
+<li>Définition : les mots verts indiquent une définition, c&rsquo;est-à-dire un aspect/nom important de quelque chose que vous êtes susceptible d&rsquo;entendre plus souvent.</li>
+<li>Structure du programme : les mots rouges indiquent les noms de fonctions ou de classes.</li>
+<li>Variables : les mots bleus spécifient les variables, y compris toutes les constantes OpenGL.</li>
+</ul>
+<h3 id="références-aux-fonctions-opengl">Références aux fonctions OpenGL</h3>
+<p>Une caractéristique particulièrement appréciée de LearnOpenGL est la possibilité de passer en revue la plupart des fonctions d&rsquo;OpenGL à chaque fois qu&rsquo;elles apparaissent dans le contenu. Chaque fois qu&rsquo;une fonction est trouvée dans le contenu documenté sur le site web, la fonction apparaîtra avec un soulignement légèrement visible. Vous pouvez passer la souris sur la fonction et, après un petit intervalle, une fenêtre pop-up affichera des informations pertinentes sur cette fonction, y compris un bon aperçu de ce qu&rsquo;elle fait réellement. Passez votre souris sur <code>glEnable</code> pour la voir en action.</p>
+<p>Maintenant que vous avez une idée de la structure du site, rendez-vous à la section &ldquo;Pour commencer&rdquo; pour commencer votre voyage dans OpenGL !</p>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

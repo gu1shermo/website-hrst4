@@ -4,4 +4,5 @@
     {{ $css := "css/bootstrap.min.css" | relURL }}
     <link rel="stylesheet" href="{{ $css }}">
     <title>{{ .Title }}</title>
+    {{ partial "style.html" . }}
   </head>

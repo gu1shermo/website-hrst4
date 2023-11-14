@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cg">cg</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/opengl">opengl</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/computer-graphics">computer graphics</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cpp">cpp</a>
+  
+
+<br><br>
+<h1 id="projecteurs-de-lumière">Projecteurs de lumière</h1>
+<p>Tous les éclairages que nous avons utilisés jusqu&rsquo;à présent provenaient d&rsquo;une source unique, c&rsquo;est-à-dire d&rsquo;un seul point dans l&rsquo;espace. Cela donne de bons résultats, mais dans le monde réel, nous avons plusieurs types de lumière qui agissent chacun différemment. <strong>Une source de lumière qui projette de la lumière sur des objets est appelée un projecteur de lumière</strong> (light caster). Dans ce chapitre, nous aborderons plusieurs types de projecteurs de lumière. Apprendre à simuler différentes sources de lumière est un outil de plus dans votre boîte à outils pour enrichir vos environnements.</p>
+<p>Nous parlerons d&rsquo;abord d&rsquo;une lumière directionnelle (<em>directional light</em>) , puis d&rsquo;une lumière ponctuelle (<em>point light</em>), qui est une extension de ce que nous avions précédemment, et enfin des spots (<em>spotlights</em>). Dans le prochain chapitre, nous combinerons plusieurs de ces différents types de lumière dans une même scène.</p>
+<h1 id="lumière-directionnelle-directional-light">Lumière directionnelle (directional light)</h1>
+<p>Lorsqu&rsquo;une source lumineuse est éloignée, les rayons lumineux qui en proviennent sont presque parallèles les uns aux autres. <strong>Il semble que tous les rayons lumineux proviennent de la même direction, quel que soit l&rsquo;endroit où se trouve l&rsquo;objet et/ou l&rsquo;observateur.</strong> Lorsqu&rsquo;une source lumineuse est modélisée comme étant infiniment éloignée, <strong>on parle de lumière directionnelle, car tous ses rayons lumineux ont la même direction, indépendamment de l&rsquo;emplacement de la source lumineuse.</strong></p>
+<p><strong>Un bon exemple de source de lumière directionnelle est le soleil tel que nous le connaissons.</strong> Le soleil n&rsquo;est pas infiniment loin de nous, mais il est si loin que nous pouvons le percevoir comme étant infiniment loin dans les calculs d&rsquo;éclairage.
+Tous les rayons lumineux provenant du soleil sont alors modélisés comme des rayons lumineux parallèles, comme le montre l&rsquo;image suivante :
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c04_Light%20Casters%5clcaster1.png" alt="lcaster1"/>
+Comme tous les rayons lumineux sont parallèles, la relation entre chaque objet et la position de la source lumineuse n&rsquo;a pas d&rsquo;importance puisque la direction de la lumière reste la même pour chaque objet de la scène. Comme le vecteur de direction de la lumière reste le même, les calculs d&rsquo;éclairage seront similaires pour chaque objet de la scène.</p>
+<p>Nous pouvons modéliser une telle lumière directionnelle en définissant un vecteur de direction de la lumière au lieu d&rsquo;un vecteur de position. Les calculs du shader restent en grande partie les mêmes, sauf que cette fois nous utilisons directement le vecteur de <code>direction</code> de la lumière au lieu de calculer le vecteur <code>lightDir</code> en utilisant le vecteur de <code>position</code> de la lumière : </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Light</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// vec3 position; // no longer necessary when using directional lights.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 direction;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    vec3 ambient;
+</span></span><span style="display:flex;"><span>    vec3 diffuse;
+</span></span><span style="display:flex;"><span>    vec3 specular;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>[...]
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  vec3 lightDir <span style="color:#f92672">=</span> normalize(<span style="color:#f92672">-</span>light.direction);
+</span></span><span style="display:flex;"><span>  [...]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Notez que nous commençons par rendre négatif le vecteur <code>light.direction</code>. Les calculs d&rsquo;éclairage que nous avons utilisés jusqu&rsquo;à présent s&rsquo;attendent à ce que la direction de la lumière soit une direction du fragment vers la source de lumière, mais les gens préfèrent généralement spécifier une lumière directionnelle comme une direction globale pointant vers la source de lumière. Par conséquent, nous devons rendre négatif le vecteur de direction globale de la lumière pour changer sa direction ; il s&rsquo;agit maintenant d&rsquo;un vecteur de direction pointant vers la source de lumière. Veillez également à normaliser le vecteur, car il n&rsquo;est pas judicieux de supposer que le vecteur d&rsquo;entrée est un vecteur unitaire.</p>
+<p>Le vecteur <code>lightDir</code> résultant est ensuite utilisé comme précédemment dans les calculs de diffusion et de spéculaire.</p>
+<p>Pour démontrer clairement qu&rsquo;une lumière directionnelle a le même effet sur plusieurs objets, nous reviendrons sur la scène de la fête du conteneur à la fin du chapitre sur les systèmes de coordonnées. Au cas où vous auriez manqué la fête, nous avons défini 10 positions différentes pour les conteneurs et généré une matrice de modèle différente pour chaque conteneur, chaque matrice de modèle contenant les transformations locales vers world appropriées :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">10</span>; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    glm<span style="color:#f92672">::</span>mat4 model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>mat4(<span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>translate(model, cubePositions[i]);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> angle <span style="color:#f92672">=</span> <span style="color:#ae81ff">20.0f</span> <span style="color:#f92672">*</span> i;
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>rotate(model, glm<span style="color:#f92672">::</span>radians(angle), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.3f</span>, <span style="color:#ae81ff">0.5f</span>));
+</span></span><span style="display:flex;"><span>    lightingShader.setMat4(<span style="color:#e6db74">&#34;model&#34;</span>, model);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    glDrawArrays(GL_TRIANGLES, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">36</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>N&rsquo;oubliez pas non plus de spécifier la direction de la source lumineuse (notez que nous définissons la direction comme une direction à partir de la source lumineuse ; vous pouvez rapidement voir que la direction de la lumière pointe vers le bas) :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>lightingShader.setVec3(<span style="color:#e6db74">&#34;light.direction&#34;</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.2f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.3f</span>); 	    
+</span></span></code></pre></div><p>Depuis un certain temps, nous transmettons les vecteurs de position et de direction de la lumière sous forme de <code>vec3</code>, mais certaines personnes préfèrent que tous les vecteurs soient définis sous forme de <code>vec4</code>. Lorsque l&rsquo;on définit des vecteurs de position en tant que <code>vec4</code>, il est important de fixer la composante <code>w</code> à <code>1,0</code> pour que la translation et les projections soient correctement appliquées. Cependant, lorsqu&rsquo;on définit un vecteur de direction comme un <code>vec4</code>, on ne veut pas que les translations aient un effet (puisqu&rsquo;elles ne représentent que des directions, rien de plus) ; on définit donc la composante <code>w</code> à <code>0.0</code>.</p>
+<p>Les vecteurs de direction peuvent alors être représentés comme : <code>vec4(-0.2f, -1.0f, -0.3f, 0.0f)</code>. Cela peut également servir à vérifier facilement les types de lumière : vous pouvez vérifier si la composante <code>w</code> est égale à <code>1.0</code> pour voir que nous avons maintenant un vecteur de position de la lumière et si <code>w</code> est égal à <code>0.0</code>, nous avons un vecteur de direction de la lumière ; ajustez donc les calculs en fonction de cela : </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(lightVector.w <span style="color:#f92672">==</span> <span style="color:#ae81ff">0.0</span>) <span style="color:#75715e">// note: be careful for floating point errors
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">// do directional light calculations
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span>(lightVector.w <span style="color:#f92672">==</span> <span style="color:#ae81ff">1.0</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// do light calculations using the light&#39;s position (as in previous chapters)  
+</span></span></span></code></pre></div><p>Si vous compilez maintenant l&rsquo;application et que vous parcourez la scène, vous aurez l&rsquo;impression qu&rsquo;une source de lumière semblable à un soleil éclaire tous les objets. Voyez-vous que les composantes diffuse et spéculaire réagissent toutes comme s&rsquo;il y avait une source de lumière quelque part dans le ciel ? Cela ressemble à quelque chose comme ça :
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c04_Light%20Casters%5clcaster2.png" alt="lcaster2"/></p>
+<p>Vous trouverez le code source <a href="https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/5.1.light_casters_directional/light_casters_directional.cpp">ici</a>.</p>
+<h2 id="lumière-ponctuelle-point-light">Lumière ponctuelle (point light)</h2>
+<p>Les lumières directionnelles sont parfaites pour les lumières globales qui éclairent toute la scène, mais nous voulons généralement aussi plusieurs lumières ponctuelles disséminées dans la scène. <strong>Une lumière ponctuelle est une source de lumière ayant une position donnée quelque part dans le monde, qui éclaire dans toutes les directions et dont les rayons lumineux s&rsquo;estompent avec la distance</strong>. Les ampoules et les torches sont des projecteurs de lumière qui agissent comme des lumières ponctuelles.</p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c04_Light%20Casters%5clcaster3.png" alt="lcaster3"/>
+Dans les chapitres précédents, nous avons travaillé avec une lumière ponctuelle simpliste. Nous avions une source de lumière à une position donnée qui diffuse la lumière dans toutes les directions à partir de cette position. Cependant, la source de lumière que nous avons définie simulait des rayons lumineux qui ne s&rsquo;estompaient jamais, ce qui donnait l&rsquo;impression que la source de lumière était extrêmement puissante. Dans la plupart des applications 3D, nous aimerions simuler une source de lumière qui n&rsquo;éclaire qu&rsquo;une zone proche de la source de lumière et non l&rsquo;ensemble de la scène.</p>
+<p>Si vous ajoutez les 10 conteneurs à la scène d&rsquo;éclairage des chapitres précédents, vous remarquerez que le conteneur situé tout au fond est éclairé avec la même intensité que le conteneur situé devant la lumière ; il n&rsquo;y a pas encore de logique qui diminue la lumière en fonction de la distance. Nous voulons que le conteneur situé à l&rsquo;arrière ne soit que légèrement éclairé par rapport aux conteneurs situés à proximité de la source lumineuse.</p>
+<h2 id="atténuation">Atténuation</h2>
+<p>La réduction de l&rsquo;intensité de la lumière sur la distance parcourue par un rayon lumineux est généralement appelée atténuation. Une façon de réduire l&rsquo;intensité de la lumière sur la distance est d&rsquo;utiliser une équation linéaire. Une telle équation réduirait linéairement l&rsquo;intensité de la lumière sur la distance, de sorte que les objets situés à une certaine distance seraient moins lumineux. Cependant, une telle fonction linéaire a tendance à paraître un peu fausse. Dans le monde réel, les lumières sont généralement très brillantes lorsqu&rsquo;elles sont proches, mais la luminosité d&rsquo;une source lumineuse diminue rapidement à une certaine distance ; l&rsquo;intensité lumineuse restante diminue ensuite lentement avec la distance. Nous avons donc besoin d&rsquo;une équation différente pour réduire l&rsquo;intensité de la lumière.</p>
+<p>Heureusement, des personnes intelligentes l&rsquo;ont déjà calculé pour nous. La formule suivante calcule une valeur d&rsquo;atténuation basée sur la distance d&rsquo;un fragment à la source lumineuse, que nous multiplions ensuite par le vecteur d&rsquo;intensité de la lumière :</p>
+<p>$$
+F_{att} = {1.0 \over (K_c + K_l * d + K_q * d^2)}
+$$
+Ici, <em>d</em> représente la distance entre le fragment et la source lumineuse. Ensuite, pour calculer la valeur d&rsquo;atténuation, nous définissons trois termes (configurables) : un terme constant <em>Kc</em>, un terme linéaire <em>Kl</em> et un terme quadratique <em>Kq</em>.</p>
+<ul>
+<li>$K_c$ : Le terme constant est généralement maintenu à <code>1.0</code>, principalement pour s&rsquo;assurer que le dénominateur n&rsquo;est jamais inférieur à <code>1</code>, car cela augmenterait l&rsquo;intensité avec certaines distances, ce qui n&rsquo;est pas l&rsquo;effet que nous recherchons.</li>
+<li>$K_l$ : Le terme linéaire est multiplié par la valeur de la distance qui réduit l&rsquo;intensité de façon linéaire.</li>
+<li>$K_q$ : Le terme quadratique est multiplié par le quadrant de la distance et définit une diminution quadratique de l&rsquo;intensité de la source lumineuse. <strong>Le terme quadratique est moins important que le terme linéaire lorsque la distance est faible, mais il devient beaucoup plus important lorsque la distance augmente.</strong></li>
+</ul>
+<p>En raison du terme quadratique, la lumière diminuera principalement de manière linéaire jusqu&rsquo;à ce que la distance devienne suffisamment grande pour que le terme quadratique dépasse le terme linéaire et que l&rsquo;intensité lumineuse diminue beaucoup plus rapidement. L&rsquo;effet résultant est que la lumière est assez intense lorsqu&rsquo;elle est proche, mais qu&rsquo;elle perd rapidement sa luminosité sur la distance jusqu&rsquo;à ce qu&rsquo;elle finisse par perdre sa luminosité à un rythme plus lent. Le graphique suivant montre l&rsquo;effet d&rsquo;une telle atténuation sur une distance de 100 :
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c04_Light%20Casters%5clcaster4.png" alt="lcaster4"/>
+Vous pouvez voir que la lumière a l&rsquo;intensité la plus élevée lorsque la distance est faible, mais dès que la distance augmente, son intensité diminue de manière significative et atteint lentement une intensité de 0 à une distance d&rsquo;environ 100. C&rsquo;est exactement ce que nous voulons.</p>
+<h3 id="choisir-les-bonnes-valeurs">Choisir les bonnes valeurs</h3>
+<p>Mais à quelles valeurs devons-nous fixer ces trois termes ? Le choix des bonnes valeurs dépend de nombreux facteurs : l&rsquo;environnement, la distance à parcourir, le type de lumière, etc. Dans la plupart des cas, il s&rsquo;agit simplement d&rsquo;une question d&rsquo;expérience et d&rsquo;un ajustement modéré.
+Le tableau suivant montre quelques-unes des valeurs que ces termes pourraient prendre pour simuler une (sorte de) source lumineuse réaliste qui couvre un rayon (une distance) spécifique. La première colonne indique la distance que la lumière couvrira avec les termes donnés. Ces valeurs sont de bons points de départ pour la plupart des lumières, avec l&rsquo;aimable autorisation du <a href="http://www.ogre3d.org/tikiwiki/tiki-index.php?page=-Point&#43;Light&#43;Attenuation">wiki d&rsquo;Ogre3D</a> : </p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c04_Light%20Casters%5clcaster5.png" alt="lcaster5"/></p>
+<p>Comme vous pouvez le constater, le terme constant $K_c$ est maintenu à $1.0$ dans tous les cas. Le terme linéaire $K_l$ est généralement assez petit pour couvrir des distances plus importantes et le terme quadratique $K_q$ est encore plus petit. Essayez d&rsquo;expérimenter un peu avec ces valeurs pour voir leur effet dans votre implémentation. Dans notre environnement, une distance de 32 à 100 est généralement suffisante pour la plupart des lumières.</p>
+<h3 id="implémenter-latténuation">Implémenter l&rsquo;atténuation</h3>
+<p>Pour mettre en œuvre l&rsquo;atténuation, nous aurons besoin de 3 valeurs supplémentaires dans le fragment shader : à savoir les termes constant, linéaire et quadratique de l&rsquo;équation. Il est préférable de les stocker dans la structure Light que nous avons définie plus tôt. Notez que nous devons calculer lightDir à nouveau en utilisant la position car il s&rsquo;agit d&rsquo;une lumière ponctuelle (comme nous l&rsquo;avons fait dans le chapitre précédent) et non d&rsquo;une lumière directionnelle.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Light</span> {
+</span></span><span style="display:flex;"><span>    vec3 position;  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    vec3 ambient;
+</span></span><span style="display:flex;"><span>    vec3 diffuse;
+</span></span><span style="display:flex;"><span>    vec3 specular;
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> constant;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> linear;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> quadratic;
+</span></span><span style="display:flex;"><span>}; 
+</span></span></code></pre></div><p>Ensuite, nous définissons les termes de notre application : nous voulons que la lumière couvre une distance de 50, nous utiliserons donc les termes constants, linéaires et quadratiques appropriés du tableau :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>lightingShader.setFloat(<span style="color:#e6db74">&#34;light.constant&#34;</span>,  <span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>lightingShader.setFloat(<span style="color:#e6db74">&#34;light.linear&#34;</span>,    <span style="color:#ae81ff">0.09f</span>);
+</span></span><span style="display:flex;"><span>lightingShader.setFloat(<span style="color:#e6db74">&#34;light.quadratic&#34;</span>, <span style="color:#ae81ff">0.032f</span>);	
+</span></span></code></pre></div><p>L&rsquo;implémentation de l&rsquo;atténuation dans le fragment shader est relativement simple : nous calculons simplement une valeur d&rsquo;atténuation basée sur l&rsquo;équation et la multiplions avec les composantes ambiante, diffuse et spéculaire.</p>
+<p>Pour que l&rsquo;équation fonctionne, nous avons besoin de la distance de la source lumineuse. Vous souvenez-vous de la façon dont nous pouvons calculer la longueur d&rsquo;un vecteur ? Nous pouvons récupérer le terme de distance en calculant le vecteur de différence entre le fragment et la source lumineuse et en prenant la longueur du vecteur résultant. Nous pouvons utiliser la fonction de longueur intégrée de GLSL à cette fin :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> distance    <span style="color:#f92672">=</span> length(light.position <span style="color:#f92672">-</span> FragPos);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> attenuation <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">/</span> (light.constant <span style="color:#f92672">+</span> light.linear <span style="color:#f92672">*</span> distance <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>    		    light.quadratic <span style="color:#f92672">*</span> (distance <span style="color:#f92672">*</span> distance));    
+</span></span></code></pre></div><p>Nous incluons ensuite cette valeur d&rsquo;atténuation dans les calculs d&rsquo;éclairage en la multipliant par les couleurs ambiantes, diffuses et spéculaires.</p>
+<p>Nous pourrions ne pas tenir compte de la composante ambiante afin que l&rsquo;éclairage ambiant ne diminue pas en fonction de la distance, mais si nous devions utiliser plus d&rsquo;une source lumineuse, toutes les composantes ambiantes commenceraient à s&rsquo;empiler. Dans ce cas, nous voulons également atténuer l&rsquo;éclairage ambiant. Il vous suffit d&rsquo;essayer ce qui convient le mieux à votre environnement.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>ambient  <span style="color:#f92672">*=</span> attenuation; 
+</span></span><span style="display:flex;"><span>diffuse  <span style="color:#f92672">*=</span> attenuation;
+</span></span><span style="display:flex;"><span>specular <span style="color:#f92672">*=</span> attenuation;   
+</span></span></code></pre></div><p>Si vous exécutez l&rsquo;application, vous obtiendrez quelque chose comme ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c04_Light%20Casters%5clcaster6.png" alt="lcaster6"/>
+Vous pouvez voir que, pour l&rsquo;instant, seuls les conteneurs situés à l&rsquo;avant sont éclairés, le conteneur le plus proche étant le plus lumineux. Les conteneurs situés à l&rsquo;arrière ne sont pas éclairés du tout car ils sont trop éloignés de la source lumineuse. Vous pouvez trouver le code source de l&rsquo;application <a href="https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/5.2.light_casters_point/light_casters_point.cpp">ici</a>.</p>
+<p>Une lumière ponctuelle est donc une source lumineuse dont l&rsquo;emplacement est configurable et dont l&rsquo;atténuation est appliquée à ses calculs d&rsquo;éclairage. Un type de lumière supplémentaire pour notre arsenal d&rsquo;éclairage.</p>
+<h2 id="spotlight">Spotlight</h2>
+<p>Le dernier type de lumière dont nous allons parler est le spotlight. Un spotlight est une source lumineuse située quelque part dans l&rsquo;environnement qui, au lieu d&rsquo;envoyer des rayons lumineux dans toutes les directions, ne les envoie que dans une direction spécifique. Il en résulte que seuls les objets situés dans un certain rayon de la direction du projecteur sont éclairés et que tous les autres restent dans l&rsquo;obscurité. Un bon exemple de projecteur serait un lampadaire ou une lampe de poche (ou encore une lampe torche).</p>
+<p>Une spotlight dans OpenGL est représenté par une position dans le world space, une direction et un angle de coupure (<em>cutoff angle</em>) qui spécifie le rayon du spot. Pour chaque fragment, nous calculons si le fragment se trouve entre les directions de coupure du projecteur (donc dans son cône) et si c&rsquo;est le cas, nous éclairons le fragment en conséquence. L&rsquo;image suivante vous donne une idée du fonctionnement d&rsquo;un projecteur :
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c04_Light%20Casters%5clcaster7.png" alt="lcaster7"/></p>
+<ul>
+<li><code>LightDir</code> : le vecteur pointant du fragment vers la source lumineuse.</li>
+<li><code>SpotDir</code> : la direction vers laquelle pointe le spot.</li>
+<li><code>Phi</code> ϕ : l&rsquo;angle de coupure (<em>cutoff</em>) qui spécifie le rayon du spot. Tout ce qui se trouve en dehors de cet angle n&rsquo;est pas éclairé par le spot.</li>
+<li><code>Theta</code> θ : l&rsquo;angle entre le vecteur LightDir et le vecteur SpotDir. La valeur θ doit être inférieure à Φ pour être à l&rsquo;intérieur du projecteur.</li>
+</ul>
+<p>Ce qu&rsquo;il nous faut donc faire, c&rsquo;est calculer le produit scalaire (le cosinus de l&rsquo;angle entre deux vecteurs unitaires) entre le vecteur <code>LightDir</code> et le vecteur <code>SpotDir</code> et le comparer à l&rsquo;angle de coupure ϕ. Maintenant que vous avez (en quelque sorte) compris ce qu&rsquo;est une spotlight, nous allons en créer un sous la forme d&rsquo;une lampe de poche.</p>
+<h2 id="lampe-de-poche-flashlight">Lampe de poche (flashlight)</h2>
+<p>Une lampe de poche (<em>flashlight</em>) est un projecteur situé à la position de l&rsquo;observateur et généralement orienté vers l&rsquo;avant du point de vue de l&rsquo;observateur. Une lampe torche est en fait un projecteur normal, mais dont la position et la direction sont continuellement mises à jour en fonction de la position et de l&rsquo;orientation du joueur.</p>
+<p>Les valeurs dont nous aurons besoin pour le fragment shader sont donc le vecteur de position du spot (pour calculer le vecteur de direction fragment-lumière), le vecteur de direction du spot et l&rsquo;angle de coupure (cutoff). Nous pouvons stocker ces valeurs dans la structure Light :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Light</span> {
+</span></span><span style="display:flex;"><span>    vec3  position;
+</span></span><span style="display:flex;"><span>    vec3  direction;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> cutOff;
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>};  
+</span></span></code></pre></div><p>Ensuite, nous transmettons les valeurs appropriées au shader :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>lightingShader.setVec3(<span style="color:#e6db74">&#34;light.position&#34;</span>,  camera.Position);
+</span></span><span style="display:flex;"><span>lightingShader.setVec3(<span style="color:#e6db74">&#34;light.direction&#34;</span>, camera.Front);
+</span></span><span style="display:flex;"><span>lightingShader.setFloat(<span style="color:#e6db74">&#34;light.cutOff&#34;</span>,   glm<span style="color:#f92672">::</span>cos(glm<span style="color:#f92672">::</span>radians(<span style="color:#ae81ff">12.5f</span>)));
+</span></span></code></pre></div><p>Comme vous pouvez le voir, nous ne définissons pas un angle pour la valeur de coupure, mais nous calculons la valeur du cosinus sur la base d&rsquo;un angle et nous transmettons le résultat du cosinus au fragment shader.
+La raison en est que dans le fragment shader, nous calculons le produit scalaire entre le vecteur <code>LightDir</code> et le vecteur <code>SpotDir</code> et que le produit scalaire renvoie une valeur de cosinus et non un angle ; et nous ne pouvons pas comparer directement un angle avec une valeur de cosinus. <strong>Pour obtenir l&rsquo;angle dans le shader, nous devons calculer l&rsquo;inverse du cosinus du résultat du produit scalaire</strong>, ce qui est une opération <strong>coûteuse</strong>.
+Ainsi, pour gagner en performance, nous calculons au préalable la valeur du cosinus d&rsquo;un angle de coupure donné et transmettons ce résultat au fragment shader. Puisque les deux angles sont maintenant représentés par des cosinus, nous pouvons les comparer directement sans opérations coûteuses.</p>
+<p>Il ne reste plus qu&rsquo;à calculer la valeur de thêta $\theta$ et de la comparer à la valeur de coupure $\phi$ pour déterminer si nous sommes dans ou en dehors du spotlight :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> theta <span style="color:#f92672">=</span> dot(lightDir, normalize(<span style="color:#f92672">-</span>light.direction));
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(theta <span style="color:#f92672">&gt;</span> light.cutOff) 
+</span></span><span style="display:flex;"><span>{       
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// do lighting calculations
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>  <span style="color:#75715e">// else, use ambient light so scene isn&#39;t completely dark outside the spotlight.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  color <span style="color:#f92672">=</span> vec4(light.ambient <span style="color:#f92672">*</span> vec3(texture(material.diffuse, TexCoords)), <span style="color:#ae81ff">1.0</span>);
+</span></span></code></pre></div><p>Nous commençons par calculer le produit scalaire entre le vecteur <code>lightDir</code> et le vecteur de direction négatif (négatif, car nous voulons que les vecteurs pointent vers la source lumineuse, au lieu de s&rsquo;en éloigner). Veillez à normaliser tous les vecteurs concernés.</p>
+<p>Vous vous demandez peut-être pourquoi il y a un signe $&gt;$ au lieu d&rsquo;un signe $&lt;$ dans la condition du if.
+Theta ne devrait-il pas être plus petit que la valeur de coupure de la lumière pour être à l&rsquo;intérieur du projecteur ?
+C&rsquo;est exact, mais n&rsquo;oubliez pas que les valeurs d&rsquo;angle sont représentées par des valeurs de cosinus et qu&rsquo;un angle de 0 degré est représenté par la valeur de cosinus de $1.0$ tandis qu&rsquo;un angle de 90 degrés est représenté par la valeur de cosinus de $0.0$, comme vous pouvez le voir ici :
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c04_Light%20Casters%5clcaster8.png" alt="lcaster8"/>
+Vous pouvez maintenant voir que plus la valeur du cosinus est proche de $1.0$, plus l&rsquo;angle est petit. On comprend maintenant pourquoi theta doit être plus grand que la valeur de coupure. La valeur de coupure est actuellement fixée au cosinus de $12.5$, qui est égal à $0.976$. Une valeur de cosinus thêta comprise entre $0.976$ et $1.0$ aurait pour effet d&rsquo;éclairer le fragment comme s&rsquo;il se trouvait à l&rsquo;intérieur d&rsquo;un projecteur.</p>
+<p>En exécutant l&rsquo;application, on obtient un projecteur qui n&rsquo;éclaire que les fragments se trouvant directement dans le cône du projecteur. Cela ressemblera à quelque chose comme ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c04_Light%20Casters%5clcaster9.png" alt="lcaster9"/></p>
+<p>Vous pouvez trouver le code source complet <a href="https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/5.3.light_casters_spot/light_casters_spot.cpp">ici</a>.</p>
+<p>Le résultat est cependant un peu <strong>faux</strong>, principalement parce que le projecteur a des bords durs. <strong>Chaque fois qu&rsquo;un fragment atteint le bord du cône du projecteur, il s&rsquo;éteint complètement au lieu de s&rsquo;éteindre doucement.</strong> <strong>Un projecteur réaliste réduirait progressivement la lumière sur ses bords.</strong></p>
+<h2 id="bords-lisses-smoothsoft-edges">Bords Lisses (Smooth/Soft edges)</h2>
+<p>Pour créer l&rsquo;effet d&rsquo;une spotlight aux bords arrondis, nous voulons simuler une spotlight dotée d&rsquo;un cône intérieur et d&rsquo;un cône extérieur. Nous pouvons définir le cône intérieur comme le cône défini dans la section précédente, mais nous voulons également un cône extérieur qui atténue progressivement la lumière de l&rsquo;intérieur vers les bords du cône extérieur.</p>
+<p>Pour créer un cône extérieur, il suffit de définir une autre valeur de cosinus qui représente l&rsquo;angle entre le vecteur de direction du projecteur et le vecteur du cône extérieur (égal à son rayon). Ensuite, si un fragment se trouve entre le cône intérieur et le cône extérieur, il doit calculer une valeur d&rsquo;intensité comprise entre 0,0 et 1,0. Si le fragment se trouve à l&rsquo;intérieur du cône intérieur, son intensité est égale à 1,0 et à 0,0 si le fragment se trouve à l&rsquo;extérieur du cône extérieur.</p>
+<p>Nous pouvons calculer cette valeur à l&rsquo;aide de l&rsquo;équation suivante :
+$$
+I = {{\theta - \gamma}\over \epsilon}
+$$
+Ici, $\epsilon$ (epsilon) est la différence de cosinus entre le cône intérieur ($\theta$) et le cône extérieur ($\gamma$) ($\epsilon=\theta-\gamma$). La valeur $I$ qui en résulte est alors l&rsquo;intensité de la lumière du projecteur sur le fragment actuel.</p>
+<p>Il est un peu difficile de visualiser le fonctionnement de cette formule, alors essayons-la avec quelques exemples de valeurs :</p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c04_Light%20Casters%5clcaster10.png" alt="lcaster10"/></p>
+<p>Comme vous pouvez le voir, nous interpolons essentiellement entre le cosinus extérieur et le cosinus intérieur sur la base de la valeur $\theta$.
+Si vous ne comprenez toujours pas ce qui se passe, ne vous inquiétez pas, vous pouvez simplement considérer la formule comme acquise et revenir ici lorsque vous serez plus âgé et plus sage.</p>
+<p>Nous avons maintenant une valeur d&rsquo;intensité qui est soit négative à l&rsquo;extérieur du projecteur, soit supérieure à $1.0$ à l&rsquo;intérieur du cône intérieur, et quelque part entre les deux sur les bords. Si nous bloquons correctement les valeurs, nous n&rsquo;avons plus besoin d&rsquo;un if-else dans le fragment shader et nous pouvons simplement multiplier les composantes de la lumière avec la valeur d&rsquo;intensité calculée :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> theta     <span style="color:#f92672">=</span> dot(lightDir, normalize(<span style="color:#f92672">-</span>light.direction));
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> epsilon   <span style="color:#f92672">=</span> light.cutOff <span style="color:#f92672">-</span> light.outerCutOff;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> intensity <span style="color:#f92672">=</span> clamp((theta <span style="color:#f92672">-</span> light.outerCutOff) <span style="color:#f92672">/</span> epsilon, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>);    
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// we&#39;ll leave ambient unaffected so we always have a little light.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>diffuse  <span style="color:#f92672">*=</span> intensity;
+</span></span><span style="display:flex;"><span>specular <span style="color:#f92672">*=</span> intensity;
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><p>Notez que nous utilisons la fonction <code>clamp</code> qui fixe son premier argument entre les valeurs $0.0$ et $1.0$. Cela permet de s&rsquo;assurer que les valeurs d&rsquo;intensité ne sortiront pas de la plage $[0, 1]$.</p>
+<p>Veillez à ajouter la valeur <code>outerCutOff</code> à la structure Light et à définir sa valeur uniforme dans l&rsquo;application. Pour l&rsquo;image suivante, un angle de cutoff interne de <code>12.5</code> et un angle de cutoff externe de <code>17.5</code> ont été utilisés :
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c04_Light%20Casters%5clcaster11.png" alt="lcaster11"/>
+Ah, c&rsquo;est beaucoup mieux. Jouez avec les angles de cutoff intérieur et extérieur et essayez de créer un projecteur qui réponde mieux à vos besoins. Vous pouvez trouver le code source de l&rsquo;application <a href="https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/5.4.light_casters_spot_soft/light_casters_spot_soft.cpp">ici</a>.</p>
+<p>Ce type de lampe est parfait pour les jeux d&rsquo;horreur et, combiné à des lumières directionnelles et ponctuelles, l&rsquo;environnement commencera vraiment à s&rsquo;illuminer.</p>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

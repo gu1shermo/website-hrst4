@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cg">cg</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/opengl">opengl</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/computer-graphics">computer graphics</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cpp">cpp</a>
+  
+
+<br><br>
+<h1 id="opengl">OpenGL</h1>
+<p>Avant de commencer notre voyage, nous devons d&rsquo;abord définir ce qu&rsquo;est OpenGL. OpenGL est principalement considéré comme une <strong>API (une interface de programmation d&rsquo;applications) qui nous fournit un large ensemble de fonctions que nous pouvons utiliser pour manipuler les graphiques et les images</strong>. <strong>Cependant, OpenGL en lui-même n&rsquo;est pas une API, mais simplement une spécification, développée et maintenue par le groupe Khronos.</strong></p>
+<p>La spécification OpenGL précise exactement le résultat/la sortie de chaque fonction et la manière dont elle doit fonctionner. Il appartient ensuite aux développeurs qui mettent en œuvre cette spécification de trouver une solution à la manière dont cette fonction doit fonctionner. Puisque la spécification OpenGL ne donne pas de détails sur l&rsquo;implémentation, les versions développées d&rsquo;OpenGL sont autorisées à avoir des implémentations différentes, tant que leurs résultats sont conformes à la spécification (et donc identiques pour l&rsquo;utilisateur).</p>
+<p><strong>Les personnes qui développent les bibliothèques OpenGL sont généralement les fabricants de cartes graphiques</strong>. Chaque carte graphique que vous achetez prend en charge des versions spécifiques d&rsquo;OpenGL qui sont les versions d&rsquo;OpenGL développées spécifiquement pour cette carte (série). Lorsque vous utilisez un système Apple, la bibliothèque OpenGL est maintenue par Apple lui-même et sous Linux, il existe une combinaison de versions de fournisseurs graphiques et d&rsquo;adaptations de ces bibliothèques par des amateurs. Cela signifie également que chaque fois qu&rsquo;OpenGL montre un comportement bizarre qu&rsquo;il ne devrait pas avoir, c&rsquo;est très probablement la faute des fabricants de cartes graphiques (ou de ceux qui ont développé/maintenu la bibliothèque).</p>
+<blockquote>
+<p>Comme la plupart des implémentations sont conçues par les fabricants de cartes graphiques, chaque fois qu&rsquo;il y a un bogue dans l&rsquo;implémentation, il est généralement résolu par la mise à jour des pilotes de votre carte vidéo ; ces pilotes incluent les versions les plus récentes d&rsquo;OpenGL que votre carte supporte. C&rsquo;est l&rsquo;une des raisons pour lesquelles il est toujours conseillé de mettre à jour de temps en temps les pilotes de votre carte graphique.</p>
+</blockquote>
+<p>Khronos héberge publiquement tous les documents de spécification pour toutes les versions d&rsquo;OpenGL. Le lecteur intéressé peut trouver la spécification OpenGL de la version 3.3 (qui est celle que nous utiliserons) ici. C&rsquo;est une bonne lecture si vous voulez plonger dans les détails d&rsquo;OpenGL (notez qu&rsquo;ils décrivent principalement les résultats et non les implémentations). Les spécifications fournissent également une excellente référence pour trouver le fonctionnement exact de ses fonctions.</p>
+<h2 id="core-profile-vs-immediate-mode-profil-de-base-vs-mode-immédiat">Core-profile vs Immediate mode (Profil de base vs mode immédiat)</h2>
+<p>Autrefois, utiliser OpenGL signifiait développer en mode <strong>immédiat</strong> (souvent appelé pipeline de fonctions fixes (fixed function pipeline)), ce qui était une méthode facile à utiliser pour dessiner des graphiques. La plupart des fonctionnalités d&rsquo;OpenGL étaient cachées dans la bibliothèque et les développeurs n&rsquo;avaient pas beaucoup de contrôle sur la manière dont OpenGL effectuait ses calculs. Les développeurs ont fini par avoir envie de plus de flexibilité et, avec le temps, les spécifications sont devenues plus flexibles, ce qui a permis aux développeurs d&rsquo;avoir un meilleur contrôle sur leurs graphiques. <strong>Le mode immédiat est vraiment facile à utiliser et à comprendre, mais il est aussi extrêmement inefficace</strong>. <strong>C&rsquo;est pourquoi la spécification a commencé à déprécier les fonctionnalités du mode immédiat à partir de la version 3.2 et a commencé à motiver les développeurs à développer en mode core-profile d&rsquo;OpenGL, qui est une division de la spécification d&rsquo;OpenGL qui a supprimé toutes les anciennes fonctionnalités dépréciées.</strong></p>
+<p>En utilisant le profil de base d&rsquo;OpenGL (core-profile), OpenGL nous force à utiliser des pratiques modernes. Chaque fois que nous essayons d&rsquo;utiliser l&rsquo;une des fonctions obsolètes d&rsquo;OpenGL, OpenGL lève une erreur et arrête de dessiner. <strong>L&rsquo;avantage d&rsquo;apprendre l&rsquo;approche moderne est qu&rsquo;elle est très flexible et efficace</strong>. <strong>Cependant, elle est aussi plus difficile à apprendre</strong>. Le mode immédiat faisait abstraction de beaucoup d&rsquo;opérations réelles effectuées par OpenGL et bien qu&rsquo;il soit facile à apprendre, il était difficile de comprendre comment OpenGL fonctionnait réellement. L&rsquo;approche moderne exige du développeur qu&rsquo;il comprenne vraiment OpenGL et la programmation graphique et, bien que cela soit un peu difficile, cela permet une plus grande flexibilité, une plus grande efficacité et, plus important encore, une bien meilleure compréhension de la programmation graphique.</p>
+<p>C&rsquo;est également la raison pour laquelle ce livre est axé sur la version 3.3 du profil central d&rsquo;OpenGL (core profile). Bien qu&rsquo;elle soit plus difficile, l&rsquo;effort en vaut la peine.</p>
+<p>A partir d&rsquo;aujourd&rsquo;hui, des versions supérieures d&rsquo;OpenGL sont disponibles (au moment où j&rsquo;écris ces lignes, la 4.6), ce qui peut vous amener à vous demander : <strong>pourquoi vouloir apprendre OpenGL 3.3 alors qu&rsquo;OpenGL 4.6 est déjà disponible ? La réponse à cette question est relativement simple. Toutes les versions futures d&rsquo;OpenGL à partir de la 3.3 ajoutent des fonctionnalités supplémentaires utiles à OpenGL sans changer les mécanismes de base d&rsquo;OpenGL ; les versions plus récentes introduisent simplement des moyens légèrement plus efficaces ou plus utiles pour accomplir les mêmes tâches. Le résultat est que tous les concepts et techniques restent les mêmes dans les versions modernes d&rsquo;OpenGL, il est donc parfaitement valable d&rsquo;apprendre OpenGL 3.3.</strong> Lorsque vous serez prêt et/ou plus expérimenté, vous pourrez facilement utiliser les fonctionnalités spécifiques des versions plus récentes d&rsquo;OpenGL.</p>
+<blockquote>
+<p>Lorsque vous utilisez les fonctionnalités de la version la plus récente d&rsquo;OpenGL, seules les cartes graphiques les plus modernes pourront faire fonctionner votre application. C&rsquo;est souvent la raison pour laquelle la plupart des développeurs ciblent généralement les versions inférieures d&rsquo;OpenGL et activent éventuellement les fonctionnalités des versions supérieures.</p>
+</blockquote>
+<p>Dans certains chapitres, vous trouverez des caractéristiques plus modernes qui sont notées comme telles.</p>
+<h2 id="extensions">Extensions</h2>
+<p>L&rsquo;une des grandes caractéristiques d&rsquo;OpenGL est son support des extensions. Chaque fois qu&rsquo;une société graphique propose une nouvelle technique ou une nouvelle optimisation importante pour le rendu, elle le fait souvent dans une extension implémentée dans les pilotes. Si le matériel sur lequel tourne une application supporte une telle extension, le développeur peut utiliser la fonctionnalité fournie par l&rsquo;extension pour des graphiques plus avancés ou plus efficaces. De cette manière, un développeur graphique peut toujours utiliser ces nouvelles techniques de rendu sans avoir à attendre qu&rsquo;OpenGL inclue la fonctionnalité dans ses futures versions, en vérifiant simplement si l&rsquo;extension est supportée par la carte graphique. Souvent, lorsqu&rsquo;une extension est populaire ou très utile, elle finit par être intégrée dans les futures versions d&rsquo;OpenGL.</p>
+<p>Le développeur doit demander si l&rsquo;une de ces extensions est disponible avant de l&rsquo;utiliser (ou utiliser une bibliothèque d&rsquo;extensions OpenGL). Cela permet au développeur de faire les choses mieux ou plus efficacement, en fonction de la disponibilité de l&rsquo;extension :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(GL_ARB_extension_name)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Do cool new and modern stuff supported by hardware
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Extension not supported: do it the old way
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>Avec OpenGL version 3.3, nous avons rarement besoin d&rsquo;une extension pour la plupart des techniques, mais lorsque cela est nécessaire, des instructions appropriées sont fournies.</p>
+<h2 id="state-machine-machine-à-états">State machine (machine à états)</h2>
+<p>OpenGL est en soi une grande machine à états : une collection de variables qui définissent comment OpenGL doit fonctionner. <strong>L&rsquo;état d&rsquo;OpenGL est communément appelé le contexte OpenGL</strong>. Lorsque nous utilisons OpenGL, nous modifions souvent son état en réglant certaines options, en manipulant certains tampons, puis en effectuant le rendu en utilisant le contexte actuel.</p>
+<p>Chaque fois que nous disons à OpenGL que nous voulons dessiner des lignes au lieu de triangles par exemple, nous changeons l&rsquo;état d&rsquo;OpenGL en changeant une variable de contexte qui définit comment OpenGL doit dessiner. Dès que nous changeons le contexte en disant à OpenGL qu&rsquo;il doit dessiner des lignes, les prochaines commandes de dessin dessineront des lignes au lieu de triangles.</p>
+<p>En travaillant avec OpenGL, nous rencontrerons plusieurs fonctions de changement d&rsquo;état qui modifient le contexte et plusieurs fonctions d&rsquo;utilisation d&rsquo;état qui effectuent des opérations basées sur l&rsquo;état actuel d&rsquo;OpenGL. Tant que vous gardez à l&rsquo;esprit qu&rsquo;OpenGL est fondamentalement une grande machine à états, la plupart de ses fonctionnalités auront plus de sens.</p>
+<h2 id="objets">Objets</h2>
+<p>Les bibliothèques OpenGL sont écrites en C et permettent de nombreuses dérivations dans d&rsquo;autres langages, mais elles restent essentiellement des bibliothèques en C. Comme beaucoup de constructions du langage C ne se traduisent pas très bien dans d&rsquo;autres langages de plus haut niveau, OpenGL a été développé avec plusieurs abstractions à l&rsquo;esprit. L&rsquo;une de ces abstractions est l&rsquo;objet dans OpenGL.</p>
+<p>Un objet OpenGL est une collection d&rsquo;options qui représente un sous-ensemble de l&rsquo;état d&rsquo;OpenGL. Par exemple, nous pourrions avoir un objet qui représente les paramètres de la fenêtre de dessin ; nous pourrions alors définir sa taille, le nombre de couleurs qu&rsquo;elle supporte et ainsi de suite. On peut visualiser un objet comme une structure de type C :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">object_name</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span>  option1;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span>    option2;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">char</span>[] name;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>Lorsque nous voulons utiliser des objets, cela ressemble généralement à quelque chose comme ceci (avec le contexte d&rsquo;OpenGL visualisé comme une grande structure) :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// The State of OpenGL
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">OpenGL_Context</span> {
+</span></span><span style="display:flex;"><span> 	...
+</span></span><span style="display:flex;"><span> 	object_name<span style="color:#f92672">*</span> object_Window_Target;
+</span></span><span style="display:flex;"><span> 	...  	
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// create object
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> objectId <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>glGenObject(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>objectId);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// bind/assign object to context
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glBindObject(GL_WINDOW_TARGET, objectId);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// set options of object currently bound to GL_WINDOW_TARGET
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glSetObjectOption(GL_WINDOW_TARGET, GL_OPTION_WINDOW_WIDTH,  <span style="color:#ae81ff">800</span>);
+</span></span><span style="display:flex;"><span>glSetObjectOption(GL_WINDOW_TARGET, GL_OPTION_WINDOW_HEIGHT, <span style="color:#ae81ff">600</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// set context target back to default
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glBindObject(GL_WINDOW_TARGET, <span style="color:#ae81ff">0</span>);
+</span></span></code></pre></div><p>Ce petit morceau de code est un flux de travail que vous verrez fréquemment lorsque vous travaillez avec OpenGL.</p>
+<ul>
+<li>Nous créons d&rsquo;abord un objet et stockons une référence à cet objet sous la forme d&rsquo;un identifiant (les données de l&rsquo;objet réel sont stockées en coulisses).</li>
+<li>Ensuite, nous lions l&rsquo;objet (en utilisant son identifiant) à l&rsquo;emplacement cible du contexte (l&rsquo;emplacement de l&rsquo;objet cible de la fenêtre de l&rsquo;exemple est défini comme GL_WINDOW_TARGET).</li>
+<li>Les options définies sont stockées dans l&rsquo;objet référencé par objectId et restaurées dès que l&rsquo;objet est à nouveau lié à GL_WINDOW_TARGET.</li>
+</ul>
+<blockquote>
+<p>Les exemples de code fournis jusqu&rsquo;à présent ne sont que des approximations du fonctionnement d&rsquo;OpenGL ; tout au long du livre, vous rencontrerez suffisamment d&rsquo;exemples réels.</p>
+</blockquote>
+<p>L&rsquo;avantage d&rsquo;utiliser ces objets est que nous pouvons définir plus d&rsquo;un objet dans notre application, définir leurs options et chaque fois que nous démarrons une opération qui utilise l&rsquo;état d&rsquo;OpenGL, nous lions l&rsquo;objet avec nos paramètres préférés. Il existe par exemple des objets qui agissent comme des objets conteneurs pour les données d&rsquo;un modèle 3D (une maison ou un personnage) et chaque fois que nous voulons dessiner l&rsquo;un d&rsquo;entre eux, nous lions l&rsquo;objet contenant les données du modèle que nous voulons dessiner (nous avons d&rsquo;abord créé et défini les options de ces objets). Le fait d&rsquo;avoir plusieurs objets nous permet de spécifier de nombreux modèles et lorsque nous voulons dessiner un modèle spécifique, nous lions simplement l&rsquo;objet correspondant avant de dessiner sans avoir à définir à nouveau toutes leurs options.</p>
+<h2 id="commençons">Commençons</h2>
+<p>Vous avez maintenant appris un peu sur OpenGL en tant que spécification et bibliothèque, comment OpenGL fonctionne approximativement sous le capot et quelques astuces personnalisées qu&rsquo;OpenGL utilise. Ne vous inquiétez pas si vous n&rsquo;avez pas tout compris ; tout au long du livre, nous passerons en revue chaque étape et vous verrez suffisamment d&rsquo;exemples pour vraiment comprendre OpenGL.</p>
+<h2 id="ressources">Ressources</h2>
+<ul>
+<li><a href="https://www.opengl.org/">opengl.org</a>: site officiel d&rsquo;OpenGL.</li>
+<li><a href="https://www.opengl.org/registry/">OpenGL registry</a>: héberge les spécifications et les extensions OpenGL pour toutes les versions d&rsquo;OpenGL.</li>
+</ul>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

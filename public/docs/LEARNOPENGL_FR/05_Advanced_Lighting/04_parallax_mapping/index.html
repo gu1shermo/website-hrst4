@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+<br><br>
+<h1 id="le-mapping-parallaxe">Le mapping parallaxe</h1>
+<p>Le mapping parallaxe est une technique similaire au normal mapping, mais basé sur des principes différents. <strong>Tout comme le normal mapping, il s&rsquo;agit d&rsquo;une technique qui augmente considérablement les détails d&rsquo;une surface texturée et lui donne une impression de profondeur</strong>. Bien qu&rsquo;il s&rsquo;agisse également d&rsquo;une illusion, le parallaxe mapping est beaucoup plus efficace pour donner une impression de profondeur et, combinée au normal mapping, il donne des résultats incroyablement réalistes. Bien que le parallaxe mapping ne soit pas nécessairement une technique directement liée à l&rsquo;éclairage (avancé), j&rsquo;en parlerai tout de même ici, car cette technique est une suite logique du normal mapping. Notez qu&rsquo;il est fortement conseillé de se familiariser avec le normal mapping, en particulier l&rsquo;espace tangent, avant d&rsquo;apprendre le parallax mapping.</p>
+<p>Le parallaxe mapping est étroitement liée à la famille des techniques de mapping de déplacement qui déplacent ou décalent les sommets sur la base d&rsquo;informations géométriques stockées dans une texture. Une façon de procéder consiste à prendre un plan d&rsquo;environ 1000 sommets et à déplacer chacun de ces sommets sur la base d&rsquo;une valeur contenue dans une texture qui nous indique la hauteur du plan à cet endroit précis. Une telle texture qui contient des valeurs de hauteur par texel s&rsquo;appelle une map de hauteur (height map). Un exemple de carte de hauteur dérivée des propriétés géométriques d&rsquo;une simple surface de brique ressemble un peu à ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c04_parallax_mapping-20230903-parallax1.png" alt="04_parallax_mapping-20230903-parallax1"/>
+Lorsqu&rsquo;il est étendu sur un plan, chaque sommet est déplacé en fonction de la valeur de hauteur échantillonnée dans la map de hauteur, transformant un plan plat en une surface rugueuse et bosselée basée sur les propriétés géométriques d&rsquo;un matériau. Par exemple, un plan plat déplacé à l&rsquo;aide de la map de hauteur ci-dessus donne l&rsquo;image suivante :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c04_parallax_mapping-20230903-parallax2.png" alt="04_parallax_mapping-20230903-parallax2"/>
+**Le problème du déplacement des sommets de cette manière est qu&rsquo;un plan doit contenir un très grand nombre de triangles pour obtenir un déplacement réaliste, sinon le déplacement semble trop grossier. **Comme chaque surface plane peut alors nécessiter plus de 10000 vertices, cela devient rapidement infaisable sur le plan informatique. Et si nous pouvions obtenir un réalisme similaire sans avoir recours à des sommets supplémentaires ? En fait, si je vous disais que la surface déplacée montrée précédemment est en fait rendue avec seulement 2 triangles. Cette surface de briques est rendue avec le mapping de parallaxe, une technique de mapping de déplacement qui ne nécessite pas de données de vertex supplémentaires pour transmettre la profondeur, mais qui (comme le normal mapping) utilise une technique astucieuse pour tromper l&rsquo;utilisateur.</p>
+<p>L&rsquo;idée derrière le parallax mapping est de modifier les coordonnées de la texture de manière à ce que la surface d&rsquo;un fragment semble plus haute ou plus basse qu&rsquo;elle ne l&rsquo;est en réalité, tout cela en fonction de la direction de la vue et d&rsquo;une map de hauteur. Pour comprendre comment cela fonctionne, regardez l&rsquo;image suivante de notre surface de briques :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c04_parallax_mapping-20230903-parallax3.png" alt="04_parallax_mapping-20230903-parallax3"/>
+Ici, la ligne rouge grossière représente les valeurs de la map des hauteurs en tant que représentation géométrique de la surface de la brique et le vecteur $\vec{V}$ représente la direction de la surface par rapport à la vue (<code>viewDir</code>). Si le plan avait un déplacement réel, l&rsquo;observateur verrait la surface au point $B$. Cependant, comme notre plan n&rsquo;a pas de déplacement réel, la direction de vue est calculée à partir du point $A$, comme on peut s&rsquo;y attendre. Le mapping parallaxe vise à décaler les coordonnées de texture à la position $A$ du fragment de manière à obtenir des coordonnées de texture au point B. Nous utilisons ensuite les coordonnées de texture au point $B$ pour tous les échantillons de texture suivants, ce qui donne l&rsquo;impression que l&rsquo;observateur regarde réellement le point $B$.</p>
+<p>L&rsquo;astuce consiste à trouver comment obtenir les coordonnées de texture au point $B$
+à partir du point $A$. Le mapping parallaxe tente de résoudre ce problème en mettant à l&rsquo;échelle le vecteur de direction fragment-vue $\vec{V}$ par la hauteur du fragment $A$. Nous mettons donc à l&rsquo;échelle la longueur de $\vec{V}$ pour qu&rsquo;elle soit égale à une valeur échantillonnée à partir de la carte de hauteur $H(A)$ à la position du fragment $A$. L&rsquo;image ci-dessous montre ce vecteur mis à l&rsquo;échelle $\vec{P}$ :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c04_parallax_mapping-20230903-parallax4.png" alt="04_parallax_mapping-20230903-parallax4"/></p>
+<p>Nous prenons ensuite ce vecteur $\vec{P}$ et ses coordonnées vectorielles qui s&rsquo;alignent sur le plan comme décalage des coordonnées de texture. Cela fonctionne parce que le vecteur $\vec{P}$ est calculé à l&rsquo;aide d&rsquo;une valeur de hauteur provenant de la map des hauteurs. Ainsi, plus la hauteur d&rsquo;un fragment est élevée, plus il est déplacé.</p>
+<p>Cette petite astuce donne de bons résultats la plupart du temps, mais il s&rsquo;agit toujours d&rsquo;une approximation très grossière pour atteindre le point $B$. Lorsque les hauteurs changent rapidement sur une surface, les résultats ont tendance à paraître irréalistes, car le vecteur $\vec{P}$ ne se retrouvera pas près de $B$, comme vous pouvez le voir ci-dessous :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c04_parallax_mapping-20230903-parallax5.png" alt="04_parallax_mapping-20230903-parallax5"/></p>
+<p>Un autre problème lié au mapping de parallaxe est qu&rsquo;il est difficile de déterminer les coordonnées à extraire de $\vec{P}$ lorsque la surface subit une rotation arbitraire. Nous préférons procéder dans un espace de coordonnées différent où les composantes x et y du vecteur $\vec{P}$ s&rsquo;alignent toujours sur la surface de la texture. Si vous avez suivi le chapitre sur le <a href="/docs/learnopengl_fr/05_advanced_lighting/03_normal_mapping/">normal mapping</a>, vous avez probablement deviné comment nous pouvons y parvenir. Et oui, nous aimerions faire de le mapping parallaxe dans l&rsquo;espace tangent.</p>
+<p>En transformant le vecteur de direction fragment-vue $\vec{V}$ dans l&rsquo;espace tangent, le vecteur $\vec{P}$ transformé aura ses composantes x et y alignées sur les vecteurs tangent et bitangent de la surface. Comme les vecteurs tangents et bitangents pointent dans la même direction que les coordonnées de texture de la surface, nous pouvons considérer les composantes x et y de $\vec{P}$ comme le décalage des coordonnées de texture, quelle que soit l&rsquo;orientation de la surface.</p>
+<p>Mais assez de théorie, mettons-nous à l&rsquo;œuvre et commençons à implémenter le mapping parallaxe réel.</p>
+<h2 id="mapping-parallaxe">Mapping parallaxe</h2>
+<p>Pour la mapping de parallaxe, nous allons utiliser un simple plan 2D dont nous avons calculé les vecteurs tangents et bitangents avant de l&rsquo;envoyer au GPU, comme nous l&rsquo;avons fait dans le chapitre sur la mapping de normales. Sur ce plan, nous allons attacher une <a href="https://learnopengl.com/img/textures/bricks2.jpg">texture diffuse</a>, une <a href="https://learnopengl.com/img/textures/bricks2_normal.jpg">map de normales</a> et une <a href="https://learnopengl.com/img/textures/bricks2_disp.jpg">map de déplacement</a> que vous pouvez télécharger à partir de leurs URL.
+Pour cet exemple, nous allons utiliser le mapping de parallaxe en conjonction avec le mapping de normales. Comme le mapping de parallaxe donne l&rsquo;illusion de déplacer une surface, l&rsquo;illusion est rompue lorsque l&rsquo;éclairage ne correspond pas. <strong>Comme les maps de normales sont souvent générées à partir de maps de hauteurs</strong>, l&rsquo;utilisation d&rsquo;une map de normales avec la map de hauteurs permet de s&rsquo;assurer que l&rsquo;éclairage est en place avec le déplacement.</p>
+<p>Vous avez peut-être déjà remarqué que la map de déplacement liée ci-dessus est l&rsquo;inverse de la carte de hauteur montrée au début de ce chapitre. Avec le mapping de parallaxe, il est plus logique d&rsquo;utiliser l&rsquo;inverse de la map de hauteur car il est plus facile de simuler la profondeur que la hauteur sur des surfaces planes. Cela modifie légèrement la façon dont nous percevons le mapping de parallaxe, comme le montre l&rsquo;illustration ci-dessous :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c04_parallax_mapping-20230903-parallax6.png" alt="04_parallax_mapping-20230903-parallax6"/>
+Nous avons à nouveau les points $A$ et $B$, mais cette fois nous obtenons le vecteur $\vec{P}$ en soustrayant le vecteur $\vec{V}$ des coordonnées de texture au point $A$. Nous pouvons obtenir des valeurs de profondeur au lieu de valeurs de hauteur en soustrayant les valeurs de la map de hauteur échantillonnée de $1.0$ dans les shaders, ou en inversant simplement ses valeurs de texture dans un logiciel d&rsquo;édition d&rsquo;images, comme nous l&rsquo;avons fait avec la map de profondeur mentionnée ci-dessus.</p>
+<p>Le mapping de parallaxe est implémenté dans le shader de fragment car l&rsquo;effet de déplacement est différent sur toute la surface d&rsquo;un triangle. Dans le shader de fragment, nous allons devoir calculer le vecteur de direction fragment-vue $\vec{V}$.
+Nous avons donc besoin de la position de la vue et de la position du fragment dans l&rsquo;espace tangent. Dans le chapitre sur le normal mapping, nous avions déjà un shader de sommets qui envoyait ces vecteurs dans l&rsquo;espace tangent, nous pouvons donc prendre une copie exacte du shader de sommets de ce chapitre :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec3 aPos;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>) in vec3 aNormal;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>) in vec2 aTexCoords;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>) in vec3 aTangent;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>) in vec3 aBitangent;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>out VS_OUT {
+</span></span><span style="display:flex;"><span>    vec3 FragPos;
+</span></span><span style="display:flex;"><span>    vec2 TexCoords;
+</span></span><span style="display:flex;"><span>    vec3 TangentLightPos;
+</span></span><span style="display:flex;"><span>    vec3 TangentViewPos;
+</span></span><span style="display:flex;"><span>    vec3 TangentFragPos;
+</span></span><span style="display:flex;"><span>} vs_out;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform mat4 projection;
+</span></span><span style="display:flex;"><span>uniform mat4 view;
+</span></span><span style="display:flex;"><span>uniform mat4 model;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform vec3 lightPos;
+</span></span><span style="display:flex;"><span>uniform vec3 viewPos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    gl_Position      <span style="color:#f92672">=</span> projection <span style="color:#f92672">*</span> view <span style="color:#f92672">*</span> model <span style="color:#f92672">*</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>    vs_out.FragPos   <span style="color:#f92672">=</span> vec3(model <span style="color:#f92672">*</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>));   
+</span></span><span style="display:flex;"><span>    vs_out.TexCoords <span style="color:#f92672">=</span> aTexCoords;    
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    vec3 T   <span style="color:#f92672">=</span> normalize(mat3(model) <span style="color:#f92672">*</span> aTangent);
+</span></span><span style="display:flex;"><span>    vec3 B   <span style="color:#f92672">=</span> normalize(mat3(model) <span style="color:#f92672">*</span> aBitangent);
+</span></span><span style="display:flex;"><span>    vec3 N   <span style="color:#f92672">=</span> normalize(mat3(model) <span style="color:#f92672">*</span> aNormal);
+</span></span><span style="display:flex;"><span>    mat3 TBN <span style="color:#f92672">=</span> transpose(mat3(T, B, N));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    vs_out.TangentLightPos <span style="color:#f92672">=</span> TBN <span style="color:#f92672">*</span> lightPos;
+</span></span><span style="display:flex;"><span>    vs_out.TangentViewPos  <span style="color:#f92672">=</span> TBN <span style="color:#f92672">*</span> viewPos;
+</span></span><span style="display:flex;"><span>    vs_out.TangentFragPos  <span style="color:#f92672">=</span> TBN <span style="color:#f92672">*</span> vs_out.FragPos;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Dans le fragment shader, nous implémentons ensuite la logique de mapping parallaxe. Le fragment shader ressemble un peu à ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>in VS_OUT {
+</span></span><span style="display:flex;"><span>    vec3 FragPos;
+</span></span><span style="display:flex;"><span>    vec2 TexCoords;
+</span></span><span style="display:flex;"><span>    vec3 TangentLightPos;
+</span></span><span style="display:flex;"><span>    vec3 TangentViewPos;
+</span></span><span style="display:flex;"><span>    vec3 TangentFragPos;
+</span></span><span style="display:flex;"><span>} fs_in;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform sampler2D diffuseMap;
+</span></span><span style="display:flex;"><span>uniform sampler2D normalMap;
+</span></span><span style="display:flex;"><span>uniform sampler2D depthMap;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>uniform <span style="color:#66d9ef">float</span> height_scale;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>vec2 <span style="color:#a6e22e">ParallaxMapping</span>(vec2 texCoords, vec3 viewDir);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{           
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// offset texture coordinates with Parallax Mapping
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 viewDir   <span style="color:#f92672">=</span> normalize(fs_in.TangentViewPos <span style="color:#f92672">-</span> fs_in.TangentFragPos);
+</span></span><span style="display:flex;"><span>    vec2 texCoords <span style="color:#f92672">=</span> ParallaxMapping(fs_in.TexCoords,  viewDir);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// then sample textures with new texture coords
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 diffuse <span style="color:#f92672">=</span> texture(diffuseMap, texCoords);
+</span></span><span style="display:flex;"><span>    vec3 normal  <span style="color:#f92672">=</span> texture(normalMap, texCoords);
+</span></span><span style="display:flex;"><span>    normal <span style="color:#f92672">=</span> normalize(normal <span style="color:#f92672">*</span> <span style="color:#ae81ff">2.0</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// proceed with lighting code
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    [...]    
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Nous avons défini une fonction appelée <code>ParallaxMapping</code> qui prend en entrée les coordonnées de texture du fragment et la direction fragment-vue $\vec{V}$ dans l&rsquo;espace tangent. La fonction renvoie les coordonnées de texture déplacées. Nous utilisons ensuite ces coordonnées de texture déplacées comme coordonnées de texture pour l&rsquo;échantillonnage de la map diffuse et normale. Par conséquent, le vecteur diffus et normal du fragment correspond correctement à la géométrie déplacée de la surface.</p>
+<p>Jetons un coup d&rsquo;œil à l&rsquo;intérieur de la fonction <code>ParallaxMapping</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec2 <span style="color:#a6e22e">ParallaxMapping</span>(vec2 texCoords, vec3 viewDir)
+</span></span><span style="display:flex;"><span>{ 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> height <span style="color:#f92672">=</span>  texture(depthMap, texCoords).r;    
+</span></span><span style="display:flex;"><span>    vec2 p <span style="color:#f92672">=</span> viewDir.xy <span style="color:#f92672">/</span> viewDir.z <span style="color:#f92672">*</span> (height <span style="color:#f92672">*</span> height_scale);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> texCoords <span style="color:#f92672">-</span> p;    
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Cette fonction relativement simple est une traduction directe de ce que nous avons discuté jusqu&rsquo;à présent. Nous prenons les coordonnées de texture originales <code>texCoords</code> et les utilisons pour échantillonner la hauteur (ou la profondeur) de la map des profondeurs au niveau du fragment courant $A$ sous la forme $H(A)$. Nous calculons ensuite $\vec{P}$ comme les composantes x et y du vecteur <code>viewDir</code> de l&rsquo;espace tangent divisé par sa composante z et mis à l&rsquo;échelle par $H(A)$. Nous avons également introduit un uniforme $height_scale$ pour un contrôle supplémentaire, car l&rsquo;effet de parallaxe est généralement trop important sans paramètre d&rsquo;échelle supplémentaire. Nous soustrayons ensuite ce vecteur $\vec{P}$ des coordonnées de la texture pour obtenir les coordonnées finales de la texture déplacée.</p>
+<p>Il est intéressant de noter ici la division de <code>viewDir.xy</code> par <code>viewDir.z</code>.
+Comme le vecteur <code>viewDir</code> est normalisé, <code>viewDir.z</code> sera compris entre $0.0$ et $1.0$. Lorsque <code>viewDir</code> est largement parallèle à la surface, sa composante z est proche de $0.0$ et la division renvoie un vecteur $\vec{P}$ beaucoup plus grand que lorsque <code>viewDir</code> est largement perpendiculaire à la surface. Nous ajustons la taille de $\vec{P}$ de manière à ce qu&rsquo;il décale les coordonnées de la texture à une plus grande échelle lorsque l&rsquo;on regarde une surface depuis un angle que lorsque l&rsquo;on la regarde depuis le haut ; cela donne des résultats plus réalistes dans les angles.
+Certains préfèrent ne pas tenir compte de la division par <code>viewDir.z</code>, car le mapping parallaxe par défaut pourrait produire des résultats indésirables dans les angles ; la technique est alors appelée mapping parallaxe avec limitation du décalage. Le choix de la technique est généralement une question de préférence personnelle.</p>
+<p>Les coordonnées de la texture résultante sont ensuite utilisées pour échantillonner les autres textures (diffuse et normale), ce qui donne un effet de déplacement très net, comme vous pouvez le voir ci-dessous avec une échelle de hauteur d&rsquo;environ $0.1$ :</p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c04_parallax_mapping-20230903-parallax7.png" alt="04_parallax_mapping-20230903-parallax7"/>
+Ici, vous pouvez voir la différence entre le normal mapping et le parallax mapping combiné au normal mapping. Comme le mapping parallaxe tente de simuler la profondeur, il est possible de faire en sorte que des briques se superposent à d&rsquo;autres briques en fonction de la direction dans laquelle vous les regardez.</p>
+<p>Vous pouvez toujours voir quelques artefacts bizarres sur les bords du plan de parallaxe. Cela se produit parce qu&rsquo;aux bords du plan, les coordonnées de texture déplacées peuvent être suréchantillonnées en dehors de l&rsquo;intervalle $[0, 1]$. Cela donne des résultats irréalistes basés sur le(s) mode(s) de wrapping de la texture. Une astuce sympa pour résoudre ce problème est de jeter le fragment chaque fois qu&rsquo;il échantillonne en dehors de la plage de coordonnées de texture par défaut :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>texCoords <span style="color:#f92672">=</span> ParallaxMapping(fs_in.TexCoords,  viewDir);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(texCoords.x <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">||</span> texCoords.y <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">||</span> texCoords.x <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0.0</span> <span style="color:#f92672">||</span> texCoords.y <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0.0</span>)
+</span></span><span style="display:flex;"><span>    discard;
+</span></span></code></pre></div><p>Tous les fragments dont les coordonnées de texture (déplacées) se situent en dehors de la plage par défaut sont éliminés et le Parallax Mapping donne alors des résultats corrects sur les bords d&rsquo;une surface. Notez que cette astuce ne fonctionne pas sur tous les types de surfaces, mais lorsqu&rsquo;elle est appliquée à un plan, elle donne d&rsquo;excellents résultats :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c04_parallax_mapping-20230903-parallax8.png" alt="04_parallax_mapping-20230903-parallax8"/>
+Vous pouvez trouver le code source <a href="https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/5.1.parallax_mapping/parallax_mapping.cpp">ici</a>.</p>
+<p>C&rsquo;est très joli et assez rapide car nous n&rsquo;avons besoin que d&rsquo;un seul échantillon de texture supplémentaire pour que le parallax mapping fonctionne. Il y a cependant quelques problèmes, car il se décompose en quelque sorte lorsqu&rsquo;on le regarde d&rsquo;un angle (comme pour le normal mapping) et donne des résultats incorrects avec des changements de hauteur importants, comme vous pouvez le voir ci-dessous :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c04_parallax_mapping-20230903-parallax9.png" alt="04_parallax_mapping-20230903-parallax9"/>
+La raison pour laquelle cela ne fonctionne pas toujours correctement est qu&rsquo;il s&rsquo;agit d&rsquo;une approximation grossière du displacement mapping. Il existe cependant quelques astuces supplémentaires qui nous permettent d&rsquo;obtenir des résultats presque parfaits avec des changements de hauteur importants, même en regardant sous un angle. Par exemple, que se passerait-il si, au lieu d&rsquo;un échantillon, nous prenions plusieurs échantillons pour trouver le point le plus proche de $B$?</p>
+<h2 id="mapping-de-la-parallaxe-abrupte-steep-parallax-mapping">Mapping de la parallaxe abrupte (Steep Parallax Mapping)</h2>
+<p>Le mapping parallaxe abrupte est une extension du mapping parallaxe en ce sens qu&rsquo;il utilise les mêmes principes, mais au lieu d&rsquo;un seul échantillon, il prend plusieurs échantillons pour mieux situer le vecteur $\vec{P}$ par rapport à $B$.
+On obtient ainsi de bien meilleurs résultats, même en cas de fortes variations de hauteur, car la précision de la technique est améliorée par le nombre d&rsquo;échantillons.</p>
+<p>L&rsquo;idée générale du mapping parallaxe à forte pente (abrupte?) est de diviser la plage de profondeur totale en plusieurs couches de même hauteur/profondeur. Pour chacune de ces couches, nous échantillonnons la map des profondeurs, en déplaçant les coordonnées de la texture le long de la direction de $\vec{P}$
+jusqu&rsquo;à ce que nous trouvions une valeur de profondeur échantillonnée inférieure à la valeur de profondeur de la couche actuelle. Regardez l&rsquo;image suivante :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c04_parallax_mapping-20230903-parallax10.png" alt="04_parallax_mapping-20230903-parallax10"/>
+Nous parcourons les couches de profondeur de haut en bas et, pour chaque couche, nous comparons sa valeur de profondeur à la valeur de profondeur stockée dans la map des profondeurs. Si la valeur de profondeur de la couche est inférieure à celle de la map des profondeurs, cela signifie que la partie du vecteur $\vec{P}$ n&rsquo;est pas sous la surface. Nous poursuivons ce processus jusqu&rsquo;à ce que la profondeur de la couche soit supérieure à la valeur stockée dans la map des profondeurs : ce point se trouve alors sous la surface géométrique (déplacée).</p>
+<p>Dans cet exemple, nous pouvons voir que la valeur de la map des profondeurs à la deuxième couche ($D(2) = 0.73$) est inférieure à la valeur de la profondeur de la deuxième couche ($0.4$), nous continuons donc. À l&rsquo;itération suivante, la valeur de profondeur de la couche $0.6$ est supérieure à la valeur de profondeur échantillonnée de la carte des profondeurs ($D(3) = 0.37$). Nous pouvons donc supposer que le vecteur $\vec{P}$ à la troisième couche comme étant la position la plus viable de la géométrie déplacée. Nous prenons ensuite le décalage de coordonnées de texture $T_3$ du vecteur $\vec{P}_3$ pour déplacer les coordonnées de texture du fragment. Vous pouvez constater que la précision augmente avec la profondeur des couches.</p>
+<p>Pour mettre en œuvre cette technique, il suffit de modifier la fonction <code>ParallaxMapping</code>, car nous disposons déjà de toutes les variables nécessaires :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec2 <span style="color:#a6e22e">ParallaxMapping</span>(vec2 texCoords, vec3 viewDir)
+</span></span><span style="display:flex;"><span>{ 
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// number of depth layers
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> numLayers <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// calculate the size of each layer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> layerDepth <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">/</span> numLayers;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// depth of current layer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> currentLayerDepth <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// the amount to shift the texture coordinates per layer (from vector P)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec2 P <span style="color:#f92672">=</span> viewDir.xy <span style="color:#f92672">*</span> height_scale; 
+</span></span><span style="display:flex;"><span>    vec2 deltaTexCoords <span style="color:#f92672">=</span> P <span style="color:#f92672">/</span> numLayers;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    [...]     
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Nous commençons par mettre les choses en place : nous spécifions le nombre de couches, nous calculons le décalage de profondeur de chaque couche, et enfin nous calculons le décalage des coordonnées de texture que nous devons déplacer le long de la direction de $\vec{P}$ par couche.</p>
+<p>Nous itérons ensuite sur toutes les couches, en commençant par le haut, jusqu&rsquo;à ce que nous trouvions une valeur de map de profondeur inférieure à la valeur de profondeur de la couche :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// get initial values
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>vec2  currentTexCoords     <span style="color:#f92672">=</span> texCoords;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> currentDepthMapValue <span style="color:#f92672">=</span> texture(depthMap, currentTexCoords).r;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span>(currentLayerDepth <span style="color:#f92672">&lt;</span> currentDepthMapValue)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// shift texture coordinates along direction of P
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    currentTexCoords <span style="color:#f92672">-=</span> deltaTexCoords;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// get depthmap value at current texture coordinates
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    currentDepthMapValue <span style="color:#f92672">=</span> texture(depthMap, currentTexCoords).r;  
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// get depth of next layer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    currentLayerDepth <span style="color:#f92672">+=</span> layerDepth;  
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> currentTexCoords;
+</span></span></code></pre></div><p>Ici, nous bouclons sur chaque couche de profondeur et nous nous arrêtons jusqu&rsquo;à ce que nous trouvions le décalage des coordonnées de texture le long du vecteur $\vec{P}$ qui renvoie pour la première fois une profondeur inférieure à la surface (déplacée). Le décalage résultant est soustrait des coordonnées de texture du fragment pour obtenir un vecteur de coordonnées de texture déplacé final, cette fois avec beaucoup plus de précision par rapport au mapping parallaxe traditionnel.</p>
+<p>Avec environ 10 échantillons, la surface de la brique semble déjà plus viable même lorsqu&rsquo;on la regarde d&rsquo;un angle, mais le mapping de parallaxe abrupte brille vraiment lorsqu&rsquo;on a une surface complexe avec des changements de hauteur abrupts ; comme la surface du jouet en bois affichée plus tôt :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c04_parallax_mapping-20230903-parallax11.png" alt="04_parallax_mapping-20230903-parallax11"/>
+Nous pouvons améliorer l&rsquo;algorithme en exploitant l&rsquo;une des propriétés du Parallax Mapping. Lorsque l&rsquo;on regarde directement une surface, il n&rsquo;y a pas beaucoup de déplacement de texture alors qu&rsquo;il y a beaucoup de déplacement lorsque l&rsquo;on regarde une surface depuis un angle (visualisez la direction de la vue dans les deux cas). En prenant moins d&rsquo;échantillons lorsque l&rsquo;on regarde directement une surface et plus d&rsquo;échantillons lorsque l&rsquo;on regarde d&rsquo;un angle, nous n&rsquo;échantillonnons que la quantité nécessaire :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> minLayers <span style="color:#f92672">=</span> <span style="color:#ae81ff">8.0</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> maxLayers <span style="color:#f92672">=</span> <span style="color:#ae81ff">32.0</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> numLayers <span style="color:#f92672">=</span> mix(maxLayers, minLayers, max(dot(vec3(<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>), viewDir), <span style="color:#ae81ff">0.0</span>));
+</span></span></code></pre></div><p>Ici, nous prenons le produit scalaire de <code>viewDir</code> et de la direction z positive et utilisons le résultat pour aligner le nombre d&rsquo;échantillons sur <code>minLayers</code> ou <code>maxLayers</code> en fonction de l&rsquo;angle sous lequel nous regardons la surface (notez que la direction z positive est égale au vecteur normal de la surface dans l&rsquo;espace tangent). Si nous regardions dans une direction parallèle à la surface, nous utiliserions un total de 32 couches.</p>
+<p>Vous pouvez trouver le code source mis à jour <a href="https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/5.2.steep_parallax_mapping/steep_parallax_mapping.cpp">ici</a>. Vous pouvez également trouver la surface de la boîte à jouets en bois ici : <a href="https://learnopengl.com/img/textures/wood.png">diffuse</a>, <a href="https://learnopengl.com/img/textures/toy_box_normal.png">normale</a> et <a href="https://learnopengl.com/img/textures/toy_box_disp.png">profondeur</a>.</p>
+<p>Le <strong>Steep Parallax Mapping</strong> a aussi ses problèmes. Comme la technique est basée sur un nombre fini d&rsquo;échantillons, nous obtenons des effets d&rsquo;aliasing et les distinctions claires entre les couches peuvent être facilement repérées :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c04_parallax_mapping-20230903-parallax12.png" alt="04_parallax_mapping-20230903-parallax12"/>
+Nous pouvons réduire ce problème en prenant un plus grand nombre d&rsquo;échantillons, mais cela devient rapidement une charge trop lourde pour les performances. Plusieurs approches visent à résoudre ce problème en ne prenant pas la première position qui se trouve sous la surface (déplacée), mais en interpolant entre les deux couches de profondeur les plus proches de la position pour trouver une correspondance beaucoup plus étroite avec $B$.</p>
+<p>Deux des approches les plus populaires sont appelées <strong>Relief Parallax Mapping</strong> et <strong>Parallax Occlusion Mapping</strong>.
+Le Relief Parallax Mapping donne les résultats les plus précis, mais il est aussi plus gourmand en performances que la Parallax Occlusion Mapping.
+Comme le mapping des occlusions parallèles donne presque les mêmes résultats que le mapping des occlusions en relief et qu&rsquo;elle est également plus efficace, elle est souvent l&rsquo;approche préférée.</p>
+<h2 id="mapping-de-locclusion-parallaxe-parallax-occlusion-mapping">Mapping de l&rsquo;occlusion parallaxe (Parallax Occlusion Mapping)</h2>
+<p>Le mapping de l&rsquo;occlusion parallaxe est basée sur les mêmes principes que le mapping de la parallaxe abrupte, mais au lieu de prendre les coordonnées de texture de la première couche de profondeur après une collision, nous allons interpoler linéairement entre la couche de profondeur après et avant la collision. Nous basons le poids de l&rsquo;interpolation linéaire sur la distance entre la hauteur de la surface et la valeur de la couche de profondeur des deux couches. Jetez un coup d&rsquo;œil à l&rsquo;image suivante pour comprendre comment cela fonctionne :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c04_parallax_mapping-20230903-parallax13.png" alt="04_parallax_mapping-20230903-parallax13"/></p>
+<p>Comme vous pouvez le voir, il s&rsquo;agit d&rsquo;une méthode largement similaire à la cartographie Steep Parallax, avec une étape supplémentaire, l&rsquo;interpolation linéaire entre les coordonnées des textures des deux couches de profondeur entourant le point d&rsquo;intersection. Il s&rsquo;agit à nouveau d&rsquo;une approximation, mais elle est nettement plus précise que le Steep Parallax Mapping.</p>
+<p>Le code pour le Parallax Occlusion Mapping est une extension du Steep Parallax Mapping et n&rsquo;est pas trop difficile :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>[...] <span style="color:#75715e">// steep parallax mapping code here
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// get texture coordinates before collision (reverse operations)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>vec2 prevTexCoords <span style="color:#f92672">=</span> currentTexCoords <span style="color:#f92672">+</span> deltaTexCoords;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// get depth after and before collision for linear interpolation
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">float</span> afterDepth  <span style="color:#f92672">=</span> currentDepthMapValue <span style="color:#f92672">-</span> currentLayerDepth;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> beforeDepth <span style="color:#f92672">=</span> texture(depthMap, prevTexCoords).r <span style="color:#f92672">-</span> currentLayerDepth <span style="color:#f92672">+</span> layerDepth;
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// interpolation of texture coordinates
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">float</span> weight <span style="color:#f92672">=</span> afterDepth <span style="color:#f92672">/</span> (afterDepth <span style="color:#f92672">-</span> beforeDepth);
+</span></span><span style="display:flex;"><span>vec2 finalTexCoords <span style="color:#f92672">=</span> prevTexCoords <span style="color:#f92672">*</span> weight <span style="color:#f92672">+</span> currentTexCoords <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> weight);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> finalTexCoords;  
+</span></span></code></pre></div><p>Après avoir trouvé la couche de profondeur après avoir intersecté la géométrie de surface (déplacée), nous récupérons également les coordonnées de texture de la couche de profondeur avant l&rsquo;intersection. Nous calculons ensuite la distance entre la profondeur de la géométrie (déplacée) et les couches de profondeur correspondantes, puis nous interpolons ces deux valeurs. L&rsquo;interpolation linéaire est une interpolation de base entre les coordonnées de texture des deux couches. La fonction renvoie ensuite les coordonnées de texture interpolées finales.</p>
+<p>Le Parallax Occlusion Mapping donne des résultats étonnamment bons et, bien que de légers artefacts et des problèmes de repliement soient encore visibles, il s&rsquo;agit généralement d&rsquo;un bon compromis qui n&rsquo;est vraiment visible que lorsque l&rsquo;on zoome fortement ou que l&rsquo;on regarde sous des angles très prononcés.</p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c04_parallax_mapping-20230903-parallax14.png" alt="04_parallax_mapping-20230903-parallax14"/>
+Vous pouvez trouver le code source <a href="https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/5.3.parallax_occlusion_mapping/parallax_occlusion_mapping.cpp">ici</a>.</p>
+<p>Le mapping parallaxe est une excellente technique pour augmenter les détails de votre scène, mais elle s&rsquo;accompagne de quelques artefacts que vous devez prendre en compte lorsque vous l&rsquo;utilisez. Le plus souvent, le mapping parallaxe est utilisée sur des surfaces de type sol ou mur, où il n&rsquo;est pas facile de déterminer le contour de la surface et où l&rsquo;angle de vue est le plus souvent à peu près perpendiculaire à la surface. De cette manière, les artefacts du mapping parallaxe ne sont pas aussi visibles et en font une technique incroyablement intéressante pour améliorer les détails de vos objets.</p>
+<h2 id="ressources-supplémentaires">Ressources supplémentaires</h2>
+<ul>
+<li><a href="http://sunandblackcat.com/tipFullView.php?topicid=28">Parallax Occlusion Mapping in GLSL</a> : excellent tutoriel de parallax mapping par sunandblackcat.com.</li>
+<li><a href="https://www.youtube.com/watch?v=xvOT62L-fQI">How Parallax Displacement Mapping Works</a> : un bon tutoriel vidéo sur le fonctionnement du mapping parallaxe par TheBennyBox.</li>
+</ul>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

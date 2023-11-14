@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+<br><br>
+<h1 id="instanciation">Instanciation</h1>
+<p>Supposons que vous ayez une scène dans laquelle vous dessinez un grand nombre de modèles dont la plupart contiennent le même ensemble de données de vertex, mais avec des transformations du monde différentes. Imaginez une scène remplie de feuilles d&rsquo;herbe : chaque feuille d&rsquo;herbe est un petit modèle composé de quelques triangles seulement. Vous voudrez probablement en dessiner un certain nombre et votre scène pourra se retrouver avec des milliers, voire des dizaines de milliers de feuilles d&rsquo;herbe que vous devrez rendre à chaque image. Comme chaque feuille ne comporte que quelques triangles, le rendu de la feuille est presque instantané. Cependant, les milliers d&rsquo;appels de rendu que vous devrez effectuer réduiront considérablement les performances.</p>
+<p>Si nous devions rendre une telle quantité d&rsquo;objets, cela ressemblerait un peu à cela dans le code :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> amount_of_models_to_draw; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    DoSomePreparations(); <span style="color:#75715e">// bind VAO, bind textures, set uniforms etc.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    glDrawArrays(GL_TRIANGLES, <span style="color:#ae81ff">0</span>, amount_of_vertices);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Lorsque vous dessinez de nombreuses instances de votre modèle comme cela, vous atteindrez rapidement un goulot d&rsquo;étranglement au niveau des performances à cause des nombreux appels de dessin. Comparé au rendu des sommets, dire au GPU de rendre vos données de sommets avec des fonctions comme <code>glDrawArrays</code> ou <code>glDrawElements</code> consomme pas mal de performance puisque OpenGL doit faire les préparations nécessaires avant de pouvoir dessiner vos données de sommets (comme dire au GPU quel tampon lire les données, où trouver les attributs de sommets et tout cela sur le bus CPU-GPU relativement lent). Ainsi, même si le rendu de vos sommets est très rapide, donner à votre GPU les commandes pour les rendre ne l&rsquo;est pas.</p>
+<p><strong>Il serait beaucoup plus pratique de pouvoir envoyer des données au GPU une seule fois, puis de dire à OpenGL de dessiner plusieurs objets en utilisant ces données avec un seul appel de dessin. C&rsquo;est là qu&rsquo;intervient l&rsquo;instanciation.</strong></p>
+<p><strong>L&rsquo;instanciation est une technique qui permet de dessiner plusieurs objets (à données de maillage égales) en une seule fois avec un seul appel de rendu, nous épargnant ainsi toutes les communications CPU -&gt; GPU à chaque fois que nous avons besoin de rendre un objet</strong>. <strong>Pour effectuer le rendu en utilisant l&rsquo;instanciation, il suffit de changer les appels de rendu <code>glDrawArrays</code> et <code>glDrawElements</code> en <code>glDrawArraysInstanced</code> et <code>glDrawElementsInstanced</code> respectivement</strong>. Ces versions instanciées des fonctions de rendu classiques prennent un paramètre supplémentaire appelé le nombre d&rsquo;instances qui définit le nombre d&rsquo;instances que nous voulons rendre. Nous envoyons toutes les données requises au GPU une seule fois, puis nous lui indiquons comment dessiner toutes ces instances en un seul appel. Le GPU rend alors toutes ces instances sans avoir à communiquer continuellement avec le CPU.</p>
+<p>En soi, cette fonction est un peu inutile. Rendre le même objet un millier de fois ne nous sert à rien puisque chacun des objets rendus est rendu exactement de la même manière et donc au même endroit ; nous ne verrions qu&rsquo;un seul objet ! C&rsquo;est pourquoi GLSL a ajouté une autre variable intégrée dans le vertex shader, appelée <code>gl_InstanceID</code>.</p>
+<p>Lorsque l&rsquo;on dessine avec l&rsquo;un des appels de rendu instancié, <code>gl_InstanceID</code> est incrémenté pour chaque instance rendue en partant de 0. Si nous devions rendre la 43e instance par exemple, <code>gl_InstanceID</code> aurait la valeur 42 dans le vertex shader. Le fait d&rsquo;avoir une valeur unique par instance signifie que nous pouvons maintenant, par exemple, indexer un grand tableau de valeurs de position pour positionner chaque instance à un endroit différent dans le monde.</p>
+<p>Pour vous familiariser avec le dessin instancié, nous allons vous présenter un exemple simple qui rend une centaine de quads 2D en coordonnées normalisées avec un seul appel de rendu. Pour ce faire, nous positionnons chaque carré instancié de manière unique en indexant un tableau uniforme de 100 vecteurs de décalage. Le résultat est une grille bien organisée de quads qui remplissent toute la fenêtre :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cinstancing_quads%201.png" alt="instancing_quads 1"/>
+Chaque quad est composé de 2 triangles avec un total de 6 sommets. Chaque sommet contient un vecteur de position NDC 2D et un vecteur de couleur. Voici les données de vertex utilisées pour cet exemple - les triangles sont suffisamment petits pour s&rsquo;adapter à l&rsquo;écran lorsqu&rsquo;il y en a une centaine :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> quadVertices[] <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// positions     // colors
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">-</span><span style="color:#ae81ff">0.05f</span>,  <span style="color:#ae81ff">0.05f</span>,  <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#ae81ff">0.05f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.05f</span>,  <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span><span style="color:#ae81ff">0.05f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.05f</span>,  <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>,
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span><span style="color:#ae81ff">0.05f</span>,  <span style="color:#ae81ff">0.05f</span>,  <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#ae81ff">0.05f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.05f</span>,  <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>,   
+</span></span><span style="display:flex;"><span>     <span style="color:#ae81ff">0.05f</span>,  <span style="color:#ae81ff">0.05f</span>,  <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">1.0f</span>		    		
+</span></span><span style="display:flex;"><span>}; 
+</span></span></code></pre></div><p>Les quads sont colorés dans le shader de fragment qui reçoit un vecteur de couleur du shader de sommet et le définit comme sa sortie :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>in vec3 fColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(fColor, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Rien de nouveau jusqu&rsquo;à présent, mais au niveau du vertex shader, cela commence à devenir intéressant :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec2 aPos;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>) in vec3 aColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>out vec3 fColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform vec2 offsets[<span style="color:#ae81ff">100</span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    vec2 offset <span style="color:#f92672">=</span> offsets[gl_InstanceID];
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> vec4(aPos <span style="color:#f92672">+</span> offset, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>    fColor <span style="color:#f92672">=</span> aColor;
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Ici, nous avons défini un tableau uniforme appelé <code>offsets</code> qui contient un total de 100 vecteurs de décalage. Dans le vertex shader, nous récupérons un vecteur de décalage pour chaque instance en indexant le tableau offsets à l&rsquo;aide de gl_InstanceID. Si nous devions maintenant dessiner 100 quads avec le dessin instancié, nous obtiendrions 100 quads situés à des positions différentes.</p>
+<p>Nous devons définir les positions de décalage que nous calculons dans une boucle for imbriquée avant d&rsquo;entrer dans la boucle de rendu :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec2 translations[<span style="color:#ae81ff">100</span>];
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> index <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> offset <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1f</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> y <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>; y <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">10</span>; y <span style="color:#f92672">+=</span> <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> x <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>; x <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">10</span>; x <span style="color:#f92672">+=</span> <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        glm<span style="color:#f92672">::</span>vec2 translation;
+</span></span><span style="display:flex;"><span>        translation.x <span style="color:#f92672">=</span> (<span style="color:#66d9ef">float</span>)x <span style="color:#f92672">/</span> <span style="color:#ae81ff">10.0f</span> <span style="color:#f92672">+</span> offset;
+</span></span><span style="display:flex;"><span>        translation.y <span style="color:#f92672">=</span> (<span style="color:#66d9ef">float</span>)y <span style="color:#f92672">/</span> <span style="color:#ae81ff">10.0f</span> <span style="color:#f92672">+</span> offset;
+</span></span><span style="display:flex;"><span>        translations[index<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> translation;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Ici, nous créons un ensemble de 100 vecteurs de translation qui contient un vecteur de décalage pour toutes les positions dans une grille de 10x10. En plus de générer le tableau de translations, nous devons également transférer les données vers le tableau d&rsquo;uniformes du vertex shader :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>shader.use();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">100</span>; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    shader.setVec2((<span style="color:#e6db74">&#34;offsets[&#34;</span> <span style="color:#f92672">+</span> std<span style="color:#f92672">::</span>to_string(i) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;]&#34;</span>)), translations[i]);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Dans cet extrait de code, nous transformons le compteur i de la boucle for en une chaîne de caractères afin de créer dynamiquement une chaîne d&rsquo;emplacement pour interroger l&rsquo;emplacement uniforme. Pour chaque élément du tableau uniforme offsets, nous définissons le vecteur de translation correspondant.</p>
+<p>Maintenant que toutes les préparations sont terminées, nous pouvons commencer le rendu des quads. Pour dessiner via un rendu instancié, nous appelons <code>glDrawArraysInstanced</code> ou <code>glDrawElementsInstanced</code>. Comme nous n&rsquo;utilisons pas de tampon d&rsquo;index d&rsquo;élément, nous allons appeler la version <code>glDrawArrays</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glBindVertexArray(quadVAO);
+</span></span><span style="display:flex;"><span>glDrawArraysInstanced(GL_TRIANGLES, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">100</span>);  
+</span></span></code></pre></div><p>Les paramètres de <code>glDrawArraysInstanced</code> sont exactement les mêmes que ceux de <code>glDrawArrays</code>, à l&rsquo;exception du dernier paramètre qui définit le nombre d&rsquo;instances à dessiner. Comme nous voulons afficher 100 quads dans une grille de 10x10, nous le fixons à 100. L&rsquo;exécution du code devrait maintenant vous donner l&rsquo;image familière de 100 quads colorés.</p>
+<h2 id="tableaux-instanciés">Tableaux instanciés</h2>
+<p>Bien que l&rsquo;implémentation précédente fonctionne bien pour ce cas d&rsquo;utilisation spécifique, lorsque nous rendons beaucoup plus de 100 instances (ce qui est assez courant), nous finirons par atteindre une limite sur la quantité de données uniformes que nous pouvons envoyer aux shaders. Une option alternative est connue sous le nom de tableaux instanciés. Les tableaux instanciés sont définis comme un attribut de sommet (ce qui nous permet de stocker beaucoup plus de données) qui est mis à jour par instance au lieu d&rsquo;être mis à jour par sommet.</p>
+<p>Avec les attributs de sommet, au début de chaque exécution du shader de sommet, le GPU récupère le prochain ensemble d&rsquo;attributs de sommet appartenant au sommet actuel. Cependant, lorsqu&rsquo;un attribut de sommet est défini comme un tableau instancié, le shader de sommet ne met à jour le contenu de l&rsquo;attribut de sommet que pour chaque instance. Cela nous permet d&rsquo;utiliser les attributs de vertex standard pour les données par vertex et d&rsquo;utiliser le tableau instancié pour stocker des données uniques par instance.</p>
+<p>Pour vous donner un exemple de tableau instancié, nous allons reprendre l&rsquo;exemple précédent et convertir le tableau uniforme offset en tableau instancié. Nous devrons mettre à jour le shader de vertex en ajoutant un autre attribut de vertex :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec2 aPos;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>) in vec3 aColor;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>) in vec2 aOffset;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>out vec3 fColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> vec4(aPos <span style="color:#f92672">+</span> aOffset, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>    fColor <span style="color:#f92672">=</span> aColor;
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Nous n&rsquo;utilisons plus <code>gl_InstanceID</code> et pouvons utiliser directement l&rsquo;attribut <code>offset</code> sans indexer au préalable un grand tableau uniforme.</p>
+<p>Parce qu&rsquo;un tableau instancié est un attribut de vertex, tout comme les variables de position et de couleur, nous devons stocker son contenu dans un objet tampon de vertex et configurer son pointeur d&rsquo;attribut. Nous allons d&rsquo;abord stocker le tableau de translations (de la section précédente) dans un nouvel objet tampon :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> instanceVBO;
+</span></span><span style="display:flex;"><span>glGenBuffers(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>instanceVBO);
+</span></span><span style="display:flex;"><span>glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+</span></span><span style="display:flex;"><span>glBufferData(GL_ARRAY_BUFFER, <span style="color:#66d9ef">sizeof</span>(glm<span style="color:#f92672">::</span>vec2) <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>, <span style="color:#f92672">&amp;</span>translations[<span style="color:#ae81ff">0</span>], GL_STATIC_DRAW);
+</span></span><span style="display:flex;"><span>glBindBuffer(GL_ARRAY_BUFFER, <span style="color:#ae81ff">0</span>); 
+</span></span></code></pre></div><p>Ensuite, nous devons également définir son pointeur d&rsquo;attribut de sommet et activer l&rsquo;attribut de sommet :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glEnableVertexAttribArray(<span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+</span></span><span style="display:flex;"><span>glVertexAttribPointer(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, GL_FLOAT, GL_FALSE, <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">float</span>), (<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>)<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>glBindBuffer(GL_ARRAY_BUFFER, <span style="color:#ae81ff">0</span>);	
+</span></span><span style="display:flex;"><span>glVertexAttribDivisor(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>);  
+</span></span></code></pre></div><p>Ce qui rend ce code intéressant est la dernière ligne où nous appelons <code>glVertexAttribDivisor</code>. <strong>Cette fonction indique à OpenGL quand mettre à jour le contenu d&rsquo;un attribut de vertex vers l&rsquo;élément suivant</strong>.
+Son premier paramètre est l&rsquo;attribut de sommet en question et le second le diviseur d&rsquo;attribut. Par défaut, le diviseur d&rsquo;attribut est 0, ce qui indique à OpenGL de mettre à jour le contenu de l&rsquo;attribut de sommet à chaque itération du shader de sommet. En mettant cet attribut à 1, nous indiquons à OpenGL que nous voulons mettre à jour le contenu de l&rsquo;attribut vertex lorsque nous commençons à effectuer le rendu d&rsquo;une nouvelle instance. En lui donnant la valeur 2, nous mettrons à jour le contenu toutes les 2 instances, et ainsi de suite. En fixant le diviseur d&rsquo;attribut à 1, nous indiquons effectivement à OpenGL que l&rsquo;attribut de sommet à l&rsquo;emplacement d&rsquo;attribut 2 est un tableau instancié.</p>
+<p>Si nous rendions à nouveau les quads avec <code>glDrawArraysInstanced</code>, nous obtiendrions la sortie suivante :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cinstancing_quads%201.png" alt="instancing_quads 1"/>
+C&rsquo;est exactement la même chose que dans l&rsquo;exemple précédent, mais maintenant avec des tableaux instanciés, ce qui nous permet de passer beaucoup plus de données (autant que la mémoire nous le permet) au vertex shader pour le dessin instancié.</p>
+<p>Pour le plaisir, nous pourrions lentement réduire l&rsquo;échelle de chaque quadrant du haut à droite au bas à gauche en utilisant à nouveau <code>gl_InstanceID</code>, parce que pourquoi pas ?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    vec2 pos <span style="color:#f92672">=</span> aPos <span style="color:#f92672">*</span> (gl_InstanceID <span style="color:#f92672">/</span> <span style="color:#ae81ff">100.0</span>);
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> vec4(pos <span style="color:#f92672">+</span> aOffset, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>    fColor <span style="color:#f92672">=</span> aColor;
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>Le résultat est que les premières instances des quads sont dessinées extrêmement petites et plus nous avançons dans le processus de dessin des instances, plus <code>gl_InstanceID</code> se rapproche de 100 et donc plus les quads retrouvent leur taille d&rsquo;origine. Il est parfaitement légal d&rsquo;utiliser des tableaux instanciés avec <code>gl_InstanceID</code> de cette manière.</p>
+<p>Si vous n&rsquo;êtes toujours pas sûr du fonctionnement du rendu instancié ou si vous voulez voir comment tout s&rsquo;articule, vous pouvez trouver le code source complet de l&rsquo;application <a href="https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/10.1.instancing_quads/instancing_quads.cpp">ici</a>.</p>
+<p>Bien qu&rsquo;amusants, ces exemples ne sont pas vraiment de bons exemples d&rsquo;instanciation. Certes, ils vous donnent un aperçu facile du fonctionnement de l&rsquo;instanciation, <strong>mais l&rsquo;instanciation tire le meilleur parti de sa puissance lorsqu&rsquo;elle dessine une énorme quantité d&rsquo;objets similaires</strong>. C&rsquo;est pourquoi nous allons nous aventurer dans l&rsquo;espace.</p>
+<h1 id="un-champ-dastéroïdes">Un champ d&rsquo;astéroïdes</h1>
+<p>Imaginez une scène où une grande planète se trouve au centre d&rsquo;un grand anneau d&rsquo;astéroïdes. Un tel anneau d&rsquo;astéroïdes peut contenir des milliers ou des dizaines de milliers de formations rocheuses et devient rapidement impossible à rendre sur une carte graphique décente. Ce scénario s&rsquo;avère particulièrement utile pour le rendu instancié, puisque tous les astéroïdes peuvent être représentés avec un seul modèle. Chaque astéroïde obtient alors sa variation à partir d&rsquo;une matrice de transformation unique à chaque astéroïde.</p>
+<p>Pour démontrer l&rsquo;impact du rendu instancié, nous allons d&rsquo;abord effectuer le rendu d&rsquo;une scène d&rsquo;astéroïdes en vol stationnaire autour d&rsquo;une planète sans rendu instancié. La scène contiendra un grand modèle de planète qui peut être téléchargé <a href="https://learnopengl.com/data/models/planet.zip">ici</a> et un grand ensemble d&rsquo;astéroïdes que nous positionnerons correctement autour de la planète. Le modèle des astéroïdes peut être téléchargé <a href="https://learnopengl.com/data/models/rock.zip">ici</a>.</p>
+<p>Dans les exemples de code, nous chargeons les modèles à l&rsquo;aide du chargeur de modèle que nous avons défini précédemment dans les chapitres consacrés au chargement des modèles.</p>
+<p>Pour obtenir l&rsquo;effet recherché, nous allons générer une matrice de transformation du modèle pour chaque astéroïde. La matrice de transformation traduit d&rsquo;abord le rocher quelque part dans l&rsquo;anneau d&rsquo;astéroïde - puis nous ajoutons une petite valeur de déplacement aléatoire au décalage pour que l&rsquo;anneau ait l&rsquo;air plus naturel. À partir de là, nous appliquons également une échelle et une rotation aléatoires. Le résultat est une matrice de transformation qui place chaque astéroïde quelque part autour de la planète tout en lui donnant un aspect plus naturel et unique par rapport aux autres astéroïdes.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> amount <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>;
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>mat4 <span style="color:#f92672">*</span>modelMatrices;
+</span></span><span style="display:flex;"><span>modelMatrices <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> glm<span style="color:#f92672">::</span>mat4[amount];
+</span></span><span style="display:flex;"><span>srand(glfwGetTime()); <span style="color:#75715e">// initialize random seed	
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">float</span> radius <span style="color:#f92672">=</span> <span style="color:#ae81ff">50.0</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> offset <span style="color:#f92672">=</span> <span style="color:#ae81ff">2.5f</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> amount; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    glm<span style="color:#f92672">::</span>mat4 model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>mat4(<span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 1. translation: displace along circle with &#39;radius&#39; in range [-offset, offset]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> angle <span style="color:#f92672">=</span> (<span style="color:#66d9ef">float</span>)i <span style="color:#f92672">/</span> (<span style="color:#66d9ef">float</span>)amount <span style="color:#f92672">*</span> <span style="color:#ae81ff">360.0f</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> displacement <span style="color:#f92672">=</span> (rand() <span style="color:#f92672">%</span> (<span style="color:#66d9ef">int</span>)(<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> offset <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>)) <span style="color:#f92672">/</span> <span style="color:#ae81ff">100.0f</span> <span style="color:#f92672">-</span> offset;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> x <span style="color:#f92672">=</span> sin(angle) <span style="color:#f92672">*</span> radius <span style="color:#f92672">+</span> displacement;
+</span></span><span style="display:flex;"><span>    displacement <span style="color:#f92672">=</span> (rand() <span style="color:#f92672">%</span> (<span style="color:#66d9ef">int</span>)(<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> offset <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>)) <span style="color:#f92672">/</span> <span style="color:#ae81ff">100.0f</span> <span style="color:#f92672">-</span> offset;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> y <span style="color:#f92672">=</span> displacement <span style="color:#f92672">*</span> <span style="color:#ae81ff">0.4f</span>; <span style="color:#75715e">// keep height of field smaller compared to width of x and z
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    displacement <span style="color:#f92672">=</span> (rand() <span style="color:#f92672">%</span> (<span style="color:#66d9ef">int</span>)(<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> offset <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>)) <span style="color:#f92672">/</span> <span style="color:#ae81ff">100.0f</span> <span style="color:#f92672">-</span> offset;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> z <span style="color:#f92672">=</span> cos(angle) <span style="color:#f92672">*</span> radius <span style="color:#f92672">+</span> displacement;
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>translate(model, glm<span style="color:#f92672">::</span>vec3(x, y, z));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 2. scale: scale between 0.05 and 0.25f
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> scale <span style="color:#f92672">=</span> (rand() <span style="color:#f92672">%</span> <span style="color:#ae81ff">20</span>) <span style="color:#f92672">/</span> <span style="color:#ae81ff">100.0f</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">0.05</span>;
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>scale(model, glm<span style="color:#f92672">::</span>vec3(scale));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> rotAngle <span style="color:#f92672">=</span> (rand() <span style="color:#f92672">%</span> <span style="color:#ae81ff">360</span>);
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>rotate(model, rotAngle, glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.4f</span>, <span style="color:#ae81ff">0.6f</span>, <span style="color:#ae81ff">0.8f</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 4. now add to list of matrices
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    modelMatrices[i] <span style="color:#f92672">=</span> model;
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Ce morceau de code peut sembler un peu intimidant, mais nous transformons essentiellement les positions x et z de l&rsquo;astéroïde le long d&rsquo;un cercle dont le rayon est défini par le rayon et nous déplaçons aléatoirement chaque astéroïde un peu autour du cercle par -offset et offset. Le déplacement en y a moins d&rsquo;impact pour créer un anneau d&rsquo;astéroïdes plus plat. Nous appliquons ensuite des transformations d&rsquo;échelle et de rotation et stockons la matrice de transformation résultante dans <code>modelMatrices</code> qui est de la taille de la quantité. Ici, nous générons 1000 matrices de modèle, une par astéroïde.</p>
+<p>Après avoir chargé les modèles de planètes et de roches et compilé un ensemble de shaders, le code de rendu ressemble à ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// draw planet
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>shader.use();
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>mat4 model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>mat4(<span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>translate(model, glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">3.0f</span>, <span style="color:#ae81ff">0.0f</span>));
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>scale(model, glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">4.0f</span>, <span style="color:#ae81ff">4.0f</span>, <span style="color:#ae81ff">4.0f</span>));
+</span></span><span style="display:flex;"><span>shader.setMat4(<span style="color:#e6db74">&#34;model&#34;</span>, model);
+</span></span><span style="display:flex;"><span>planet.Draw(shader);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// draw meteorites
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> amount; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    shader.setMat4(<span style="color:#e6db74">&#34;model&#34;</span>, modelMatrices[i]);
+</span></span><span style="display:flex;"><span>    rock.Draw(shader);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Nous dessinons d&rsquo;abord le modèle de la planète, que nous traduisons et mettons à l&rsquo;échelle pour l&rsquo;adapter à la scène, puis nous dessinons un nombre de modèles de rochers égal à la quantité de transformations que nous avons générées précédemment. Cependant, avant de dessiner chaque roche, nous définissons d&rsquo;abord la matrice de transformation du modèle correspondant dans le shader.</p>
+<p>Le résultat est une scène spatiale où l&rsquo;on peut voir un anneau d&rsquo;astéroïdes d&rsquo;apparence naturelle autour d&rsquo;une planète :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cinstancing_asteroids.png" alt="instancing_asteroids"/>
+Cette scène contient un total de 1001 appels de rendu par image, dont 1000 pour le modèle de la roche. Vous pouvez trouver le code source de cette scène <a href="https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/10.2.asteroids/asteroids.cpp">ici</a>.</p>
+<p>Dès que nous commençons à augmenter ce nombre, nous remarquons rapidement que la scène cesse de fonctionner de manière fluide et que le nombre d&rsquo;images que nous sommes capables de rendre par seconde diminue de manière drastique. Dès que nous fixons la valeur à près de 2000, la scène devient si lente sur notre GPU qu&rsquo;il devient difficile de se déplacer.</p>
+<p>Essayons maintenant de rendre la même scène, mais cette fois avec un rendu instancié. Nous devons d&rsquo;abord ajuster un peu le vertex shader :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec3 aPos;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>) in vec2 aTexCoords;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>) in mat4 instanceMatrix;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>out vec2 TexCoords;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform mat4 projection;
+</span></span><span style="display:flex;"><span>uniform mat4 view;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> projection <span style="color:#f92672">*</span> view <span style="color:#f92672">*</span> instanceMatrix <span style="color:#f92672">*</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>); 
+</span></span><span style="display:flex;"><span>    TexCoords <span style="color:#f92672">=</span> aTexCoords;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Nous n&rsquo;utilisons plus de variable uniforme de modèle, mais nous déclarons un <code>mat4</code> comme attribut de sommet afin de pouvoir stocker un tableau instancié de matrices de transformation. Cependant, lorsque nous déclarons comme attribut de sommet un type de données supérieur à un <code>vec4</code>, les choses se passent un peu différemment. La quantité maximale de données autorisée pour un attribut de sommet est égale à un <code>vec4</code>. Étant donné qu&rsquo;une <code>mat4</code> est essentiellement composée de 4 <code>vec4</code>, nous devons réserver 4 attributs de sommet pour cette matrice spécifique. Comme nous lui avons attribué un emplacement de 3, les colonnes de la matrice auront des emplacements d&rsquo;attributs de sommet de 3, 4, 5 et 6.</p>
+<p>Nous devons ensuite définir chacun des pointeurs d&rsquo;attribut de ces 4 attributs de sommet et les configurer en tant que tableaux instanciés :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// vertex buffer object
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> buffer;
+</span></span><span style="display:flex;"><span>glGenBuffers(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>buffer);
+</span></span><span style="display:flex;"><span>glBindBuffer(GL_ARRAY_BUFFER, buffer);
+</span></span><span style="display:flex;"><span>glBufferData(GL_ARRAY_BUFFER, amount <span style="color:#f92672">*</span> <span style="color:#66d9ef">sizeof</span>(glm<span style="color:#f92672">::</span>mat4), <span style="color:#f92672">&amp;</span>modelMatrices[<span style="color:#ae81ff">0</span>], GL_STATIC_DRAW);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> rock.meshes.size(); i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> VAO <span style="color:#f92672">=</span> rock.meshes[i].VAO;
+</span></span><span style="display:flex;"><span>    glBindVertexArray(VAO);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// vertex attributes
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    std<span style="color:#f92672">::</span>size_t vec4Size <span style="color:#f92672">=</span> <span style="color:#66d9ef">sizeof</span>(glm<span style="color:#f92672">::</span>vec4);
+</span></span><span style="display:flex;"><span>    glEnableVertexAttribArray(<span style="color:#ae81ff">3</span>); 
+</span></span><span style="display:flex;"><span>    glVertexAttribPointer(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, GL_FLOAT, GL_FALSE, <span style="color:#ae81ff">4</span> <span style="color:#f92672">*</span> vec4Size, (<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>)<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>    glEnableVertexAttribArray(<span style="color:#ae81ff">4</span>); 
+</span></span><span style="display:flex;"><span>    glVertexAttribPointer(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span>, GL_FLOAT, GL_FALSE, <span style="color:#ae81ff">4</span> <span style="color:#f92672">*</span> vec4Size, (<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>)(<span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> vec4Size));
+</span></span><span style="display:flex;"><span>    glEnableVertexAttribArray(<span style="color:#ae81ff">5</span>); 
+</span></span><span style="display:flex;"><span>    glVertexAttribPointer(<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">4</span>, GL_FLOAT, GL_FALSE, <span style="color:#ae81ff">4</span> <span style="color:#f92672">*</span> vec4Size, (<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>)(<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> vec4Size));
+</span></span><span style="display:flex;"><span>    glEnableVertexAttribArray(<span style="color:#ae81ff">6</span>); 
+</span></span><span style="display:flex;"><span>    glVertexAttribPointer(<span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">4</span>, GL_FLOAT, GL_FALSE, <span style="color:#ae81ff">4</span> <span style="color:#f92672">*</span> vec4Size, (<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span>)(<span style="color:#ae81ff">3</span> <span style="color:#f92672">*</span> vec4Size));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    glVertexAttribDivisor(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>    glVertexAttribDivisor(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>    glVertexAttribDivisor(<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>    glVertexAttribDivisor(<span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    glBindVertexArray(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Notez que nous avons un peu triché en déclarant la variable <code>VAO</code> du Mesh comme une variable publique au lieu d&rsquo;une variable privée afin de pouvoir accéder à son objet vertex array. Ce n&rsquo;est pas la solution la plus propre, mais il s&rsquo;agit d&rsquo;une simple modification pour convenir à cet exemple. Mis à part cette petite modification, ce code devrait être clair. Nous déclarons essentiellement comment OpenGL doit interpréter le tampon pour chaque attribut de sommet de la matrice et que chacun de ces attributs de sommet est un tableau instancié.</p>
+<p>Ensuite, nous reprenons le VAO du (des) mesh(es) et cette fois nous dessinons en utilisant <code>glDrawElementsInstanced</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// draw meteorites
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>instanceShader.use();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> rock.meshes.size(); i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    glBindVertexArray(rock.meshes[i].VAO);
+</span></span><span style="display:flex;"><span>    glDrawElementsInstanced(
+</span></span><span style="display:flex;"><span>        GL_TRIANGLES, rock.meshes[i].indices.size(), GL_UNSIGNED_INT, <span style="color:#ae81ff">0</span>, amount
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Ici, nous dessinons la même quantité d&rsquo;astéroïdes que dans l&rsquo;exemple précédent, mais cette fois avec un rendu instancié. Les résultats devraient être exactement les mêmes, mais une fois que nous aurons augmenté le nombre d&rsquo;astéroïdes, vous commencerez vraiment à voir la puissance du rendu instancié. Sans le rendu instancié, nous avons pu obtenir un rendu fluide d&rsquo;environ 1000 à 1500 astéroïdes. Avec le rendu instancié, nous pouvons maintenant fixer cette valeur à 100000. Ceci, avec le modèle de roche ayant 576 vertices, équivaudrait à environ 57 millions de vertices dessinés chaque image sans baisse significative de performance ; et seulement 2 appels de dessin !
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cinstancing_asteroids_quantity.png" alt="instancing_asteroids_quantity"/>
+Cette image a été rendue avec 100000 astéroïdes avec un rayon de 150.0f et un décalage égal à 25.0f. Vous pouvez trouver le code source de la démo de rendu instancié <a href="https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/10.3.asteroids_instanced/asteroids_instanced.cpp">ici</a>.</p>
+<blockquote>
+<p>Sur différentes machines, un nombre d&rsquo;astéroïdes de 100 000 peut être un peu trop élevé, alors essayez d&rsquo;ajuster les valeurs jusqu&rsquo;à ce que vous atteigniez un framerate acceptable.</p>
+</blockquote>
+<p>Comme vous pouvez le constater, avec le bon type d&rsquo;environnement, le rendu instancié peut faire une énorme différence dans les capacités de rendu de votre application. C&rsquo;est pourquoi le rendu instancié est couramment utilisé pour l&rsquo;herbe, la flore, les particules et les scènes de ce type - en fait, toute scène comportant de nombreuses formes répétitives peut bénéficier du rendu instancié.</p>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

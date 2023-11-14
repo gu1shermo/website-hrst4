@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cg">cg</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/opengl">opengl</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/computer-graphics">computer graphics</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cpp">cpp</a>
+  
+
+<br><br>
+<h1 id="glossaire">Glossaire</h1>
+<ul>
+<li>Vecteur de couleur : un vecteur représentant la plupart des couleurs du monde réel par une combinaison des composantes rouge, verte et bleue (abrégé en <code>RGB</code>). La couleur d&rsquo;un objet est la composante de couleur réfléchie que l&rsquo;objet n&rsquo;a pas absorbée.</li>
+<li>Modèle d&rsquo;éclairage Phong : modèle d&rsquo;approximation de l&rsquo;éclairage du monde réel par le calcul d&rsquo;une composante ambiante, diffuse et spéculaire.</li>
+<li>Éclairage ambiant : approximation de l&rsquo;éclairage global en donnant à chaque objet une petite luminosité afin que les objets ne soient pas complètement sombres s&rsquo;ils ne sont pas directement éclairés.</li>
+<li>Éclairage diffus : l&rsquo;éclairage devient plus fort au fur et à mesure qu&rsquo;un sommet/fragment est aligné avec une source de lumière. Utilise les vecteurs normaux pour calculer les angles.</li>
+<li>Vecteur normal : vecteur unitaire perpendiculaire à une surface.</li>
+<li>Matrice normale : une matrice 3x3 qui est la matrice du modèle (ou de la vue du modèle) sans translation. Elle est également modifiée de telle manière (inverse-transposition) qu&rsquo;elle maintient les vecteurs normaux orientés dans la bonne direction lors de l&rsquo;application d&rsquo;une mise à l&rsquo;échelle non uniforme. Sinon, les vecteurs normaux sont déformés lors de l&rsquo;utilisation d&rsquo;une mise à l&rsquo;échelle non uniforme.</li>
+<li>Éclairage spéculaire : définit un éclairage spéculaire plus l&rsquo;observateur regarde la réflexion d&rsquo;une source de lumière sur une surface. Il est basé sur la direction de l&rsquo;observateur, la direction de la lumière et une valeur de brillance qui définit la quantité de diffusion de la lumière.</li>
+<li>Phong shading : le modèle d&rsquo;éclairage Phong appliqué dans le fragment shader.</li>
+<li>Gouraud shading : le modèle d&rsquo;éclairage Phong appliqué dans le vertex shader. Produit des artefacts perceptibles lors de l&rsquo;utilisation d&rsquo;un petit nombre de sommets. Gagne en efficacité pour une perte de qualité visuelle.</li>
+<li>GLSL struct : une structure de type C qui agit comme un conteneur pour les variables du shader. Principalement utilisée pour organiser les entrées, les sorties et les uniformes.</li>
+<li>Material : la couleur ambiante, diffuse et spéculaire qu&rsquo;un objet reflète. Elles définissent les couleurs d&rsquo;un objet.</li>
+<li>Light (properties) : l&rsquo;intensité ambiante, diffuse et spéculaire d&rsquo;une lumière.Ces propriétés peuvent prendre n&rsquo;importe quelle valeur de couleur et définissent la couleur/l&rsquo;intensité d&rsquo;une source de lumière pour chaque composant Phong spécifique.</li>
+<li>Diffuse map : une image de texture qui définit la couleur diffuse par fragment.</li>
+<li>Specular map : une image de texture qui définit l&rsquo;intensité/couleur spéculaire par fragment.Permet d&rsquo;obtenir des reflets spéculaires uniquement sur certaines zones d&rsquo;un objet.</li>
+<li>Directional light : une source de lumière avec seulement une direction. Elle est modélisée comme étant à une distance infinie, ce qui a pour effet que tous ses rayons lumineux semblent parallèles et que son vecteur de direction reste le même sur toute la scène.</li>
+<li>Lumière ponctuelle (point light): une source de lumière située à un endroit précis de la scène et dont la lumière s&rsquo;estompe avec la distance.</li>
+<li>Atténuation : processus de réduction de l&rsquo;intensité de la lumière sur la distance, utilisé pour les lumières ponctuelles et les projecteurs.</li>
+<li>Spotlight : source de lumière définie par un cône dans une direction spécifique.</li>
+<li>Flashlight : une spotlight placé du point de vue de l&rsquo;observateur.</li>
+<li>GLSL uniform array : un tableau de valeurs uniformes. Il fonctionne comme un tableau C, sauf qu&rsquo;il ne peut pas être alloué dynamiquement.</li>
+</ul>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cg">cg</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/opengl">opengl</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/computer-graphics">computer graphics</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cpp">cpp</a>
+  
+
+<br><br>
+<h1 id="glossaire">Glossaire</h1>
+<ul>
+<li><code>OpenGL</code> : une spécification formelle d&rsquo;une API graphique qui définit la disposition et la sortie de chaque fonction.</li>
+<li><code>GLAD</code> : une bibliothèque de chargement d&rsquo;extension qui charge et définit tous les pointeurs de fonction d&rsquo;OpenGL pour nous afin que nous puissions utiliser toutes les fonctions (modernes) d&rsquo;OpenGL.</li>
+<li><code>Viewport</code> : la région de la fenêtre 2D dans laquelle nous effectuons le rendu.</li>
+<li><code>Graphics Pipeline</code> : le processus complet par lequel les vertices doivent passer avant de se retrouver sous la forme d&rsquo;un ou plusieurs pixels sur l&rsquo;écran.</li>
+<li><code>Shader</code> : un petit programme qui tourne sur la carte graphique. Plusieurs étapes du pipeline graphique peuvent utiliser des shaders créés par l&rsquo;utilisateur pour remplacer les fonctionnalités existantes.</li>
+<li><code>Vertex</code> : une collection de données qui représentent un point unique.</li>
+<li><code>Normalized Device Coordinates (NDC)</code> : le système de coordonnées dans lequel vos sommets se retrouvent après que la division de la perspective ait été effectuée sur les coordonnées du clip. Toutes les positions de vertex dans le NDC entre <code>-1.0</code> et <code>1.0</code> ne seront pas rejetées ou coupées et finiront par être visibles.</li>
+<li><code>Vertex Buffer Object</code> (VBO) : un objet tampon qui alloue de la mémoire sur le GPU et y stocke toutes les données de vertex pour que la carte graphique puisse les utiliser.</li>
+<li><code>Vertex Array Object</code> (VAO) : stocke le tampon et les informations sur l&rsquo;état des attributs des vertex.</li>
+<li><code>Element Buffer Object</code> (EBO): un objet tampon qui stocke les index sur le GPU pour le dessin indexé.</li>
+<li><code>Uniform</code> : un type spécial de variable GLSL qui est globale (chaque shader dans un programme de shader peut accéder à cette variable uniforme) et qui ne doit être définie qu&rsquo;une seule fois.</li>
+<li><code>Texture</code> : un type spécial d&rsquo;image utilisé dans les shaders et généralement enroulé autour des objets, donnant l&rsquo;illusion qu&rsquo;un objet est extrêmement détaillé.</li>
+<li><code>Texture Wrapping</code> : définit le mode qui spécifie comment OpenGL doit échantillonner les textures lorsque les coordonnées de la texture sont en dehors de l&rsquo;intervalle : (<code>0</code>, <code>1</code>).</li>
+<li><code>Texture Filtering</code> : définit le mode qui spécifie comment OpenGL doit échantillonner la texture lorsqu&rsquo;il y a plusieurs texels (pixels de texture) à choisir. Cela se produit généralement lorsqu&rsquo;une texture est agrandie.</li>
+<li><code>Mipmaps</code> : stocke des versions plus petites d&rsquo;une texture où la version de taille appropriée est choisie en fonction de la distance à l&rsquo;observateur.</li>
+<li><code>stb_image</code> : bibliothèque de chargement d&rsquo;images.</li>
+<li><code>Texture Units</code> : permet d&rsquo;avoir plusieurs textures sur un seul programme shader en liant plusieurs textures, chacune à une unité de texture différente.</li>
+<li><code>Vecteur</code> : entité mathématique qui définit des directions et/ou des positions dans n&rsquo;importe quelle dimension.</li>
+<li><code>Matrice</code> : un tableau rectangulaire d&rsquo;expressions mathématiques avec des propriétés de transformation utiles.</li>
+<li><code>GLM</code> : une bibliothèque mathématique adaptée à OpenGL.</li>
+<li><code>Local Space</code> : l&rsquo;espace dans lequel un objet est initialisé. Toutes les coordonnées relatives à l&rsquo;origine d&rsquo;un objet.</li>
+<li><code>World Space</code> : toutes les coordonnées relatives à une origine globale.</li>
+<li><code>View space</code> : toutes les coordonnées vues depuis la perspective d&rsquo;une caméra.</li>
+<li><code>Clip Space</code> : toutes les coordonnées vues du point de vue de la caméra mais avec la projection appliquée. C&rsquo;est l&rsquo;espace dans lequel les coordonnées des vertex devraient se retrouver, en tant que sortie du vertex shader. OpenGL fait le reste (clipping et division de la perspective).</li>
+<li><code>Screen Space</code> : toutes les coordonnées vues de l&rsquo;écran. Les coordonnées vont de <code>0</code> à la largeur/hauteur de l&rsquo;écran.</li>
+<li><code>LookAt</code> : un type spécial de matrice de vue qui crée un système de coordonnées où toutes les coordonnées sont pivotées et translatées de manière à ce que l&rsquo;utilisateur regarde une cible donnée à partir d&rsquo;une position donnée.</li>
+<li><code>Angles d'Euler</code> : définis comme <code>yaw</code>, <code>pitch</code> et <code>roll</code> qui nous permettent de former n&rsquo;importe quel vecteur de direction 3D à partir de ces 3 valeurs.</li>
+</ul>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>
