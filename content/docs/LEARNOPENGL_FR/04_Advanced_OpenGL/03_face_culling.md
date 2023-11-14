@@ -1,3 +1,10 @@
+---
+title: "face culling"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
 
 # Face culling
 Essayez de visualiser mentalement un cube en 3D et comptez le nombre maximum de faces que vous pourrez voir dans n'importe quelle direction. Si votre imagination n'est pas trop créative, vous avez probablement abouti à un nombre maximal de 3. Vous pouvez voir un cube dans n'importe quelle position et/ou direction, mais vous ne pourrez jamais voir plus de 3 faces. Alors pourquoi gaspiller l'effort de dessiner ces 3 autres faces que nous ne pouvons même pas voir. Si nous pouvions les éliminer d'une manière ou d'une autre, nous économiserions plus de 50 % du nombre total d'exécutions du fragment shader de ce cube !

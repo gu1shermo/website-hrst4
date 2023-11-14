@@ -1,8 +1,9 @@
 ---
-date: 2023-11-11
-authors: hrst4
 title: "learnopengl (fr)"
+date: 2023-11-11
+author: hrst4
 tags: ['cg','opengl','graphics','cpp']
+draft: false
 ---
 
 - **00_Introduction**

@@ -1,3 +1,11 @@
+---
+title: "advanced glsl"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
 # GLSL avancé
 Ce chapitre ne vous montrera pas vraiment de nouvelles fonctionnalités super avancées qui donneront un énorme coup de pouce à la qualité visuelle de votre scène. Ce chapitre aborde plus ou moins des aspects intéressants de GLSL et des astuces qui peuvent vous aider dans vos projets futurs. En gros, quelques bonnes choses à savoir et des fonctionnalités qui peuvent vous faciliter la vie lorsque vous créez des applications OpenGL en combinaison avec GLSL.
 

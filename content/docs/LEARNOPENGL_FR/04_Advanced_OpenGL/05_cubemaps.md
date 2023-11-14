@@ -1,3 +1,11 @@
+---
+title: "cubemaps"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
 # Cubemaps
 Nous utilisons des textures 2D depuis un certain temps, mais il existe d'autres types de textures que nous n'avons pas encore explorés. Dans ce chapitre, nous aborderons un type de texture qui est une combinaison de plusieurs textures mappées en une seule : une **cubemap**.
 

@@ -1,3 +1,11 @@
+---
+title: "instancing"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
 # Instanciation
 Supposons que vous ayez une scène dans laquelle vous dessinez un grand nombre de modèles dont la plupart contiennent le même ensemble de données de vertex, mais avec des transformations du monde différentes. Imaginez une scène remplie de feuilles d'herbe : chaque feuille d'herbe est un petit modèle composé de quelques triangles seulement. Vous voudrez probablement en dessiner un certain nombre et votre scène pourra se retrouver avec des milliers, voire des dizaines de milliers de feuilles d'herbe que vous devrez rendre à chaque image. Comme chaque feuille ne comporte que quelques triangles, le rendu de la feuille est presque instantané. Cependant, les milliers d'appels de rendu que vous devrez effectuer réduiront considérablement les performances.
 

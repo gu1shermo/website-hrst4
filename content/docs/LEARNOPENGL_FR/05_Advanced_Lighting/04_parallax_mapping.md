@@ -1,3 +1,11 @@
+---
+title: "parallax mapping"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
 # Le mapping parallaxe
 Le mapping parallaxe est une technique similaire au normal mapping, mais basé sur des principes différents. **Tout comme le normal mapping, il s'agit d'une technique qui augmente considérablement les détails d'une surface texturée et lui donne une impression de profondeur**. Bien qu'il s'agisse également d'une illusion, le parallaxe mapping est beaucoup plus efficace pour donner une impression de profondeur et, combinée au normal mapping, il donne des résultats incroyablement réalistes. Bien que le parallaxe mapping ne soit pas nécessairement une technique directement liée à l'éclairage (avancé), j'en parlerai tout de même ici, car cette technique est une suite logique du normal mapping. Notez qu'il est fortement conseillé de se familiariser avec le normal mapping, en particulier l'espace tangent, avant d'apprendre le parallax mapping.
 

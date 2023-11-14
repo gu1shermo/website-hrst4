@@ -1,6 +1,9 @@
 ---
-tags: [cg, opengl, computer graphics, cpp]
-dg-publish: true
+title: "colors"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
 ---
 # Couleurs
 Nous avons brièvement utilisé et manipulé les couleurs dans les chapitres précédents, mais nous ne les avons jamais définies correctement. Nous allons ici discuter de ce que sont les couleurs et commencer à construire la scène pour les prochains chapitres sur l'éclairage.  

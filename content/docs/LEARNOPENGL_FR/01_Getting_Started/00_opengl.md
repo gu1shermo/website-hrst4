@@ -1,6 +1,9 @@
 ---
-tags: [cg, opengl, computer graphics, cpp]
-dg-publish: true
+title: "opengl"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
 ---
 # OpenGL
 Avant de commencer notre voyage, nous devons d'abord définir ce qu'est OpenGL. OpenGL est principalement considéré comme une **API (une interface de programmation d'applications) qui nous fournit un large ensemble de fonctions que nous pouvons utiliser pour manipuler les graphiques et les images**. **Cependant, OpenGL en lui-même n'est pas une API, mais simplement une spécification, développée et maintenue par le groupe Khronos.**

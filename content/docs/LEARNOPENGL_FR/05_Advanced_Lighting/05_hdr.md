@@ -1,3 +1,11 @@
+---
+title: "hdr"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
 # HDR
 Les valeurs de luminosité et de couleur sont, par défaut, comprises entre $0.0$ et $1.0$ lorsqu'elles sont stockées dans un framebuffer. Cette déclaration, à première vue innocente, nous a poussés à toujours spécifier les valeurs de luminosité et de couleur quelque part dans cette fourchette, en essayant de les faire correspondre à la scène. Cela fonctionne bien et donne des résultats corrects, mais que se passe-t-il si nous marchons dans une zone très lumineuse avec plusieurs sources lumineuses dont la somme totale dépasse $1.0$ ? La réponse est que tous les fragments dont la somme de la luminosité ou de la couleur est supérieure à $1.0$ sont bloqués à $1.0$, ce qui n'est pas très joli à voir :
 ![05_hdr-20230903-hdr1.png](05_hdr-20230903-hdr1.png)

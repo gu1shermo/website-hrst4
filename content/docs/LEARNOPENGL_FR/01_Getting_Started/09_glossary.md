@@ -1,6 +1,9 @@
 ---
-tags: [cg, opengl, computer graphics, cpp]
-dg-publish: true
+title: "glossary"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
 ---
 # Glossaire
 - `OpenGL` : une spécification formelle d'une API graphique qui définit la disposition et la sortie de chaque fonction.  

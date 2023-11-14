@@ -1,3 +1,10 @@
+---
+title: "depth testing"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
 # Test de profondeur (depth testing)
 
 Dans le chapitre sur les [systèmes de coordonnées](../01_Getting_Started/07_coordinate%20systems.md) , nous avons effectué le rendu d'un conteneur 3D et utilisé un tampon de profondeur (depth buffer) pour éviter que des triangles ne soient rendus à l'avant alors qu'ils sont censés se trouver derrière d'autres triangles. Dans ce chapitre, nous allons développer un peu plus les valeurs de profondeur que le tampon de profondeur (ou tampon z : z-buffer) stocke et la manière dont il détermine si un fragment est à l'avant.  

@@ -2,6 +2,7 @@
 title: "If by Rudyard Kipling"
 date: 2023-11-14T09:48:26+01:00
 tags: ["poetry", "life"]
+author: "hrst4"
 draft: false
 ---
 

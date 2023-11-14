@@ -1,3 +1,12 @@
+---
+title: "bloom"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
+
 # Bloom
 Les sources lumineuses vives et les régions très éclairées sont souvent difficiles à faire comprendre à l'observateur, car la plage d'intensité d'un moniteur est limitée. L'un des moyens de distinguer les sources lumineuses vives sur un moniteur consiste à les faire briller ; la lumière s'étend alors autour de la source lumineuse. Cela donne au spectateur l'illusion que ces sources lumineuses ou ces zones lumineuses sont intensément lumineuses.
 

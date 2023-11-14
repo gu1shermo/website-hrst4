@@ -1,6 +1,9 @@
 ---
-tags: [cg, opengl, computer graphics, cpp]
-dg-publish: true
+title: "textures"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
 ---
 # Textures
 Nous avons appris que pour ajouter plus de détails à nos objets, nous pouvons utiliser des couleurs pour chaque sommet afin de créer des images intéressantes. Cependant, pour obtenir un certain réalisme, nous devons avoir beaucoup de sommets afin de pouvoir spécifier un grand nombre de couleurs. Cela représente un surcoût considérable, car chaque modèle nécessite beaucoup plus de sommets et, pour chacun d'eux, un attribut de couleur.

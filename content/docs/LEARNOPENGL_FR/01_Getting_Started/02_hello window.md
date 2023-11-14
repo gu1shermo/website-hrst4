@@ -1,6 +1,9 @@
 ---
-tags: [cg, opengl, computer graphics, cpp]
-dg-publish: true
+title: "hello window"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
 ---
 # Hello Window
 Voyons si nous pouvons faire fonctionner GLFW. Tout d'abord, créez un fichier .cpp et ajoutez les inclusions suivantes au début de votre fichier nouvellement créé. 

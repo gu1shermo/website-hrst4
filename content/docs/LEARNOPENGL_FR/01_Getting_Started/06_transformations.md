@@ -1,6 +1,9 @@
 ---
-tags: [cg, opengl, computer graphics, cpp]
-dg-publish: true
+title: "transformations"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
 ---
 # Transformations
 Nous savons maintenant comment créer des objets, les colorer et/ou leur donner une apparence détaillée à l'aide de textures, mais ils ne sont toujours pas très intéressants puisqu'il s'agit d'objets statiques. Nous pourrions essayer de les faire bouger en changeant leurs sommets et en reconfigurant leurs buffers à chaque image, **mais c'est lourd et coûteux en puissance de traitement**. **Il existe de bien meilleures façons de transformer un objet, et c'est en utilisant des objets matriciels** (multiples). Cela ne signifie pas que nous allons parler de Kung Fu et d'un vaste monde artificiel numérique.  (jeu de mot avec matrix)

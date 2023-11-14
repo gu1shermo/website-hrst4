@@ -1,3 +1,11 @@
+---
+title: "IBL diffuse irradiance"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
 # Rayonnement diffus
 L'**IBL**, ou éclairage basé sur l'image, est un ensemble de techniques permettant d'éclairer des objets, non pas par des lumières analytiques directes comme dans le chapitre précédent, mais en traitant l'environnement comme une grande source de lumière. Ceci est généralement réalisé en manipulant une map d'environnement cubemap (prise dans le monde réel ou générée à partir d'une scène 3D) de telle sorte que nous puissions l'utiliser directement dans nos équations d'éclairage : en traitant chaque texel cubemap comme un émetteur de lumière. De cette manière, nous pouvons capturer efficacement l'éclairage global et l'ambiance générale d'un environnement, ce qui donne aux objets un meilleur sentiment d'appartenance à leur environnement.
 

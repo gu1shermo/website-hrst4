@@ -1,3 +1,11 @@
+---
+title: "advanced lighting"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
 # Eclairage avancé
 Dans les chapitres consacrés à l'éclairage, nous avons brièvement présenté le modèle d'éclairage Phong afin d'apporter un minimum de réalisme à nos scènes. Le modèle Phong est agréable à regarder, mais il présente quelques nuances sur lesquelles nous allons nous concentrer dans ce chapitre.
 # Blinn-Phong

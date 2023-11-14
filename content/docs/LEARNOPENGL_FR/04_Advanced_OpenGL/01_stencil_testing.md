@@ -1,3 +1,10 @@
+---
+title: "stencil stencing"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
 # Stencil testing
 Une fois que le shader de fragment a traité le fragment, un test de stencil est exécuté qui, tout comme le test de profondeur, a la possibilité d'éliminer des fragments. Après cela, les fragments restants sont transmis au test de profondeur où OpenGL peut éventuellement rejeter encore plus de fragments. Le test de **stencil** (pochoir en français?) est basé sur le contenu d'un autre tampon appelé tampon de stencil que nous sommes autorisés à mettre à jour pendant le rendu pour obtenir des effets intéressants.  
   

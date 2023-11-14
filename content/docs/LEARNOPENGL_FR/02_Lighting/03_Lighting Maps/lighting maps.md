@@ -1,6 +1,9 @@
 ---
-tags: [cg, opengl, computer graphics, cpp]
-dg-publish: true
+title: "lighting maps"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
 ---
 # Lighting Maps
 Dans le chapitre précédent, nous avons évoqué la possibilité de doter chaque objet d'un matériau unique qui réagit différemment à la lumière. Cela permet de donner à chaque objet un aspect unique par rapport aux autres objets, mais n'offre pas encore beaucoup de flexibilité sur le rendu visuel d'un objet.  

@@ -1,3 +1,11 @@
+---
+title: "anti aliasing"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
 # Anti Aliasing (Anti-crénelage)
 Au cours de votre aventure dans le domaine du rendu, vous avez probablement rencontré des motifs dentelés semblables à des scies sur les bords de vos modèles. La raison pour laquelle ces bords dentelés apparaissent est due à la façon dont le rasterizer transforme les données de vertex en fragments réels. Un exemple de ce à quoi ressemblent ces bords crénelés peut déjà être vu en dessinant un simple cube :
 ![anti_aliasing_aliasing](anti_aliasing_aliasing.png)

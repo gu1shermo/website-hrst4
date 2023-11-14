@@ -1,3 +1,11 @@
+---
+title: "geometry shaders"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
 # Shader de géométrie
 **Entre le shader de sommets et le shader de fragments, il existe une étape de shader optionnelle appelée shader de géométrie.** Un shader géométrique prend en entrée un ensemble de sommets qui forment une primitive unique, par exemple un point ou un triangle. Le shader géométrique peut ensuite transformer ces sommets comme il l'entend avant de les envoyer à l'étape suivante du shader. **Ce qui rend le shader géométrique intéressant, c'est qu'il est capable de convertir la primitive d'origine (ensemble de sommets) en des primitives complètement différentes, en générant éventuellement plus de sommets qu'il n'y en avait au départ.**
 

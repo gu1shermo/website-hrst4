@@ -1,3 +1,11 @@
+---
+title: "shadow mapping"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
 # Shadow mapping
 Les ombres résultent de l'absence de lumière due à une occlusion. Lorsque les rayons lumineux d'une source de lumière n'atteignent pas un objet parce qu'il est occulté par un autre objet, l'objet est dans l'ombre. Les ombres ajoutent beaucoup de réalisme à une scène éclairée et permettent au spectateur d'observer plus facilement les relations spatiales entre les objets. Elles donnent une plus grande impression de profondeur à la scène et aux objets. Par exemple, regardez l'image suivante d'une scène avec et sans ombres :
 ![shadow_mapping_with_without](shadow_mapping_with_without.png)

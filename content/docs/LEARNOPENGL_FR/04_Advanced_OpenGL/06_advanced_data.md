@@ -1,3 +1,11 @@
+---
+title: "advanced data"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
 # Data avancée
 Dans la plupart des chapitres, nous avons largement utilisé les tampons dans OpenGL pour stocker des données sur le GPU. **Dans ce chapitre, nous discuterons brièvement de quelques approches alternatives pour gérer les tampons.**
 

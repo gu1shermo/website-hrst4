@@ -1,3 +1,10 @@
+---
+title: "mesh"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
 # Mesh
 Avec Assimp, nous pouvons charger de nombreux modèles différents dans l'application, mais une fois chargés, ils sont tous stockés dans les structures de données d'Assimp. **Ce que nous voulons finalement, c'est transformer ces données dans un format qu'OpenGL comprend afin que nous puissions effectuer le rendu des objets**. Nous avons appris dans le chapitre précédent qu'un mesh représente une seule entité dessinable, alors commençons par définir notre propre classe de mesh.
 

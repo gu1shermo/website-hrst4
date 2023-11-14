@@ -1,3 +1,10 @@
+---
+title: "blending"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
 # Blending (transparence/blending)
 
 Le blending dans OpenGL est communément connu comme la technique pour implémenter la transparence dans les objets. **La transparence consiste à ce que les objets (ou des parties d'objets) n'aient pas une couleur unie, mais une combinaison de couleurs provenant de l'objet lui-même et de tout autre objet situé derrière lui, avec une intensité variable**. Une fenêtre en verre coloré est un objet transparent ; le verre a sa propre couleur, mais la couleur résultante contient également les couleurs de tous les objets situés derrière le verre. C'est aussi de là que vient le nom de blending, puisque nous blendingons plusieurs couleurs de pixels (provenant d'objets différents) en une seule couleur. La transparence nous permet donc de voir à travers les objets.

@@ -1,7 +1,11 @@
 ---
-tags: [cg, opengl, computer graphics, cpp]
-dg-publish: true
+title: "pbr theory"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
 ---
+
 # Théorie
 Le PBR, ou plus communément appelé rendu basé sur la physique (physically based renderer), est un ensemble de techniques de rendu plus ou moins basées sur la même théorie sous-jacente qui correspond plus étroitement à celle du monde physique.
 Comme le rendu basé sur la physique vise à imiter la lumière d'une manière physiquement plausible, il semble généralement plus réaliste que nos algorithmes d'éclairage originaux tels que Phong et Blinn-Phong. Non seulement l'aspect est meilleur, mais comme il se rapproche de la physique réelle, nous (et surtout les artistes) pouvons créer des matériaux de surface basés sur des paramètres physiques sans avoir à recourir à des bidouillages et des ajustements bon marché pour que l'éclairage ait l'air correct.

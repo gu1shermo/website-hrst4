@@ -1,6 +1,9 @@
 ---
-tags: [cg, opengl, computer graphics, cpp]
-dg-publish: true
+title: "assimp"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
 ---
 # Assimp
 Dans toutes les scènes présentées jusqu'à présent, nous avons beaucoup joué avec notre petit ami le conteneur, mais avec le temps, même nos meilleurs amis peuvent devenir un peu ennuyeux. Dans les applications graphiques plus importantes, il y a généralement beaucoup de modèles compliqués et intéressants qui sont beaucoup plus jolis à regarder qu'un conteneur statique. Cependant, contrairement à l'objet conteneur, nous ne pouvons pas vraiment définir manuellement tous les sommets, les normales et les coordonnées de texture de formes compliquées telles que des maisons, des véhicules ou des personnages humains. **Ce que nous voulons, c'est importer ces modèles dans l'application ; des modèles qui ont été soigneusement conçus par des artistes 3D dans des outils tels que Blender, 3DS Max ou Maya.**  

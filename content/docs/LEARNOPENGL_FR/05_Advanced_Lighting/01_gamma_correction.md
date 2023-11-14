@@ -1,3 +1,11 @@
+---
+title: "gamma correction"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
 # Gamma Correction
 Dès que nous avons calculé les couleurs des pixels de la scène, nous devons les afficher sur un moniteur. À l'époque de l'imagerie numérique, la plupart des moniteurs étaient des tubes cathodiques (CRT). Ces moniteurs avaient la propriété physique que le double de la tension d'entrée n'entraînait pas le double de la luminosité. Le doublement de la tension d'entrée se traduisait par une luminosité égale à une relation exponentielle d'environ 2,2, connue sous le nom de gamma d'un moniteur. Il se trouve que (par coïncidence) cela correspond étroitement à la façon dont les êtres humains mesurent la luminosité, car la luminosité est également affichée avec une relation de puissance similaire (inverse). Pour mieux comprendre ce que cela signifie, regardez l'image suivante :
 ![gamma_correction_brightness](gamma_correction_brightness.png)

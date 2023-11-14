@@ -1,3 +1,11 @@
+---
+title: "frame buffers"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
 # Framebuffers
 Jusqu'à présent, nous avons utilisé plusieurs types de tampons d'écran (screen buffers) : un tampon de couleur pour écrire les valeurs de couleur, un tampon de profondeur pour écrire et tester les informations de profondeur, et enfin un tampon de stencil qui nous permet d'écarter certains fragments en fonction d'une certaine condition. **La combinaison de ces tampons est stockée quelque part dans la mémoire du GPU et est appelée framebuffer**. OpenGL nous donne la possibilité de définir nos propres framebuffers et donc de définir notre propre tampon de couleur (et optionnellement un tampon de profondeur et de stencil).  
   

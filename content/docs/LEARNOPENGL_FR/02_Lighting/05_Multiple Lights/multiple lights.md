@@ -1,6 +1,9 @@
 ---
-tags: [cg, opengl, computer graphics, cpp]
-dg-publish: true
+title: "multiple lights"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
 ---
 # Plusieurs lumières
 Dans les chapitres précédents, nous avons beaucoup appris sur l'éclairage en OpenGL. Nous avons découvert l'ombrage Phong (*Phong shading*), les matériaux, les maps d'éclairage et les différents types de projecteurs de lumière. Dans ce chapitre, nous allons combiner toutes les connaissances acquises précédemment en créant une scène entièrement éclairée avec 6 sources de lumière actives. Nous allons simuler une lumière semblable à celle du soleil comme source de lumière directionnelle, 4 lumières ponctuelles dispersées dans la scène et nous ajouterons également une lampe de poche.  

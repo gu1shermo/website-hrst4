@@ -1,6 +1,9 @@
 ---
-tags: [cg, opengl, computer graphics, cpp]
-dg-publish: true
+title: "light casters"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
 ---
 # Projecteurs de lumière
 Tous les éclairages que nous avons utilisés jusqu'à présent provenaient d'une source unique, c'est-à-dire d'un seul point dans l'espace. Cela donne de bons résultats, mais dans le monde réel, nous avons plusieurs types de lumière qui agissent chacun différemment. **Une source de lumière qui projette de la lumière sur des objets est appelée un projecteur de lumière** (light caster). Dans ce chapitre, nous aborderons plusieurs types de projecteurs de lumière. Apprendre à simuler différentes sources de lumière est un outil de plus dans votre boîte à outils pour enrichir vos environnements.  

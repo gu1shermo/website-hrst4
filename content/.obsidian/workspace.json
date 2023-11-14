@@ -21,9 +21,9 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting.md",
+                "file": "blog/if-by-rudyard-kipling.md",
                 "mode": "source",
-                "source": false
+                "source": true
               }
             }
           },
@@ -33,14 +33,14 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/LEARNOPENGL_FR/00_Introduction/introduction.md",
+                "file": "docs/LEARNOPENGL_FR/02_Lighting/00_Colors/colors.md",
                 "mode": "source",
-                "source": false
+                "source": true
               }
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -106,7 +106,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "docs/LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting.md",
+                "file": "docs/LEARNOPENGL_FR/02_Lighting/00_Colors/colors.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -123,7 +123,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "docs/LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting.md",
+                "file": "docs/LEARNOPENGL_FR/02_Lighting/00_Colors/colors.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -146,7 +146,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "docs/LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting.md"
+                "file": "docs/LEARNOPENGL_FR/02_Lighting/00_Colors/colors.md"
               }
             }
           }
@@ -167,16 +167,29 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "6d5fa9713ff85d53",
+  "active": "cb703a125c9bc039",
   "lastOpenFiles": [
+    "docs/LEARNOPENGL_FR/01_Getting_Started/07_coordinate systems.md",
+    "docs/LEARNOPENGL_FR/01_Getting_Started/07_coordinate_systems.md",
+    "docs/LEARNOPENGL_FR/01_Getting_Started/08_camera.md",
+    "docs/LEARNOPENGL_FR/02_Lighting/00_Colors/colors.md",
+    "docs/LEARNOPENGL_FR/01_Getting_Started/04_shaders.md",
+    "docs/LEARNOPENGL_FR/01_Getting_Started/02_hello window.md",
+    "docs/LEARNOPENGL_FR/01_Getting_Started/09_glossary.md",
+    "docs/LEARNOPENGL_FR/01_Getting_Started/06_transformations.md",
+    "docs/LEARNOPENGL_FR/01_Getting_Started/05_textures.md",
+    "docs/LEARNOPENGL_FR/01_Getting_Started/03_hello triangle.md",
+    "docs/LEARNOPENGL_FR/01_Getting_Started/01_creating a window.md",
+    "docs/LEARNOPENGL_FR/01_Getting_Started/00_opengl.md",
+    "docs/LEARNOPENGL_FR/02_Lighting/02_Materials/materials.md",
+    "docs/LEARNOPENGL_FR/02_Lighting/02_Materials/material1.png",
+    "blog/if-by-rudyard-kipling.md",
+    "docs/LEARNOPENGL_FR/00_Introduction/introduction.md",
+    "docs/learnopengl_fr.md",
+    "docs/LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting.md",
     "search.md",
     "docs/assets/hugo.yml",
     "archives.md",
-    "docs/LEARNOPENGL_FR/00_Introduction/introduction.md",
-    "docs/LEARNOPENGL_FR/01_Getting_Started/01_creating a window.md",
-    "docs/LEARNOPENGL_FR/01_Getting_Started/00_opengl.md",
-    "docs/LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting.md",
-    "docs/learnopengl_fr.md",
     "docs/another_post.md",
     "docs/LEARNOPENGL_FR",
     "docs/src_post.md",
@@ -189,7 +202,6 @@
     "docs/LEARNOPENGL_FR/06_PBR/pbr3.png",
     "docs/LEARNOPENGL_FR/06_PBR/pbr2.png",
     "docs/LEARNOPENGL_FR/06_PBR/pbr10.png",
-    "docs/LEARNOPENGL_FR/06_PBR/pbr1.png",
     "docs/LEARNOPENGL_FR/06_PBR/03_IBL/02_specular_ibl.md",
     "docs/LEARNOPENGL_FR/06_PBR/03_IBL/01_diffuse_irradiance.md",
     "docs/LEARNOPENGL_FR/06_PBR/03_IBL",
@@ -197,19 +209,7 @@
     "docs/LEARNOPENGL_FR/06_PBR/01_theory.md",
     "docs/LEARNOPENGL_FR/06_PBR",
     "docs/LEARNOPENGL_FR/05_Advanced_Lighting/08_ssao.md",
-    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/07_deferred_shading.md",
-    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/06_bloom.md",
-    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/05_hdr.md",
-    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/04_parallax_mapping.md",
-    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/03_normal_mapping.md",
-    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/02b_point_shadows.md",
-    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/02a_shadow_mapping.md",
-    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/01_gamma_correction.md",
-    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/00_advanced_lighting.md",
     "docs/LEARNOPENGL_FR/05_Advanced_Lighting",
-    "docs/LEARNOPENGL_FR/04_Advanced_OpenGL/10_anti_aliasing.md",
-    "docs/LEARNOPENGL_FR/04_Advanced_OpenGL/09_instancing.md",
-    "docs/LEARNOPENGL_FR/04_Advanced_OpenGL/08_geometry_shader.md",
     "docs/LEARNOPENGL_FR/04_Advanced_OpenGL",
     "docs/LEARNOPENGL_FR/03_Model_Loading",
     "docs/LEARNOPENGL_FR/02_Lighting/05_Multiple Lights",

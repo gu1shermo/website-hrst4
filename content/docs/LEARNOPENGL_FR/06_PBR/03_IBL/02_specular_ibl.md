@@ -1,4 +1,12 @@
- * *# IBL Spéculaire
+---
+title: "IBL specular"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
+# IBL Spéculaire
 Dans le chapitre précédent, nous avons mis en place le PBR en combinaison avec l'éclairage basé sur l'image en pré-calculant une map d'irradiance comme partie diffuse indirecte de l'éclairage. Dans ce chapitre, nous allons nous concentrer sur la partie spéculaire de l'équation de réflectance :
 $$
 L_o(p,w_o)

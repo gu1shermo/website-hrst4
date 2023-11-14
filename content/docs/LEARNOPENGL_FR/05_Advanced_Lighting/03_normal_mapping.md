@@ -1,3 +1,11 @@
+---
+title: "normal mapping"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
 # Normal mapping
 Toutes nos scènes sont remplies de meshes, chacun composé de centaines, voire de milliers de triangles. Nous avons renforcé le réalisme en appliquant des textures 2D sur ces triangles plats, cachant ainsi le fait que les polygones ne sont que de minuscules triangles plats. Les textures sont utiles, mais lorsque l'on examine de près les meshes, il est toujours facile de voir les surfaces planes sous-jacentes. La plupart des surfaces de la vie réelle ne sont cependant pas plates et présentent de nombreux détails (bosses).
 

@@ -1,3 +1,11 @@
+---
+title: "point shadows"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
 # Ombres ponctuelles
 
 Dans le dernier chapitre, nous avons appris à créer des ombres dynamiques avec le shadow mapping. Cette méthode fonctionne très bien, mais elle est surtout adaptée aux lumières directionnelles (ou ponctuelles), car les ombres ne sont générées que dans la direction de la source lumineuse. C'est pourquoi elle est également connue sous le nom de mapping directionnel des ombres, car la map de profondeur (ou d'ombres) est générée uniquement dans la direction vers laquelle la lumière regarde.

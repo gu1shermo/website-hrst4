@@ -1,3 +1,11 @@
+---
+title: "deferred shading"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
 # Ombrage différé
 La méthode d'éclairage utilisée jusqu'à présent s'appelait "**forward rendering**" ou "**forward shading**". Il s'agit d'une approche simple qui consiste à effectuer le rendu d'un objet et à l'éclairer en fonction de toutes les sources lumineuses de la scène. Nous faisons cela pour chaque objet individuellement pour chaque objet de la scène. Bien qu'elle soit facile à comprendre et à mettre en œuvre, cette approche est également très coûteuse en termes de performances, car chaque objet rendu doit itérer sur chaque source de lumière pour chaque fragment rendu, ce qui est beaucoup ! Le forward rendering a également tendance à gaspiller beaucoup de shaders de fragments dans les scènes avec une grande complexité de profondeur (plusieurs objets couvrent le même pixel de l'écran) car les sorties des shaders de fragments sont remplacées par des sorties de shaders de fragments.
 

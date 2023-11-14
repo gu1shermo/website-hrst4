@@ -1,6 +1,9 @@
 ---
-tags: [cg, opengl, computer graphics, cpp]
-dg-publish: true
+title: "basic lighting"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
 ---
 # Basic lighting
 L'éclairage dans le monde réel est extrêmement compliqué et dépend de beaucoup trop de facteurs, ce que nous ne pouvons pas nous permettre de calculer avec la puissance de traitement limitée dont nous disposons. L'éclairage dans OpenGL est donc basé sur des approximations de la réalité en utilisant des modèles simplifiés qui sont beaucoup plus faciles à traiter et relativement similaires. Ces modèles d'éclairage sont basés sur la physique de la lumière telle que nous la comprenons. L'un de ces modèles est appelé le modèle d'éclairage Phong (*Phong lighting model*). Les principales composantes du modèle d'éclairage Phong sont au nombre de trois : l'éclairage **ambiant**, l'éclairage **diffus** et l'éclairage **spéculaire**. Vous pouvez voir ci-dessous à quoi ressemblent ces composants d'éclairage, seuls ou combinés :

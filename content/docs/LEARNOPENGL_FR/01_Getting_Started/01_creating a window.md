@@ -1,6 +1,9 @@
 ---
-tags: [cg, opengl, computer graphics, cpp]
-dg-publish: true
+title: "creating_a_window"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
 ---
 # Créer une fenêtre
 La première chose à faire avant de commencer à créer des graphiques étonnants est de créer un contexte OpenGL et une fenêtre d'application pour dessiner. Cependant, ces opérations sont spécifiques à chaque système d'exploitation et OpenGL essaie délibérément de s'abstraire de ces opérations. Cela signifie que nous devons créer une fenêtre, définir un contexte et gérer l'entrée de l'utilisateur par nous-mêmes.  

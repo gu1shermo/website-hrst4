@@ -1,3 +1,11 @@
+---
+title: "pbr lighting"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
 # Lighting
 Dans le chapitre précédent, nous avons jeté les bases d'un moteur de rendu réaliste basé sur la physique. Dans ce chapitre, nous allons nous concentrer sur la traduction de la théorie discutée précédemment en un moteur de rendu réel qui utilise des sources de lumière directes (ou analytiques) : pensez aux lumières ponctuelles, aux lumières directionnelles et/ou aux projecteurs.
 

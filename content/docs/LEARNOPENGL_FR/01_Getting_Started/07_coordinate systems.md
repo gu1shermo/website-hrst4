@@ -1,6 +1,9 @@
 ---
-tags: [cg, opengl, computer graphics, cpp]
-dg-publish: true
+title: "coordinate_systems"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
 ---
 # Systèmes de coordonnées
 Dans le dernier chapitre, nous avons appris comment utiliser les matrices à notre avantage en transformant tous les sommets avec des matrices de transformation. OpenGL s'attend à ce que tous les sommets, que nous voulons rendre visibles, soient en coordonnées normalisées après chaque exécution du vertex shader. C'est-à-dire que les coordonnées $x$, $y$ et $z$ de chaque sommet doivent être comprises entre $-1.0$ et $1.0$ ; les coordonnées en dehors de cette plage ne seront pas visibles. Ce que nous faisons habituellement, c'est spécifier les coordonnées dans une plage (ou un espace) que nous déterminons nous-mêmes et, dans le vertex shader, transformer ces coordonnées en coordonnées normalisées (NDC: normalized device coordinates). Ces NDC sont ensuite transmises au rasterizer qui les transforme en coordonnées 2D/pixels sur votre écran.  

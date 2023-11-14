@@ -1,6 +1,9 @@
 ---
-tags: [cg, opengl, computer graphics, cpp]
-dg-publish: true
+title: "shaders"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
 ---
 # Shaders
 Comme mentionné dans le chapitre [03_hello triangle](03_hello%20triangle.md), les shaders sont de petits programmes qui reposent sur le GPU. Ces programmes sont exécutés pour chaque section spécifique du pipeline graphique. **En gros, les shaders ne sont rien d'autre que des programmes qui transforment les entrées en sorties. Les shaders sont également des programmes très isolés dans la mesure où ils ne sont pas autorisés à communiquer entre eux ; la seule communication qu'ils ont se fait par le biais de leurs entrées et sorties.**

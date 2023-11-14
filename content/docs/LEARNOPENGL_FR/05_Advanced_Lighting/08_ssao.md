@@ -1,3 +1,11 @@
+---
+title: "ssao"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
+
 # SSAO
 Nous avons brièvement abordé le sujet dans le chapitre sur l'éclairage de base : l'éclairage ambiant. **L'éclairage ambiant est une constante lumineuse fixe que nous ajoutons à l'éclairage global d'une scène pour simuler la diffusion de la lumière**. En réalité, la lumière se disperse dans toutes sortes de directions avec des intensités variables, de sorte que les parties indirectement éclairées d'une scène doivent également présenter des intensités variables. **L'un des types d'approximation de l'éclairage indirect est appelé occlusion ambiante**. Il tente d'approximer l'éclairage indirect en assombrissant les plis, les trous et les surfaces proches les unes des autres. Ces zones sont largement occultées par la géométrie environnante et les rayons lumineux ont donc moins d'endroits où s'échapper, d'où l'aspect plus sombre de ces zones. Jetez un coup d'œil aux coins et aux plis de votre pièce pour constater que la lumière y semble un peu plus sombre.
 

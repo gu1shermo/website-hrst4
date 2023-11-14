@@ -1,6 +1,9 @@
 ---
-tags: [cg, opengl, computer graphics, cpp]
-dg-publish: true
+title: "materials"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
 ---
 # Materials
 **Dans le monde réel, chaque objet a une réaction différente à la lumière**. Les objets en acier sont souvent plus brillants qu'un vase en argile, par exemple, et un récipient en bois ne réagit pas de la même manière à la lumière qu'un récipient en acier. Certains objets reflètent la lumière sans trop se disperser, ce qui donne de petits reflets spéculaires, tandis que d'autres se dispersent beaucoup, ce qui donne un plus grand rayon au reflet. Si nous voulons simuler plusieurs types d'objets dans OpenGL, nous devons définir des propriétés matérielles spécifiques à chaque surface.  

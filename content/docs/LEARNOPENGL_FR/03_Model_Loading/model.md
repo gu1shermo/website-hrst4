@@ -1,3 +1,10 @@
+---
+title: "model"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
+---
 # Modèle
 Il est maintenant temps de mettre la main à la pâte avec Assimp et de commencer à créer le code de chargement et de traduction. L'objectif de ce chapitre est de créer une autre classe qui représente un modèle dans son intégralité, c'est-à-dire un modèle qui contient plusieurs meshes, éventuellement avec plusieurs textures. **Une maison qui contient un balcon en bois, une tour et peut-être une piscine peut être chargée comme un seul modèle**. Nous chargerons le modèle via Assimp et le traduirons en plusieurs objets Mesh que nous avons créés dans le chapitre précédent.
 

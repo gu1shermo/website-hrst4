@@ -1,6 +1,9 @@
 ---
-tags: [cg, opengl, computer graphics, cpp]
-dg-publish: true
+title: "camera"
+date: 2023-11-11
+author: hrst4
+tags: ['cg','opengl','graphics','cpp']
+draft: false
 ---
 # Camera
 Dans le chapitre précédent, nous avons discuté de la matrice de vue et de la façon dont nous pouvons l'utiliser pour nous déplacer dans la scène (nous avons un peu reculé). **OpenGL n'est pas familier avec le concept de caméra, mais nous pouvons essayer d'en simuler une en déplaçant tous les objets de la scène dans le sens inverse, donnant l'illusion que nous nous déplaçons.**  
