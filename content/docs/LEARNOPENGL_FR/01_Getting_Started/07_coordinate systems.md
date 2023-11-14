@@ -80,14 +80,16 @@ Une matrice de projection orthographique fait directement correspondre les coord
 Si vous appréciez les graphismes de la *vie réelle*, vous remarquerez que les objets les plus éloignés paraissent beaucoup plus petits. Cet effet étrange s'appelle la **perspective**. La perspective est particulièrement visible lorsque l'on regarde le bout d'une autoroute ou d'une voie ferrée infinie, comme le montre l'image suivante :
 ![syscoord3](img/syscoord3.png)
 Comme vous pouvez le constater, grâce à la perspective, les lignes semblent coïncider à une distance suffisante. C'est exactement l'effet que la projection en perspective tente d'imiter, en utilisant une matrice de projection en perspective. La matrice de projection fait correspondre un frustum donné au clip space, mais manipule également la valeur $w$ de chaque coordonnée de sommet de telle sorte que plus une coordonnée de sommet est éloignée de l'observateur, plus la composante $w$ est élevée. Une fois que les coordonnées sont transformées en clipping space, elles sont comprises entre $-w$ et $w$ (tout ce qui se trouve en dehors de cette plage est écrêté). OpenGL exige que les coordonnées visibles se situent entre $-1.0$ et $1.0$ comme sortie finale du vertex shader, donc une fois que les coordonnées sont dans l'espace clip, la division de perspective est appliquée aux coordonnées de l'espace clip :
+
 $$
 out =
 \begin{pmatrix}
-x/w\\
-y/w\\
+x/w\\\\
+y/w\\\\
 z/w
 \end{pmatrix}
 $$
+
 Chaque composante de la coordonnée du sommet est divisée par sa composante $w$, ce qui donne des coordonnées de sommet d'autant plus petites que le sommet est éloigné de l'observateur. **C'est une autre raison pour laquelle la composante $w$ est importante, puisqu'elle nous aide dans la projection en perspective**. Les coordonnées résultantes sont alors dans l'espace normalisé du device. Si vous souhaitez savoir comment les matrices de projection orthographique et perspective sont calculées (et que les mathématiques ne vous effraient pas trop), je vous recommande cet [excellent article](http://www.songho.ca/opengl/gl_projectionmatrix.html) de Songho.  
   
 Une matrice de projection perspective peut être créée dans GLM comme suit :
@@ -108,9 +110,11 @@ Vous pouvez constater qu'avec la projection en perspective, les sommets les plus
 
 ## La mise en place de l'ensemble
 Nous créons une matrice de transformation pour chacune des étapes susmentionnées : modèle, vue et matrice de projection. Les coordonnées d'un sommet sont ensuite transformées en coordonnées de clip comme suit :
+
 $$
 V_{clip}=M_{projection}⋅M_{view}⋅M_{model}⋅V_{local}
 $$
+
 Notez que l'ordre de multiplication de la matrice est inversé (rappelez-vous que nous devons lire la multiplication de la matrice de droite à gauche). Le vertex résultant doit alors être assigné à `gl_Position` dans le vertex shader et OpenGL effectuera alors automatiquement la division de la perspective et le clipping. 
 
 >**Et ensuite ?**  

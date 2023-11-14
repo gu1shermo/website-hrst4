@@ -242,7 +242,7 @@ La réflexion est la propriété d'un objet (ou d'une partie d'un objet) de refl
 Les principes de base de la réflexion ne sont pas si difficiles à comprendre. L'image suivante montre comment nous pouvons calculer un vecteur de réflexion et utiliser ce vecteur pour échantillonner à partir d'un cubemap :
 
 ![cubemaps_reflection_theory.png](cubemaps_reflection_theory.png)
-Nous calculons un vecteur de réflexion $$vec{R}$ autour du vecteur normal de l'objet $$vec{N}$ sur la base du vecteur de direction de vue $$vec{I}$. Nous pouvons calculer ce vecteur de réflexion à l'aide de la fonction `reflect` intégrée à GLSL. Le vecteur résultant $$vec{R}$ est ensuite utilisé comme vecteur de direction pour indexer/échantillonner le cubemap, ce qui renvoie une valeur de couleur de l'environnement. L'effet résultant est que l'objet semble refléter la skybox.
+Nous calculons un vecteur de réflexion $\vec{R}$ autour du vecteur normal de l'objet $\vec{N}$ sur la base du vecteur de direction de vue $\vec{I}$. Nous pouvons calculer ce vecteur de réflexion à l'aide de la fonction `reflect` intégrée à GLSL. Le vecteur résultant $\vec{R}$ est ensuite utilisé comme vecteur de direction pour indexer/échantillonner le cubemap, ce qui renvoie une valeur de couleur de l'environnement. L'effet résultant est que l'objet semble refléter la skybox.
 
 Puisque nous avons déjà une skybox dans notre scène, créer des reflets n'est pas trop difficile. Nous allons modifier le fragment shader utilisé par la caisse pour lui donner des propriétés réfléchissantes :
 
@@ -263,7 +263,7 @@ void main()
     FragColor = vec4(texture(skybox, R).rgb, 1.0);
 }
 ```
-Nous calculons d'abord le vecteur de direction de la vue/caméra $$vec{I}$ et l'utilisons pour calculer le vecteur de réflexion $$vec{R}$ que nous utilisons ensuite pour échantillonner à partir de la cubemap de la skybox. Notez que nous avons à nouveau les variables `Normal` et `Position` interpolées du fragment, nous devrons donc également ajuster le vertex shader :
+Nous calculons d'abord le vecteur de direction de la vue/caméra $\vec{I}$ et l'utilisons pour calculer le vecteur de réflexion $\vec{R}$ que nous utilisons ensuite pour échantillonner à partir de la cubemap de la skybox. Notez que nous avons à nouveau les variables `Normal` et `Position` interpolées du fragment, nous devrons donc également ajuster le vertex shader :
 
 ```cpp
 #version 330 core
@@ -311,7 +311,7 @@ La réfraction est décrite par la [loi de Snell](http://en.wikipedia.org/wiki/S
 
 ![cubemaps_refraction_theory-1](cubemaps_refraction_theory-1.png)
 
-Nous avons à nouveau un vecteur de vue $$vec{I}$, un vecteur normal $$vec{N}$ et, cette fois, un vecteur de réfraction $$vec{R}$. Comme vous pouvez le voir, la direction du vecteur de vue est légèrement courbée. Ce vecteur courbé $$vec{R}$ est ensuite utilisé pour échantillonner le cubemap.
+Nous avons à nouveau un vecteur de vue $\vec{I}$, un vecteur normal $\vec{N}$ et, cette fois, un vecteur de réfraction $\vec{R}$. Comme vous pouvez le voir, la direction du vecteur de vue est légèrement courbée. Ce vecteur courbé $\vec{R}$ est ensuite utilisé pour échantillonner le cubemap.
 
 La réfraction est assez facile à mettre en œuvre grâce à la fonction `refract` intégrée de GLSL qui attend un vecteur normal, une direction de vue et un rapport entre les indices de réfraction des deux matériaux.
 
@@ -326,9 +326,11 @@ Une liste des indices de réfraction les plus courants est donnée dans le table
 |Verre|$1.52$|
 |Diamant|$2.42$|
 Nous utilisons ces indices de réfraction pour calculer le rapport entre les deux matériaux traversés par la lumière. Dans notre cas, le rayon lumineux passe de l'air au verre (si nous supposons que l'objet est en verre), le rapport est donc de :
+
 $$
 1.00/1.52=0.658
 $$
+
 Nous avons déjà délimité le cubemap, fourni les données de vertex avec des normales, et défini la position de la caméra comme un uniforme. La seule chose que nous devons changer est le fragment shader :
 ```cpp
 void main()

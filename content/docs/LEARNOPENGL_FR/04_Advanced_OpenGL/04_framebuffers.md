@@ -296,13 +296,15 @@ Vous ne remarquerez probablement pas la différence tout de suite, mais avec des
 Un autre avantage du post-traitement sur une seule image de texture est qu'il est possible d'échantillonner des valeurs de couleur à partir d'autres parties de la texture qui ne sont pas spécifiques à ce fragment. Nous pouvons par exemple prendre une petite zone autour de la coordonnée de texture actuelle et échantillonner plusieurs valeurs de texture autour de la valeur de texture actuelle. Nous pouvons ensuite créer des effets intéressants en les combinant de manière créative.  
   
 Un kernel (ou matrice de convolution) est un petit tableau matriciel de valeurs centrées sur le pixel courant qui multiplie les valeurs des pixels environnants par ses valeurs de kernel et les additionne pour former une valeur unique. Nous ajoutons un petit décalage aux coordonnées de la texture dans les directions environnantes du pixel actuel et nous combinons les résultats en fonction du kernel. Un exemple de kernel est donné ci-dessous :
+
 $$
 \begin{bmatrix}
-2 & 2 & 2 \\
-2 & -15 & 2 \\
-2 & 2 & 2 \\
+2 & 2 & 2 \\\\
+2 & -15 & 2 \\\\
+2 & 2 & 2 \\\\
 \end{bmatrix}
 $$
+
 Ce kernel prend 8 valeurs de pixels environnants et les multiplie par 2 et le pixel actuel par -15. Cet exemple de kernel multiplie les pixels environnants par plusieurs poids déterminés dans le kernel et équilibre le résultat en multipliant le pixel actuel par un poids négatif important. 
 
 **La plupart des kernels que vous trouverez sur Internet sont tous égaux à 1 si vous additionnez tous les poids. Si la somme n'est pas égale à 1, cela signifie que la couleur de la texture résultante est plus claire ou plus foncée que la valeur de la texture d'origine**. 
@@ -354,15 +356,16 @@ Cela peut être à la base d'effets intéressants lorsque votre joueur se lance 
 
 ### Blur (flou)
 Un kernel qui crée un effet de flou est défini comme suit : 
+
 $$
 \begin{bmatrix}
-1 & 2 & 1 \\
-2 & 4 & 2 \\
-1 & 2 & 1 \\
-\end{bmatrix}
-/
+1 & 2 & 1 \\\\
+2 & 4 & 2 \\\\
+1 & 2 & 1 \\\\
+\end{bmatrix}/
 16
 $$
+
 Comme toutes les valeurs sont égales à 16, le fait de renvoyer directement les couleurs échantillonnées combinées donnerait une couleur extrêmement brillante. Nous devons donc diviser chaque valeur du kernel par 16. Le tableau de kernel résultant devient alors : 
 
 ```cpp
@@ -387,11 +390,10 @@ Vous trouverez ci-dessous un kernel de détection des contours qui est similaire
 
 $$
 \begin{bmatrix}
-1 & 1 & 1 \\
-1 & -8 & 1 \\
-1 & 1 & 1 \\
+1 & 1 & 1 \\\\
+1 & -8 & 1 \\\\
+1 & 1 & 1 \\\\
 \end{bmatrix}
-
 $$
 
 Ce kernel met en évidence tous les contours et assombrit le reste, ce qui est très utile lorsque l'on ne s'intéresse qu'aux contours d'une image.

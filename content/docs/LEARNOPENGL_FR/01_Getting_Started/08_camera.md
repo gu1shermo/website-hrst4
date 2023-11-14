@@ -42,23 +42,24 @@ glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
 À l'aide du produit vectoriel et de quelques astuces, nous avons pu créer tous les vecteurs qui forment l'espace vue/caméra.Pour les lecteurs plus enclins aux mathématiques, ce processus est connu sous le nom de **processus de [Gram-Schmidt](http://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process)** en algèbre linéaire. En utilisant ces vecteurs de caméra, nous pouvons maintenant créer une matrice `LookAt` qui s'avère très utile pour créer une caméra. 
 ### LookAt (matrice)
 **L'avantage des matrices est que si vous définissez un espace de coordonnées à l'aide de 3 axes perpendiculaires (ou non linéaires), vous pouvez créer une matrice avec ces 3 axes plus un vecteur de translation et vous pouvez transformer n'importe quel vecteur dans cet espace de coordonnées en le multipliant avec cette matrice**. C'est exactement ce que fait la matrice `LookAt` et maintenant que nous avons 3 axes perpendiculaires et un vecteur de position pour définir l'espace de la caméra, nous pouvons créer notre propre matrice `LookAt` :
+
 $$
-LookAt
-=
+LookAt=
 \begin{bmatrix}
-R_x & R_y & R_z & 0 \\
-U_x & U_y & U_z & 0 \\
-D_x & D_y & D_z & 0 \\
-0 & 0 & 0 & 1 \\
+R_x & R_y & R_z & 0 \\\\
+U_x & U_y & U_z & 0 \\\\
+D_x & D_y & D_z & 0 \\\\
+0 & 0 & 0 & 1 \\\\
 \end{bmatrix}
 \cdot
 \begin{bmatrix}
-1 & 0 & 0 & -P_x \\
-0 & 1 & 0 & -P_y \\
-0 & 0 & 1 & -P_z \\
-0 & 0 & 0 & 1 \\
+1 & 0 & 0 & -P_x \\\\
+0 & 1 & 0 & -P_y \\\\
+0 & 0 & 1 & -P_z \\\\
+0 & 0 & 0 & 1 \\\\
 \end{bmatrix}
 $$
+
 Où $R$ est le vecteur qui pointe vers la droite, $U$ est le vecteur qui point vers le haut, $D$ est le vecteur de direction et $P$ est le vecteur de position de la caméra. **Notez que les parties rotation (matrice gauche) et translation (matrice droite) sont inversées (transposées et opposées respectivement) puisque nous voulons faire pivoter et translater le monde dans la direction opposée à celle où nous voulons que la caméra se déplace.**
 L'utilisation de cette matrice `LookAt` comme matrice de vue transforme effectivement toutes les coordonnées du monde dans l'espace de vue que nous venons de définir. **La matrice `LookAt` fait alors exactement ce qu'elle dit : elle crée une matrice de vue qui regarde une cible donnée.**
 **Heureusement pour nous, le GLM fait déjà tout ce travail pour nous**. Il nous suffit de spécifier la position de la caméra, la position de la cible et un vecteur qui représente le vecteur qui pointe vers le haut dans l'espace monde (le vecteur vers me haut que nous avons utilisé pour calculer le vecteur qui pointe vers la droite). GLM crée ensuite la matrice `LookAt` que nous pouvons utiliser comme matrice de vue :

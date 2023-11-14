@@ -26,9 +26,11 @@ Lorsque la direction de la vue est parfaitement alignée avec le vecteur de réf
 Ici, vous pouvez constater que, quelle que soit la direction d'observation, l'angle entre le vecteur médian et la normale de la surface ne dépasse jamais 90 degrés (à moins que la lumière ne se trouve très en dessous de la surface, bien entendu). Les résultats sont légèrement différents des réflexions de Phong, mais ils sont généralement plus plausibles sur le plan visuel, en particulier lorsque l'exposant spéculaire est faible. Le modèle d'ombrage de Blinn-Phong est également le modèle d'ombrage exact utilisé dans l'ancien pipeline de fonctions fixes d'OpenGL.
 
 Il est facile d'obtenir le vecteur de mi-chemin, nous ajoutons le vecteur de direction de la lumière et le vecteur de vue ensemble et nous normalisons le résultat :
+
 $$
 \vec{H} = { {\vec{L} + \vec{V}}\over{||\vec{L} + \vec{V}||} }
 $$
+
 Cela se traduit par le code GLSL suivant :
 ```cpp
 vec3 lightDir   = normalize(lightPos - FragPos);

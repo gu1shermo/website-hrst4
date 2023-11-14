@@ -10,9 +10,9 @@ draft: false
 Dans le chapitre précédent, nous avons jeté les bases d'un moteur de rendu réaliste basé sur la physique. Dans ce chapitre, nous allons nous concentrer sur la traduction de la théorie discutée précédemment en un moteur de rendu réel qui utilise des sources de lumière directes (ou analytiques) : pensez aux lumières ponctuelles, aux lumières directionnelles et/ou aux projecteurs.
 
 Commençons par revoir l'équation de réflectance finale du chapitre précédent :
+
 $$
-L_0(p,w_0)
-=
+L_0(p,w_0)=
 \int_{\Omega}
 (
 k_d {c\over \pi}
@@ -29,9 +29,9 @@ w_idw_i
 $$
 
 Nous savons maintenant à peu près ce qui se passe, mais il reste une grande inconnue : comment représenter exactement l'irradiation, la radiance totale $L$, de la scène.
-Nous savons que la radiance $L$ (telle qu'elle est interprétée dans le domaine de l'infographie) mesure le flux radiant $$phi$ ou l'énergie lumineuse d'une source de lumière sur un angle solide donné $$omega$. Dans notre cas, nous avons supposé que l'angle solide $$omega$ est infiniment petit, auquel cas la radiance mesure le flux d'une source lumineuse sur un seul rayon lumineux ou vecteur de direction.
+Nous savons que la radiance $L$ (telle qu'elle est interprétée dans le domaine de l'infographie) mesure le flux radiant $\phi$ ou l'énergie lumineuse d'une source de lumière sur un angle solide donné $\omega$. Dans notre cas, nous avons supposé que l'angle solide $\omega$ est infiniment petit, auquel cas la radiance mesure le flux d'une source lumineuse sur un seul rayon lumineux ou vecteur de direction.
 
-Compte tenu de ces connaissances, comment les transposer dans les connaissances sur l'éclairage que nous avons accumulées dans les chapitres précédents ? Imaginons que nous ayons une lumière ponctuelle (une source lumineuse qui brille de la même manière dans toutes les directions) avec un flux radiant de $(23.47, 21.31, 20.79)$ traduit en un triplet RVB. L'intensité rayonnante de cette source lumineuse est égale à son flux rayonnant pour tous les rayons de direction sortants. Cependant, lors de l'ombrage d'un point spécifique $p$ sur une surface, parmi toutes les directions de lumière entrantes possibles sur son hémisphère $$Omega$, seul un vecteur de direction entrant $w_i$ provient directement de la source lumineuse ponctuelle. Comme nous n'avons qu'une seule source lumineuse dans notre scène, supposée être un point unique dans l'espace, toutes les autres directions possibles de la lumière entrante ont une radiance nulle observée sur le point $p$ de la surface :
+Compte tenu de ces connaissances, comment les transposer dans les connaissances sur l'éclairage que nous avons accumulées dans les chapitres précédents ? Imaginons que nous ayons une lumière ponctuelle (une source lumineuse qui brille de la même manière dans toutes les directions) avec un flux radiant de $(23.47, 21.31, 20.79)$ traduit en un triplet RVB. L'intensité rayonnante de cette source lumineuse est égale à son flux rayonnant pour tous les rayons de direction sortants. Cependant, lors de l'ombrage d'un point spécifique $p$ sur une surface, parmi toutes les directions de lumière entrantes possibles sur son hémisphère $\Omega$, seul un vecteur de direction entrant $w_i$ provient directement de la source lumineuse ponctuelle. Comme nous n'avons qu'une seule source lumineuse dans notre scène, supposée être un point unique dans l'espace, toutes les autres directions possibles de la lumière entrante ont une radiance nulle observée sur le point $p$ de la surface :
 ![02_lighting-20230909-pbrlight1.png](02_lighting-20230909-pbrlight1.png)
 Si, dans un premier temps, nous supposons que l'atténuation de la lumière (diminution de la lumière sur la distance) n'affecte pas la source lumineuse ponctuelle, la radiance du rayon lumineux entrant est la même quel que soit l'endroit où nous positionnons la lumière (à l'exception de la mise à l'échelle de la radiance en fonction de l'angle d'incidence $cos\theta$). En effet, la lumière ponctuelle a la même intensité radiante quel que soit l'angle sous lequel on la regarde, ce qui permet de modéliser son intensité radiante comme son flux radiant : un vecteur constant $(23.47, 21.31, 20.79)$.
 
@@ -51,7 +51,7 @@ Hormis la terminologie différente, ce morceau de code devrait vous être très 
 
 Pour d'autres types de sources lumineuses provenant d'un seul point, nous calculons la radiance de la même manière. Par exemple, une source lumineuse directionnelle a un $w_i$ constant sans facteur d'atténuation. Et un projecteur n'aurait pas une intensité radiante constante, mais une intensité mise à l'échelle par le vecteur de direction vers l'avant du projecteur.
 
-Cela nous ramène également à l'intégrale $$int$ sur l'hémisphère $$Omega$ de la surface. Comme nous connaissons à l'avance les emplacements uniques de toutes les sources lumineuses contribuant à l'ombrage d'un seul point de la surface, il n'est pas nécessaire d'essayer de résoudre l'intégrale. Nous pouvons directement prendre le nombre (connu) de sources lumineuses et calculer leur irradiance totale, étant donné que chaque source lumineuse n'a qu'une seule direction lumineuse qui influence l'irradiance de la surface. Cela rend le PBR sur les sources de lumière directe relativement simple puisque nous n'avons en fait qu'à boucler sur les sources de lumière qui y contribuent. Lorsque nous prenons ensuite en compte l'éclairage de l'environnement dans les chapitres [IBL](IBL) (todo: link), nous devons tenir compte de l'intégrale, car la lumière peut provenir de n'importe quelle direction.
+Cela nous ramène également à l'intégrale $\int$ sur l'hémisphère $\Omega$ de la surface. Comme nous connaissons à l'avance les emplacements uniques de toutes les sources lumineuses contribuant à l'ombrage d'un seul point de la surface, il n'est pas nécessaire d'essayer de résoudre l'intégrale. Nous pouvons directement prendre le nombre (connu) de sources lumineuses et calculer leur irradiance totale, étant donné que chaque source lumineuse n'a qu'une seule direction lumineuse qui influence l'irradiance de la surface. Cela rend le PBR sur les sources de lumière directe relativement simple puisque nous n'avons en fait qu'à boucler sur les sources de lumière qui y contribuent. Lorsque nous prenons ensuite en compte l'éclairage de l'environnement dans les chapitres [IBL](IBL) (todo: link), nous devons tenir compte de l'intégrale, car la lumière peut provenir de n'importe quelle direction.
 
 ## Un modèle de surface PBR
 Commençons par écrire un shader de fragment qui met en œuvre les modèles PBR décrits précédemment. Tout d'abord, nous devons prendre les entrées PBR nécessaires à l'ombrage de la surface :
@@ -82,7 +82,7 @@ void main()
 }
 ```
 ### Lumière directe
-Dans l'exemple de démonstration de ce chapitre, nous avons un total de 4 lumières ponctuelles qui, ensemble, représentent l'irradiance de la scène. Pour satisfaire l'équation de réflectance, nous bouclons sur chaque source lumineuse, calculons sa radiance individuelle et additionnons sa contribution mise à l'échelle par la BRDF et l'angle d'incidence de la lumière. Nous pouvons considérer que la boucle résout l'intégrale $$int$ sur $$Omega$ pour les sources lumineuses directes. Tout d'abord, nous calculons les variables pertinentes par lumière :
+Dans l'exemple de démonstration de ce chapitre, nous avons un total de 4 lumières ponctuelles qui, ensemble, représentent l'irradiance de la scène. Pour satisfaire l'équation de réflectance, nous bouclons sur chaque source lumineuse, calculons sa radiance individuelle et additionnons sa contribution mise à l'échelle par la BRDF et l'angle d'incidence de la lumière. Nous pouvons considérer que la boucle résout l'intégrale $\int$ sur $\Omega$ pour les sources lumineuses directes. Tout d'abord, nous calculons les variables pertinentes par lumière :
 ```cpp
 vec3 Lo = vec3(0.0);
 for(int i = 0; i < 4; ++i) 
@@ -101,6 +101,7 @@ Comme nous calculons l'éclairage dans l'espace linéaire (nous corrigerons le [
 > Bien qu'elle soit physiquement correcte, vous pouvez toujours utiliser l'équation d'atténuation linéaire-quadratique constante qui (bien qu'elle ne soit pas physiquement correcte) peut vous offrir un contrôle beaucoup plus important sur l'affaiblissement de l'énergie de la lumière.
 
 Ensuite, pour chaque lumière, nous voulons calculer le terme de la BRDF spéculaire de Cook-Torrance :
+
 $$
 {
 DFG
@@ -108,6 +109,7 @@ DFG
 4(w_0*n)(w_i*n)
 }
 $$
+
 La première chose à faire est de calculer le rapport entre la réflexion spéculaire et la réflexion diffuse, c'est-à-dire la mesure dans laquelle la surface réfléchit la lumière par rapport à la mesure dans laquelle elle la réfracte. Le chapitre précédent nous a appris que l'équation de Fresnel permet justement de calculer ce rapport (notez le **clamp** ici pour éviter les taches noires) :
 ```cpp
 vec3 fresnelSchlick(float cosTheta, vec3 F0)
@@ -193,7 +195,7 @@ kD *= 1.0 - metallic;
     Lo += (kD * albedo / PI + specular) * radiance * NdotL;
 }
 ```
-La valeur $L_o$ résultante, ou radiance sortante, est en fait le résultat de l'intégrale de l'équation de réflectance $$int$ sur $$Omega$. Il n'est pas vraiment nécessaire d'essayer de résoudre l'intégrale pour toutes les directions possibles de la lumière entrante, car nous connaissons exactement les 4 directions de la lumière entrante qui peuvent influencer le fragment. De ce fait, nous pouvons directement boucler sur ces directions de lumière entrante, par exemple le nombre de lumières dans la scène.
+La valeur $L_o$ résultante, ou radiance sortante, est en fait le résultat de l'intégrale de l'équation de réflectance $\int$ sur $\Omega$. Il n'est pas vraiment nécessaire d'essayer de résoudre l'intégrale pour toutes les directions possibles de la lumière entrante, car nous connaissons exactement les 4 directions de la lumière entrante qui peuvent influencer le fragment. De ce fait, nous pouvons directement boucler sur ces directions de lumière entrante, par exemple le nombre de lumières dans la scène.
 
 Il ne reste plus qu'à ajouter un terme ambiant (improvisé) au résultat de l'éclairage direct $L_o$ et nous avons la couleur éclairée finale du fragment :
 ```cpp

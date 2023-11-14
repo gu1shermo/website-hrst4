@@ -70,6 +70,7 @@ Le tampon de profondeur contient des valeurs de profondeur comprises entre 0,0 e
 $$
 F_{depth} = { {z - near} \over {far - near} }
 $$
+
 Ici, $near$ et $far$ sont les valeurs proches et lointaines que nous avons fournies à la matrice de projection pour définir le frustum visible (voir [Systèmes de coordonnées](../01_Getting_Started/07_coordinate%20systems.md)). L'équation prend une valeur de profondeur z à l'intérieur du frustum et la transforme dans l'intervalle [0,1]. La relation entre la valeur z et la valeur de profondeur correspondante est présentée dans le graphique suivant :
 ![depth_linear_graph](depth_linear_graph.png)
 > Notez que toutes les équations donnent une valeur de profondeur proche de 0,0 lorsque l'objet est proche et une valeur de profondeur proche de 1,0 lorsque l'objet est proche du plan éloigné. 
@@ -77,9 +78,11 @@ Ici, $near$ et $far$ sont les valeurs proches et lointaines que nous avons fourn
 **Dans la pratique, cependant, un tampon de profondeur linéaire comme celui-ci n'est presque jamais utilisé**. En raison des propriétés de projection, **on utilise une équation de profondeur non linéaire qui est proportionnelle à $1/z$. Le résultat est que nous obtenons une précision énorme lorsque z est petit et beaucoup moins de précision lorsque z est éloigné.**  
   
 Comme la fonction non linéaire est proportionnelle à $1/z$, des valeurs de z comprises entre 1,0 et 2,0 donneraient des valeurs de profondeur comprises entre 1,0 et 0,5, soit la moitié de la plage $[0,1]$, ce qui nous donne une précision énorme pour les petites valeurs de z. Les valeurs Z comprises entre 50,0 et 100,0 ne représenteraient que 2 % de la plage [0,1]. Une telle équation, qui prend également en compte les distances proches et lointaines, est donnée ci-dessous :
+
 $$
 F_{depth} = { {1/z - 1/near} \over {1/far - 1/near} }
 $$
+
 Ne vous inquiétez pas si vous ne savez pas exactement ce qui se passe avec cette équation. Ce qu'il faut retenir, c'est que les valeurs du tampon de profondeur ne sont pas linéaires dans l'espace-clip (elles sont linéaires dans l'espace-vue avant l'application de la matrice de projection). Une valeur de 0,5 dans le tampon de profondeur ne signifie pas que la valeur z du pixel se trouve à mi-chemin dans le frustum ; la valeur z du sommet est en fait assez proche du plan proche ! Vous pouvez voir la relation non linéaire entre la valeur z et la valeur du tampon de profondeur dans le graphique suivant :
 ![depth_non_linear_graph](depth_non_linear_graph.png)
 Comme vous pouvez le constater, les valeurs de profondeur sont largement déterminées par les petites valeurs z, ce qui nous donne une grande précision de profondeur pour les objets proches. L'équation permettant de transformer les valeurs z (du point de vue de l'observateur) est intégrée à la matrice de projection. Ainsi, lorsque nous transformons les coordonnées des vertex de la vue au clip, puis à l'espace écran, l'équation non linéaire est appliquée.  

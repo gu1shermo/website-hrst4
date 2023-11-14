@@ -71,76 +71,80 @@ Nous connaissons déjà le vecteur haut, qui est le vecteur normal de la surface
 Le calcul des vecteurs tangents et bitangents n'est pas aussi simple que celui du vecteur normal. Nous pouvons voir sur l'image que la direction des vecteurs tangent et bitangent de la carte des normales s'aligne sur la direction dans laquelle nous définissons les coordonnées de texture d'une surface. Nous utiliserons ce fait pour calculer les vecteurs tangents et bitangents pour chaque surface. Pour les récupérer, il faut faire un peu de mathématiques ; regardez l'image suivante :
 ![03_normal_mapping-20230902-normal10](03_normal_mapping-20230902-normal10.png)
 L'image montre que les différences de coordonnées de texture d'une arête $E2$ d'un triangle (notées $ΔU2$ et $ΔV2$) sont exprimées dans la même direction que le vecteur tangent $T$ et le vecteur bitangent $B$. Pour cette raison, nous pouvons écrire les deux arêtes affichées $E1$ et $E2$ du triangle comme une combinaison linéaire du vecteur tangent $T$ et du vecteur bitangent $B$ :
+
 $$
 E_1 = \Delta U_1T + \Delta V_1B
 $$
+
 $$
 E_2 = \Delta U_2T + \Delta V_2B
 $$
+
 Que l'on peut aussi écrire:
+
 $$
 (E_{1x},E_{1y},E_{1z})=\Delta U_1(T_x,T_y,T_z)+\Delta V_1(B_x,B_y,B_z)
 $$
+
 $$
 (E_{2x},E_{2y},E_{2z})=\Delta U_2(T_x,T_y,T_z)+\Delta V_2(B_x,B_y,B_z)
 $$
+
 Nous pouvons calculer $E$ comme le vecteur de différence entre les positions de deux triangles, et $ΔU$ et $ΔV$ comme leurs différences de coordonnées de texture. Nous nous retrouvons alors avec deux inconnues (tangente $T$ et bitangente $B$) et deux équations. Vous vous souvenez peut-être de vos cours d'algèbre, qui nous permettent de résoudre $T$ et $B$.
 
 La dernière équation nous permet de l'écrire sous une forme différente : celle de la multiplication matricielle :
+
 $$
 \begin{bmatrix}
-E_{1x} & E_{1y} & E_{1z} \\
+E_{1x} & E_{1y} & E_{1z} \\\\
 E_{2x} & E_{2y} & E_{2z}
-\end{bmatrix}
-=
+\end{bmatrix}=
 \begin{bmatrix}
-\Delta U_1 & \Delta V_1  \\
+\Delta U_1 & \Delta V_1  \\\\
 \Delta U_2 & \Delta V_2
 \end{bmatrix}
 \begin{bmatrix}
-T_x & T_y & T_z  \\
+T_x & T_y & T_z  \\\\
 B_x & B_y & B_z
 \end{bmatrix}
 $$
+
 Essayez de visualiser les multiplications de la matrice dans votre tête et confirmez qu'il s'agit bien de la même équation. La réécriture des équations sous forme de matrice présente l'avantage de rendre la résolution de $T$ et $B$ plus facile à comprendre. Si nous multiplions les deux côtés des équations par l'inverse de la matrice $ΔUΔV$, nous obtenons :
 
 $$
 \begin{bmatrix}
-\Delta U_1 & \Delta V_1  \\
+\Delta U_1 & \Delta V_1  \\\\
 \Delta U_2 & \Delta V_2
 \end{bmatrix}^{-1}
 \begin{bmatrix}
-E_{1x} & E_{1y} & E_{1z} \\
+E_{1x} & E_{1y} & E_{1z} \\\\
 E_{2x} & E_{2y} & E_{2z}
-\end{bmatrix}
-=
-
+\end{bmatrix}=
 \begin{bmatrix}
-T_x & T_y & T_z  \\
+T_x & T_y & T_z  \\\\
 B_x & B_y & B_z
 \end{bmatrix}
 $$
+
 Cela nous permet de résoudre $T$ et $B$. Nous devons pour cela calculer l'inverse de la matrice des coordonnées de texture delta. Je n'entrerai pas dans les détails mathématiques du calcul de l'inverse d'une matrice, mais cela se traduit grosso modo par 1 sur le déterminant de la matrice, multiplié par sa matrice adjacente (?) :
+
 $$
 \begin{bmatrix}
-T_x & T_y & T_z  \\
+T_x & T_y & T_z  \\\\
 B_x & B_y & B_z
-\end{bmatrix}
-
-=
+\end{bmatrix}=
 {
 1
 \over
-\Delta U_1 \Delta V_2
--
+\Delta U_1 \Delta V_2-
 \Delta U_2 \Delta V_1
 }
 \begin{bmatrix}
-\Delta V_2 & -\Delta V_1 \\
+\Delta V_2 & -\Delta V_1 \\\\
 -\Delta U_2 & \Delta U_1
 \end{bmatrix}
 \begin{bmatrix}
-E_{1x} & E_{1y} & E_{1z} \\
+E_{1x} & E_{1y} & E_{1z} \\\\
 E_{2x} & E_{2y} & E_{2z}
 \end{bmatrix}
 $$

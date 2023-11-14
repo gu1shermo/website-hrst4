@@ -29,11 +29,15 @@ Si le gamma de ce moniteur n'est pas correctement corrigé, l'éclairage sembler
 **L'idée de la correction gamma est d'appliquer l'inverse du gamma de l'écran à la couleur de sortie finale avant de l'afficher à l'écran.** En regardant le graphique de la courbe gamma plus tôt dans ce chapitre, nous voyons une autre ligne en pointillés qui est l'inverse de la courbe gamma du moniteur. Nous multiplions chacune des couleurs de sortie linéaires par cette courbe gamma inverse (ce qui les rend plus lumineuses) et dès que les couleurs sont affichées sur le moniteur, la courbe gamma du moniteur est appliquée et les couleurs résultantes deviennent linéaires. Nous éclaircissons effectivement les couleurs intermédiaires de sorte que dès que l'écran les assombrit, tout s'équilibre.
 
 Prenons un autre exemple. Supposons que nous ayons à nouveau la couleur rouge foncé $(0.5,0.0,0.0)$. Avant d'afficher cette couleur à l'écran, nous appliquons d'abord la courbe de correction gamma à la valeur de la couleur. Les couleurs linéaires affichées par un moniteur sont grossièrement mises à l'échelle à une puissance de $2.2$, de sorte que l'inverse nécessite une mise à l'échelle des couleurs à une puissance de $1/2.2$. La couleur rouge foncé corrigée par le gamma devient donc 
+
 $$
 (0.5,0.0,0.0)^{1/2.2}=
 (0.5,0.0,0.0)^{0.45}=
 (0.73,0.0,0.0)
-$$Les couleurs corrigées sont ensuite transmises au moniteur et la couleur est affichée comme suit :
+$$
+
+Les couleurs corrigées sont ensuite transmises au moniteur et la couleur est affichée comme suit :
+
 $$
 (0,73,0.0,0.0)^{2.2}=(0.5,0.0,0.0)
 $$

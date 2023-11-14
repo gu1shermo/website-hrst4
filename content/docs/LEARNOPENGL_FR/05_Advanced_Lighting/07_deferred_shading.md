@@ -271,8 +271,7 @@ L'astuce de cette approche consiste principalement à déterminer la taille ou l
 Pour obtenir le rayon de volume d'une lumière, nous devons résoudre l'équation d'atténuation pour le moment où sa contribution lumineuse devient $0.0$. Pour la fonction d'atténuation, nous utiliserons la fonction introduite dans le chapitre sur les [projecteurs de lumière](projecteurs%20de%20lumière) (todo: link) :
 
 $$
-F_{light}
-=
+F_{light}=
 {
 1
 \over
@@ -281,22 +280,22 @@ K_c + K_l * d + K_q * d²
 }
 }
 $$
+
 Ce que nous voulons faire, c'est résoudre cette équation lorsque $F_{light}$ est égal à $0.0$. Cependant, cette équation n'atteindra jamais exactement la valeur $0.0$, et il n'y aura donc pas de solution. Ce que nous pouvons faire cependant, c'est ne pas résoudre l'équation pour $0.0$, mais la résoudre pour une valeur de luminosité qui est proche de $0.0$ mais qui est toujours perçue comme sombre. La valeur de luminosité de $5/256$ serait acceptable pour la scène de démonstration de ce chapitre ; divisée par 256 car le framebuffer 8 bits par défaut ne peut afficher que ce nombre d'intensités par composant.
 
 >La fonction d'atténuation utilisée est principalement sombre dans sa plage visible. Si nous devions la limiter à une luminosité encore plus sombre que $5/256$, le volume de lumière deviendrait trop important et donc moins efficace. Tant qu'un utilisateur ne peut pas voir une coupure soudaine d'une source lumineuse à ses limites de volume, tout va bien. Bien sûr, cela dépend toujours du type de scène ; un seuil de luminosité plus élevé permet d'obtenir des volumes de lumière plus petits et donc une meilleure efficacité, mais peut produire des artefacts perceptibles lorsque l'éclairage semble se briser aux limites d'un volume.
 
 L'équation d'atténuation que nous devons résoudre devient:
+
 $$
 {
 5 \over 256
-}
-=
+}=
 {
 I_{max}
 \over
 Attenuation
 }
-
 $$
 
 Ici, I_{max} est la composante de couleur la plus lumineuse de la source lumineuse. Nous utilisons la composante de couleur la plus brillante d'une source lumineuse pour résoudre l'équation de la valeur d'intensité la plus brillante d'une lumière qui reflète le mieux le rayon de volume lumineux idéal.

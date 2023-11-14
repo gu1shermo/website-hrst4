@@ -87,6 +87,7 @@ Heureusement, des personnes intelligentes l'ont déjà calculé pour nous. La fo
 $$
 F_{att} = {1.0 \over (K_c + K_l * d + K_q * d^2)}
 $$
+
 Ici, *d* représente la distance entre le fragment et la source lumineuse. Ensuite, pour calculer la valeur d'atténuation, nous définissons trois termes (configurables) : un terme constant *Kc*, un terme linéaire *Kl* et un terme quadratique *Kq*.
 
 - $K_c$ : Le terme constant est généralement maintenu à `1.0`, principalement pour s'assurer que le dénominateur n'est jamais inférieur à `1`, car cela augmenterait l'intensité avec certaines distances, ce qui n'est pas l'effet que nous recherchons.  
@@ -183,7 +184,7 @@ Comme vous pouvez le voir, nous ne définissons pas un angle pour la valeur de c
 La raison en est que dans le fragment shader, nous calculons le produit scalaire entre le vecteur `LightDir` et le vecteur `SpotDir` et que le produit scalaire renvoie une valeur de cosinus et non un angle ; et nous ne pouvons pas comparer directement un angle avec une valeur de cosinus. **Pour obtenir l'angle dans le shader, nous devons calculer l'inverse du cosinus du résultat du produit scalaire**, ce qui est une opération **coûteuse**.
 Ainsi, pour gagner en performance, nous calculons au préalable la valeur du cosinus d'un angle de coupure donné et transmettons ce résultat au fragment shader. Puisque les deux angles sont maintenant représentés par des cosinus, nous pouvons les comparer directement sans opérations coûteuses.  
   
-Il ne reste plus qu'à calculer la valeur de thêta $$theta$ et de la comparer à la valeur de coupure $$phi$ pour déterminer si nous sommes dans ou en dehors du spotlight :
+Il ne reste plus qu'à calculer la valeur de thêta $\theta$ et de la comparer à la valeur de coupure $\phi$ pour déterminer si nous sommes dans ou en dehors du spotlight :
 ```cpp
 float theta = dot(lightDir, normalize(-light.direction));
     
@@ -216,16 +217,18 @@ Pour créer l'effet d'une spotlight aux bords arrondis, nous voulons simuler une
 Pour créer un cône extérieur, il suffit de définir une autre valeur de cosinus qui représente l'angle entre le vecteur de direction du projecteur et le vecteur du cône extérieur (égal à son rayon). Ensuite, si un fragment se trouve entre le cône intérieur et le cône extérieur, il doit calculer une valeur d'intensité comprise entre 0,0 et 1,0. Si le fragment se trouve à l'intérieur du cône intérieur, son intensité est égale à 1,0 et à 0,0 si le fragment se trouve à l'extérieur du cône extérieur.
 
 Nous pouvons calculer cette valeur à l'aide de l'équation suivante :
+
 $$
 I = {{\theta - \gamma}\over \epsilon}
 $$
-Ici, $$epsilon$ (epsilon) est la différence de cosinus entre le cône intérieur ($$theta$) et le cône extérieur ($$gamma$) ($$epsilon=\theta-\gamma$). La valeur $I$ qui en résulte est alors l'intensité de la lumière du projecteur sur le fragment actuel.
+
+Ici, $\epsilon$ (epsilon) est la différence de cosinus entre le cône intérieur ($\theta$) et le cône extérieur ($\gamma$) ($\epsilon=\theta-\gamma$). La valeur $I$ qui en résulte est alors l'intensité de la lumière du projecteur sur le fragment actuel.
 
 Il est un peu difficile de visualiser le fonctionnement de cette formule, alors essayons-la avec quelques exemples de valeurs :
 
 ![lcaster10](lcaster10.png)
 
-Comme vous pouvez le voir, nous interpolons essentiellement entre le cosinus extérieur et le cosinus intérieur sur la base de la valeur $$theta$.
+Comme vous pouvez le voir, nous interpolons essentiellement entre le cosinus extérieur et le cosinus intérieur sur la base de la valeur $\theta$.
 Si vous ne comprenez toujours pas ce qui se passe, ne vous inquiétez pas, vous pouvez simplement considérer la formule comme acquise et revenir ici lorsque vous serez plus âgé et plus sage.
 
 Nous avons maintenant une valeur d'intensité qui est soit négative à l'extérieur du projecteur, soit supérieure à $1.0$ à l'intérieur du cône intérieur, et quelque part entre les deux sur les bords. Si nous bloquons correctement les valeurs, nous n'avons plus besoin d'un if-else dans le fragment shader et nous pouvons simplement multiplier les composantes de la lumière avec la valeur d'intensité calculée :
