@@ -35,18 +35,18 @@ L_i(p,w_i)n
 w_idw_i
 )
 $$
-Comme décrit précédemment, notre objectif principal est de résoudre l'intégrale de toutes les directions lumineuses entrantes $w_i$ sur l'hémisphère $\Omega$ . La résolution de l'intégrale dans le chapitre précédent était facile car nous connaissions à l'avance les quelques directions lumineuses $w_i$ exactes qui contribuaient à l'intégrale. Cette fois, cependant, **chaque** direction lumineuse $w_i$ du milieu environnant peut potentiellement avoir une certaine radiance, ce qui rend la résolution de l'intégrale moins triviale. Il en résulte deux exigences principales pour la résolution de l'intégrale :
+Comme décrit précédemment, notre objectif principal est de résoudre l'intégrale de toutes les directions lumineuses entrantes $w_i$ sur l'hémisphère $$Omega$ . La résolution de l'intégrale dans le chapitre précédent était facile car nous connaissions à l'avance les quelques directions lumineuses $w_i$ exactes qui contribuaient à l'intégrale. Cette fois, cependant, **chaque** direction lumineuse $w_i$ du milieu environnant peut potentiellement avoir une certaine radiance, ce qui rend la résolution de l'intégrale moins triviale. Il en résulte deux exigences principales pour la résolution de l'intégrale :
 
-- Nous avons besoin d'un moyen de récupérer la radiance de la scène pour n'importe quel vecteur de direction $\vec{w_i}$
+- Nous avons besoin d'un moyen de récupérer la radiance de la scène pour n'importe quel vecteur de direction $$vec{w_i}$
 - La résolution de l'intégrale doit être rapide et en temps réel.
 
-La première condition est relativement facile à remplir. Nous y avons déjà fait allusion, mais l'une des façons de représenter l'irradiance d'un environnement ou d'une scène est de le faire sous la forme d'un cubemap d'environnement (traité). Avec une telle cubemap, nous pouvons visualiser chaque texel de la cubemap comme une seule source lumineuse émettrice. En échantillonnant ce cubemap avec n'importe quel vecteur de direction $\vec{w_i}$ nous récupérons la radiance de la scène à partir de cette direction.
+La première condition est relativement facile à remplir. Nous y avons déjà fait allusion, mais l'une des façons de représenter l'irradiance d'un environnement ou d'une scène est de le faire sous la forme d'un cubemap d'environnement (traité). Avec une telle cubemap, nous pouvons visualiser chaque texel de la cubemap comme une seule source lumineuse émettrice. En échantillonnant ce cubemap avec n'importe quel vecteur de direction $$vec{w_i}$ nous récupérons la radiance de la scène à partir de cette direction.
 
-Obtenir la radiance de la scène à partir d'un vecteur de direction $\vec{w_i}$ est alors aussi simple que :
+Obtenir la radiance de la scène à partir d'un vecteur de direction $$vec{w_i}$ est alors aussi simple que :
 ```cpp
 vec3 radiance = texture(_cubemapEnvironment, w_i).rgb;  
 ```
-Cependant, la résolution de l'intégrale nous oblige à échantillonner la map de l'environnement non pas dans une seule direction, mais dans toutes les directions possibles de l'hémisphère $\Omega$, ce qui est beaucoup trop coûteux pour chaque invocation du fragment shader. Pour résoudre l'intégrale de manière plus efficace, nous devrons pré traiter ou pré calculer la plupart des calculs. Pour ce faire, nous devons approfondir l'équation de la réflectance :
+Cependant, la résolution de l'intégrale nous oblige à échantillonner la map de l'environnement non pas dans une seule direction, mais dans toutes les directions possibles de l'hémisphère $$Omega$, ce qui est beaucoup trop coûteux pour chaque invocation du fragment shader. Pour résoudre l'intégrale de manière plus efficace, nous devrons pré traiter ou pré calculer la plupart des calculs. Pour ce faire, nous devons approfondir l'équation de la réflectance :
 
 $$
 L_o(p,w_o)
@@ -99,7 +99,7 @@ L_i(p,w_i)n*w_idw_i
 $$
 En divisant l'intégrale en deux parties, nous pouvons nous concentrer sur les termes diffus et spéculaires individuellement ; ce chapitre se concentre sur l'intégrale diffuse.
 
-En examinant de plus près l'intégrale diffuse, nous constatons que le terme de Lambert diffus est un terme constant (la couleur $c$, le rapport de réfraction $k_d$ et $\pi$ sont constants dans l'intégrale) et ne dépend d'aucune des variables de l'intégrale. Nous pouvons donc retirer le terme constant de l'intégrale diffuse :
+En examinant de plus près l'intégrale diffuse, nous constatons que le terme de Lambert diffus est un terme constant (la couleur $c$, le rapport de réfraction $k_d$ et $$pi$ sont constants dans l'intégrale) et ne dépend d'aucune des variables de l'intégrale. Nous pouvons donc retirer le terme constant de l'intégrale diffuse :
 $$
 L_o(p,w_o)
 =
@@ -117,17 +117,17 @@ L_i(p,w_i)n*w_idw_i
 $$
 Cela nous donne une intégrale qui ne dépend que de $w_i$ (en supposant que $p$ est au centre de la map de l'environnement). Avec cette connaissance, nous pouvons calculer ou pré calculer une nouvelle cubemap qui stocke dans chaque direction d'échantillonnage (ou texel) $w_o$ le résultat de l'intégrale diffuse par convolution.
 
-La convolution consiste à appliquer un calcul à chaque entrée d'un ensemble de données en tenant compte de toutes les autres entrées de l'ensemble de données, l'ensemble de données étant la radiance de la scène ou la map de l'environnement. Ainsi, pour chaque direction d'échantillonnage dans la cubemap, nous prenons en compte toutes les autres directions d'échantillonnage sur l'hémisphère $\Omega$ sont prises en compte.
+La convolution consiste à appliquer un calcul à chaque entrée d'un ensemble de données en tenant compte de toutes les autres entrées de l'ensemble de données, l'ensemble de données étant la radiance de la scène ou la map de l'environnement. Ainsi, pour chaque direction d'échantillonnage dans la cubemap, nous prenons en compte toutes les autres directions d'échantillonnage sur l'hémisphère $$Omega$ sont prises en compte.
 
-Pour convoluer (?) une map d'environnement, nous résolvons l'intégrale pour chaque direction d'échantillonnage $w_o$ en échantillonnant discrètement un grand nombre de directions $w_i$ sur l'hémisphère $\Omega$ et en calculant la moyenne de leur radiance. L'hémisphère à partir duquel nous construisons les directions d'échantillonnage $w_i$ est orienté vers la direction d'échantillonnage $w_o$ de sortie que nous convoluons.
+Pour convoluer (?) une map d'environnement, nous résolvons l'intégrale pour chaque direction d'échantillonnage $w_o$ en échantillonnant discrètement un grand nombre de directions $w_i$ sur l'hémisphère $$Omega$ et en calculant la moyenne de leur radiance. L'hémisphère à partir duquel nous construisons les directions d'échantillonnage $w_i$ est orienté vers la direction d'échantillonnage $w_o$ de sortie que nous convoluons.
 ![01_diffuse_irradiance-20230909-pbrdiff1.png](01_diffuse_irradiance-20230909-pbrdiff1.png)
-Cette cubemap précalculée, qui pour chaque direction d'échantillonnage $w_o$ stocke le résultat intégral, peut être considérée comme la somme précalculée de toute la lumière diffuse indirecte de la scène frappant une surface alignée le long de la direction $w_o$. Une telle cubemap est connue sous le nom de map d'irradiance, étant donné que la cubemap convoluée nous permet effectivement d'échantillonner directement l'irradiance (précalculée) de la scène à partir de n'importe quelle direction $\vec{w_o}$.
+Cette cubemap précalculée, qui pour chaque direction d'échantillonnage $w_o$ stocke le résultat intégral, peut être considérée comme la somme précalculée de toute la lumière diffuse indirecte de la scène frappant une surface alignée le long de la direction $w_o$. Une telle cubemap est connue sous le nom de map d'irradiance, étant donné que la cubemap convoluée nous permet effectivement d'échantillonner directement l'irradiance (précalculée) de la scène à partir de n'importe quelle direction $$vec{w_o}$.
 
 >L'équation de la radiance dépend également d'une position $p$, que nous avons supposée être au centre de la carte d'irradiation. Cela signifie que toute la lumière indirecte diffuse doit provenir d'une seule map d'environnement, ce qui peut briser l'illusion de la réalité (en particulier à l'intérieur). Les moteurs de rendu résolvent ce problème en plaçant des sondes (?) de réflexion dans toute la scène, chacune d'entre elles calculant sa propre map d'irradiance de son environnement. De cette manière, l'irradiance (et la radiance) à la position $p$ est l'irradiance interpolée entre les sondes de réflexion les plus proches. Pour l'instant, nous supposons que nous échantillonnons toujours la map de l'environnement à partir de son centre.
 
 Voici un exemple de map d'environnement cubemap et de la carte d'irradiance qui en résulte (avec l'aimable autorisation de wave engine), en calculant la moyenne de l'irradiation de la scène pour chaque direction.
 ![01_diffuse_irradiance-20230909-pbrdiff2.png](01_diffuse_irradiance-20230909-pbrdiff2.png)
-En stockant le résultat convolué dans chaque texel cubemap (dans la direction de $\vec{w_o}$), la map d'irradiance s'affiche un peu comme une couleur moyenne ou un affichage de l'éclairage de l'environnement. L'échantillonnage de n'importe quelle direction à partir de cette map d'environnement nous donnera l'irradiance de la scène dans cette direction particulière.
+En stockant le résultat convolué dans chaque texel cubemap (dans la direction de $$vec{w_o}$), la map d'irradiance s'affiche un peu comme une couleur moyenne ou un affichage de l'éclairage de l'environnement. L'échantillonnage de n'importe quelle direction à partir de cette map d'environnement nous donnera l'irradiance de la scène dans cette direction particulière.
 
 ## PBR et HDR
 Nous l'avons brièvement évoqué dans le chapitre [précédent](../02_lighting.md) : il est extrêmement important de prendre en compte la gamme dynamique élevée de l'éclairage de votre scène dans un pipeline PBR. Comme le PBR base la plupart de ses entrées sur des propriétés et des mesures physiques réelles, il est logique de faire correspondre les valeurs de lumière entrantes à leurs équivalents physiques. Que nous fassions des suppositions éclairées sur le flux radiant de chaque lumière ou que nous utilisions leur équivalent physique direct, la différence entre une simple ampoule ou le soleil est significative dans les deux cas. Sans travailler dans un environnement de rendu HDR, il est impossible de spécifier correctement l'intensité relative de chaque lumière.
@@ -334,9 +334,9 @@ Le rendu de la map d'environnement échantillonnée sur les sphères précédemm
 Eh bien... il nous a fallu pas mal de configuration pour en arriver là, mais nous avons réussi à lire une carte d'environnement HDR, à la convertir de son mapping équirectangulaire en un cubemap, et à rendre le cubemap HDR dans la scène en tant que skybox. De plus, nous avons mis en place un petit système pour effectuer le rendu sur les 6 faces d'une cubemap, ce dont nous aurons à nouveau besoin lors de la convolution de la map d'environnement. Vous pouvez trouver le code source de l'ensemble du processus de conversion [ici](https://learnopengl.com/code_viewer_gh.php?code=src/6.pbr/2.1.1.ibl_irradiance_conversion/ibl_irradiance_conversion.cpp).
 
 ## Convolution de la cubemap
-Comme décrit au début du chapitre, notre objectif principal est de résoudre l'intégrale de tous les éclairages indirects diffus étant donné l'irradiance de la scène sous la forme d'une carte d'environnement cubemap. Nous savons que nous pouvons obtenir la radiance de la scène $L(p,w_i)$ dans une direction particulière en échantillonnant une carte d'environnement HDR dans la direction $w_i$. Pour résoudre l'intégrale, nous devons échantillonner la radiance de la scène dans toutes les directions possibles de l'hémisphère $\Omega$ pour chaque fragment.
+Comme décrit au début du chapitre, notre objectif principal est de résoudre l'intégrale de tous les éclairages indirects diffus étant donné l'irradiance de la scène sous la forme d'une carte d'environnement cubemap. Nous savons que nous pouvons obtenir la radiance de la scène $L(p,w_i)$ dans une direction particulière en échantillonnant une carte d'environnement HDR dans la direction $w_i$. Pour résoudre l'intégrale, nous devons échantillonner la radiance de la scène dans toutes les directions possibles de l'hémisphère $$Omega$ pour chaque fragment.
 
-Il est cependant impossible, d'un point de vue informatique, d'échantillonner l'éclairage de l'environnement dans toutes les directions possibles de l'hémisphère $\Omega$ le nombre de directions possibles étant théoriquement infini. Nous pouvons cependant approximer le nombre de directions en prenant un nombre fini de directions ou d'échantillons, espacés uniformément ou prélevés au hasard dans l'hémisphère, pour obtenir une approximation assez précise de l'irradiance ; en fait, nous résolvons l'intégrale $\int$ de manière discrète
+Il est cependant impossible, d'un point de vue informatique, d'échantillonner l'éclairage de l'environnement dans toutes les directions possibles de l'hémisphère $$Omega$ le nombre de directions possibles étant théoriquement infini. Nous pouvons cependant approximer le nombre de directions en prenant un nombre fini de directions ou d'échantillons, espacés uniformément ou prélevés au hasard dans l'hémisphère, pour obtenir une approximation assez précise de l'irradiance ; en fait, nous résolvons l'intégrale $$int$ de manière discrète
 
 Il est cependant trop coûteux d'effectuer cette opération pour chaque fragment en temps réel, car le nombre d'échantillons doit être significativement élevé pour obtenir des résultats satisfaisants, c'est pourquoi nous voulons effectuer un calcul préalable. Étant donné que l'orientation de l'hémisphère détermine l'endroit où nous capturons l'irradiance, nous pouvons pré calculer l'irradiance pour chaque orientation possible de l'hémisphère orienté autour de toutes les directions sortantes $w_o$:
 $$
@@ -355,7 +355,7 @@ $$
 ```cpp
 vec3 irradiance = texture(irradianceMap, N).rgb;
 ```
-Maintenant, pour générer la map d'irradiance, nous devons convoluer l'éclairage de l'environnement tel qu'il a été converti en cubemap. Étant donné que pour chaque fragment, l'hémisphère de la surface est orienté le long du vecteur normal $\vec{N}$, la convolution d'une cubemap revient à calculer la radiance moyenne totale de chaque direction $w_i$ dans l'hémisphère $\Omega$ orienté le long de $\vec{N}$.
+Maintenant, pour générer la map d'irradiance, nous devons convoluer l'éclairage de l'environnement tel qu'il a été converti en cubemap. Étant donné que pour chaque fragment, l'hémisphère de la surface est orienté le long du vecteur normal $$vec{N}$, la convolution d'une cubemap revient à calculer la radiance moyenne totale de chaque direction $w_i$ dans l'hémisphère $$Omega$ orienté le long de $$vec{N}$.
 ![01_diffuse_irradiance-20230910-pbrdiff7.png](01_diffuse_irradiance-20230910-pbrdiff7.png)
 Heureusement, toute la configuration fastidieuse de ce chapitre n'est pas inutile puisque nous pouvons maintenant prendre directement la cubemap convertie, la convoluer dans un fragment shader, et capturer le résultat dans une nouvelle cubemap en utilisant un framebuffer qui rend dans les 6 directions de la face. Comme nous l'avons déjà fait pour convertir la map d'environnement équirectangulaire en cubemap, nous pouvons adopter exactement la même approche mais en utilisant un fragment shader différent :
 ```cpp
@@ -381,11 +381,11 @@ void main()
 ```
 La map d'environnement étant la cubemap HDR convertie à partir de la carte d'environnement HDR équirectangulaire.
 
-Il existe de nombreuses façons de convoluer la map d'environnement, mais pour ce chapitre, nous allons générer une quantité fixe de vecteurs d'échantillonnage pour chaque texel de la cubemap le long d'un hémisphère $\Omega$ orienté autour de la direction de l'échantillon et faire la moyenne des résultats. La quantité fixe de vecteurs d'échantillonnage sera uniformément répartie à l'intérieur de l'hémisphère. Notez qu'une intégrale est une fonction continue et que l'échantillonnage discret de sa fonction à partir d'un nombre fixe de vecteurs d'échantillonnage ne sera qu'une approximation. Plus le nombre de vecteurs d'échantillonnage est élevé, meilleure est l'approximation de l'intégrale.
+Il existe de nombreuses façons de convoluer la map d'environnement, mais pour ce chapitre, nous allons générer une quantité fixe de vecteurs d'échantillonnage pour chaque texel de la cubemap le long d'un hémisphère $$Omega$ orienté autour de la direction de l'échantillon et faire la moyenne des résultats. La quantité fixe de vecteurs d'échantillonnage sera uniformément répartie à l'intérieur de l'hémisphère. Notez qu'une intégrale est une fonction continue et que l'échantillonnage discret de sa fonction à partir d'un nombre fixe de vecteurs d'échantillonnage ne sera qu'une approximation. Plus le nombre de vecteurs d'échantillonnage est élevé, meilleure est l'approximation de l'intégrale.
 
-L'intégrale $\int$ de l'équation de réflectance tourne autour de l'angle solide $dw$, ce qui est assez difficile à traiter. Au lieu d'intégrer sur l'angle solide $dw$, nous intégrerons sur ses coordonnées sphériques équivalentes $\theta$ et $\phi$.
+L'intégrale $$int$ de l'équation de réflectance tourne autour de l'angle solide $dw$, ce qui est assez difficile à traiter. Au lieu d'intégrer sur l'angle solide $dw$, nous intégrerons sur ses coordonnées sphériques équivalentes $$theta$ et $$phi$.
 ![01_diffuse_irradiance-20230910-pbrdiff8.png](01_diffuse_irradiance-20230910-pbrdiff8.png)
-Nous utilisons l'azimut polaire $\phi$ pour échantillonner autour de l'anneau de l'hémisphère entre $0$ et $2\pi$, et utilisons l'inclinaison zénithale $\theta$ entre $0$ et $12\pi$ pour échantillonner les anneaux croissants de l'hémisphère. Nous obtenons ainsi l'intégrale de réflectance mise à jour :
+Nous utilisons l'azimut polaire $$phi$ pour échantillonner autour de l'anneau de l'hémisphère entre $0$ et $2\pi$, et utilisons l'inclinaison zénithale $$theta$ entre $0$ et $12\pi$ pour échantillonner les anneaux croissants de l'hémisphère. Nous obtenons ainsi l'intégrale de réflectance mise à jour :
 $$
 L_o(p,\phi_o,\theta_o)
 =
@@ -399,7 +399,7 @@ c
 \int_{\theta=0}^{{1\over2}\pi}
 L_i(p,\phi_i,\theta_i)\cos{(\theta)}\sin{(\theta)}d\phi d\theta
 $$
-La résolution de l'intégrale exige que nous prenions un nombre fixe d'échantillons discrets dans l'hémisphère $\Omega$ et que nous fassions la moyenne de leurs résultats. Cela traduit l'intégrale en la version discrète suivante, basée sur la somme de Riemann, étant donné $n1$ et $n2$ échantillons discrets sur chaque coordonnée sphérique respectivement :
+La résolution de l'intégrale exige que nous prenions un nombre fixe d'échantillons discrets dans l'hémisphère $$Omega$ et que nous fassions la moyenne de leurs résultats. Cela traduit l'intégrale en la version discrète suivante, basée sur la somme de Riemann, étant donné $n1$ et $n2$ échantillons discrets sur chaque coordonnée sphérique respectivement :
 $$
 L_o(p,\phi_o,\theta_o)
 =
@@ -414,7 +414,7 @@ n1n2
 L_i(p,\phi_i,\theta_i)
 \cos{(\theta)}\sin{(\theta)}d\phi d\theta
 $$
-Comme nous échantillonnons les deux valeurs sphériques de manière discrète, chaque échantillon se rapproche d'une zone de l'hémisphère ou en fait la moyenne, comme le montre l'image ci-dessus. Notez que (en raison des propriétés générales d'une forme sphérique) la zone d'échantillonnage discrète de l'hémisphère se réduit à mesure que l'angle zénithal $\theta$ augmente et que les régions d'échantillonnage convergent vers le centre supérieur. Pour compenser les zones plus petites, nous pondérons leur contribution en mettant à l'échelle la zone par $\sin{(\theta)}$.
+Comme nous échantillonnons les deux valeurs sphériques de manière discrète, chaque échantillon se rapproche d'une zone de l'hémisphère ou en fait la moyenne, comme le montre l'image ci-dessus. Notez que (en raison des propriétés générales d'une forme sphérique) la zone d'échantillonnage discrète de l'hémisphère se réduit à mesure que l'angle zénithal $$theta$ augmente et que les régions d'échantillonnage convergent vers le centre supérieur. Pour compenser les zones plus petites, nous pondérons leur contribution en mettant à l'échelle la zone par $$sin{(\theta)}$.
 
 L'échantillonnage discret de l'hémisphère en fonction des coordonnées sphériques de l'intégrale se traduit par le fragment de code suivant :
 
@@ -444,7 +444,7 @@ irradiance = PI * irradiance * (1.0 / float(nrSamples));
 ```
 Nous spécifions une valeur delta `sampleDelta` fixe pour parcourir l'hémisphère ; la diminution ou l'augmentation du delta sample augmentera ou diminuera la précision respectivement.
 
-Dans les deux boucles, nous prenons les deux coordonnées sphériques pour les convertir en un vecteur d'échantillonnage cartésien 3D, nous convertissons l'échantillon de la tangente à l'espace mondial orienté autour de la normale et nous utilisons ce vecteur d'échantillonnage pour échantillonner directement la map de l'environnement HDR. Nous ajoutons chaque résultat d'échantillonnage à l'irradiance, que nous divisons ensuite par le nombre total d'échantillons prélevés, ce qui nous donne l'irradiance moyenne échantillonnée. Notez que nous mettons à l'échelle la valeur de la couleur échantillonnée par $\cos{(\theta)}$ en raison de l'affaiblissement de la lumière à des angles plus grands et par $\sin{(\theta)}$ pour tenir compte des zones d'échantillonnage plus petites dans les zones de l'hémisphère supérieur.
+Dans les deux boucles, nous prenons les deux coordonnées sphériques pour les convertir en un vecteur d'échantillonnage cartésien 3D, nous convertissons l'échantillon de la tangente à l'espace mondial orienté autour de la normale et nous utilisons ce vecteur d'échantillonnage pour échantillonner directement la map de l'environnement HDR. Nous ajoutons chaque résultat d'échantillonnage à l'irradiance, que nous divisons ensuite par le nombre total d'échantillons prélevés, ce qui nous donne l'irradiance moyenne échantillonnée. Notez que nous mettons à l'échelle la valeur de la couleur échantillonnée par $$cos{(\theta)}$ en raison de l'affaiblissement de la lumière à des angles plus grands et par $$sin{(\theta)}$ pour tenir compte des zones d'échantillonnage plus petites dans les zones de l'hémisphère supérieur.
 
 Il ne reste plus qu'à configurer le code de rendu OpenGL de manière à ce que nous puissions convoluer le `envCubemap` capturé précédemment. Tout d'abord, nous créons la cubemap d'irradiance (encore une fois, nous n'avons à le faire qu'une seule fois avant la boucle de rendu) :
 ```cpp
@@ -513,7 +513,7 @@ vec3 irradiance = texture(irradianceMap, N).rgb;
 vec3 diffuse    = irradiance * albedo;
 vec3 ambient    = (kD * diffuse) * ao; 
 ```
-Comme la lumière ambiante provient de toutes les directions à l'intérieur de l'hémisphère orienté autour de la normale $\vec{N}$, il n'y a pas de vecteur unique à mi-chemin pour déterminer la réponse de Fresnel. Pour continuer à simuler Fresnel, nous calculons le Fresnel à partir de l'angle entre la normale et le vecteur de vue. Cependant, nous avons utilisé précédemment le vecteur médian de la micro-surface, influencé par la rugosité de la surface, comme entrée de l'équation de Fresnel. Comme nous ne tenons actuellement pas compte de la rugosité, le taux de réflexion de la surface sera toujours relativement élevé. La lumière indirecte suit les mêmes propriétés que la lumière directe et nous nous attendons donc à ce que les surfaces plus rugueuses se reflètent moins fortement sur les bords de la surface. C'est pourquoi l'intensité de la réflexion indirecte de Fresnel semble faible sur les surfaces non métalliques rugueuses (légèrement exagérée à des fins de démonstration) :
+Comme la lumière ambiante provient de toutes les directions à l'intérieur de l'hémisphère orienté autour de la normale $$vec{N}$, il n'y a pas de vecteur unique à mi-chemin pour déterminer la réponse de Fresnel. Pour continuer à simuler Fresnel, nous calculons le Fresnel à partir de l'angle entre la normale et le vecteur de vue. Cependant, nous avons utilisé précédemment le vecteur médian de la micro-surface, influencé par la rugosité de la surface, comme entrée de l'équation de Fresnel. Comme nous ne tenons actuellement pas compte de la rugosité, le taux de réflexion de la surface sera toujours relativement élevé. La lumière indirecte suit les mêmes propriétés que la lumière directe et nous nous attendons donc à ce que les surfaces plus rugueuses se reflètent moins fortement sur les bords de la surface. C'est pourquoi l'intensité de la réflexion indirecte de Fresnel semble faible sur les surfaces non métalliques rugueuses (légèrement exagérée à des fins de démonstration) :
 ![01_diffuse_irradiance-20230910-pbrdiff11.png](01_diffuse_irradiance-20230910-pbrdiff11.png)
  Nous pouvons résoudre ce problème en injectant un terme de rugosité dans l'équation de Fresnel-Schlick, comme l'a décrit [Sébastien Lagarde](https://seblagarde.wordpress.com/2011/08/17/hello-world/) :
 ```cpp

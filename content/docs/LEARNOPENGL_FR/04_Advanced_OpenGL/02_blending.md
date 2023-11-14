@@ -100,8 +100,8 @@ $$
 +
 \vec{C}_{destination} * F_{destination}
 $$
-* $\vec{C}_{source}$ : le vecteur de couleur source. Il s'agit de la couleur de sortie du shader de fragment.  
-- $\vec{C}_{destination}$ : le vecteur de couleur de destination. Il s'agit du vecteur de couleur actuellement stocké dans le tampon de couleur.  
+* $$vec{C}_{source}$ : le vecteur de couleur source. Il s'agit de la couleur de sortie du shader de fragment.  
+- $$vec{C}_{destination}$ : le vecteur de couleur de destination. Il s'agit du vecteur de couleur actuellement stocké dans le tampon de couleur.  
 - $F_{source}$ : la valeur du facteur de source. Définit l'impact de la valeur alpha sur la couleur source.  
 - $F_{destination}$ : valeur du facteur de destination. Définit l'impact de la valeur alpha sur la couleur de destination.  
   
@@ -137,7 +137,7 @@ La couleur résultante est alors stockée dans le tampon de couleur, remplaçant
   
 C'est bien beau tout ça, mais comment dire à OpenGL d'utiliser de tels facteurs ? Il se trouve qu'il existe une fonction pour cela, appelée `glBlendFunc`.  
   
-La fonction `glBlendFunc(GLenum sfactor, GLenum dfactor)` attend deux paramètres qui définissent l'option pour le facteur de source et de destination. OpenGL a défini un certain nombre d'options que nous allons énumérer ci-dessous. Notez que le vecteur de couleur constante $\vec{C}_{constant}$  peut être défini séparément via la fonction `glBlendColor`.
+La fonction `glBlendFunc(GLenum sfactor, GLenum dfactor)` attend deux paramètres qui définissent l'option pour le facteur de source et de destination. OpenGL a défini un certain nombre d'options que nous allons énumérer ci-dessous. Notez que le vecteur de couleur constante $$vec{C}_{constant}$  peut être défini séparément via la fonction `glBlendColor`.
 
 ![02_blending-20230816](02_blending-20230816.png)
 Pour obtenir le résultat du blending de notre petit exemple de deux carrés, nous voulons prendre l'**alpha** du vecteur de couleur source pour le facteur source et **1-alpha** du même vecteur de couleur pour le facteur de destination. Cela se traduit par `glBlendFunc` écrit comme suit : 
@@ -152,11 +152,11 @@ Cette fonction définit les composantes RVB comme nous l'avons fait précédemme
 
 OpenGL nous donne encore plus de flexibilité en nous permettant de changer l'opérateur entre la partie source et la partie destination de l'équation. Actuellement, les composantes source et destination sont additionnées, mais nous pourrions également les soustraire si nous le souhaitions. glBlendEquation(GLenum mode) nous permet de définir cette opération et dispose de 5 options possibles :  
   
-- `GL_FUNC_ADD` : la valeur par défaut, ajoute les deux couleurs l'une à l'autre : $\vec{C}_{result}=Src+Dst$
-- `GL_FUNC_SUBTRACT` : soustrait les deux couleurs l'une de l'autre : $\vec{C}_{result}=Src-Dst$
-- `GL_FUNC_REVERSE_SUBTRACT` : soustrait les deux couleurs, mais inverse l'ordre : $\vec{C}_{result}=Dst-Src$
-- `GL_MIN` : prend le minimum en composantes des deux couleurs : $\vec{C}_{result}=min(Dst,Src)$
-- `GL_MAX` : prend le maximum des deux couleurs en fonction de leurs composantes : $\vec{C}_{result}=max(Dst,Src)$
+- `GL_FUNC_ADD` : la valeur par défaut, ajoute les deux couleurs l'une à l'autre : $$vec{C}_{result}=Src+Dst$
+- `GL_FUNC_SUBTRACT` : soustrait les deux couleurs l'une de l'autre : $$vec{C}_{result}=Src-Dst$
+- `GL_FUNC_REVERSE_SUBTRACT` : soustrait les deux couleurs, mais inverse l'ordre : $$vec{C}_{result}=Dst-Src$
+- `GL_MIN` : prend le minimum en composantes des deux couleurs : $$vec{C}_{result}=min(Dst,Src)$
+- `GL_MAX` : prend le maximum des deux couleurs en fonction de leurs composantes : $$vec{C}_{result}=max(Dst,Src)$
   
 En général, nous pouvons simplement omettre d'appeler `glBlendEquation` parce que GL_FUNC_ADD est l'équation de blending préférée pour la plupart des opérations, mais si vous essayez vraiment de faire de votre mieux pour sortir du circuit traditionnel, n'importe laquelle des autres équations peut répondre à vos besoins.
 

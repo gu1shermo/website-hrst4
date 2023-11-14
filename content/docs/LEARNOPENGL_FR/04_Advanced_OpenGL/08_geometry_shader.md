@@ -285,7 +285,7 @@ Vous pouvez voir qu'avec les shaders géométriques, vous pouvez être très cr�
 ## Exploser les objets
 L'avantage d'un tel effet de geometry shader est qu'il fonctionne sur tous les objets, quelle que soit leur complexité.
 
-Comme nous allons traduire chaque sommet dans la direction du vecteur normal du triangle, nous devons d'abord calculer ce vecteur normal. Il s'agit de calculer un vecteur perpendiculaire à la surface d'un triangle, en utilisant uniquement les trois sommets auxquels nous avons accès. Vous vous souvenez peut-être que dans le chapitre sur les transformations, **nous pouvons retrouver un vecteur perpendiculaire à deux autres vecteurs en utilisant le produit vectoriel**. Si nous devions récupérer deux vecteurs $\vec{a}$ et $\vec{b}$ qui sont parallèles à la surface d'un triangle, nous pourrions récupérer son vecteur normal en effectuant un produit vectoriel sur ces vecteurs. La fonction de shader géométrique suivante fait exactement cela pour récupérer le vecteur normal en utilisant 3 coordonnées de vertex en entrée :
+Comme nous allons traduire chaque sommet dans la direction du vecteur normal du triangle, nous devons d'abord calculer ce vecteur normal. Il s'agit de calculer un vecteur perpendiculaire à la surface d'un triangle, en utilisant uniquement les trois sommets auxquels nous avons accès. Vous vous souvenez peut-être que dans le chapitre sur les transformations, **nous pouvons retrouver un vecteur perpendiculaire à deux autres vecteurs en utilisant le produit vectoriel**. Si nous devions récupérer deux vecteurs $$vec{a}$ et $$vec{b}$ qui sont parallèles à la surface d'un triangle, nous pourrions récupérer son vecteur normal en effectuant un produit vectoriel sur ces vecteurs. La fonction de shader géométrique suivante fait exactement cela pour récupérer le vecteur normal en utilisant 3 coordonnées de vertex en entrée :
 ```cpp
 vec3 GetNormal()
 {
@@ -294,7 +294,7 @@ vec3 GetNormal()
    return normalize(cross(a, b));
 }  
 ```
-Ici, nous retrouvons deux vecteurs $\vec{a}$ et $\vec{b}$ qui sont parallèles à la surface du triangle en utilisant la soustraction de vecteurs. En soustrayant deux vecteurs l'un de l'autre, on obtient un vecteur qui est la différence des deux vecteurs. Étant donné que les trois points se trouvent sur le plan du triangle, la soustraction de n'importe lequel de ses vecteurs l'un de l'autre donne un vecteur parallèle au plan. Notez que si nous intervertissons $\vec{a}$ et $\vec{b}$ dans la fonction de croisement, nous obtiendrons un vecteur normal qui pointe dans la direction opposée - **l'ordre est important ici !**
+Ici, nous retrouvons deux vecteurs $$vec{a}$ et $$vec{b}$ qui sont parallèles à la surface du triangle en utilisant la soustraction de vecteurs. En soustrayant deux vecteurs l'un de l'autre, on obtient un vecteur qui est la différence des deux vecteurs. Étant donné que les trois points se trouvent sur le plan du triangle, la soustraction de n'importe lequel de ses vecteurs l'un de l'autre donne un vecteur parallèle au plan. Notez que si nous intervertissons $$vec{a}$ et $$vec{b}$ dans la fonction de croisement, nous obtiendrons un vecteur normal qui pointe dans la direction opposée - **l'ordre est important ici !**
 
 Maintenant que nous savons comment calculer un vecteur normal, nous pouvons créer une fonction `explode` qui prend ce vecteur normal avec un vecteur de position de sommet. La fonction renvoie un nouveau vecteur qui translate le vecteur position dans la direction du vecteur normal :
 
