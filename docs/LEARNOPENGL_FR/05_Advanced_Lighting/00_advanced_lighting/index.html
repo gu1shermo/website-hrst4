@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+<br><br>
+<h1 id="eclairage-avancé">Eclairage avancé</h1>
+<p>Dans les chapitres consacrés à l&rsquo;éclairage, nous avons brièvement présenté le modèle d&rsquo;éclairage Phong afin d&rsquo;apporter un minimum de réalisme à nos scènes. Le modèle Phong est agréable à regarder, mais il présente quelques nuances sur lesquelles nous allons nous concentrer dans ce chapitre.</p>
+<h1 id="blinn-phong">Blinn-Phong</h1>
+<p>L&rsquo;éclairage Phong est une excellente approximation très efficace de l&rsquo;éclairage, mais ses réflexions spéculaires se dégradent dans certaines conditions, en particulier lorsque la propriété de brillance est faible, ce qui entraîne une grande zone spéculaire (rugueuse). L&rsquo;image ci-dessous montre ce qui se passe lorsque nous utilisons un exposant de brillance spéculaire de 1,0 sur un plan texturé plat :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5cadvanced_lighting_phong_limit.png" alt="advanced_lighting_phong_limit"/>
+Vous pouvez voir sur les bords que la zone spéculaire est immédiatement coupée. La raison en est que l&rsquo;angle entre le vecteur de vue et le vecteur de réflexion ne dépasse pas 90 degrés. Si l&rsquo;angle est plus grand que 90 degrés, le produit pointé résultant devient négatif, ce qui se traduit par un exposant spéculaire de 0,0. Vous pensez probablement que cela ne pose pas de problème puisque nous ne devrions pas obtenir de lumière avec des angles supérieurs à 90 degrés, n&rsquo;est-ce pas ?</p>
+<p>C&rsquo;est faux, cela ne s&rsquo;applique qu&rsquo;à la composante diffuse : un angle supérieur à 90 degrés entre la normale et la source lumineuse signifie que la source lumineuse se trouve sous la surface éclairée et que la contribution diffuse de la lumière doit donc être égale à 0,0. Cependant, avec l&rsquo;éclairage spéculaire, nous ne mesurons pas l&rsquo;angle entre la source lumineuse et la normale, mais entre le vecteur de vue et le vecteur de réflexion. Regardez les deux images suivantes :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5cadvanced_lighting_over_90.png" alt="advanced_lighting_over_90"/>
+Ici le problème devrait apparaître. L&rsquo;image de gauche montre les réflexions de Phong telles qu&rsquo;elles sont connues, avec un angle θ inférieur à 90 degrés. Dans l&rsquo;image de droite, nous pouvons voir que l&rsquo;angle θ entre la vue et le vecteur de réflexion est supérieur à 90 degrés, ce qui annule la contribution spéculaire. Ce n&rsquo;est généralement pas un problème puisque la direction de la vue est éloignée de la direction de la réflexion, mais si nous utilisons un exposant spéculaire faible, le rayon spéculaire est suffisamment grand pour avoir une contribution dans ces conditions. Comme nous annulons cette contribution à des angles supérieurs à 90 degrés, nous obtenons l&rsquo;artefact de la première image.</p>
+<p>En 1977, le modèle d&rsquo;ombrage Blinn-Phong a été introduit par James F. Blinn comme une extension de l&rsquo;ombrage Phong que nous avons utilisé jusqu&rsquo;à présent. Le modèle Blinn-Phong est largement similaire, mais aborde le modèle spéculaire de manière légèrement différente, ce qui permet de résoudre notre problème. Au lieu de s&rsquo;appuyer sur un vecteur de réflexion, nous utilisons ce que l&rsquo;on appelle un vecteur à mi-chemin, c&rsquo;est-à-dire un vecteur unitaire situé exactement à mi-chemin entre la direction de la vue et la direction de la lumière. Plus ce vecteur intermédiaire est proche du vecteur normal de la surface, plus la contribution spéculaire est élevée.
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5cadvanced_lighting_halfway_vector.png" alt="advanced_lighting_halfway_vector"/></p>
+<p>Lorsque la direction de la vue est parfaitement alignée avec le vecteur de réflexion (maintenant imaginaire), le vecteur médian s&rsquo;aligne parfaitement avec le vecteur normal. Plus la direction de la vue est proche de la direction de réflexion originale, plus l&rsquo;accentuation spéculaire est forte.</p>
+<p>Ici, vous pouvez constater que, quelle que soit la direction d&rsquo;observation, l&rsquo;angle entre le vecteur médian et la normale de la surface ne dépasse jamais 90 degrés (à moins que la lumière ne se trouve très en dessous de la surface, bien entendu). Les résultats sont légèrement différents des réflexions de Phong, mais ils sont généralement plus plausibles sur le plan visuel, en particulier lorsque l&rsquo;exposant spéculaire est faible. Le modèle d&rsquo;ombrage de Blinn-Phong est également le modèle d&rsquo;ombrage exact utilisé dans l&rsquo;ancien pipeline de fonctions fixes d&rsquo;OpenGL.</p>
+<p>Il est facile d&rsquo;obtenir le vecteur de mi-chemin, nous ajoutons le vecteur de direction de la lumière et le vecteur de vue ensemble et nous normalisons le résultat :
+$$
+\vec{H} = { {\vec{L} + \vec{V}}\over{||\vec{L} + \vec{V}||} }
+$$
+Cela se traduit par le code GLSL suivant :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 lightDir   <span style="color:#f92672">=</span> normalize(lightPos <span style="color:#f92672">-</span> FragPos);
+</span></span><span style="display:flex;"><span>vec3 viewDir    <span style="color:#f92672">=</span> normalize(viewPos <span style="color:#f92672">-</span> FragPos);
+</span></span><span style="display:flex;"><span>vec3 halfwayDir <span style="color:#f92672">=</span> normalize(lightDir <span style="color:#f92672">+</span> viewDir);
+</span></span></code></pre></div><p>Ensuite, le calcul du terme spéculaire devient un produit scalaire entre la normale de la surface et le vecteur de mi-chemin pour obtenir l&rsquo;angle cosinus entre les deux que nous élevons à nouveau à un exposant de brillance spéculaire :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> spec <span style="color:#f92672">=</span> pow(max(dot(normal, halfwayDir), <span style="color:#ae81ff">0.0</span>), shininess);
+</span></span><span style="display:flex;"><span>vec3 specular <span style="color:#f92672">=</span> lightColor <span style="color:#f92672">*</span> spec;
+</span></span></code></pre></div><p>Et il n&rsquo;y a rien de plus à Blinn-Phong que ce que nous venons de décrire. La seule différence entre Blinn-Phong et la réflexion spéculaire Phong est que nous mesurons maintenant l&rsquo;angle entre le vecteur normal et le vecteur médian au lieu de l&rsquo;angle entre le vecteur de vue et le vecteur de réflexion.</p>
+<p>Avec l&rsquo;introduction du vecteur à mi-chemin, nous ne devrions plus avoir le problème de la coupure spéculaire de l&rsquo;ombrage Phong. L&rsquo;image ci-dessous montre la zone spéculaire des deux méthodes avec un exposant spéculaire de 0,5 :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5cadvanced_lighting_comparrison.png" alt="advanced_lighting_comparrison"/>
+Une autre différence subtile entre l&rsquo;ombrage Phong et l&rsquo;ombrage Blinn-Phong est que l&rsquo;angle entre le vecteur à mi-chemin et la normale de la surface est souvent plus court que l&rsquo;angle entre le vecteur de vue et le vecteur de réflexion. Par conséquent, pour obtenir des visuels similaires à l&rsquo;ombrage de Phong, l&rsquo;exposant de brillance spéculaire doit être réglé un peu plus haut. En règle générale, il faut le régler entre 2 et 4 fois l&rsquo;exposant de brillance de Phong.</p>
+<p>Voici une comparaison entre les deux modèles de réflexion spéculaire avec l&rsquo;exposant de Phong fixé à 8,0 et la composante de Blinn-Phong fixée à 32,0 :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5cadvanced_lighting_comparrison2.png" alt="advanced_lighting_comparrison2"/>
+Vous pouvez voir que l&rsquo;exposant spéculaire de Blinn-Phong est un peu plus net que celui de Phong. Il faut généralement un peu de doigté pour obtenir des résultats similaires à ceux que l&rsquo;on obtenait avec l&rsquo;ombrage Phong. Mais cela en vaut la peine car l&rsquo;ombrage Blinn-Phong est généralement plus réaliste que l&rsquo;ombrage Phong par défaut.</p>
+<p>Ici, nous avons utilisé un simple fragment shader qui alterne entre les réflexions Phong classiques et les réflexions Blinn-Phong :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    [...]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> spec <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(blinn)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        vec3 halfwayDir <span style="color:#f92672">=</span> normalize(lightDir <span style="color:#f92672">+</span> viewDir);  
+</span></span><span style="display:flex;"><span>        spec <span style="color:#f92672">=</span> pow(max(dot(normal, halfwayDir), <span style="color:#ae81ff">0.0</span>), <span style="color:#ae81ff">16.0</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        vec3 reflectDir <span style="color:#f92672">=</span> reflect(<span style="color:#f92672">-</span>lightDir, normal);
+</span></span><span style="display:flex;"><span>        spec <span style="color:#f92672">=</span> pow(max(dot(viewDir, reflectDir), <span style="color:#ae81ff">0.0</span>), <span style="color:#ae81ff">8.0</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>Vous pouvez trouver le code source de la démo simple <a href="https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/1.advanced_lighting/advanced_lighting.cpp">ici</a>. En appuyant sur la touche <strong>b</strong>, la démo passe de l&rsquo;éclairage Phong à l&rsquo;éclairage Blinn-Phong et vice versa.</p>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

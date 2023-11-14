@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+<br><br>
+<h1 id="rayonnement-diffus">Rayonnement diffus</h1>
+<p>L&rsquo;<strong>IBL</strong>, ou éclairage basé sur l&rsquo;image, est un ensemble de techniques permettant d&rsquo;éclairer des objets, non pas par des lumières analytiques directes comme dans le chapitre précédent, mais en traitant l&rsquo;environnement comme une grande source de lumière. Ceci est généralement réalisé en manipulant une map d&rsquo;environnement cubemap (prise dans le monde réel ou générée à partir d&rsquo;une scène 3D) de telle sorte que nous puissions l&rsquo;utiliser directement dans nos équations d&rsquo;éclairage : en traitant chaque texel cubemap comme un émetteur de lumière. De cette manière, nous pouvons capturer efficacement l&rsquo;éclairage global et l&rsquo;ambiance générale d&rsquo;un environnement, ce qui donne aux objets un meilleur sentiment d&rsquo;appartenance à leur environnement.</p>
+<p>Comme les algorithmes d&rsquo;éclairage basés sur l&rsquo;image capturent l&rsquo;éclairage d&rsquo;un certain environnement (global), leur entrée est considérée comme une forme plus précise d&rsquo;éclairage ambiant, voire une approximation grossière de l&rsquo;illumination globale. C&rsquo;est ce qui rend l&rsquo;IBL intéressant pour la PBR, car les objets ont l&rsquo;air beaucoup plus précis physiquement lorsque nous prenons en compte l&rsquo;éclairage de l&rsquo;environnement.</p>
+<h1 id="l_opw_o">Pour commencer à introduire l&rsquo;IBL dans notre système PBR, jetons un coup d&rsquo;œil rapide à l&rsquo;équation de la réflectance :
+$$
+L_o(p,w_o)</h1>
+<p>\int_\Omega
+(
+k_d
+{
+c
+\over
+\pi
+}
++
+k_s
+{
+DFG
+\over
+4(w_o<em>n)(w_i</em>n)
+}
+L_i(p,w_i)n
+*
+w_idw_i
+)
+$$
+Comme décrit précédemment, notre objectif principal est de résoudre l&rsquo;intégrale de toutes les directions lumineuses entrantes $w_i$ sur l&rsquo;hémisphère $\Omega$ . La résolution de l&rsquo;intégrale dans le chapitre précédent était facile car nous connaissions à l&rsquo;avance les quelques directions lumineuses $w_i$ exactes qui contribuaient à l&rsquo;intégrale. Cette fois, cependant, <strong>chaque</strong> direction lumineuse $w_i$ du milieu environnant peut potentiellement avoir une certaine radiance, ce qui rend la résolution de l&rsquo;intégrale moins triviale. Il en résulte deux exigences principales pour la résolution de l&rsquo;intégrale :</p>
+<ul>
+<li>Nous avons besoin d&rsquo;un moyen de récupérer la radiance de la scène pour n&rsquo;importe quel vecteur de direction $\vec{w_i}$</li>
+<li>La résolution de l&rsquo;intégrale doit être rapide et en temps réel.</li>
+</ul>
+<p>La première condition est relativement facile à remplir. Nous y avons déjà fait allusion, mais l&rsquo;une des façons de représenter l&rsquo;irradiance d&rsquo;un environnement ou d&rsquo;une scène est de le faire sous la forme d&rsquo;un cubemap d&rsquo;environnement (traité). Avec une telle cubemap, nous pouvons visualiser chaque texel de la cubemap comme une seule source lumineuse émettrice. En échantillonnant ce cubemap avec n&rsquo;importe quel vecteur de direction $\vec{w_i}$ nous récupérons la radiance de la scène à partir de cette direction.</p>
+<p>Obtenir la radiance de la scène à partir d&rsquo;un vecteur de direction $\vec{w_i}$ est alors aussi simple que :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 radiance <span style="color:#f92672">=</span> texture(_cubemapEnvironment, w_i).rgb;  
+</span></span></code></pre></div><p>Cependant, la résolution de l&rsquo;intégrale nous oblige à échantillonner la map de l&rsquo;environnement non pas dans une seule direction, mais dans toutes les directions possibles de l&rsquo;hémisphère $\Omega$, ce qui est beaucoup trop coûteux pour chaque invocation du fragment shader. Pour résoudre l&rsquo;intégrale de manière plus efficace, nous devrons pré traiter ou pré calculer la plupart des calculs. Pour ce faire, nous devons approfondir l&rsquo;équation de la réflectance :</p>
+<h1 id="l_opw_o-1">$$
+L_o(p,w_o)</h1>
+<h1 id="l_opw_o-2">\int_\Omega
+(
+k_d
+{
+c
+\over
+\pi
+}
++
+k_s
+{
+DFG
+\over
+4(w_o<em>n)(w_i</em>n)
+}
+L_i(p,w_i)n
+*
+w_idw_i
+)
+$$
+En examinant attentivement l&rsquo;équation de réflectance, nous constatons que les termes diffus $k_d$ et spéculaire $k_s$ de la BRDF sont indépendants l&rsquo;un de l&rsquo;autre et que nous pouvons diviser l&rsquo;intégrale en deux :
+$$
+L_o(p,w_o)</h1>
+<p>\int_\Omega
+(
+k_d
+{
+c
+\over
+\pi
+}
+)
+L_i(p,w_i)n<em>w_idw_i
++
+\int_\Omega
+(
+k_s
+{
+DFG
+\over
+4(w_o</em>n)(w_i<em>n)
+}
+)
+L_i(p,w_i)n</em>w_idw_i
+$$
+En divisant l&rsquo;intégrale en deux parties, nous pouvons nous concentrer sur les termes diffus et spéculaires individuellement ; ce chapitre se concentre sur l&rsquo;intégrale diffuse.</p>
+<h1 id="l_opw_o-3">En examinant de plus près l&rsquo;intégrale diffuse, nous constatons que le terme de Lambert diffus est un terme constant (la couleur $c$, le rapport de réfraction $k_d$ et $\pi$ sont constants dans l&rsquo;intégrale) et ne dépend d&rsquo;aucune des variables de l&rsquo;intégrale. Nous pouvons donc retirer le terme constant de l&rsquo;intégrale diffuse :
+$$
+L_o(p,w_o)</h1>
+<p>k_d
+{
+c
+\over
+\pi
+}</p>
+<p>\int_\Omega</p>
+<p>L_i(p,w_i)n*w_idw_i
+$$
+Cela nous donne une intégrale qui ne dépend que de $w_i$ (en supposant que $p$ est au centre de la map de l&rsquo;environnement). Avec cette connaissance, nous pouvons calculer ou pré calculer une nouvelle cubemap qui stocke dans chaque direction d&rsquo;échantillonnage (ou texel) $w_o$ le résultat de l&rsquo;intégrale diffuse par convolution.</p>
+<p>La convolution consiste à appliquer un calcul à chaque entrée d&rsquo;un ensemble de données en tenant compte de toutes les autres entrées de l&rsquo;ensemble de données, l&rsquo;ensemble de données étant la radiance de la scène ou la map de l&rsquo;environnement. Ainsi, pour chaque direction d&rsquo;échantillonnage dans la cubemap, nous prenons en compte toutes les autres directions d&rsquo;échantillonnage sur l&rsquo;hémisphère $\Omega$ sont prises en compte.</p>
+<p>Pour convoluer (?) une map d&rsquo;environnement, nous résolvons l&rsquo;intégrale pour chaque direction d&rsquo;échantillonnage $w_o$ en échantillonnant discrètement un grand nombre de directions $w_i$ sur l&rsquo;hémisphère $\Omega$ et en calculant la moyenne de leur radiance. L&rsquo;hémisphère à partir duquel nous construisons les directions d&rsquo;échantillonnage $w_i$ est orienté vers la direction d&rsquo;échantillonnage $w_o$ de sortie que nous convoluons.
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c01_diffuse_irradiance-20230909-pbrdiff1.png" alt="01_diffuse_irradiance-20230909-pbrdiff1.png"/>
+Cette cubemap précalculée, qui pour chaque direction d&rsquo;échantillonnage $w_o$ stocke le résultat intégral, peut être considérée comme la somme précalculée de toute la lumière diffuse indirecte de la scène frappant une surface alignée le long de la direction $w_o$. Une telle cubemap est connue sous le nom de map d&rsquo;irradiance, étant donné que la cubemap convoluée nous permet effectivement d&rsquo;échantillonner directement l&rsquo;irradiance (précalculée) de la scène à partir de n&rsquo;importe quelle direction $\vec{w_o}$.</p>
+<blockquote>
+<p>L&rsquo;équation de la radiance dépend également d&rsquo;une position $p$, que nous avons supposée être au centre de la carte d&rsquo;irradiation. Cela signifie que toute la lumière indirecte diffuse doit provenir d&rsquo;une seule map d&rsquo;environnement, ce qui peut briser l&rsquo;illusion de la réalité (en particulier à l&rsquo;intérieur). Les moteurs de rendu résolvent ce problème en plaçant des sondes (?) de réflexion dans toute la scène, chacune d&rsquo;entre elles calculant sa propre map d&rsquo;irradiance de son environnement. De cette manière, l&rsquo;irradiance (et la radiance) à la position $p$ est l&rsquo;irradiance interpolée entre les sondes de réflexion les plus proches. Pour l&rsquo;instant, nous supposons que nous échantillonnons toujours la map de l&rsquo;environnement à partir de son centre.</p>
+</blockquote>
+<p>Voici un exemple de map d&rsquo;environnement cubemap et de la carte d&rsquo;irradiance qui en résulte (avec l&rsquo;aimable autorisation de wave engine), en calculant la moyenne de l&rsquo;irradiation de la scène pour chaque direction.
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c01_diffuse_irradiance-20230909-pbrdiff2.png" alt="01_diffuse_irradiance-20230909-pbrdiff2.png"/>
+En stockant le résultat convolué dans chaque texel cubemap (dans la direction de $\vec{w_o}$), la map d&rsquo;irradiance s&rsquo;affiche un peu comme une couleur moyenne ou un affichage de l&rsquo;éclairage de l&rsquo;environnement. L&rsquo;échantillonnage de n&rsquo;importe quelle direction à partir de cette map d&rsquo;environnement nous donnera l&rsquo;irradiance de la scène dans cette direction particulière.</p>
+<h2 id="pbr-et-hdr">PBR et HDR</h2>
+<p>Nous l&rsquo;avons brièvement évoqué dans le chapitre <a href="/docs/learnopengl_fr/06_pbr/02_lighting/">précédent</a> : il est extrêmement important de prendre en compte la gamme dynamique élevée de l&rsquo;éclairage de votre scène dans un pipeline PBR. Comme le PBR base la plupart de ses entrées sur des propriétés et des mesures physiques réelles, il est logique de faire correspondre les valeurs de lumière entrantes à leurs équivalents physiques. Que nous fassions des suppositions éclairées sur le flux radiant de chaque lumière ou que nous utilisions leur équivalent physique direct, la différence entre une simple ampoule ou le soleil est significative dans les deux cas. Sans travailler dans un environnement de rendu HDR, il est impossible de spécifier correctement l&rsquo;intensité relative de chaque lumière.</p>
+<p>PBR et HDR vont donc de pair, mais quel est le rapport avec l&rsquo;éclairage basé sur l&rsquo;image ? Nous avons vu dans le chapitre précédent qu&rsquo;il est relativement facile de faire fonctionner le PBR en HDR. Cependant, étant donné que pour l&rsquo;éclairage basé sur l&rsquo;image, nous basons l&rsquo;intensité de la lumière indirecte de l&rsquo;environnement sur les valeurs de couleur d&rsquo;une cubemap d&rsquo;environnement, nous avons besoin d&rsquo;un moyen de stocker la plage dynamique élevée de l&rsquo;éclairage dans une map d&rsquo;environnement.</p>
+<p>Les maps d&rsquo;environnement que nous avons utilisées jusqu&rsquo;à présent comme cubemaps (utilisées comme skyboxes par exemple) sont à faible plage dynamique (LDR). Nous avons directement utilisé les valeurs de couleur des images individuelles des faces, comprises entre $0.0$ et $1.0$, et les avons traitées telles quelles. Bien que cela puisse fonctionner pour une sortie visuelle, cela ne fonctionnera pas pour des paramètres d&rsquo;entrée physiques.</p>
+<h3 id="le-format-de-fichier-hdr-radiance">Le format de fichier HDR radiance</h3>
+<p>Entrez dans le format de fichier radiance. Le format de fichier radiance (avec l&rsquo;extension <code>.hdr</code>) stocke un cubemap complet avec les 6 faces sous forme de données à virgule flottante. Cela nous permet de spécifier des valeurs de couleur en dehors de la plage de $0.0$ à $1.0$ pour donner aux lumières les intensités de couleur correctes. Le format de fichier utilise également une astuce pour stocker chaque valeur en virgule flottante, non pas comme une valeur de 32 bits par canal, mais de 8 bits par canal en utilisant le canal alpha de la couleur comme exposant (ce qui implique une perte de précision). Cela fonctionne assez bien, mais nécessite que le programme d&rsquo;analyse syntaxique reconvertisse chaque couleur en son équivalent en virgule flottante.</p>
+<p>Il existe un certain nombre de maps d&rsquo;environnement HDR de radiance disponibles gratuitement à partir de sources telles que l&rsquo;<a href="http://www.hdrlabs.com/sibl/archive.html">archive sIBL</a>, dont vous pouvez voir un exemple ci-dessous :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c01_diffuse_irradiance-20230909-pbrdiff3.png" alt="01_diffuse_irradiance-20230909-pbrdiff3.png"/>
+Ce n&rsquo;est peut-être pas exactement ce à quoi vous vous attendiez, car l&rsquo;image semble déformée et ne montre aucune des 6 faces cubemap individuelles des cartes d&rsquo;environnement que nous avons vues auparavant. Cette map d&rsquo;environnement est projetée à partir d&rsquo;une sphère sur un plan plat, ce qui nous permet de stocker plus facilement l&rsquo;environnement dans une seule image, connue sous le nom de map équirectangulaire. Cette méthode est assortie d&rsquo;une petite mise en garde : la majeure partie de la résolution visuelle est stockée dans la direction horizontale de la vue, tandis qu&rsquo;une partie moindre est préservée dans les directions inférieure et supérieure. Dans la plupart des cas, il s&rsquo;agit d&rsquo;un bon compromis, car avec presque tous les moteurs de rendu, vous trouverez la plupart des éclairages et des environnements intéressants dans les directions de visualisation horizontales.</p>
+<h3 id="hdr-et-stb_imageh">HDR et <code>stb_image.h</code></h3>
+<p>Le chargement direct des images HDR de radiance nécessite une certaine connaissance du format de fichier, ce qui n&rsquo;est pas trop difficile, mais néanmoins encombrant. Heureusement pour nous, la populaire bibliothèque d&rsquo;en-tête <code>stb_image.h</code> prend en charge le chargement direct des images HDR de radiance sous la forme d&rsquo;un tableau de valeurs à virgule flottante, ce qui répond parfaitement à nos besoins. Avec <code>stb_image</code> ajouté à votre projet, le chargement d&rsquo;une image HDR est maintenant aussi simple que suit :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;stb_image.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>[...]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>stbi_set_flip_vertically_on_load(true);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> width, height, nrComponents;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#f92672">*</span>data <span style="color:#f92672">=</span> stbi_loadf(<span style="color:#e6db74">&#34;newport_loft.hdr&#34;</span>, <span style="color:#f92672">&amp;</span>width, <span style="color:#f92672">&amp;</span>height, <span style="color:#f92672">&amp;</span>nrComponents, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> hdrTexture;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (data)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    glGenTextures(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>hdrTexture);
+</span></span><span style="display:flex;"><span>    glBindTexture(GL_TEXTURE_2D, hdrTexture);
+</span></span><span style="display:flex;"><span>    glTexImage2D(GL_TEXTURE_2D, <span style="color:#ae81ff">0</span>, GL_RGB16F, width, height, <span style="color:#ae81ff">0</span>, GL_RGB, GL_FLOAT, data); 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+</span></span><span style="display:flex;"><span>    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    stbi_image_free(data);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Failed to load HDR image.&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p><code>stb_image.h</code> convertit automatiquement les valeurs HDR en une liste de valeurs à virgule flottante : 32 bits par canal et 3 canaux par couleur par défaut. C&rsquo;est tout ce dont nous avons besoin pour stocker la map d&rsquo;environnement HDR équirectangulaire dans une texture 2D à virgule flottante.</p>
+<h3 id="déquirectangulaire-à-cubemap">D&rsquo;équirectangulaire à Cubemap</h3>
+<p>Il est possible d&rsquo;utiliser la carte équirectangulaire directement pour les recherches d&rsquo;environnement, mais ces opérations peuvent être relativement coûteuses, auquel cas un échantillon cubemap direct est plus performant. Par conséquent, dans ce chapitre, nous allons d&rsquo;abord convertir l&rsquo;image équirectangulaire en cubemap pour un traitement ultérieur. Notez que nous montrons également comment échantillonner une carte équirectangulaire comme s&rsquo;il s&rsquo;agissait d&rsquo;une map d&rsquo;environnement 3D, auquel cas vous êtes libre de choisir la solution que vous préférez.</p>
+<p>Pour convertir une image équirectangulaire en cubemap, nous devons calculer un cube (unitaire) et projeter la map équirectangulaire sur toutes les faces du cube depuis l&rsquo;intérieur et prendre 6 images de chaque côté du cube comme une face du cubemap. Le vertex shader de ce cube rend simplement le cube tel quel et transmet sa position locale au fragment shader en tant que vecteur d&rsquo;échantillon 3D :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec3 aPos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>out vec3 localPos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform mat4 projection;
+</span></span><span style="display:flex;"><span>uniform mat4 view;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    localPos <span style="color:#f92672">=</span> aPos;  
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span>  projection <span style="color:#f92672">*</span> view <span style="color:#f92672">*</span> vec4(localPos, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Pour le fragment shader, nous colorons chaque partie du cube comme si nous avions plié la map équirectangulaire sur chaque côté du cube. Pour ce faire, nous prenons la direction d&rsquo;échantillonnage du fragment comme interpolée à partir de la position locale du cube, puis nous utilisons ce vecteur de direction et un peu de trigonométrie (de sphérique à cartésien) pour échantillonner la map équirectangulaire comme s&rsquo;il s&rsquo;agissait d&rsquo;une map cubique. Nous stockons directement le résultat sur le fragment de la face du cube, ce qui devrait être tout ce que nous avons à faire :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>in vec3 localPos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform sampler2D equirectangularMap;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> vec2 invAtan <span style="color:#f92672">=</span> vec2(<span style="color:#ae81ff">0.1591</span>, <span style="color:#ae81ff">0.3183</span>);
+</span></span><span style="display:flex;"><span>vec2 <span style="color:#a6e22e">SampleSphericalMap</span>(vec3 v)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    vec2 uv <span style="color:#f92672">=</span> vec2(atan(v.z, v.x), asin(v.y));
+</span></span><span style="display:flex;"><span>    uv <span style="color:#f92672">*=</span> invAtan;
+</span></span><span style="display:flex;"><span>    uv <span style="color:#f92672">+=</span> <span style="color:#ae81ff">0.5</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> uv;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{		
+</span></span><span style="display:flex;"><span>    vec2 uv <span style="color:#f92672">=</span> SampleSphericalMap(normalize(localPos)); <span style="color:#75715e">// make sure to normalize localPos
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 color <span style="color:#f92672">=</span> texture(equirectangularMap, uv).rgb;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(color, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Si vous effectuez le rendu d&rsquo;un cube au centre de la scène avec une carte HDR équirectangulaire, vous obtiendrez quelque chose qui ressemble à ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c01_diffuse_irradiance-20230910-pbrdiff5.png" alt="01_diffuse_irradiance-20230910-pbrdiff5.png"/>
+Ceci démontre que nous avons effectivement mappé une image équirectangulaire sur une forme cubique, mais ne nous aide pas encore à convertir l&rsquo;image HDR source en une texture cubemap. Pour ce faire, nous devons effectuer le rendu du même cube 6 fois, en regardant chaque face individuelle du cube, tout en enregistrant le résultat visuel à l&rsquo;aide d&rsquo;un objet framebuffer :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> captureFBO, captureRBO;
+</span></span><span style="display:flex;"><span>glGenFramebuffers(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>captureFBO);
+</span></span><span style="display:flex;"><span>glGenRenderbuffers(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>captureRBO);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+</span></span><span style="display:flex;"><span>glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+</span></span><span style="display:flex;"><span>glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, <span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">512</span>);
+</span></span><span style="display:flex;"><span>glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
+</span></span></code></pre></div><p>Bien entendu, nous générons également les textures colorées cubemap correspondantes, en pré-allouant de la mémoire pour chacune de ses 6 faces :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> envCubemap;
+</span></span><span style="display:flex;"><span>glGenTextures(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>envCubemap);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">6</span>; <span style="color:#f92672">++</span>i)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// note that we store each face with 16 bit floating point values
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X <span style="color:#f92672">+</span> i, <span style="color:#ae81ff">0</span>, GL_RGB16F, 
+</span></span><span style="display:flex;"><span>                 <span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">0</span>, GL_RGB, GL_FLOAT, <span style="color:#66d9ef">nullptr</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+</span></span></code></pre></div><p>Il ne reste plus qu&rsquo;à capturer la texture 2D équirectangulaire sur les faces du cubemap.</p>
+<p>Je ne m&rsquo;étendrai pas sur les détails car le code détaille des sujets déjà abordés dans les chapitres sur les <a href="/docs/learnopengl_fr/04_advanced_opengl/04_framebuffers/">framebuffers</a> et les <a href="/docs/learnopengl_fr/05_advanced_lighting/02b_point_shadows/">ombres ponctuelles</a>, mais cela se résume à mettre en place 6 matrices de vue différentes (face à chaque côté du cube), à mettre en place une matrice de projection avec un <strong>fov</strong> (field of view) de $90$ degrés pour capturer l&rsquo;ensemble de la face, et à rendre un cube 6 fois en stockant les résultats dans un framebuffer à virgule flottante :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>mat4 captureProjection <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>perspective(glm<span style="color:#f92672">::</span>radians(<span style="color:#ae81ff">90.0f</span>), <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.1f</span>, <span style="color:#ae81ff">10.0f</span>);
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>mat4 captureViews[] <span style="color:#f92672">=</span> 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   glm<span style="color:#f92672">::</span>lookAt(glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>), glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">1.0f</span>,  <span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">0.0f</span>), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1.0f</span>,  <span style="color:#ae81ff">0.0f</span>)),
+</span></span><span style="display:flex;"><span>   glm<span style="color:#f92672">::</span>lookAt(glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>), glm<span style="color:#f92672">::</span>vec3(<span style="color:#f92672">-</span><span style="color:#ae81ff">1.0f</span>,  <span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">0.0f</span>), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1.0f</span>,  <span style="color:#ae81ff">0.0f</span>)),
+</span></span><span style="display:flex;"><span>   glm<span style="color:#f92672">::</span>lookAt(glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>), glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">1.0f</span>,  <span style="color:#ae81ff">0.0f</span>), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">1.0f</span>)),
+</span></span><span style="display:flex;"><span>   glm<span style="color:#f92672">::</span>lookAt(glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>), glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">0.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1.0f</span>,  <span style="color:#ae81ff">0.0f</span>), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">0.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1.0f</span>)),
+</span></span><span style="display:flex;"><span>   glm<span style="color:#f92672">::</span>lookAt(glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>), glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">1.0f</span>), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1.0f</span>,  <span style="color:#ae81ff">0.0f</span>)),
+</span></span><span style="display:flex;"><span>   glm<span style="color:#f92672">::</span>lookAt(glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>), glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">0.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1.0f</span>), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1.0f</span>,  <span style="color:#ae81ff">0.0f</span>))
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// convert HDR equirectangular environment map to cubemap equivalent
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>equirectangularToCubemapShader.use();
+</span></span><span style="display:flex;"><span>equirectangularToCubemapShader.setInt(<span style="color:#e6db74">&#34;equirectangularMap&#34;</span>, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>equirectangularToCubemapShader.setMat4(<span style="color:#e6db74">&#34;projection&#34;</span>, captureProjection);
+</span></span><span style="display:flex;"><span>glActiveTexture(GL_TEXTURE0);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_2D, hdrTexture);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>glViewport(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">512</span>); <span style="color:#75715e">// don&#39;t forget to configure the viewport to the capture dimensions.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">6</span>; <span style="color:#f92672">++</span>i)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    equirectangularToCubemapShader.setMat4(<span style="color:#e6db74">&#34;view&#34;</span>, captureViews[i]);
+</span></span><span style="display:flex;"><span>    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+</span></span><span style="display:flex;"><span>                           GL_TEXTURE_CUBE_MAP_POSITIVE_X <span style="color:#f92672">+</span> i, envCubemap, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>    glClear(GL_COLOR_BUFFER_BIT <span style="color:#f92672">|</span> GL_DEPTH_BUFFER_BIT);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    renderCube(); <span style="color:#75715e">// renders a 1x1 cube
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>glBindFramebuffer(GL_FRAMEBUFFER, <span style="color:#ae81ff">0</span>);  
+</span></span></code></pre></div><p>Nous prenons l&rsquo;attachement de couleur du framebuffer et changeons sa cible de texture pour chaque face de la cubemap, en rendant directement la scène sur l&rsquo;une des faces de la cubemap. Une fois cette routine terminée (ce que nous ne devons faire qu&rsquo;une seule fois), la cubemap <code>envCubemap</code> devrait être la version de l&rsquo;environnement cubemap de notre image HDR originale.</p>
+<p>Testons le cubemap en écrivant un shader skybox très simple pour afficher le cubemap autour de nous :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec3 aPos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform mat4 projection;
+</span></span><span style="display:flex;"><span>uniform mat4 view;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>out vec3 localPos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    localPos <span style="color:#f92672">=</span> aPos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    mat4 rotView <span style="color:#f92672">=</span> mat4(mat3(view)); <span style="color:#75715e">// remove translation from the view matrix
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec4 clipPos <span style="color:#f92672">=</span> projection <span style="color:#f92672">*</span> rotView <span style="color:#f92672">*</span> vec4(localPos, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> clipPos.xyww;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Notez l&rsquo;astuce de <code>xyww</code> qui garantit que la valeur de profondeur des fragments de cube rendus est toujours égale à $1.0$, la valeur de profondeur maximale, comme décrit dans le chapitre sur les cubemap. Notez que nous devons changer la fonction de comparaison de profondeur en <code>GL_LEQUAL</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glDepthFunc(GL_LEQUAL);  
+</span></span></code></pre></div><p>Le shader de fragment échantillonne ensuite directement la map d&rsquo;environnement cubemap en utilisant la position locale du fragment du cube :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>in vec3 localPos;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>uniform samplerCube environmentMap;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    vec3 envColor <span style="color:#f92672">=</span> texture(environmentMap, localPos).rgb;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    envColor <span style="color:#f92672">=</span> envColor <span style="color:#f92672">/</span> (envColor <span style="color:#f92672">+</span> vec3(<span style="color:#ae81ff">1.0</span>));
+</span></span><span style="display:flex;"><span>    envColor <span style="color:#f92672">=</span> pow(envColor, vec3(<span style="color:#ae81ff">1.0</span><span style="color:#f92672">/</span><span style="color:#ae81ff">2.2</span>)); 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(envColor, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Nous échantillonnons la map de l&rsquo;environnement en utilisant les positions interpolées des vertex cube qui correspondent directement au vecteur de direction correct à échantillonner. Étant donné que les composantes de translation de la caméra sont ignorées, le rendu de ce shader sur un cube devrait vous donner la map de l&rsquo;environnement comme un arrière-plan immobile. De plus, comme nous sortons directement les valeurs HDR de la map de l&rsquo;environnement dans le framebuffer <strong>LDR</strong> par défaut, nous voulons que les valeurs de couleur soient correctement reproduites. De plus, presque toutes les cartes <strong>HDR</strong> sont dans un espace colorimétrique linéaire par défaut, nous devons donc appliquer une correction gamma avant d&rsquo;écrire dans le framebuffer par défaut.</p>
+<p>Le rendu de la map d&rsquo;environnement échantillonnée sur les sphères précédemment rendues devrait ressembler à ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c01_diffuse_irradiance-20230910-pbrdiff6.png" alt="01_diffuse_irradiance-20230910-pbrdiff6.png"/>
+Eh bien&hellip; il nous a fallu pas mal de configuration pour en arriver là, mais nous avons réussi à lire une carte d&rsquo;environnement HDR, à la convertir de son mapping équirectangulaire en un cubemap, et à rendre le cubemap HDR dans la scène en tant que skybox. De plus, nous avons mis en place un petit système pour effectuer le rendu sur les 6 faces d&rsquo;une cubemap, ce dont nous aurons à nouveau besoin lors de la convolution de la map d&rsquo;environnement. Vous pouvez trouver le code source de l&rsquo;ensemble du processus de conversion <a href="https://learnopengl.com/code_viewer_gh.php?code=src/6.pbr/2.1.1.ibl_irradiance_conversion/ibl_irradiance_conversion.cpp">ici</a>.</p>
+<h2 id="convolution-de-la-cubemap">Convolution de la cubemap</h2>
+<p>Comme décrit au début du chapitre, notre objectif principal est de résoudre l&rsquo;intégrale de tous les éclairages indirects diffus étant donné l&rsquo;irradiance de la scène sous la forme d&rsquo;une carte d&rsquo;environnement cubemap. Nous savons que nous pouvons obtenir la radiance de la scène $L(p,w_i)$ dans une direction particulière en échantillonnant une carte d&rsquo;environnement HDR dans la direction $w_i$. Pour résoudre l&rsquo;intégrale, nous devons échantillonner la radiance de la scène dans toutes les directions possibles de l&rsquo;hémisphère $\Omega$ pour chaque fragment.</p>
+<p>Il est cependant impossible, d&rsquo;un point de vue informatique, d&rsquo;échantillonner l&rsquo;éclairage de l&rsquo;environnement dans toutes les directions possibles de l&rsquo;hémisphère $\Omega$ le nombre de directions possibles étant théoriquement infini. Nous pouvons cependant approximer le nombre de directions en prenant un nombre fini de directions ou d&rsquo;échantillons, espacés uniformément ou prélevés au hasard dans l&rsquo;hémisphère, pour obtenir une approximation assez précise de l&rsquo;irradiance ; en fait, nous résolvons l&rsquo;intégrale $\int$ de manière discrète</p>
+<h1 id="lpw_o">Il est cependant trop coûteux d&rsquo;effectuer cette opération pour chaque fragment en temps réel, car le nombre d&rsquo;échantillons doit être significativement élevé pour obtenir des résultats satisfaisants, c&rsquo;est pourquoi nous voulons effectuer un calcul préalable. Étant donné que l&rsquo;orientation de l&rsquo;hémisphère détermine l&rsquo;endroit où nous capturons l&rsquo;irradiance, nous pouvons pré calculer l&rsquo;irradiance pour chaque orientation possible de l&rsquo;hémisphère orienté autour de toutes les directions sortantes $w_o$:
+$$
+L(p,w_o)</h1>
+<p>k_d
+{
+c
+\over
+\pi
+}
+\int_\Omega
+L_i(p,w_i)n * w_idw_i
+$$
+Étant donné un vecteur de direction $w_i$ dans la passe d&rsquo;éclairage, nous pouvons alors échantillonner la map d&rsquo;irradiance précalculée pour récupérer l&rsquo;irradiance diffuse totale à partir de la direction $w_i$. Pour déterminer la quantité de lumière diffuse indirecte (irradiante) à la surface d&rsquo;un fragment, nous récupérons l&rsquo;irradiance totale de l&rsquo;hémisphère orienté autour de sa normale de surface. L&rsquo;obtention de l&rsquo;éclairement énergétique de la scène est alors aussi simple que :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 irradiance <span style="color:#f92672">=</span> texture(irradianceMap, N).rgb;
+</span></span></code></pre></div><p>Maintenant, pour générer la map d&rsquo;irradiance, nous devons convoluer l&rsquo;éclairage de l&rsquo;environnement tel qu&rsquo;il a été converti en cubemap. Étant donné que pour chaque fragment, l&rsquo;hémisphère de la surface est orienté le long du vecteur normal $\vec{N}$, la convolution d&rsquo;une cubemap revient à calculer la radiance moyenne totale de chaque direction $w_i$ dans l&rsquo;hémisphère $\Omega$ orienté le long de $\vec{N}$.
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c01_diffuse_irradiance-20230910-pbrdiff7.png" alt="01_diffuse_irradiance-20230910-pbrdiff7.png"/>
+Heureusement, toute la configuration fastidieuse de ce chapitre n&rsquo;est pas inutile puisque nous pouvons maintenant prendre directement la cubemap convertie, la convoluer dans un fragment shader, et capturer le résultat dans une nouvelle cubemap en utilisant un framebuffer qui rend dans les 6 directions de la face. Comme nous l&rsquo;avons déjà fait pour convertir la map d&rsquo;environnement équirectangulaire en cubemap, nous pouvons adopter exactement la même approche mais en utilisant un fragment shader différent :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>in vec3 localPos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform samplerCube environmentMap;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> PI <span style="color:#f92672">=</span> <span style="color:#ae81ff">3.14159265359</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{		
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// the sample direction equals the hemisphere&#39;s orientation 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 normal <span style="color:#f92672">=</span> normalize(localPos);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    vec3 irradiance <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    [...] <span style="color:#75715e">// convolution code
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(irradiance, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>La map d&rsquo;environnement étant la cubemap HDR convertie à partir de la carte d&rsquo;environnement HDR équirectangulaire.</p>
+<p>Il existe de nombreuses façons de convoluer la map d&rsquo;environnement, mais pour ce chapitre, nous allons générer une quantité fixe de vecteurs d&rsquo;échantillonnage pour chaque texel de la cubemap le long d&rsquo;un hémisphère $\Omega$ orienté autour de la direction de l&rsquo;échantillon et faire la moyenne des résultats. La quantité fixe de vecteurs d&rsquo;échantillonnage sera uniformément répartie à l&rsquo;intérieur de l&rsquo;hémisphère. Notez qu&rsquo;une intégrale est une fonction continue et que l&rsquo;échantillonnage discret de sa fonction à partir d&rsquo;un nombre fixe de vecteurs d&rsquo;échantillonnage ne sera qu&rsquo;une approximation. Plus le nombre de vecteurs d&rsquo;échantillonnage est élevé, meilleure est l&rsquo;approximation de l&rsquo;intégrale.</p>
+<h1 id="l_opphi_otheta_o">L&rsquo;intégrale $\int$ de l&rsquo;équation de réflectance tourne autour de l&rsquo;angle solide $dw$, ce qui est assez difficile à traiter. Au lieu d&rsquo;intégrer sur l&rsquo;angle solide $dw$, nous intégrerons sur ses coordonnées sphériques équivalentes $\theta$ et $\phi$.
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c01_diffuse_irradiance-20230910-pbrdiff8.png" alt="01_diffuse_irradiance-20230910-pbrdiff8.png"/>
+Nous utilisons l&rsquo;azimut polaire $\phi$ pour échantillonner autour de l&rsquo;anneau de l&rsquo;hémisphère entre $0$ et $2\pi$, et utilisons l&rsquo;inclinaison zénithale $\theta$ entre $0$ et $12\pi$ pour échantillonner les anneaux croissants de l&rsquo;hémisphère. Nous obtenons ainsi l&rsquo;intégrale de réflectance mise à jour :
+$$
+L_o(p,\phi_o,\theta_o)</h1>
+<h1 id="l_opphi_otheta_o-1">k_d
+{
+c
+\over
+\pi
+}
+\int_{\phi=0}^{2\pi}
+\int_{\theta=0}^{{1\over2}\pi}
+L_i(p,\phi_i,\theta_i)\cos{(\theta)}\sin{(\theta)}d\phi d\theta
+$$
+La résolution de l&rsquo;intégrale exige que nous prenions un nombre fixe d&rsquo;échantillons discrets dans l&rsquo;hémisphère $\Omega$ et que nous fassions la moyenne de leurs résultats. Cela traduit l&rsquo;intégrale en la version discrète suivante, basée sur la somme de Riemann, étant donné $n1$ et $n2$ échantillons discrets sur chaque coordonnée sphérique respectivement :
+$$
+L_o(p,\phi_o,\theta_o)</h1>
+<p>k_d
+{
+c\pi
+\over
+n1n2
+}
+\sum_{\phi=0}^{n1}
+\sum_{\theta=0}^{n2}
+L_i(p,\phi_i,\theta_i)
+\cos{(\theta)}\sin{(\theta)}d\phi d\theta
+$$
+Comme nous échantillonnons les deux valeurs sphériques de manière discrète, chaque échantillon se rapproche d&rsquo;une zone de l&rsquo;hémisphère ou en fait la moyenne, comme le montre l&rsquo;image ci-dessus. Notez que (en raison des propriétés générales d&rsquo;une forme sphérique) la zone d&rsquo;échantillonnage discrète de l&rsquo;hémisphère se réduit à mesure que l&rsquo;angle zénithal $\theta$ augmente et que les régions d&rsquo;échantillonnage convergent vers le centre supérieur. Pour compenser les zones plus petites, nous pondérons leur contribution en mettant à l&rsquo;échelle la zone par $\sin{(\theta)}$.</p>
+<p>L&rsquo;échantillonnage discret de l&rsquo;hémisphère en fonction des coordonnées sphériques de l&rsquo;intégrale se traduit par le fragment de code suivant :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 irradiance <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">0.0</span>);  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>vec3 up    <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>vec3 right <span style="color:#f92672">=</span> normalize(cross(up, normal));
+</span></span><span style="display:flex;"><span>up         <span style="color:#f92672">=</span> normalize(cross(normal, right));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> sampleDelta <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.025</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> nrSamples <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>; 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">float</span> phi <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>; phi <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">2.0</span> <span style="color:#f92672">*</span> PI; phi <span style="color:#f92672">+=</span> sampleDelta)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">float</span> theta <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>; theta <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0.5</span> <span style="color:#f92672">*</span> PI; theta <span style="color:#f92672">+=</span> sampleDelta)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// spherical to cartesian (in tangent space)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        vec3 tangentSample <span style="color:#f92672">=</span> vec3(sin(theta) <span style="color:#f92672">*</span> cos(phi),  sin(theta) <span style="color:#f92672">*</span> sin(phi), cos(theta));
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// tangent space to world
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        vec3 sampleVec <span style="color:#f92672">=</span> tangentSample.x <span style="color:#f92672">*</span> right <span style="color:#f92672">+</span> tangentSample.y <span style="color:#f92672">*</span> up <span style="color:#f92672">+</span> tangentSample.z <span style="color:#f92672">*</span> N; 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        irradiance <span style="color:#f92672">+=</span> texture(environmentMap, sampleVec).rgb <span style="color:#f92672">*</span> cos(theta) <span style="color:#f92672">*</span> sin(theta);
+</span></span><span style="display:flex;"><span>        nrSamples<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>irradiance <span style="color:#f92672">=</span> PI <span style="color:#f92672">*</span> irradiance <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">/</span> <span style="color:#66d9ef">float</span>(nrSamples));
+</span></span></code></pre></div><p>Nous spécifions une valeur delta <code>sampleDelta</code> fixe pour parcourir l&rsquo;hémisphère ; la diminution ou l&rsquo;augmentation du delta sample augmentera ou diminuera la précision respectivement.</p>
+<p>Dans les deux boucles, nous prenons les deux coordonnées sphériques pour les convertir en un vecteur d&rsquo;échantillonnage cartésien 3D, nous convertissons l&rsquo;échantillon de la tangente à l&rsquo;espace mondial orienté autour de la normale et nous utilisons ce vecteur d&rsquo;échantillonnage pour échantillonner directement la map de l&rsquo;environnement HDR. Nous ajoutons chaque résultat d&rsquo;échantillonnage à l&rsquo;irradiance, que nous divisons ensuite par le nombre total d&rsquo;échantillons prélevés, ce qui nous donne l&rsquo;irradiance moyenne échantillonnée. Notez que nous mettons à l&rsquo;échelle la valeur de la couleur échantillonnée par $\cos{(\theta)}$ en raison de l&rsquo;affaiblissement de la lumière à des angles plus grands et par $\sin{(\theta)}$ pour tenir compte des zones d&rsquo;échantillonnage plus petites dans les zones de l&rsquo;hémisphère supérieur.</p>
+<p>Il ne reste plus qu&rsquo;à configurer le code de rendu OpenGL de manière à ce que nous puissions convoluer le <code>envCubemap</code> capturé précédemment. Tout d&rsquo;abord, nous créons la cubemap d&rsquo;irradiance (encore une fois, nous n&rsquo;avons à le faire qu&rsquo;une seule fois avant la boucle de rendu) :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> irradianceMap;
+</span></span><span style="display:flex;"><span>glGenTextures(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>irradianceMap);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">6</span>; <span style="color:#f92672">++</span>i)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X <span style="color:#f92672">+</span> i, <span style="color:#ae81ff">0</span>, GL_RGB16F, <span style="color:#ae81ff">32</span>, <span style="color:#ae81ff">32</span>, <span style="color:#ae81ff">0</span>, 
+</span></span><span style="display:flex;"><span>                 GL_RGB, GL_FLOAT, <span style="color:#66d9ef">nullptr</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+</span></span></code></pre></div><p>Comme la map d&rsquo;irradiance fait la moyenne de toute la radiance environnante de manière uniforme, elle n&rsquo;a pas beaucoup de détails à haute fréquence, donc nous pouvons stocker la map à une faible résolution ($32\times32$) et laisser le filtrage linéaire d&rsquo;OpenGL faire le plus gros du travail. Ensuite, nous redimensionnons le framebuffer de capture à la nouvelle résolution :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+</span></span><span style="display:flex;"><span>glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+</span></span><span style="display:flex;"><span>glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, <span style="color:#ae81ff">32</span>, <span style="color:#ae81ff">32</span>);  
+</span></span></code></pre></div><p>À l&rsquo;aide du shader de convolution, nous rendons la map de l&rsquo;environnement de la même manière que nous avons capturé la cubemap de l&rsquo;environnement :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>irradianceShader.use();
+</span></span><span style="display:flex;"><span>irradianceShader.setInt(<span style="color:#e6db74">&#34;environmentMap&#34;</span>, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>irradianceShader.setMat4(<span style="color:#e6db74">&#34;projection&#34;</span>, captureProjection);
+</span></span><span style="display:flex;"><span>glActiveTexture(GL_TEXTURE0);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>glViewport(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">32</span>, <span style="color:#ae81ff">32</span>); <span style="color:#75715e">// don&#39;t forget to configure the viewport to the capture dimensions.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">6</span>; <span style="color:#f92672">++</span>i)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    irradianceShader.setMat4(<span style="color:#e6db74">&#34;view&#34;</span>, captureViews[i]);
+</span></span><span style="display:flex;"><span>    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+</span></span><span style="display:flex;"><span>                           GL_TEXTURE_CUBE_MAP_POSITIVE_X <span style="color:#f92672">+</span> i, irradianceMap, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>    glClear(GL_COLOR_BUFFER_BIT <span style="color:#f92672">|</span> GL_DEPTH_BUFFER_BIT);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    renderCube();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>glBindFramebuffer(GL_FRAMEBUFFER, <span style="color:#ae81ff">0</span>);
+</span></span></code></pre></div><p>Après cette routine, nous devrions avoir une map d&rsquo;irradiance pré-calculée que nous pouvons directement utiliser pour notre éclairage basé sur l&rsquo;image diffuse. Pour voir si nous avons réussi à convoluer la map d&rsquo;environnement, nous allons substituer la map d&rsquo;environnement à la map d&rsquo;irradiance en tant qu&rsquo;échantillonneur d&rsquo;environnement de la skybox :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c01_diffuse_irradiance-20230910-pbrdiff8-1.png" alt="01_diffuse_irradiance-20230910-pbrdiff8-1.png"/>
+Si elle ressemble à une version très floue de la map de l&rsquo;environnement, vous avez réussi à convoluer la map de l&rsquo;environnement.</p>
+<h2 id="pbr-et-éclairage-par-rayonnement-indirect">PBR et éclairage par rayonnement indirect</h2>
+<p>La map d&rsquo;irradiance représente la partie diffuse de l&rsquo;intégrale de la réflectance, accumulée à partir de toute la lumière indirecte environnante. Étant donné que la lumière ne provient pas de sources lumineuses directes, mais de l&rsquo;environnement, nous traitons l&rsquo;éclairage indirect diffus et spéculaire comme l&rsquo;éclairage ambiant, remplaçant ainsi le terme constant que nous avions défini précédemment.</p>
+<p>Tout d&rsquo;abord, assurez-vous d&rsquo;ajouter la map d&rsquo;irradiance précalculée en tant qu&rsquo;échantillonneur de cube :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>uniform samplerCube irradianceMap;
+</span></span></code></pre></div><p>Étant donné la map d&rsquo;irradiance qui contient toute la lumière diffuse indirecte de la scène, la récupération de l&rsquo;irradiance influençant le fragment est aussi simple qu&rsquo;un simple échantillon de texture donné à la normale de la surface :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// vec3 ambient = vec3(0.03);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>vec3 ambient <span style="color:#f92672">=</span> texture(irradianceMap, N).rgb;
+</span></span></code></pre></div><p>Cependant, comme l&rsquo;éclairage indirect contient à la fois une partie diffuse et une partie spéculaire (comme nous l&rsquo;avons vu dans la version fractionnée de l&rsquo;équation de réflectance), nous devons pondérer la partie diffuse en conséquence. Comme dans le chapitre précédent, nous utilisons l&rsquo;équation de Fresnel pour déterminer le rapport de réflectance indirecte de la surface, à partir duquel nous déduisons le rapport de réfraction (ou rapport diffus) :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 kS <span style="color:#f92672">=</span> fresnelSchlick(max(dot(N, V), <span style="color:#ae81ff">0.0</span>), F0);
+</span></span><span style="display:flex;"><span>vec3 kD <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> kS;
+</span></span><span style="display:flex;"><span>vec3 irradiance <span style="color:#f92672">=</span> texture(irradianceMap, N).rgb;
+</span></span><span style="display:flex;"><span>vec3 diffuse    <span style="color:#f92672">=</span> irradiance <span style="color:#f92672">*</span> albedo;
+</span></span><span style="display:flex;"><span>vec3 ambient    <span style="color:#f92672">=</span> (kD <span style="color:#f92672">*</span> diffuse) <span style="color:#f92672">*</span> ao; 
+</span></span></code></pre></div><p>Comme la lumière ambiante provient de toutes les directions à l&rsquo;intérieur de l&rsquo;hémisphère orienté autour de la normale $\vec{N}$, il n&rsquo;y a pas de vecteur unique à mi-chemin pour déterminer la réponse de Fresnel. Pour continuer à simuler Fresnel, nous calculons le Fresnel à partir de l&rsquo;angle entre la normale et le vecteur de vue. Cependant, nous avons utilisé précédemment le vecteur médian de la micro-surface, influencé par la rugosité de la surface, comme entrée de l&rsquo;équation de Fresnel. Comme nous ne tenons actuellement pas compte de la rugosité, le taux de réflexion de la surface sera toujours relativement élevé. La lumière indirecte suit les mêmes propriétés que la lumière directe et nous nous attendons donc à ce que les surfaces plus rugueuses se reflètent moins fortement sur les bords de la surface. C&rsquo;est pourquoi l&rsquo;intensité de la réflexion indirecte de Fresnel semble faible sur les surfaces non métalliques rugueuses (légèrement exagérée à des fins de démonstration) :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c01_diffuse_irradiance-20230910-pbrdiff11.png" alt="01_diffuse_irradiance-20230910-pbrdiff11.png"/>
+Nous pouvons résoudre ce problème en injectant un terme de rugosité dans l&rsquo;équation de Fresnel-Schlick, comme l&rsquo;a décrit <a href="https://seblagarde.wordpress.com/2011/08/17/hello-world/">Sébastien Lagarde</a> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 <span style="color:#a6e22e">fresnelSchlickRoughness</span>(<span style="color:#66d9ef">float</span> cosTheta, vec3 F0, <span style="color:#66d9ef">float</span> roughness)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> F0 <span style="color:#f92672">+</span> (max(vec3(<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> roughness), F0) <span style="color:#f92672">-</span> F0) <span style="color:#f92672">*</span> pow(clamp(<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> cosTheta, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>), <span style="color:#ae81ff">5.0</span>);
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>En tenant compte de la rugosité de la surface lors du calcul de la réponse de Fresnel, le code ambiant est le suivant :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 kS <span style="color:#f92672">=</span> fresnelSchlickRoughness(max(dot(N, V), <span style="color:#ae81ff">0.0</span>), F0, roughness); 
+</span></span><span style="display:flex;"><span>vec3 kD <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> kS;
+</span></span><span style="display:flex;"><span>vec3 irradiance <span style="color:#f92672">=</span> texture(irradianceMap, N).rgb;
+</span></span><span style="display:flex;"><span>vec3 diffuse    <span style="color:#f92672">=</span> irradiance <span style="color:#f92672">*</span> albedo;
+</span></span><span style="display:flex;"><span>vec3 ambient    <span style="color:#f92672">=</span> (kD <span style="color:#f92672">*</span> diffuse) <span style="color:#f92672">*</span> ao;
+</span></span></code></pre></div><p>Comme vous pouvez le voir, le calcul de l&rsquo;éclairage basé sur l&rsquo;image est assez simple et ne nécessite qu&rsquo;une seule recherche de texture cubemap ; la majeure partie du travail consiste à pré-calculer ou à convoluer la map d&rsquo;irradiance.</p>
+<p>Si nous prenons la scène initiale du chapitre sur l&rsquo;<a href="/docs/learnopengl_fr/06_pbr/02_lighting/">éclairage PBR</a>, où chaque sphère a une valeur métallique croissante verticalement et une valeur de rugosité croissante horizontalement, et que nous ajoutons l&rsquo;éclairage diffus basé sur l&rsquo;image, cela ressemblera un peu à ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c01_diffuse_irradiance-20230910-pbrdiff12.png" alt="01_diffuse_irradiance-20230910-pbrdiff12.png"/>
+C&rsquo;est encore un peu bizarre car les sphères les plus métalliques ont besoin d&rsquo;une certaine forme de réflexion pour commencer à ressembler à des surfaces métalliques (car les surfaces métalliques ne reflètent pas la lumière diffuse) qui, pour l&rsquo;instant, ne proviennent que (à peine) des sources lumineuses ponctuelles. Néanmoins, on peut déjà dire que les sphères se sentent plus à leur place dans l&rsquo;environnement (surtout si vous passez d&rsquo;une map d&rsquo;environnement à l&rsquo;autre) car la réponse de la surface réagit en fonction de l&rsquo;éclairage ambiant de l&rsquo;environnement.</p>
+<p>Vous pouvez trouver le code source complet des sujets abordés <a href="https://learnopengl.com/code_viewer_gh.php?code=src/6.pbr/2.1.2.ibl_irradiance/ibl_irradiance.cpp">ici</a>. Dans le <a href="prochain">prochain</a> chapitre, nous ajouterons la partie spéculaire indirecte de l&rsquo;intégrale de réflectance et nous verrons alors la puissance du PBR.</p>
+<h2 id="lectures-supplémentaires">Lectures supplémentaires</h2>
+<ul>
+<li><a href="http://www.codinglabs.net/article_physically_based_rendering.aspx">Coding Labs : Physically based rendering</a> : une introduction au PBR et comment et pourquoi générer une map d&rsquo;irradiance.</li>
+<li><a href="http://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/mathematics-of-shading">The Mathematics of Shading</a> : une brève introduction par ScratchAPixel sur plusieurs des mathématiques décrites dans ce tutoriel, en particulier sur les coordonnées polaires et les intégrales.</li>
+</ul>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

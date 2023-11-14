@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+<br><br>
+<h1 id="test-de-profondeur-depth-testing">Test de profondeur (depth testing)</h1>
+<p>Dans le chapitre sur les <a href="/docs/learnopengl_fr/01_getting_started/07_coordinate-systems/">systèmes de coordonnées</a> , nous avons effectué le rendu d&rsquo;un conteneur 3D et utilisé un tampon de profondeur (depth buffer) pour éviter que des triangles ne soient rendus à l&rsquo;avant alors qu&rsquo;ils sont censés se trouver derrière d&rsquo;autres triangles. Dans ce chapitre, nous allons développer un peu plus les valeurs de profondeur que le tampon de profondeur (ou tampon z : z-buffer) stocke et la manière dont il détermine si un fragment est à l&rsquo;avant.</p>
+<p>Le tampon de profondeur est un tampon qui, tout comme le tampon de couleur (qui stocke toutes les couleurs des fragments : la sortie visuelle), stocke des informations par fragment et <strong>a la même largeur et la même hauteur que le tampon de couleur</strong>. Le tampon de profondeur est automatiquement créé par le système de fenêtrage et stocke ses valeurs de profondeur sous forme de valeurs flottantes de 16, 24 ou 32 bits. <strong>Dans la plupart des systèmes, vous verrez un tampon de profondeur avec une précision de 24 bits.</strong></p>
+<p><strong>Lorsque le test de profondeur est activé, OpenGL teste la valeur de profondeur d&rsquo;un fragment par rapport au contenu du tampon de profondeur.</strong> <strong>OpenGL effectue un test de profondeur et si ce test réussit, le fragment est rendu et le tampon de profondeur est mis à jour avec la nouvelle valeur de profondeur. Si le test de profondeur échoue, le fragment est rejeté.</strong></p>
+<p>Le test de profondeur est effectué dans le screen space après l&rsquo;exécution du shader de fragment (et après le stencil test que nous aborderons dans le chapitre suivant). Les coordonnées du screen space sont directement liées à la fenêtre définie par la fonction <code>glViewport</code> d&rsquo;OpenGL et sont accessibles via la variable intégrée <code>gl_FragCoord</code> de GLSL dans le shader de fragment. Les composantes x et y de <code>gl_FragCoord</code> représentent les coordonnées du fragment dans l&rsquo;espace-écran (avec (0,0) le coin inférieur gauche). La variable <code>gl_FragCoord</code> contient également une composante z qui contient la valeur de profondeur du fragment. Cette valeur z est la valeur qui est comparée au contenu du tampon de profondeur.</p>
+<blockquote>
+<p>Aujourd&rsquo;hui, la plupart des GPU prennent en charge une fonction matérielle appelée test de profondeur anticipé. Le test de profondeur anticipé permet d&rsquo;exécuter le test de profondeur avant l&rsquo;exécution du shader de fragment. Lorsqu&rsquo;il est clair qu&rsquo;un fragment ne sera pas visible (il se trouve derrière d&rsquo;autres objets), nous pouvons l&rsquo;éliminer prématurément.</p>
+</blockquote>
+<blockquote>
+<p>Les shaders de fragments sont généralement assez coûteux, c&rsquo;est pourquoi nous devons éviter de les exécuter chaque fois que c&rsquo;est possible. Une restriction sur le fragment shader pour le test de profondeur anticipé est que vous ne devez pas écrire dans la valeur de profondeur du fragment. Si un shader de fragment écrit dans sa valeur de profondeur, le test de profondeur anticipé est impossible ; OpenGL ne sera pas capable de déterminer la valeur de profondeur à l&rsquo;avance.</p>
+</blockquote>
+<p>Le test de profondeur est désactivé par défaut. Pour l&rsquo;activer, il faut utiliser l&rsquo;option <code>GL_DEPTH_TEST</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glEnable(GL_DEPTH_TEST);
+</span></span></code></pre></div><p>Une fois activé, OpenGL stocke automatiquement les fragments avec leurs valeurs z dans le tampon de profondeur s&rsquo;ils ont passé le test de profondeur et se débarrasse des fragments s&rsquo;ils ont échoué le test de profondeur en conséquence. Si vous avez activé le test de profondeur, vous devez également vider le tampon de profondeur avant chaque image en utilisant <code>GL_DEPTH_BUFFER_BIT</code> ; sinon vous serez bloqué avec les valeurs de profondeur de la dernière image :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glClear(GL_COLOR_BUFFER_BIT <span style="color:#f92672">|</span> GL_DEPTH_BUFFER_BIT);  
+</span></span></code></pre></div><p>Il existe certains scénarios imaginables dans lesquels vous souhaitez effectuer le test de profondeur sur tous les fragments et les écarter en conséquence, mais sans mettre à jour le tampon de profondeur. En fait, vous utilisez (temporairement) un tampon de profondeur en lecture seule. OpenGL nous permet de désactiver l&rsquo;écriture dans le tampon de profondeur en définissant son masque de profondeur à <code>GL_FALSE</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glDepthMask(GL_FALSE);  
+</span></span></code></pre></div><p>Notez que cela n&rsquo;a d&rsquo;effet que si le test de profondeur est activé.</p>
+<h2 id="fonction-du-test-de-profondeur">Fonction du test de profondeur</h2>
+<p>OpenGL nous permet de modifier les opérateurs de comparaison qu&rsquo;il utilise pour le test de profondeur. Cela nous permet de contrôler quand OpenGL doit passer ou rejeter des fragments et quand mettre à jour le tampon de profondeur. Nous pouvons définir l&rsquo;opérateur de comparaison (ou la fonction de profondeur) en appelant <code>glDepthFunc</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glDepthFunc(GL_LESS);  
+</span></span></code></pre></div><p>La fonction accepte plusieurs opérateurs de comparaison qui sont énumérés dans le tableau ci-dessous :</p>
+<table>
+<thead>
+<tr>
+<th>FUNCTION</th>
+<th>DESCRIPTION</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GL_ALWAYS</code></td>
+<td>Le test de profondeur est toujours réussi</td>
+</tr>
+<tr>
+<td><code>GL_NEVER</code></td>
+<td>Le test de profondeur n&rsquo;est jamais réussi</td>
+</tr>
+<tr>
+<td><code>GL_LESS</code></td>
+<td>Passe si la valeur de la profondeur du fragment est inférieure à la valeur de la profondeur stockée.</td>
+</tr>
+<tr>
+<td><code>GL_EQUAL</code></td>
+<td>Passe si la valeur de la profondeur du fragment est égale à la valeur de la profondeur stockée.</td>
+</tr>
+<tr>
+<td><code>GL_LEQUAL</code></td>
+<td>Passe si la valeur de la profondeur du fragment est inférieure  ou égale à la valeur de la profondeur stockée.</td>
+</tr>
+<tr>
+<td><code>GL_GREATER</code></td>
+<td>Passe si la valeur de la profondeur du fragment est supérieure à la valeur de la profondeur stockée.</td>
+</tr>
+<tr>
+<td><code>GL_NOTEQUAL</code></td>
+<td>Passe si la valeur de la profondeur du fragment n&rsquo;est pas égale à la valeur de la profondeur stockée.</td>
+</tr>
+<tr>
+<td><code>GL_GEQUAL</code></td>
+<td>Passe si la valeur de la profondeur du fragment est supérieure ou égale à la valeur de la profondeur stockée.</td>
+</tr>
+</tbody>
+</table>
+<p>Par défaut, la fonction de profondeur <code>GL_LESS</code> est utilisée et écarte tous les fragments dont la valeur de profondeur est supérieure ou égale à la valeur du tampon de profondeur actuel.</p>
+<p>Montrons l&rsquo;effet de la modification de la fonction de profondeur sur la sortie visuelle. Nous utiliserons un nouveau code qui affiche une scène basique avec deux cubes texturés assis sur un sol texturé sans éclairage. Vous trouverez le code source <a href="https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/1.1.depth_testing/depth_testing.cpp">ici</a>.</p>
+<p>Dans le code source, nous avons changé la fonction de profondeur en <code>GL_ALWAYS</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glEnable(GL_DEPTH_TEST);
+</span></span><span style="display:flex;"><span>glDepthFunc(GL_ALWAYS); 
+</span></span></code></pre></div><p>Cela simule le même comportement que nous obtiendrions si nous n&rsquo;activions pas le test de profondeur. Le test de profondeur réussit toujours, de sorte que les fragments dessinés en dernier sont rendus devant les fragments dessinés avant, même s&rsquo;ils auraient dû se trouver à l&rsquo;avant. Puisque nous avons dessiné le plan du sol en dernier, les fragments du plan écrasent chacun des fragments du conteneur écrits précédemment :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cdepth_testing_func_always.png" alt="depth_testing_func_always"/>
+En rétablissant la valeur <code>GL_LESS</code>, nous obtenons le type de scène auquel nous sommes habitués :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cdepth_testing_func_less.png" alt="depth_testing_func_less"/></p>
+<h2 id="précision-de-la-valeur-de-la-profondeur">Précision de la valeur de la profondeur</h2>
+<p>Le tampon de profondeur contient des valeurs de profondeur comprises entre 0,0 et 1,0 et compare son contenu aux valeurs z de tous les objets de la scène vus par le spectateur. Ces valeurs z dans l&rsquo;espace visuel peuvent être n&rsquo;importe quelle valeur entre le plan proche et le plan lointain de la projection-frustum. Nous avons donc besoin d&rsquo;un moyen pour transformer ces valeurs z de l&rsquo;espace de vision dans l&rsquo;intervalle [0,1] et l&rsquo;un des moyens consiste à les transformer linéairement. L&rsquo;équation (linéaire) suivante transforme la valeur z en une valeur de profondeur comprise entre 0,0 et 1,0 :</p>
+<p>$$
+F_{depth} = { {z - near} \over {far - near} }
+$$
+Ici, $near$ et $far$ sont les valeurs proches et lointaines que nous avons fournies à la matrice de projection pour définir le frustum visible (voir <a href="/docs/learnopengl_fr/01_getting_started/07_coordinate-systems/">Systèmes de coordonnées</a>). L&rsquo;équation prend une valeur de profondeur z à l&rsquo;intérieur du frustum et la transforme dans l&rsquo;intervalle [0,1]. La relation entre la valeur z et la valeur de profondeur correspondante est présentée dans le graphique suivant :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cdepth_linear_graph.png" alt="depth_linear_graph"/></p>
+<blockquote>
+<p>Notez que toutes les équations donnent une valeur de profondeur proche de 0,0 lorsque l&rsquo;objet est proche et une valeur de profondeur proche de 1,0 lorsque l&rsquo;objet est proche du plan éloigné.</p>
+</blockquote>
+<p><strong>Dans la pratique, cependant, un tampon de profondeur linéaire comme celui-ci n&rsquo;est presque jamais utilisé</strong>. En raison des propriétés de projection, <strong>on utilise une équation de profondeur non linéaire qui est proportionnelle à $1/z$. Le résultat est que nous obtenons une précision énorme lorsque z est petit et beaucoup moins de précision lorsque z est éloigné.</strong></p>
+<p>Comme la fonction non linéaire est proportionnelle à $1/z$, des valeurs de z comprises entre 1,0 et 2,0 donneraient des valeurs de profondeur comprises entre 1,0 et 0,5, soit la moitié de la plage $[0,1]$, ce qui nous donne une précision énorme pour les petites valeurs de z. Les valeurs Z comprises entre 50,0 et 100,0 ne représenteraient que 2 % de la plage [0,1]. Une telle équation, qui prend également en compte les distances proches et lointaines, est donnée ci-dessous :
+$$
+F_{depth} = { {1/z - 1/near} \over {1/far - 1/near} }
+$$
+Ne vous inquiétez pas si vous ne savez pas exactement ce qui se passe avec cette équation. Ce qu&rsquo;il faut retenir, c&rsquo;est que les valeurs du tampon de profondeur ne sont pas linéaires dans l&rsquo;espace-clip (elles sont linéaires dans l&rsquo;espace-vue avant l&rsquo;application de la matrice de projection). Une valeur de 0,5 dans le tampon de profondeur ne signifie pas que la valeur z du pixel se trouve à mi-chemin dans le frustum ; la valeur z du sommet est en fait assez proche du plan proche ! Vous pouvez voir la relation non linéaire entre la valeur z et la valeur du tampon de profondeur dans le graphique suivant :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cdepth_non_linear_graph.png" alt="depth_non_linear_graph"/>
+Comme vous pouvez le constater, les valeurs de profondeur sont largement déterminées par les petites valeurs z, ce qui nous donne une grande précision de profondeur pour les objets proches. L&rsquo;équation permettant de transformer les valeurs z (du point de vue de l&rsquo;observateur) est intégrée à la matrice de projection. Ainsi, lorsque nous transformons les coordonnées des vertex de la vue au clip, puis à l&rsquo;espace écran, l&rsquo;équation non linéaire est appliquée.</p>
+<p>L&rsquo;effet de cette équation non linéaire devient rapidement apparent lorsque nous essayons de visualiser le tampon de profondeur.</p>
+<h2 id="visualisation-du-tampon-de-profondeur">Visualisation du tampon de profondeur</h2>
+<p>Nous savons que la valeur z du vecteur <code>gl_FragCoord</code> intégré dans le shader de fragment contient la valeur de profondeur de ce fragment particulier. Si nous devions afficher cette valeur de profondeur du fragment sous forme de couleur, nous pourrions afficher les valeurs de profondeur de tous les fragments de la scène :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{             
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(vec3(gl_FragCoord.z), <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p><strong>Si vous exécutez ensuite le programme, vous remarquerez probablement que tout est blanc</strong>, ce qui donne l&rsquo;impression que toutes nos valeurs de profondeur correspondent à la valeur de profondeur maximale de 1,0. <strong>Pourquoi certaines valeurs de profondeur ne sont-elles pas plus proches de 0,0 et donc plus sombres ?</strong></p>
+<p>Dans la section précédente, nous avons décrit que les valeurs de profondeur dans l&rsquo;espace de l&rsquo;écran ne sont pas linéaires, c&rsquo;est-à-dire qu&rsquo;elles ont une très grande précision pour les petites valeurs de z et une faible précision pour les grandes valeurs de z. La valeur de profondeur du fragment augmente rapidement. La valeur de profondeur du fragment augmente rapidement en fonction de la distance, de sorte que presque tous les sommets ont des valeurs proches de 1,0. Si l&rsquo;on se rapproche prudemment d&rsquo;un objet, on peut voir les couleurs s&rsquo;assombrir et les valeurs z se réduire :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cdepth_testing_visible_depth.png" alt="depth_testing_visible_depth"/>
+Cela montre clairement la non-linéarité de la valeur de profondeur. Les objets proches ont un effet beaucoup plus important sur la valeur de profondeur que les objets éloignés. Il suffit de se déplacer de quelques centimètres pour que les couleurs passent de l&rsquo;obscurité au blanc complet.</p>
+<p>Nous pouvons cependant transformer les valeurs de profondeur non linéaires du fragment en son équivalent linéaire. Pour ce faire, nous devons inverser le processus de projection pour les seules valeurs de profondeur. Cela signifie que nous devons d&rsquo;abord retransformer les valeurs de profondeur de l&rsquo;intervalle $[0,1]$ en coordonnées normalisées du device dans l&rsquo;intervalle $[-1,1]$. Ensuite, nous voulons inverser l&rsquo;équation non linéaire (équation 2) comme dans la matrice de projection et appliquer cette équation inversée à la valeur de profondeur résultante. Le résultat est alors une valeur de profondeur linéaire.</p>
+<p>Tout d&rsquo;abord, nous transformons la valeur de profondeur en NDC, ce qui n&rsquo;est pas trop difficile :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> ndc <span style="color:#f92672">=</span> depth <span style="color:#f92672">*</span> <span style="color:#ae81ff">2.0</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1.0</span>; 
+</span></span></code></pre></div><p>Nous prenons ensuite la valeur NDC obtenue et appliquons la transformation inverse pour récupérer sa valeur de profondeur linéaire :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> linearDepth <span style="color:#f92672">=</span> (<span style="color:#ae81ff">2.0</span> <span style="color:#f92672">*</span> near <span style="color:#f92672">*</span> far) <span style="color:#f92672">/</span> (far <span style="color:#f92672">+</span> near <span style="color:#f92672">-</span> ndc <span style="color:#f92672">*</span> (far <span style="color:#f92672">-</span> near));	
+</span></span></code></pre></div><p>Cette équation est dérivée de la matrice de projection pour la non-linéarisation des valeurs de profondeur, qui renvoie des valeurs de profondeur entre le proche et le lointain. Cet <a href="http://www.songho.ca/opengl/gl_projectionmatrix.html">article très mathématique</a> explique la matrice de projection de manière très détaillée pour le lecteur intéressé ; il montre également d&rsquo;où viennent les équations.</p>
+<p>Le fragment shader complet qui transforme la profondeur non linéaire dans l&rsquo;espace de l&rsquo;écran en une valeur de profondeur linéaire est alors le suivant :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> near <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>; 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> far  <span style="color:#f92672">=</span> <span style="color:#ae81ff">100.0</span>; 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">LinearizeDepth</span>(<span style="color:#66d9ef">float</span> depth) 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> z <span style="color:#f92672">=</span> depth <span style="color:#f92672">*</span> <span style="color:#ae81ff">2.0</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1.0</span>; <span style="color:#75715e">// back to NDC 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> (<span style="color:#ae81ff">2.0</span> <span style="color:#f92672">*</span> near <span style="color:#f92672">*</span> far) <span style="color:#f92672">/</span> (far <span style="color:#f92672">+</span> near <span style="color:#f92672">-</span> z <span style="color:#f92672">*</span> (far <span style="color:#f92672">-</span> near));	
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{             
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> depth <span style="color:#f92672">=</span> LinearizeDepth(gl_FragCoord.z) <span style="color:#f92672">/</span> far; <span style="color:#75715e">// divide by far for demonstration
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    FragColor <span style="color:#f92672">=</span> vec4(vec3(depth), <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Étant donné que les valeurs de profondeur linéarisées vont de près à loin, la plupart d&rsquo;entre elles seront supérieures à 1,0 et affichées comme étant complètement blanches. En divisant la valeur de profondeur linéaire par la distance dans la fonction principale, nous convertissons la valeur de profondeur linéaire dans la plage $[0, 1]$. De cette manière, nous pouvons voir la scène devenir progressivement plus lumineuse au fur et à mesure que les fragments se rapprochent du plan éloigné du tronc de projection, ce qui est plus efficace pour la visualisation.</p>
+<p>Si nous exécutons maintenant l&rsquo;application, nous obtenons des valeurs de profondeur qui sont linéaires en fonction de la distance. Essayez de vous déplacer dans la scène pour voir les valeurs de profondeur changer de manière linéaire.
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cdepth_testing_visible_linear.png" alt="depth_testing_visible_linear"/>
+Les couleurs sont principalement noires parce que les valeurs de profondeur varient linéairement du plan proche (0.1) au plan lointain (100), qui est encore assez éloigné de nous. Le résultat est que nous sommes relativement proches du plan proche et que nous obtenons donc des valeurs de profondeur plus faibles (plus sombres).</p>
+<h2 id="z-fighting">Z-fighting</h2>
+<p>Un artefact visuel courant peut se produire lorsque deux plans ou triangles sont si étroitement alignés l&rsquo;un sur l&rsquo;autre que le tampon de profondeur n&rsquo;a pas assez de précision pour déterminer laquelle des deux formes se trouve devant l&rsquo;autre. <strong>Le résultat est que les deux formes semblent continuellement changer d&rsquo;ordre, ce qui provoque des motifs bizarres</strong>. <strong>C&rsquo;est ce qu&rsquo;on appelle le z-fighting, parce qu&rsquo;on a l&rsquo;impression que les formes se battent pour savoir qui est au sommet.</strong></p>
+<p>Dans la scène que nous avons utilisée jusqu&rsquo;à présent, il y a quelques endroits où le z-fighting peut être remarqué. Les conteneurs ont été placés à la hauteur exacte du sol, ce qui signifie que le plan inférieur du conteneur est coplanaire avec le plan du sol. Les valeurs de profondeur des deux plans sont donc identiques, de sorte que le test de profondeur résultant n&rsquo;a aucun moyen de déterminer lequel est le bon.</p>
+<p>Si vous déplacez la caméra à l&rsquo;intérieur d&rsquo;un des conteneurs, les effets sont clairement visibles : la partie inférieure du conteneur passe constamment du plan du conteneur au plan du sol dans un motif en zigzag :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cdepth_testing_z_fighting.png" alt="depth_testing_z_fighting"/>
+Le Z-fighting est un problème courant avec les tampons de profondeur et elle est généralement plus visible lorsque les objets sont plus éloignés (parce que le tampon de profondeur a moins de précision à des valeurs de z plus élevées). Le Z-fighting ne peut pas être complètement évité, mais il existe quelques astuces qui permettront d&rsquo;atténuer ou d&rsquo;empêcher complètement le Z-fighting dans votre scène.</p>
+<h3 id="prévenir-le-z-fighting">Prévenir le Z-fighting</h3>
+<p><strong>La première astuce, et la plus importante, consiste à ne jamais placer les objets trop près les uns des autres de manière à ce que certains de leurs triangles se chevauchent étroitement.</strong> En créant un petit décalage entre deux objets, vous pouvez complètement supprimer la lutte en z entre les deux objets. Dans le cas des conteneurs et de l&rsquo;avion, nous aurions pu facilement déplacer les conteneurs légèrement vers le haut dans la direction y positive. Ce petit changement de position des conteneurs ne serait probablement pas perceptible du tout et réduirait complètement la lutte en z. Cependant, cela nécessite une intervention manuelle sur chacun des objets et des tests approfondis pour s&rsquo;assurer qu&rsquo;aucun objet d&rsquo;une scène ne produit de lutte z.</p>
+<p><strong>Une deuxième astuce consiste à régler le plan proche le plus loin possible.</strong> Dans l&rsquo;une des sections précédentes, nous avons vu que la précision est extrêmement grande lorsqu&rsquo;elle est proche du plan rapproché, de sorte que si nous éloignons le plan rapproché de l&rsquo;observateur, nous aurons une précision nettement supérieure sur tout le range du frustum. Cependant, si le plan proche est trop éloigné, les objets proches risquent d&rsquo;être clippés. <strong>Il s&rsquo;agit donc généralement d&rsquo;une question d&rsquo;ajustement et d&rsquo;expérimentation pour trouver la meilleure distance proche pour votre scène.</strong></p>
+<p><strong>Une autre bonne astuce, au prix de quelques performances, consiste à utiliser un tampon de profondeur de plus haute précision</strong>. La plupart des tampons de profondeur ont une précision de 24 bits, mais la plupart des GPU supportent aujourd&rsquo;hui des tampons de profondeur de 32 bits, ce qui augmente la précision de manière significative. Ainsi, au prix de quelques performances, vous obtiendrez beaucoup plus de précision avec les tests de profondeur, ce qui réduira la lutte contre les z.</p>
+<p>Les trois techniques que nous venons d&rsquo;évoquer sont les plus courantes et les plus faciles à mettre en œuvre pour lutter contre le z-fighting. Il existe d&rsquo;autres techniques qui nécessitent beaucoup plus de travail et qui ne désactivent pas complètement le Z-fighting. Le Z-fighting est un problème courant, mais si vous utilisez la bonne combinaison des techniques énumérées, vous n&rsquo;aurez probablement pas à vous préoccuper du le Z-fighting.</p>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cg">cg</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/opengl">opengl</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/computer-graphics">computer graphics</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cpp">cpp</a>
+  
+
+<br><br>
+<h1 id="créer-une-fenêtre">Créer une fenêtre</h1>
+<p>La première chose à faire avant de commencer à créer des graphiques étonnants est de créer un contexte OpenGL et une fenêtre d&rsquo;application pour dessiner. Cependant, ces opérations sont spécifiques à chaque système d&rsquo;exploitation et OpenGL essaie délibérément de s&rsquo;abstraire de ces opérations. Cela signifie que nous devons créer une fenêtre, définir un contexte et gérer l&rsquo;entrée de l&rsquo;utilisateur par nous-mêmes.</p>
+<p>Heureusement, il existe de nombreuses bibliothèques qui fournissent les fonctionnalités que nous recherchons, dont certaines sont spécifiquement destinées à OpenGL. Ces bibliothèques nous épargnent tout le travail spécifique au système d&rsquo;exploitation et nous donnent une fenêtre et un contexte OpenGL pour effectuer le rendu. Certaines des bibliothèques les plus populaires sont <strong>GLUT</strong>, <strong>SDL</strong>, <strong>SFML</strong> et <strong>GLFW</strong>. Sur LearnOpenGL, nous utiliserons GLFW. N&rsquo;hésitez pas à utiliser n&rsquo;importe quelle autre bibliothèque, la configuration de la plupart d&rsquo;entre elles est similaire à celle de GLFW.</p>
+<h2 id="glfw">GLFW</h2>
+<p>GLFW est une bibliothèque, écrite en C, spécifiquement destinée à OpenGL. GLFW nous fournit le strict nécessaire pour le rendu de goodies à l&rsquo;écran. <strong>Il nous permet de créer un contexte OpenGL, de définir les paramètres de la fenêtre, et de gérer les entrées utilisateur, ce qui est largement suffisant pour nos besoins.</strong></p>
+<p>L&rsquo;objectif de ce chapitre et du suivant est de faire fonctionner GLFW, en s&rsquo;assurant qu&rsquo;il crée correctement un contexte OpenGL et qu&rsquo;il affiche une fenêtre simple dans laquelle nous pourrons nous amuser. Ce chapitre adopte une approche étape par étape pour récupérer, construire et lier la bibliothèque GLFW. Nous utiliserons l&rsquo;IDE Microsoft Visual Studio 2019 à partir de cet écrit (notez que le processus est le même sur les versions plus récentes de Visual Studio). Si vous n&rsquo;utilisez pas Visual Studio (ou une version plus ancienne), ne vous inquiétez pas, le processus sera similaire sur la plupart des autres IDE.</p>
+<h2 id="construction-build-de-glfw">Construction (build) de GLFW</h2>
+<p>GLFW peut être obtenu à partir de la page de <a href="http://www.glfw.org/download.html">téléchargement</a> de leur site web. GLFW dispose déjà de binaires précompilés et de fichiers d&rsquo;en-tête pour Visual Studio 2012 jusqu&rsquo;à 2019, mais par souci d&rsquo;exhaustivité, nous allons compiler GLFW nous-mêmes à partir du code source. Ceci afin de vous donner une idée du processus de compilation des bibliothèques open-source, car toutes les bibliothèques ne disposent pas de binaires précompilés. Téléchargeons donc le paquet source.</p>
+<blockquote>
+<p>Nous compilerons toutes les bibliothèques sous forme de binaires 64 bits. Assurez-vous donc d&rsquo;obtenir les binaires 64 bits si vous utilisez leurs binaires précompilés.</p>
+</blockquote>
+<p>Une fois que vous avez téléchargé le paquet source, extrayez-le et ouvrez son contenu. Seuls quelques éléments nous intéressent :</p>
+<ul>
+<li>La bibliothèque résultant de la compilation.</li>
+<li>Le dossier include.</li>
+</ul>
+<p>La compilation de la bibliothèque à partir du code source garantit que la bibliothèque résultante est parfaitement adaptée à votre CPU/OS, un luxe que les binaires précompilés n&rsquo;offrent pas toujours (parfois, les binaires précompilés ne sont pas disponibles pour votre système). Le problème avec la mise à disposition du code source dans le monde ouvert est que tout le monde n&rsquo;utilise pas le même IDE ou le même système de construction pour développer son application, ce qui signifie que les fichiers de projet/solution fournis peuvent ne pas être compatibles avec la configuration d&rsquo;autres personnes. Les utilisateurs doivent alors configurer leur propre projet/solution avec les fichiers .c/.cpp et .h/.hpp fournis, ce qui est fastidieux. C&rsquo;est précisément pour ces raisons qu&rsquo;il existe un outil appelé <strong>CMake</strong>.</p>
+<h2 id="cmake">CMake</h2>
+<p>CMake est un outil qui peut générer des fichiers de projet/solution au choix de l&rsquo;utilisateur (par exemple Visual Studio, Code::Blocks, Eclipse) à partir d&rsquo;une collection de fichiers de code source en utilisant des scripts CMake prédéfinis. Cela nous permet de générer un fichier de projet Visual Studio 2019 à partir du paquetage source de GLFW que nous pouvons utiliser pour compiler la bibliothèque. Tout d&rsquo;abord, nous devons télécharger et installer CMake qui peut être téléchargé sur leur page de <a href="http://www.cmake.org/cmake/resources/software.html">téléchargement</a>.</p>
+<p>Une fois CMake installé, vous pouvez choisir d&rsquo;exécuter CMake à partir de la ligne de commande ou via leur interface graphique. Comme nous n&rsquo;essayons pas de compliquer les choses, nous allons utiliser l&rsquo;interface graphique. CMake nécessite un dossier de code source et un dossier de destination pour les binaires. Pour le dossier du code source, nous allons choisir le dossier racine du paquetage source GLFW téléchargé et pour le dossier de build, nous allons créer un nouveau répertoire build et sélectionner ce répertoire.
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/window1.png" alt="window1"/>
+Une fois les dossiers source et destination définis, cliquez sur le bouton Configure pour que CMake puisse lire les paramètres requis et le code source. Nous devons ensuite choisir le générateur du projet et comme nous utilisons Visual Studio 2019, nous choisirons l&rsquo;option Visual Studio 16 (<strong>Visual Studio 2019 est également connu sous le nom de Visual Studio 16</strong>). CMake affichera alors les options de construction possibles pour configurer la bibliothèque résultante. Nous pouvons les laisser à leurs valeurs par défaut et cliquer à nouveau sur Configure pour enregistrer les paramètres. Une fois les paramètres définis, nous cliquons sur Generate et les fichiers de projet résultants seront générés dans votre dossier de construction.</p>
+<h2 id="compilation">Compilation</h2>
+<p>Dans le dossier de build, un fichier nommé <code>GLFW.sln</code> peut maintenant être trouvé et nous l&rsquo;ouvrons avec Visual Studio 2019. Puisque CMake a généré un fichier de projet qui contient déjà les paramètres de configuration appropriés, nous n&rsquo;avons plus qu&rsquo;à construire la solution. CMake devrait avoir automatiquement configuré la solution pour qu&rsquo;elle se compile en une bibliothèque 64 bits ; maintenant, appuyez sur build solution. Cela nous donnera un fichier de bibliothèque compilé qui peut être trouvé dans build/src/Debug nommé <code>glfw3.lib</code>.</p>
+<p>Une fois la bibliothèque générée, nous devons nous assurer que l&rsquo;IDE sait où trouver la bibliothèque et les fichiers d&rsquo;inclusion pour notre programme OpenGL. Il y a deux approches communes pour faire cela :</p>
+<ol>
+<li>Nous trouvons les dossiers <code>/lib</code> et <code>/include</code> de l&rsquo;IDE/compilateur et ajoutons le contenu du dossier <code>include</code> de GLFW au dossier <code>/include</code> de l&rsquo;IDE et ajoutons de la même manière <code>glfw3.lib</code> au dossier <code>/lib</code> de l&rsquo;IDE. Cela fonctionne, mais ce n&rsquo;est pas l&rsquo;approche recommandée. Il est difficile de garder une trace de votre bibliothèque et des fichiers inclus et une nouvelle installation de votre IDE/compilateur vous oblige à recommencer ce processus.</li>
+<li>Une autre approche (recommandée) consiste à créer un nouvel ensemble de répertoires à l&rsquo;emplacement de votre choix, contenant tous les fichiers d&rsquo;en-tête/librairies de tiers auxquels vous pouvez vous référer à partir de votre IDE/compilateur. Vous pouvez, par exemple, créer un seul dossier qui contient un dossier <code>Libs</code> et <code>Include</code> où nous stockons toutes nos bibliothèques et fichiers d&rsquo;en-tête respectivement pour les projets OpenGL. Maintenant, toutes les bibliothèques tierces sont organisées en un seul endroit (qui peut être partagé entre plusieurs ordinateurs). Cependant, à chaque fois que nous créons un nouveau projet, nous devons indiquer à l&rsquo;IDE où trouver ces répertoires.</li>
+</ol>
+<p>Une fois que les fichiers nécessaires sont stockés à l&rsquo;emplacement de votre choix, nous pouvons commencer à créer notre premier projet OpenGL GLFW.</p>
+<h2 id="notre-premier-projet">Notre premier projet</h2>
+<p>Tout d&rsquo;abord, ouvrons Visual Studio et créons un nouveau projet. Choisissez C++ si plusieurs options sont proposées et prenez le projet vide (n&rsquo;oubliez pas de donner un nom approprié à votre projet). Comme nous allons tout faire en 64 bits et que le projet est par défaut en 32 bits, nous devrons changer la liste déroulante en haut à côté de Debug de x86 à x64 :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/window2.png" alt="window2"/>
+Une fois cela fait, nous avons maintenant un espace de travail pour créer notre toute première application OpenGL !</p>
+<h2 id="linking-création-de-liens">Linking (création de liens)</h2>
+<p>Pour que le projet puisse utiliser GLFW, nous devons lier la bibliothèque à notre projet. Cela peut être fait en spécifiant que nous voulons utiliser <code>glfw3.lib</code> dans les paramètres de l&rsquo;éditeur de liens, mais notre projet ne sait pas encore où trouver <code>glfw3.lib</code> puisque nous stockons nos bibliothèques tierces dans un répertoire différent. Nous devons donc d&rsquo;abord ajouter ce répertoire au projet.</p>
+<p>Nous pouvons dire à l&rsquo;IDE de prendre en compte ce répertoire lorsqu&rsquo;il doit rechercher des fichiers de bibliothèque et d&rsquo;inclusion. Cliquez avec le bouton droit de la souris sur le nom du projet dans l&rsquo;explorateur de solutions et allez ensuite dans VC++ Directories comme le montre l&rsquo;image ci-dessous :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/window3.png" alt="window3"/>
+À partir de là, vous pouvez ajouter vos propres répertoires pour indiquer au projet où chercher. Vous pouvez le faire en l&rsquo;insérant manuellement dans le texte ou en cliquant sur la chaîne de caractères appropriée et en sélectionnant l&rsquo;option <code>&lt;Editer..&gt;</code>. Procédez de la même manière pour les répertoires <code>Library</code> et <code>Include</code> :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/window4.png" alt="window4"/>
+Ici, vous pouvez ajouter autant de répertoires supplémentaires que vous le souhaitez et à partir de ce moment, l&rsquo;IDE recherchera également ces répertoires lors de la recherche de bibliothèques et de fichiers d&rsquo;en-tête. Dès que votre dossier Include de GLFW est inclus, vous pourrez trouver tous les fichiers d&rsquo;en-tête pour GLFW en incluant . Il en va de même pour les répertoires de bibliothèques.</p>
+<p>Puisque VS peut maintenant trouver tous les fichiers nécessaires, nous pouvons enfin lier GLFW au projet en allant dans l&rsquo;onglet <code>Linker</code> et <code>Input</code> :
+<img src="/docs%5cLEARNOPENGL_FR%5c01_Getting_Started%5cimg/window5.png" alt="window5"/>
+Pour lier à une bibliothèque, il faut spécifier le nom de la bibliothèque à l&rsquo;éditeur de liens. Puisque le nom de la bibliothèque est <code>glfw3.lib</code>, nous l&rsquo;ajoutons au champ Dépendances supplémentaires (soit manuellement, soit en utilisant l&rsquo;option ) et à partir de là, GLFW sera lié lors de la compilation. En plus de GLFW, nous devrions également ajouter une entrée de lien vers la bibliothèque OpenGL, mais cela peut différer d&rsquo;un système d&rsquo;exploitation à l&rsquo;autre :</p>
+<h3 id="bibliothèque-opengl-sous-windows">Bibliothèque OpenGL sous Windows</h3>
+<p>Si vous êtes sous Windows, la bibliothèque OpenGL <code>opengl32.lib</code> est fournie avec le SDK de Microsoft, qui est installé par défaut lorsque vous installez Visual Studio. Puisque ce chapitre utilise le compilateur VS et est sous Windows, nous ajoutons <code>opengl32.lib</code> aux paramètres de l&rsquo;éditeur de liens. Notez que l&rsquo;équivalent 64 bits de la bibliothèque OpenGL s&rsquo;appelle <code>opengl32.lib</code>, tout comme l&rsquo;équivalent 32 bits, ce qui est un nom un peu malheureux.</p>
+<h3 id="bibliothèque-opengl-sous-linux">Bibliothèque OpenGL sous Linux</h3>
+<p>Sur les systèmes Linux, vous devez vous lier à la bibliothèque <code>libGL.so</code> en ajoutant <code>-lGL</code> aux paramètres de votre éditeur de liens. Si vous ne trouvez pas cette bibliothèque, vous devez probablement installer l&rsquo;un des paquets de développement Mesa, NVidia ou AMD.</p>
+<p>Ensuite, une fois que vous avez ajouté les bibliothèques GLFW et OpenGL aux paramètres de l&rsquo;éditeur de liens, vous pouvez inclure les fichiers d&rsquo;en-tête pour GLFW comme suit :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;GLFW/glfw3.h&gt;</span><span style="color:#75715e">
+</span></span></span></code></pre></div><blockquote>
+<p>Pour les utilisateurs de Linux qui compilent avec GCC, les options de ligne de commande suivantes peuvent vous aider à compiler le projet : -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl. Le fait de ne pas lier correctement les bibliothèques correspondantes générera de nombreuses erreurs de référence non définie.</p>
+</blockquote>
+<p>Ceci conclut l&rsquo;installation et la configuration de GLFW.</p>
+<h2 id="glad">GLAD</h2>
+<p>Nous ne sommes pas encore tout à fait au point, car il reste encore une chose à faire. Parce qu&rsquo;OpenGL n&rsquo;est qu&rsquo;une norme/spécification, c&rsquo;est au fabricant du pilote d&rsquo;implémenter la spécification dans un pilote que la carte graphique supporte. Comme il existe de nombreuses versions différentes des pilotes OpenGL, l&rsquo;emplacement de la plupart de ses fonctions n&rsquo;est pas connu à la compilation et doit être interrogé à l&rsquo;exécution. Il incombe alors au développeur de récupérer l&rsquo;emplacement des fonctions dont il a besoin et de les stocker dans des pointeurs de fonction pour une utilisation ultérieure. La récupération de ces emplacements est spécifique au système d&rsquo;exploitation. Sous Windows, cela ressemble à quelque chose comme ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// define the function&#39;s prototype
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">typedef</span> <span style="color:#a6e22e">void</span> (<span style="color:#f92672">*</span>GL_GENBUFFERS) (GLsizei, GLuint<span style="color:#f92672">*</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// find the function and assign it to a function pointer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>GL_GENBUFFERS glGenBuffers  <span style="color:#f92672">=</span> (GL_GENBUFFERS)wglGetProcAddress(<span style="color:#e6db74">&#34;glGenBuffers&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// function can now be called as normal
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> buffer;
+</span></span><span style="display:flex;"><span>glGenBuffers(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>buffer);
+</span></span></code></pre></div><p>Comme vous pouvez le constater, le code est complexe et il est fastidieux de le faire pour chaque fonction dont vous pourriez avoir besoin et qui n&rsquo;est pas encore déclarée. Heureusement, il existe des bibliothèques à cet effet, dont GLAD, qui est une bibliothèque populaire et à jour.</p>
+<h3 id="paramétrer-glad">Paramétrer GLAD</h3>
+<p>GLAD est une bibliothèque open source qui gère tout ce travail fastidieux dont nous avons parlé. GLAD a une configuration légèrement différente de la plupart des bibliothèques open source. GLAD utilise un service web qui permet d&rsquo;indiquer à GLAD la version d&rsquo;OpenGL que l&rsquo;on souhaite définir et de charger toutes les fonctions OpenGL pertinentes en fonction de cette version.</p>
+<p>Allez sur le <a href="http://glad.dav1d.de/">service web</a> GLAD, assurez-vous que le langage est défini sur C++, et dans la section API sélectionnez une version d&rsquo;OpenGL d&rsquo;au moins 3.3 (c&rsquo;est ce que nous utiliserons ; des versions plus élevées sont également acceptables). Assurez-vous également que le profil est défini sur Core et que l&rsquo;option <em>Generate a loader</em> est cochée. Ignorez les extensions (pour l&rsquo;instant) et cliquez sur <em>Generate</em> pour produire les fichiers de bibliothèque résultants.</p>
+<p>GLAD devrait maintenant vous avoir fourni un fichier zip contenant deux dossiers include, et un seul fichier <code>glad.c</code>. Copiez les deux dossiers <code>include</code> (<code>glad</code> et <code>KHR</code>) dans votre répertoire include(s) (ou ajoutez un élément supplémentaire pointant vers ces dossiers), et ajoutez le fichier <code>glad.c</code> à votre projet.</p>
+<p>Après les étapes précédentes, vous devriez être en mesure d&rsquo;ajouter la directive include suivante au-dessus de votre fichier :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;glad/glad.h&gt;</span><span style="color:#75715e"> 
+</span></span></span></code></pre></div><p>En appuyant sur le bouton de compilation, vous ne devriez pas avoir d&rsquo;erreurs, et nous sommes prêts pour le prochain chapitre où nous verrons comment utiliser GLFW et GLAD pour configurer un contexte OpenGL et faire apparaître une fenêtre. Assurez-vous que tous vos répertoires include et library sont corrects et que les noms des librairies dans les paramètres de l&rsquo;éditeur de liens correspondent aux librairies correspondantes.</p>
+<h2 id="ressources-supplémentaires">Ressources supplémentaires</h2>
+<ul>
+<li>GLFW : <a href="http://www.glfw.org/docs/latest/window_guide.html">Window Guide</a> : guide officiel de GLFW sur la mise en place et la configuration d&rsquo;une fenêtre GLFW.</li>
+<li><a href="http://www.opengl-tutorial.org/miscellaneous/building-your-own-c-application/">Building applications</a> : fournit d&rsquo;excellentes informations sur le processus de compilation/liaison de votre application, ainsi qu&rsquo;une longue liste d&rsquo;erreurs possibles (avec leurs solutions).</li>
+<li><a href="http://wiki.codeblocks.org/index.php?title=Using_GLFW_with_Code::Blocks">GLFW avec Code::Blocks</a> : construction de GLFW dans l&rsquo;IDE Code::Blocks.</li>
+<li><a href="http://www.cmake.org/runningcmake/">Running CMake</a> : bref aperçu de l&rsquo;exécution de CMake sous Windows et Linux.</li>
+<li><a href="https://learnopengl.com/demo/autotools_tutorial.txt">Writing a build system under Linux</a> : un tutoriel autotools par Wouter Verholst sur la façon d&rsquo;écrire un système de compilation sous Linux.</li>
+<li><a href="https://github.com/Polytonic/Glitter">Polytonic/Glitter</a> : un simple projet de base qui est préconfiguré avec toutes les bibliothèques pertinentes ; idéal si vous voulez un exemple de projet sans avoir à compiler toutes les bibliothèques vous-même.</li>
+</ul>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

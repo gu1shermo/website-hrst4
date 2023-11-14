@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+<br><br>
+<h1 id="shader-de-géométrie">Shader de géométrie</h1>
+<p><strong>Entre le shader de sommets et le shader de fragments, il existe une étape de shader optionnelle appelée shader de géométrie.</strong> Un shader géométrique prend en entrée un ensemble de sommets qui forment une primitive unique, par exemple un point ou un triangle. Le shader géométrique peut ensuite transformer ces sommets comme il l&rsquo;entend avant de les envoyer à l&rsquo;étape suivante du shader. <strong>Ce qui rend le shader géométrique intéressant, c&rsquo;est qu&rsquo;il est capable de convertir la primitive d&rsquo;origine (ensemble de sommets) en des primitives complètement différentes, en générant éventuellement plus de sommets qu&rsquo;il n&rsquo;y en avait au départ.</strong></p>
+<p>Nous allons vous plonger dans le bain en vous montrant un exemple de shader géométrique :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (points) in;
+</span></span><span style="display:flex;"><span>layout (line_strip, max_vertices <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>) out;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>() {    
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> gl_in[<span style="color:#ae81ff">0</span>].gl_Position <span style="color:#f92672">+</span> vec4(<span style="color:#f92672">-</span><span style="color:#ae81ff">0.1</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>); 
+</span></span><span style="display:flex;"><span>    EmitVertex();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> gl_in[<span style="color:#ae81ff">0</span>].gl_Position <span style="color:#f92672">+</span> vec4( <span style="color:#ae81ff">0.1</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>    EmitVertex();
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    EndPrimitive();
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Au début d&rsquo;un shader géométrique, nous devons déclarer le type d&rsquo;entrée primitive que nous recevons du shader de sommets. Pour ce faire, nous déclarons un spécificateur de layout devant le mot-clé in. Ce qualificateur de layout d&rsquo;entrée peut prendre n&rsquo;importe laquelle des valeurs primitives suivantes :</p>
+<ul>
+<li><code>points</code> : lorsque l&rsquo;on dessine des primitives GL_POINTS (<code>1</code>).</li>
+<li><code>lines</code> : lors du dessin des primitives GL_LINES ou GL_LINE_STRIP (<code>2</code>).</li>
+<li><code>lines_adjacency</code> : GL_LINES_ADJACENCY ou GL_LINE_STRIP_ADJACENCY (<code>4</code>).</li>
+<li><code>triangles</code> : GL_TRIANGLES, GL_TRIANGLE_STRIP ou GL_TRIANGLE_FAN (<code>3</code>).</li>
+<li><code>triangles_adjacency</code> : GL_TRIANGLES_ADJACENCY ou GL_TRIANGLE_STRIP_ADJACENCY (<code>6</code>).</li>
+</ul>
+<p>Ce sont presque toutes les primitives de rendu que nous pouvons donner aux appels de rendu comme <code>glDrawArrays</code>. Si nous avions choisi de dessiner les sommets en tant que <code>GL_TRIANGLES</code>, nous devrions définir le qualificateur d&rsquo;entrée à triangles. Le nombre entre parenthèses représente le nombre minimal de sommets que peut contenir une primitive.</p>
+<p>Nous devons également spécifier un type de primitive que le shader géométrique produira en sortie, ce que nous faisons par le biais d&rsquo;un spécificateur d&rsquo;agencement devant le mot-clé out. Tout comme le qualificateur de layout d&rsquo;entrée, le qualificateur de disposition de sortie peut prendre plusieurs valeurs primitives :</p>
+<ul>
+<li><code>points</code></li>
+<li><code>line_strip</code></li>
+<li><code>triangle_strip</code>
+Avec ces trois spécificateurs de sortie, nous pouvons créer presque toutes les formes que nous voulons à partir des primitives d&rsquo;entrée. Pour générer un simple triangle par exemple, nous devrions spécifier <code>triangle_strip</code> comme sortie et sortir 3 sommets.</li>
+</ul>
+<p>Le shader géométrique s&rsquo;attend également à ce que nous définissions un nombre maximum de sommets en sortie (si vous dépassez ce nombre, OpenGL ne dessinera pas les sommets supplémentaires), ce que nous pouvons également faire dans le qualificatif layout du mot-clé out. Dans ce cas particulier, nous allons sortir une <code>line strip</code> avec un nombre maximum de 2 sommets.</p>
+<blockquote>
+<p>Au cas où vous vous demanderiez ce qu&rsquo;est une <code>line strip</code> : une <strong><code>line strip</code> relie un ensemble de points pour former une ligne continue entre eux avec un minimum de 2 points.</strong> <strong>Chaque point supplémentaire crée une nouvelle ligne entre le nouveau point et le point précédent, comme vous pouvez le voir dans l&rsquo;image suivante avec des sommets à 5 points</strong> :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5c08_geometry_shader-20230823%201.png" alt="08_geometry_shader-20230823 1"/></p>
+</blockquote>
+<p>Pour générer des résultats significatifs, nous avons besoin d&rsquo;un moyen de récupérer la sortie de l&rsquo;étape de shader précédente. GLSL nous donne une variable intégrée appelée <code>gl_in</code> qui, en interne, ressemble (probablement) à quelque chose comme ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>in gl_Vertex
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    vec4  gl_Position;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> gl_PointSize;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> gl_ClipDistance[];
+</span></span><span style="display:flex;"><span>} gl_in[];  
+</span></span></code></pre></div><p>Ici, il est déclaré comme un bloc d&rsquo;interface (comme discuté dans le chapitre précédent) qui contient quelques variables intéressantes dont la plus intéressante est <code>gl_Position</code> qui contient le vecteur que nous avons défini comme la sortie du vertex shader.</p>
+<p>Notez qu&rsquo;il est déclaré comme un tableau, car la plupart des primitives de rendu contiennent plus d&rsquo;un sommet. Le shader de géométrie reçoit tous les sommets d&rsquo;une primitive en entrée.</p>
+<p>En utilisant les données de vertex de l&rsquo;étape du shader de vertex, nous pouvons générer de nouvelles données avec deux fonctions du shader de géométrie appelées <code>EmitVertex</code> et <code>EndPrimitive</code>. Le shader géométrique s&rsquo;attend à ce que vous génériez/sortiez au moins une des primitives que vous avez spécifiées en tant que sortie. Dans notre cas, nous voulons au moins générer une primitive de line strip.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (points) in;
+</span></span><span style="display:flex;"><span>layout (line_strip, max_vertices <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>) out;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>() {    
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> gl_in[<span style="color:#ae81ff">0</span>].gl_Position <span style="color:#f92672">+</span> vec4(<span style="color:#f92672">-</span><span style="color:#ae81ff">0.1</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>); 
+</span></span><span style="display:flex;"><span>    EmitVertex();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> gl_in[<span style="color:#ae81ff">0</span>].gl_Position <span style="color:#f92672">+</span> vec4( <span style="color:#ae81ff">0.1</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>    EmitVertex();
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    EndPrimitive();
+</span></span><span style="display:flex;"><span>}    
+</span></span></code></pre></div><p>Chaque fois que nous appelons <code>EmitVertex</code>, le vecteur actuellement défini dans <code>gl_Position</code> est ajouté à la primitive de sortie. Chaque fois que <code>EndPrimitive</code> est appelé, tous les sommets émis pour cette primitive sont combinés dans la primitive de rendu de sortie spécifiée. En appelant plusieurs fois <code>EndPrimitive</code>, après un ou plusieurs appels EmitVertex, il est possible de générer plusieurs primitives. Ce cas particulier émet deux vertices qui ont été translatés d&rsquo;un petit décalage par rapport à la position originale du vertex, puis appelle <code>EndPrimitive</code>, combinant les deux vertices en une seule ligne de 2 vertices.</p>
+<p>Maintenant que vous savez (en quelque sorte) comment fonctionnent les geometry shaders, vous pouvez probablement deviner ce que fait ce geometry shader. Ce shader géométrique prend une primitive de point comme entrée et crée une primitive de ligne horizontale avec le point d&rsquo;entrée en son centre. Si nous devions effectuer un rendu, cela ressemblerait à quelque chose comme ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cgeometry_shader_lines.png" alt="geometry_shader_lines"/>
+Ce n&rsquo;est pas encore très impressionnant, mais il est intéressant de considérer que cette sortie a été générée en utilisant seulement l&rsquo;appel de rendu suivant :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glDrawArrays(GL_POINTS, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">4</span>);  
+</span></span></code></pre></div><p>Bien qu&rsquo;il s&rsquo;agisse d&rsquo;un exemple relativement simple, il montre comment nous pouvons utiliser les shaders géométriques pour générer (dynamiquement) de nouvelles formes à la volée. Plus loin dans ce chapitre, nous aborderons quelques effets intéressants que nous pouvons créer à l&rsquo;aide des shaders géométriques, mais pour l&rsquo;instant, nous allons commencer par un exemple simple.</p>
+<h2 id="utiliser-les-shaders-de-géométrie">Utiliser les shaders de géométrie</h2>
+<p>Pour démontrer l&rsquo;utilisation d&rsquo;un shader géométrique, nous allons effectuer le rendu d&rsquo;une scène très simple dans laquelle nous dessinons 4 points sur le plan z en coordonnées normalisées de l&rsquo;appareil (NDC). Les coordonnées des points sont les suivantes:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> points[] <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">-</span><span style="color:#ae81ff">0.5f</span>,  <span style="color:#ae81ff">0.5f</span>, <span style="color:#75715e">// top-left
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	 <span style="color:#ae81ff">0.5f</span>,  <span style="color:#ae81ff">0.5f</span>, <span style="color:#75715e">// top-right
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	 <span style="color:#ae81ff">0.5f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.5f</span>, <span style="color:#75715e">// bottom-right
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#f92672">-</span><span style="color:#ae81ff">0.5f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.5f</span>  <span style="color:#75715e">// bottom-left
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>};  
+</span></span></code></pre></div><p>Le vertex shader doit dessiner les points sur le plan z. Nous allons donc créer un vertex shader de base :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec2 aPos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> vec4(aPos.x, aPos.y, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>); 
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Et nous sortirons la couleur verte pour tous les points que nous codons directement dans le fragment shader :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>);   
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Génère un VAO et un VBO pour les données des sommets des points, puis les dessine via <code>glDrawArrays</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>shader.use();
+</span></span><span style="display:flex;"><span>glBindVertexArray(VAO);
+</span></span><span style="display:flex;"><span>glDrawArrays(GL_POINTS, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">4</span>); 
+</span></span></code></pre></div><p>Le résultat est une scène sombre avec 4 points verts (difficiles à voir) :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cgeometry_shader_points.png" alt="geometry_shader_points"/>
+Mais n&rsquo;avons-nous pas déjà appris à faire tout cela ? Oui, et maintenant nous allons pimenter cette petite scène en y ajoutant la magie des shaders géométriques.</p>
+<p>À des fins d&rsquo;apprentissage, nous allons d&rsquo;abord créer ce que l&rsquo;on appelle un <strong>shader géométrique pass-through</strong> qui prend une primitive ponctuelle en entrée et la transmet au shader suivant sans la modifier :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (points) in;
+</span></span><span style="display:flex;"><span>layout (points, max_vertices <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>) out;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>() {    
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> gl_in[<span style="color:#ae81ff">0</span>].gl_Position; 
+</span></span><span style="display:flex;"><span>    EmitVertex();
+</span></span><span style="display:flex;"><span>    EndPrimitive();
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>A présent, ce shader géométrique devrait être assez facile à comprendre. Il émet simplement la position non modifiée du vertex qu&rsquo;il a reçue en entrée et génère une primitive de point.</p>
+<p>Un shader géométrique doit être compilé et lié à un programme tout comme les shaders de sommets et de fragments, mais cette fois nous allons créer le shader en utilisant <code>GL_GEOMETRY_SHADER</code> comme type de shader :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>geometryShader <span style="color:#f92672">=</span> glCreateShader(GL_GEOMETRY_SHADER);
+</span></span><span style="display:flex;"><span>glShaderSource(geometryShader, <span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>gShaderCode, NULL);
+</span></span><span style="display:flex;"><span>glCompileShader(geometryShader);  
+</span></span><span style="display:flex;"><span>[...]
+</span></span><span style="display:flex;"><span>glAttachShader(program, geometryShader);
+</span></span><span style="display:flex;"><span>glLinkProgram(program);  
+</span></span></code></pre></div><p>Le code de compilation des shaders est le même que celui des vertex et des fragment shaders. Vérifiez bien qu&rsquo;il n&rsquo;y a pas d&rsquo;erreurs de compilation ou d&rsquo;édition de liens !</p>
+<p>Si vous compilez et exécutez maintenant, vous devriez obtenir un résultat qui ressemble un peu à celui-ci :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cgeometry_shader_points.png" alt="geometry_shader_points"/>
+C&rsquo;est exactement la même chose que sans le geometry shader ! C&rsquo;est un peu ennuyeux, je l&rsquo;admets, mais le fait que nous ayons pu dessiner les points signifie que le geometry shader fonctionne, alors maintenant il est temps de passer aux choses plus funky !</p>
+<h2 id="construisons-des-maisons">Construisons des maisons</h2>
+<p>Dessiner des points et des lignes n&rsquo;est pas très intéressant. Nous allons donc faire preuve d&rsquo;un peu de créativité en utilisant le shader géométrique pour dessiner une maison à l&rsquo;emplacement de chaque point.
+Nous pouvons y parvenir en réglant la sortie du shader géométrique sur <code>triangle_strip</code> et en dessinant un total de trois triangles : deux pour la maison carrée et un pour le toit.</p>
+<p>Un <code>triangle strip</code> en OpenGL est un moyen plus efficace de dessiner des triangles avec moins de sommets. Une fois le premier triangle dessiné, chaque sommet suivant génère un autre triangle à côté du premier : tous les trois sommets adjacents formeront un triangle. <strong>Si nous avons un total de 6 sommets qui forment une bande de triangle, nous obtiendrons les triangles suivants : (1,2,3), (2,3,4), (3,4,5) et (4,5,6) ; formant un total de 4 triangles</strong>.
+<strong>Un triangle strip nécessite au moins 3 sommets et génère N-2 triangles ; avec 6 sommets, nous avons créé 6-2 = 4 triangles.</strong> L&rsquo;image suivante illustre ce phénomène :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5c08_geometry_shader-20230823%201.png" alt="08_geometry_shader-20230823 1"/>
+En utilisant un <code>triangle strip</code> comme sortie du shader géométrique, nous pouvons facilement créer la forme de maison que nous recherchons en générant 3 triangles adjacents dans le bon ordre.</p>
+<p>L&rsquo;image suivante montre dans quel ordre nous devons dessiner les sommets pour obtenir les triangles dont nous avons besoin, le point bleu étant le point d&rsquo;entrée :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5c08_geometry_shader-20230823%202.png" alt="08_geometry_shader-20230823 2"/>
+Cela se traduit par le shader géométrique suivant :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (points) in;
+</span></span><span style="display:flex;"><span>layout (triangle_strip, max_vertices <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>) out;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">build_house</span>(vec4 position)
+</span></span><span style="display:flex;"><span>{    
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> position <span style="color:#f92672">+</span> vec4(<span style="color:#f92672">-</span><span style="color:#ae81ff">0.2</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.2</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);    <span style="color:#75715e">// 1:bottom-left
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    EmitVertex();   
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> position <span style="color:#f92672">+</span> vec4( <span style="color:#ae81ff">0.2</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.2</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);    <span style="color:#75715e">// 2:bottom-right
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    EmitVertex();
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> position <span style="color:#f92672">+</span> vec4(<span style="color:#f92672">-</span><span style="color:#ae81ff">0.2</span>,  <span style="color:#ae81ff">0.2</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);    <span style="color:#75715e">// 3:top-left
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    EmitVertex();
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> position <span style="color:#f92672">+</span> vec4( <span style="color:#ae81ff">0.2</span>,  <span style="color:#ae81ff">0.2</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);    <span style="color:#75715e">// 4:top-right
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    EmitVertex();
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> position <span style="color:#f92672">+</span> vec4( <span style="color:#ae81ff">0.0</span>,  <span style="color:#ae81ff">0.4</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);    <span style="color:#75715e">// 5:top
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    EmitVertex();
+</span></span><span style="display:flex;"><span>    EndPrimitive();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>() {    
+</span></span><span style="display:flex;"><span>    build_house(gl_in[<span style="color:#ae81ff">0</span>].gl_Position);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Ce shader géométrique génère 5 sommets, chaque sommet étant la position du point plus un décalage pour former une grande bande triangulaire. La primitive résultante est ensuite rastérisée et le shader de fragments s&rsquo;exécute sur l&rsquo;ensemble du triangle strip, ce qui permet d&rsquo;obtenir une maison verte pour chaque point rendu :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cgeometry_shader_houses.png" alt="geometry_shader_houses.png"/>
+Vous pouvez voir que chaque maison est constituée de trois triangles, tous dessinés à partir d&rsquo;un seul point dans l&rsquo;espace. Les maisons vertes ont l&rsquo;air un peu ennuyeuses, donc nous allons les animer un peu en donnant à chaque maison une couleur unique. Pour ce faire, nous allons ajouter un attribut de vertex supplémentaire dans le vertex shader avec des informations de couleur par vertex et le diriger vers le geometry shader qui le transmet ensuite au fragment shader.</p>
+<p>Les données de vertex mises à jour sont indiquées ci-dessous :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> points[] <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span><span style="color:#ae81ff">0.5f</span>,  <span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#75715e">// top-left
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     <span style="color:#ae81ff">0.5f</span>,  <span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#75715e">// top-right
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     <span style="color:#ae81ff">0.5f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">0.0f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#75715e">// bottom-right
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">-</span><span style="color:#ae81ff">0.5f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.5f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">1.0f</span>, <span style="color:#ae81ff">0.0f</span>  <span style="color:#75715e">// bottom-left
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>};  
+</span></span></code></pre></div><p>Nous mettons ensuite à jour le shader de sommets pour transmettre l&rsquo;attribut de couleur au shader de géométrie à l&rsquo;aide d&rsquo;un bloc d&rsquo;interface :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec2 aPos;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>) in vec3 aColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>out VS_OUT {
+</span></span><span style="display:flex;"><span>    vec3 color;
+</span></span><span style="display:flex;"><span>} vs_out;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> vec4(aPos.x, aPos.y, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>); 
+</span></span><span style="display:flex;"><span>    vs_out.color <span style="color:#f92672">=</span> aColor;
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Nous devons ensuite déclarer le même bloc d&rsquo;interface (avec un nom d&rsquo;interface différent) dans le shader géométrique :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>in VS_OUT {
+</span></span><span style="display:flex;"><span>    vec3 color;
+</span></span><span style="display:flex;"><span>} gs_in[];  
+</span></span></code></pre></div><p>Étant donné que le shader de géométrie agit sur un ensemble de sommets, ses données d&rsquo;entrée provenant du shader de sommets sont toujours représentées sous forme de tableaux de données de sommets, même si nous n&rsquo;avons pour l&rsquo;instant qu&rsquo;un seul sommet.</p>
+<blockquote>
+<p>Nous n&rsquo;avons pas nécessairement besoin d&rsquo;utiliser des blocs d&rsquo;interface pour transférer des données au shader de géométrie. Nous aurions également pu l&rsquo;écrire comme suit</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>in vec3 outColor[];
+</span></span></code></pre></div><blockquote>
+<p>Cela fonctionne si le shader de sommets a transmis le vecteur de couleur en tant que vec3 <code>outColor</code>. Cependant, les blocs d&rsquo;interface sont plus faciles à utiliser dans les shaders tels que le shader de géométrie. En pratique, les entrées du shader de géométrie peuvent devenir assez volumineuses et les regrouper dans un grand tableau de blocs d&rsquo;interface est beaucoup plus logique.</p>
+</blockquote>
+<p>Nous devons également déclarer un vecteur de couleur de sortie pour l&rsquo;étape suivante du shader de fragment :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>out vec3 fColor;  
+</span></span></code></pre></div><p>Comme le fragment shader n&rsquo;attend qu&rsquo;une seule couleur (interpolée), cela n&rsquo;a pas de sens de transmettre plusieurs couleurs. Le vecteur <code>fColor</code> n&rsquo;est donc pas un tableau, mais un vecteur unique. Lors de l&rsquo;émission d&rsquo;un vertex, ce dernier stockera la dernière valeur stockée dans <code>fColor</code> en tant que valeur de sortie de ce vertex. Pour les maisons, nous pouvons remplir <code>fColor</code> une fois avec la couleur du vertex shader avant que le premier vertex ne soit émis pour colorer la maison entière :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>fColor <span style="color:#f92672">=</span> gs_in[<span style="color:#ae81ff">0</span>].color; <span style="color:#75715e">// gs_in[0] since there&#39;s only one input vertex
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>gl_Position <span style="color:#f92672">=</span> position <span style="color:#f92672">+</span> vec4(<span style="color:#f92672">-</span><span style="color:#ae81ff">0.2</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.2</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);    <span style="color:#75715e">// 1:bottom-left   
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>EmitVertex();   
+</span></span><span style="display:flex;"><span>gl_Position <span style="color:#f92672">=</span> position <span style="color:#f92672">+</span> vec4( <span style="color:#ae81ff">0.2</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.2</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);    <span style="color:#75715e">// 2:bottom-right
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>EmitVertex();
+</span></span><span style="display:flex;"><span>gl_Position <span style="color:#f92672">=</span> position <span style="color:#f92672">+</span> vec4(<span style="color:#f92672">-</span><span style="color:#ae81ff">0.2</span>,  <span style="color:#ae81ff">0.2</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);    <span style="color:#75715e">// 3:top-left
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>EmitVertex();
+</span></span><span style="display:flex;"><span>gl_Position <span style="color:#f92672">=</span> position <span style="color:#f92672">+</span> vec4( <span style="color:#ae81ff">0.2</span>,  <span style="color:#ae81ff">0.2</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);    <span style="color:#75715e">// 4:top-right
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>EmitVertex();
+</span></span><span style="display:flex;"><span>gl_Position <span style="color:#f92672">=</span> position <span style="color:#f92672">+</span> vec4( <span style="color:#ae81ff">0.0</span>,  <span style="color:#ae81ff">0.4</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);    <span style="color:#75715e">// 5:top
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>EmitVertex();
+</span></span><span style="display:flex;"><span>EndPrimitive();  
+</span></span></code></pre></div><p>Tous les sommets émis auront la dernière valeur stockée dans <code>fColor</code> intégrée dans leurs données, qui est égale à la couleur du sommet d&rsquo;entrée telle que nous l&rsquo;avons définie dans ses attributs. Toutes les maisons auront désormais leur propre couleur :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cgeometry_shader_houses_colored.png" alt="geometry_shader_houses_colored"/></p>
+<p>Pour nous amuser, nous pourrions aussi prétendre que c&rsquo;est l&rsquo;hiver et donner un peu de neige à leurs toits en donnant au dernier sommet une couleur qui lui est propre :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>fColor <span style="color:#f92672">=</span> gs_in[<span style="color:#ae81ff">0</span>].color; 
+</span></span><span style="display:flex;"><span>gl_Position <span style="color:#f92672">=</span> position <span style="color:#f92672">+</span> vec4(<span style="color:#f92672">-</span><span style="color:#ae81ff">0.2</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.2</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);    <span style="color:#75715e">// 1:bottom-left   
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>EmitVertex();   
+</span></span><span style="display:flex;"><span>gl_Position <span style="color:#f92672">=</span> position <span style="color:#f92672">+</span> vec4( <span style="color:#ae81ff">0.2</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.2</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);    <span style="color:#75715e">// 2:bottom-right
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>EmitVertex();
+</span></span><span style="display:flex;"><span>gl_Position <span style="color:#f92672">=</span> position <span style="color:#f92672">+</span> vec4(<span style="color:#f92672">-</span><span style="color:#ae81ff">0.2</span>,  <span style="color:#ae81ff">0.2</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);    <span style="color:#75715e">// 3:top-left
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>EmitVertex();
+</span></span><span style="display:flex;"><span>gl_Position <span style="color:#f92672">=</span> position <span style="color:#f92672">+</span> vec4( <span style="color:#ae81ff">0.2</span>,  <span style="color:#ae81ff">0.2</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);    <span style="color:#75715e">// 4:top-right
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>EmitVertex();
+</span></span><span style="display:flex;"><span>gl_Position <span style="color:#f92672">=</span> position <span style="color:#f92672">+</span> vec4( <span style="color:#ae81ff">0.0</span>,  <span style="color:#ae81ff">0.4</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);    <span style="color:#75715e">// 5:top
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>fColor <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>EmitVertex();
+</span></span><span style="display:flex;"><span>EndPrimitive();  
+</span></span></code></pre></div><p>Le résultat ressemble maintenant à ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cgeometry_shader_houses_snow.png" alt="geometry_shader_houses_snow"/>
+Vous pouvez comparer votre code source avec le code OpenGL <a href="https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/9.1.geometry_shader_houses/geometry_shader_houses.cpp">ici</a>.</p>
+<p>Vous pouvez voir qu&rsquo;avec les shaders géométriques, vous pouvez être très créatif, même avec les primitives les plus simples. Comme les formes sont générées dynamiquement sur le matériel ultra-rapide de votre GPU, cela peut être beaucoup plus puissant que de définir ces formes soi-même dans les tampons de vertex. Les shaders de géométrie sont un excellent outil pour les formes simples (qui se répètent souvent), comme les cubes dans un monde de voxels ou les feuilles d&rsquo;herbe sur un grand terrain extérieur.</p>
+<h2 id="exploser-les-objets">Exploser les objets</h2>
+<p>L&rsquo;avantage d&rsquo;un tel effet de geometry shader est qu&rsquo;il fonctionne sur tous les objets, quelle que soit leur complexité.</p>
+<p>Comme nous allons traduire chaque sommet dans la direction du vecteur normal du triangle, nous devons d&rsquo;abord calculer ce vecteur normal. Il s&rsquo;agit de calculer un vecteur perpendiculaire à la surface d&rsquo;un triangle, en utilisant uniquement les trois sommets auxquels nous avons accès. Vous vous souvenez peut-être que dans le chapitre sur les transformations, <strong>nous pouvons retrouver un vecteur perpendiculaire à deux autres vecteurs en utilisant le produit vectoriel</strong>. Si nous devions récupérer deux vecteurs $\vec{a}$ et $\vec{b}$ qui sont parallèles à la surface d&rsquo;un triangle, nous pourrions récupérer son vecteur normal en effectuant un produit vectoriel sur ces vecteurs. La fonction de shader géométrique suivante fait exactement cela pour récupérer le vecteur normal en utilisant 3 coordonnées de vertex en entrée :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 <span style="color:#a6e22e">GetNormal</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   vec3 a <span style="color:#f92672">=</span> vec3(gl_in[<span style="color:#ae81ff">0</span>].gl_Position) <span style="color:#f92672">-</span> vec3(gl_in[<span style="color:#ae81ff">1</span>].gl_Position);
+</span></span><span style="display:flex;"><span>   vec3 b <span style="color:#f92672">=</span> vec3(gl_in[<span style="color:#ae81ff">2</span>].gl_Position) <span style="color:#f92672">-</span> vec3(gl_in[<span style="color:#ae81ff">1</span>].gl_Position);
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">return</span> normalize(cross(a, b));
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Ici, nous retrouvons deux vecteurs $\vec{a}$ et $\vec{b}$ qui sont parallèles à la surface du triangle en utilisant la soustraction de vecteurs. En soustrayant deux vecteurs l&rsquo;un de l&rsquo;autre, on obtient un vecteur qui est la différence des deux vecteurs. Étant donné que les trois points se trouvent sur le plan du triangle, la soustraction de n&rsquo;importe lequel de ses vecteurs l&rsquo;un de l&rsquo;autre donne un vecteur parallèle au plan. Notez que si nous intervertissons $\vec{a}$ et $\vec{b}$ dans la fonction de croisement, nous obtiendrons un vecteur normal qui pointe dans la direction opposée - <strong>l&rsquo;ordre est important ici !</strong></p>
+<p>Maintenant que nous savons comment calculer un vecteur normal, nous pouvons créer une fonction <code>explode</code> qui prend ce vecteur normal avec un vecteur de position de sommet. La fonction renvoie un nouveau vecteur qui translate le vecteur position dans la direction du vecteur normal :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec4 <span style="color:#a6e22e">explode</span>(vec4 position, vec3 normal)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> magnitude <span style="color:#f92672">=</span> <span style="color:#ae81ff">2.0</span>;
+</span></span><span style="display:flex;"><span>    vec3 direction <span style="color:#f92672">=</span> normal <span style="color:#f92672">*</span> ((sin(time) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1.0</span>) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2.0</span>) <span style="color:#f92672">*</span> magnitude; 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> position <span style="color:#f92672">+</span> vec4(direction, <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>La fonction elle-même ne devrait pas être trop compliquée. La fonction <code>sin</code> reçoit comme argument une variable temporelle uniforme qui, en fonction du temps, renvoie une valeur comprise entre $-1.0$ et $1.0$. Comme nous ne voulons pas faire imploser l&rsquo;objet, nous transformons la valeur <code>sin</code> dans l&rsquo;intervalle $[0,1]$. La valeur résultante est ensuite utilisée pour mettre à l&rsquo;échelle le vecteur normal et le vecteur de direction résultant est ajouté au vecteur de position.</p>
+<p>Le shader géométrique complet pour l&rsquo;effet d&rsquo;implosion, tout en dessinant un modèle chargé à l&rsquo;aide de notre chargeur de modèle, ressemble un peu à ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (triangles) in;
+</span></span><span style="display:flex;"><span>layout (triangle_strip, max_vertices <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>) out;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>in VS_OUT {
+</span></span><span style="display:flex;"><span>    vec2 texCoords;
+</span></span><span style="display:flex;"><span>} gs_in[];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>out vec2 TexCoords; 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform <span style="color:#66d9ef">float</span> time;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>vec4 <span style="color:#a6e22e">explode</span>(vec4 position, vec3 normal) { ... }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>vec3 <span style="color:#a6e22e">GetNormal</span>() { ... }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>() {    
+</span></span><span style="display:flex;"><span>    vec3 normal <span style="color:#f92672">=</span> GetNormal();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> explode(gl_in[<span style="color:#ae81ff">0</span>].gl_Position, normal);
+</span></span><span style="display:flex;"><span>    TexCoords <span style="color:#f92672">=</span> gs_in[<span style="color:#ae81ff">0</span>].texCoords;
+</span></span><span style="display:flex;"><span>    EmitVertex();
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> explode(gl_in[<span style="color:#ae81ff">1</span>].gl_Position, normal);
+</span></span><span style="display:flex;"><span>    TexCoords <span style="color:#f92672">=</span> gs_in[<span style="color:#ae81ff">1</span>].texCoords;
+</span></span><span style="display:flex;"><span>    EmitVertex();
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> explode(gl_in[<span style="color:#ae81ff">2</span>].gl_Position, normal);
+</span></span><span style="display:flex;"><span>    TexCoords <span style="color:#f92672">=</span> gs_in[<span style="color:#ae81ff">2</span>].texCoords;
+</span></span><span style="display:flex;"><span>    EmitVertex();
+</span></span><span style="display:flex;"><span>    EndPrimitive();
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Notez que nous sortons également les coordonnées de texture appropriées avant d&rsquo;émettre un vertex.</p>
+<p>N&rsquo;oubliez pas non plus de définir l&rsquo;uniforme de temps dans votre code OpenGL :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>shader.setFloat(<span style="color:#e6db74">&#34;time&#34;</span>, glfwGetTime());  
+</span></span></code></pre></div><p>Le résultat est un modèle 3D qui semble continuellement exploser ses sommets au fil du temps, après quoi il revient à la normale. Bien qu&rsquo;il ne soit pas vraiment super utile, il vous montre une utilisation plus avancée du geometry shader. Vous pouvez comparer votre code source avec le code source complet <a href="https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/9.2.geometry_shader_exploding/geometry_shader_exploding.cpp">ici</a>.</p>
+<h2 id="visualisation-des-vecteurs-normaux">Visualisation des vecteurs normaux</h2>
+<p>Pour faire bouger les choses, nous allons maintenant discuter d&rsquo;<strong>un exemple d&rsquo;utilisation du shader géométrique qui est réellement utile : la visualisation des vecteurs normaux de n&rsquo;importe quel objet</strong>. Lorsque vous programmez des shaders d&rsquo;éclairage, vous finirez par rencontrer des résultats visuels bizarres dont la cause est difficile à déterminer. <strong>Les vecteurs normaux incorrects sont une cause fréquente d&rsquo;erreurs d&rsquo;éclairage</strong>. Cela est dû soit à un chargement incorrect des données de vertex, soit à une mauvaise spécification des attributs de vertex, soit à une mauvaise gestion des vecteurs normaux dans les shaders. Ce que nous voulons, c&rsquo;est un moyen de détecter si les vecteurs normaux que nous avons fournis sont corrects. Un excellent moyen de déterminer si vos vecteurs normaux sont corrects est de les visualiser, et il se trouve que le shader géométrique est un outil extrêmement utile à cette fin.</p>
+<p>L&rsquo;idée est la suivante : n<strong>ous dessinons d&rsquo;abord la scène comme une scène normale sans geometry shader, puis nous dessinons la scène une seconde fois, mais cette fois en affichant uniquement les vecteurs normaux que nous générons par le biais d&rsquo;un geometry shader</strong>. Le shader géométrique prend en entrée une primitive triangulaire et génère 3 lignes à partir d&rsquo;elle dans les directions de leur normale - un vecteur de normale pour chaque vertex. Dans le code, cela ressemblera à quelque chose comme ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>shader.use();
+</span></span><span style="display:flex;"><span>DrawScene();
+</span></span><span style="display:flex;"><span>normalDisplayShader.use();
+</span></span><span style="display:flex;"><span>DrawScene();
+</span></span></code></pre></div><p>Cette fois-ci, nous créons un shader géométrique qui utilise les normales des vertex fournies par le modèle au lieu de les générer nous-mêmes. Pour tenir compte de la mise à l&rsquo;échelle et des rotations (dues à la vue et à la matrice du modèle), nous transformerons les normales à l&rsquo;aide d&rsquo;une matrice normale. Le shader géométrique reçoit ses vecteurs de position en tant que coordonnées de l&rsquo;espace de vue, nous devons donc également transformer les vecteurs normaux dans le même espace. Tout cela peut être fait dans le vertex shader :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec3 aPos;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>) in vec3 aNormal;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>out VS_OUT {
+</span></span><span style="display:flex;"><span>    vec3 normal;
+</span></span><span style="display:flex;"><span>} vs_out;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform mat4 view;
+</span></span><span style="display:flex;"><span>uniform mat4 model;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> view <span style="color:#f92672">*</span> model <span style="color:#f92672">*</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>); 
+</span></span><span style="display:flex;"><span>    mat3 normalMatrix <span style="color:#f92672">=</span> mat3(transpose(inverse(view <span style="color:#f92672">*</span> model)));
+</span></span><span style="display:flex;"><span>    vs_out.normal <span style="color:#f92672">=</span> normalize(vec3(vec4(normalMatrix <span style="color:#f92672">*</span> aNormal, <span style="color:#ae81ff">0.0</span>)));
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Le vecteur normal transformé de l&rsquo;espace visuel est ensuite transmis à l&rsquo;étape suivante du shader par l&rsquo;intermédiaire d&rsquo;un bloc d&rsquo;interface. Le shader de géométrie prend alors chaque sommet (avec une position et un vecteur normal) et dessine un vecteur normal à partir de chaque vecteur de position :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (triangles) in;
+</span></span><span style="display:flex;"><span>layout (line_strip, max_vertices <span style="color:#f92672">=</span> <span style="color:#ae81ff">6</span>) out;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>in VS_OUT {
+</span></span><span style="display:flex;"><span>    vec3 normal;
+</span></span><span style="display:flex;"><span>} gs_in[];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> MAGNITUDE <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.4</span>;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>uniform mat4 projection;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">GenerateLine</span>(<span style="color:#66d9ef">int</span> index)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> projection <span style="color:#f92672">*</span> gl_in[index].gl_Position;
+</span></span><span style="display:flex;"><span>    EmitVertex();
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> projection <span style="color:#f92672">*</span> (gl_in[index].gl_Position <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>                                vec4(gs_in[index].normal, <span style="color:#ae81ff">0.0</span>) <span style="color:#f92672">*</span> MAGNITUDE);
+</span></span><span style="display:flex;"><span>    EmitVertex();
+</span></span><span style="display:flex;"><span>    EndPrimitive();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    GenerateLine(<span style="color:#ae81ff">0</span>); <span style="color:#75715e">// first vertex normal
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    GenerateLine(<span style="color:#ae81ff">1</span>); <span style="color:#75715e">// second vertex normal
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    GenerateLine(<span style="color:#ae81ff">2</span>); <span style="color:#75715e">// third vertex normal
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}  
+</span></span></code></pre></div><p>Le contenu des shaders géométriques comme ceux-ci devrait être explicite maintenant. Notez que nous multiplions le vecteur normal par un vecteur <code>MAGNITUDE</code> pour limiter la taille des vecteurs normaux affichés (sinon ils seraient un peu trop grands).</p>
+<p>Puisque la visualisation des normales est principalement utilisée à des fins de débogage, nous pouvons simplement les afficher sous forme de lignes monocolores (ou de lignes super fantaisistes si vous le souhaitez) avec l&rsquo;aide du fragment shader :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(<span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Si vous rendez votre modèle d&rsquo;abord avec les shaders normaux, puis avec le shader spécial de visualisation des normales, vous obtiendrez quelque chose comme ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cgeometry_shader_normals.png" alt="geometry_shader_normals"/>
+Outre le fait que notre sac à dos a maintenant l&rsquo;air un peu poilu, cela nous donne une méthode très utile pour déterminer si les vecteurs normaux d&rsquo;un modèle sont effectivement corrects. On peut imaginer que des shaders géométriques comme celui-ci pourraient également être utilisés pour ajouter de la fourrure aux objets.</p>
+<p>Vous pouvez trouver le code source de l&rsquo;OpenGL <a href="https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/9.3.geometry_shader_normals/normal_visualization.cpp">ici</a>.</p>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

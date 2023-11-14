@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+<br><br>
+<h1 id="normal-mapping">Normal mapping</h1>
+<p>Toutes nos scènes sont remplies de meshes, chacun composé de centaines, voire de milliers de triangles. Nous avons renforcé le réalisme en appliquant des textures 2D sur ces triangles plats, cachant ainsi le fait que les polygones ne sont que de minuscules triangles plats. Les textures sont utiles, mais lorsque l&rsquo;on examine de près les meshes, il est toujours facile de voir les surfaces planes sous-jacentes. La plupart des surfaces de la vie réelle ne sont cependant pas plates et présentent de nombreux détails (bosses).</p>
+<p>Prenons l&rsquo;exemple d&rsquo;une surface en briques. La surface d&rsquo;une brique est assez rugueuse et n&rsquo;est évidemment pas complètement plate : elle contient des bandes de ciment enfoncées et un grand nombre de petits trous et fissures détaillés. Si nous devions voir une telle surface de briques dans une scène éclairée, l&rsquo;immersion serait facilement rompue. Ci-dessous, nous pouvons voir une texture de brique appliquée à une surface plane éclairée par une lumière ponctuelle.
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c03_normal_mapping-20230902-normal1.png" alt="03_normal_mapping-20230902-normal1"/>
+L&rsquo;éclairage ne tient compte d&rsquo;aucune des petites fissures et des trous et ignore complètement les rayures profondes entre les briques ; la surface semble parfaitement plate. Nous pouvons partiellement corriger l&rsquo;aspect plat en utilisant une carte spéculaire pour prétendre que certaines surfaces sont moins éclairées en raison de la profondeur ou d&rsquo;autres détails, mais il s&rsquo;agit plus d&rsquo;une astuce que d&rsquo;une véritable solution. Ce qu&rsquo;il nous faut, c&rsquo;est un moyen d&rsquo;informer le système d&rsquo;éclairage de tous les petits détails de la surface qui ressemblent à de la profondeur.</p>
+<p><strong>Si nous y réfléchissons du point de vue de la lumière, comment se fait-il que la surface soit éclairée comme une surface complètement plate ? La réponse est le vecteur normal de la surface</strong>. Du point de vue de la technique d&rsquo;éclairage, la seule façon de déterminer la forme d&rsquo;un objet est son vecteur normal perpendiculaire. La surface de la brique n&rsquo;a qu&rsquo;un seul vecteur normal et, par conséquent, la surface est uniformément éclairée en fonction de la direction de ce vecteur normal. Et si, au lieu d&rsquo;une normale par surface qui est la même pour chaque fragment, nous utilisions une normale par fragment qui est différente pour chaque fragment ? De cette façon, nous pouvons légèrement dévier le vecteur normal en fonction des petits détails d&rsquo;une surface ; cela donne l&rsquo;illusion que la surface est beaucoup plus complexe :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c03_normal_mapping-20230902-normal2.png" alt="03_normal_mapping-20230902-normal2"/>
+L&rsquo;utilisation de normales par fragment permet de faire croire à l&rsquo;éclairage qu&rsquo;une surface est constituée de minuscules plans (perpendiculaires aux vecteurs normaux), ce qui augmente considérablement le niveau de détail de la surface. Cette technique d&rsquo;utilisation des normales par fragment par rapport aux normales par surface est appelée &ldquo;<strong>normal mapping</strong>&rdquo; ou &ldquo;<strong>bump mapping</strong>&rdquo;. Appliquée au plan de la brique, elle ressemble un peu à ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c03_normal_mapping-20230902-normal3.png" alt="03_normal_mapping-20230902-normal3"/>
+Comme vous pouvez le constater, cette méthode permet d&rsquo;augmenter considérablement le niveau de détail pour un coût relativement faible. Comme nous ne modifions que les vecteurs normaux par fragment, il n&rsquo;est pas nécessaire de modifier l&rsquo;équation d&rsquo;éclairage. Nous transmettons maintenant à l&rsquo;algorithme d&rsquo;éclairage une normale par fragment, au lieu d&rsquo;une normale de surface interpolée. L&rsquo;éclairage fait le reste.</p>
+<h2 id="normal-mapping-1">Normal mapping</h2>
+<p>Pour que le normal mapping fonctionne, nous allons avoir besoin d&rsquo;une normale par fragment. Comme nous l&rsquo;avons fait avec les cartes diffuse et spéculaire, nous pouvons utiliser une texture 2D pour stocker les données normales par fragment. De cette manière, nous pouvons échantillonner une texture 2D pour obtenir un vecteur normal pour ce fragment spécifique.</p>
+<p>Bien que les vecteurs normaux soient des entités géométriques et que les textures ne soient généralement utilisées que pour les informations de couleur, le stockage des vecteurs normaux dans une texture n&rsquo;est pas toujours évident. Si vous pensez aux vecteurs de couleur dans une texture, ils sont représentés comme un vecteur 3D avec une composante r, g et b. Nous pouvons de la même manière stocker un vecteur normal dans une texture. De la même manière, nous pouvons stocker les composantes x, y et z d&rsquo;un vecteur normal dans les composantes de couleur correspondantes. Les vecteurs normaux sont compris entre -1 et 1, ils sont donc d&rsquo;abord mappés sur $[0,1]$ :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 rgb_normal <span style="color:#f92672">=</span> normal <span style="color:#f92672">*</span> <span style="color:#ae81ff">0.5</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">0.5</span>; <span style="color:#75715e">// transforms from [-1,1] to [0,1]  
+</span></span></span></code></pre></div><p>Avec des vecteurs normaux transformés en une composante de couleur RVB comme celle-ci, nous pouvons stocker une normale par fragment dérivée de la forme d&rsquo;une surface sur une texture 2D. Un exemple de map des normales de la surface de briques présentée au début de ce chapitre est illustré ci-dessous :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c03_normal_mapping-20230902-normal-rgb.png" alt="03_normal_mapping-20230902-normal-rgb"/>
+Cette map (et presque toutes les maps de normales que vous trouverez en ligne) aura une teinte bleutée. En effet, les normales sont toutes étroitement orientées vers l&rsquo;axe z positif (0,0,1) : une couleur bleutée. Les écarts de couleur représentent des vecteurs normaux légèrement décalés par rapport à l&rsquo;axe z positif général, ce qui donne une impression de profondeur à la texture. Par exemple, vous pouvez voir qu&rsquo;au sommet de chaque brique, la couleur a tendance à être plus verdâtre, ce qui est logique puisque la face supérieure d&rsquo;une brique a des normales qui pointent davantage dans la direction positive y (0,1,0), ce qui correspond à la couleur verte !</p>
+<p>Avec un simple plan, en regardant l&rsquo;axe z positif, nous pouvons prendre <a href="https://learnopengl.com/img/textures/brickwall.jpg">cette texture diffuse</a> et <a href="https://learnopengl.com/img/textures/brickwall_normal.jpg">cette texture de normale</a> pour rendre l&rsquo;image de la section précédente. Notez que la map des normales liée est différente de celle montrée ci-dessus. La raison en est qu&rsquo;OpenGL lit les coordonnées de texture avec la coordonnée y (ou v) inversée par rapport à la façon dont les textures sont généralement créées. La carte des normales liées a donc sa composante y (ou verte) inversée (vous pouvez voir que les couleurs vertes pointent maintenant vers le bas) ; si vous ne prenez pas cela en compte, l&rsquo;éclairage sera incorrect. Chargez les deux textures, liez-les aux unités de texture appropriées et effectuez le rendu d&rsquo;un plan avec les modifications suivantes dans le shader de fragment d&rsquo;éclairage :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>uniform sampler2D normalMap;  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{           
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// obtain normal from normal map in range [0,1]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    normal <span style="color:#f92672">=</span> texture(normalMap, fs_in.TexCoords).rgb;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// transform normal vector to range [-1,1]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    normal <span style="color:#f92672">=</span> normalize(normal <span style="color:#f92672">*</span> <span style="color:#ae81ff">2.0</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1.0</span>);   
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    [...]
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// proceed with lighting as normal
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}  
+</span></span></code></pre></div><p>Ici, nous inversons le processus de mappage des normales aux couleurs RVB en remappant la couleur normale échantillonnée de $[0,1]$ à $[-1,1]$, puis nous utilisons les vecteurs normaux échantillonnés pour les calculs d&rsquo;éclairage à venir. Dans ce cas, nous avons utilisé un shader Blinn-Phong.</p>
+<p>En déplaçant lentement la source lumineuse dans le temps, vous obtenez vraiment une sensation de profondeur en utilisant la map de normale. L&rsquo;exécution de cet exemple de normal mapping donne les mêmes résultats que ceux présentés au début de ce chapitre :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c03_normal_mapping-20230902-normal5.png" alt="03_normal_mapping-20230902-normal5"/>
+Il existe cependant un problème qui limite considérablement l&rsquo;utilisation des maps de normales. La map des normales que nous avons utilisée comportait des vecteurs de normales qui pointaient tous dans la direction positive z. Cela fonctionnait parce que la normale de la surface du plan pointait également dans la direction positive z. Cependant, que se passerait-il si nous utilisions la même map des normales sur un plan posé sur le sol dont le vecteur normal de surface pointerait dans la direction positive y ?
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c03_normal_mapping-20230902-normal6.png" alt="03_normal_mapping-20230902-normal6"/>
+L&rsquo;éclairage ne semble pas correct ! Cela est dû au fait que les normales échantillonnées de ce plan pointent toujours grosso modo dans la direction z positive, alors qu&rsquo;elles devraient plutôt pointer dans la direction y positive. Par conséquent, l&rsquo;éclairage pense que les normales de la surface sont les mêmes qu&rsquo;auparavant, lorsque le plan pointait vers la direction z positive ; l&rsquo;éclairage est incorrect. L&rsquo;image ci-dessous montre à quoi ressemblent approximativement les normales échantillonnées sur cette surface :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c03_normal_mapping-20230902-normal8.png" alt="03_normal_mapping-20230902-normal8"/>
+Vous pouvez voir que toutes les normales sont orientées vers la direction z positive alors qu&rsquo;elles devraient être orientées vers la direction y positive. Une solution à ce problème consiste à définir une carte de normales pour chaque direction possible de la surface ; dans le cas d&rsquo;un cube, nous aurions besoin de 6 cartes de normales. Cependant, avec des meshes avancés qui peuvent avoir plus de centaines de directions de surface possibles, cette approche devient irréalisable.</p>
+<p>Il existe une autre solution qui consiste à effectuer tout l&rsquo;éclairage dans un espace de coordonnées différent : un espace de coordonnées dans lequel les vecteurs de la carte des normales pointent toujours vers la direction z positive ; tous les autres vecteurs d&rsquo;éclairage sont alors transformés par rapport à cette direction z positive. De cette façon, nous pouvons toujours utiliser la même map de normales, quelle que soit l&rsquo;orientation. Cet espace de coordonnées est appelé <strong>espace tangent</strong> (tangent space).</p>
+<h2 id="lespace-tangent-tangent-space">L&rsquo;espace tangent (tangent space)</h2>
+<p>Les vecteurs normaux d&rsquo;une map de normales sont exprimés dans l&rsquo;espace tangent, où les normales pointent toujours grosso modo dans la direction z positive. <strong>L&rsquo;espace tangent est un espace local à la surface d&rsquo;un triangle</strong> : les normales sont relatives au cadre de référence local des triangles individuels. Il s&rsquo;agit de l&rsquo;espace local des vecteurs de la map des normales ; ils sont tous définis comme pointant dans la direction z positive, quelle que soit la direction finale de la transformation. En utilisant une matrice spécifique, nous pouvons alors transformer les vecteurs normaux de cet espace tangent local en coordonnées du monde ou de la vue, en les orientant dans la direction de la surface cartographiée finale.</p>
+<p>Supposons que nous ayons la surface incorrecte de la section précédente qui regarde dans la direction positive y. La carte des normales est définie dans l&rsquo;espace tangent. La carte des normales étant définie dans l&rsquo;espace tangent, une façon de résoudre le problème consiste à calculer une matrice pour transformer les normales de l&rsquo;espace tangent en un espace différent de façon à ce qu&rsquo;elles soient alignées sur la direction normale de la surface : les vecteurs normaux sont alors tous orientés grosso modo dans la direction y positive. L&rsquo;avantage de l&rsquo;espace tangent est que nous pouvons calculer cette matrice pour n&rsquo;importe quel type de surface afin d&rsquo;aligner correctement la direction z de l&rsquo;espace tangent sur la direction normale de la surface.</p>
+<p>Une telle matrice est appelée matrice <strong>TBN</strong>, où les lettres représentent les vecteurs Tangente, Bitangente et Normale. Ce sont les vecteurs dont nous avons besoin pour construire cette matrice. Pour construire une telle matrice de changement de base, qui transforme un vecteur de l&rsquo;espace tangent en un espace de coordonnées différent, nous avons besoin de trois vecteurs perpendiculaires alignés le long de la surface d&rsquo;une carte normale : un vecteur vers le haut, un vecteur vers la droite et un vecteur vers l&rsquo;avant, comme nous l&rsquo;avons fait dans le chapitre sur les cameras.</p>
+<p>Nous connaissons déjà le vecteur haut, qui est le vecteur normal de la surface. Le vecteur droit et le vecteur avant sont respectivement le vecteur tangent et le vecteur bitangent. L&rsquo;image suivante d&rsquo;une surface montre les trois vecteurs sur une surface :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c03_normal_mapping-20230902-normal9.png" alt="03_normal_mapping-20230902-normal9"/></p>
+<p>Le calcul des vecteurs tangents et bitangents n&rsquo;est pas aussi simple que celui du vecteur normal. Nous pouvons voir sur l&rsquo;image que la direction des vecteurs tangent et bitangent de la carte des normales s&rsquo;aligne sur la direction dans laquelle nous définissons les coordonnées de texture d&rsquo;une surface. Nous utiliserons ce fait pour calculer les vecteurs tangents et bitangents pour chaque surface. Pour les récupérer, il faut faire un peu de mathématiques ; regardez l&rsquo;image suivante :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c03_normal_mapping-20230902-normal10.png" alt="03_normal_mapping-20230902-normal10"/>
+L&rsquo;image montre que les différences de coordonnées de texture d&rsquo;une arête $E2$ d&rsquo;un triangle (notées $ΔU2$ et $ΔV2$) sont exprimées dans la même direction que le vecteur tangent $T$ et le vecteur bitangent $B$. Pour cette raison, nous pouvons écrire les deux arêtes affichées $E1$ et $E2$ du triangle comme une combinaison linéaire du vecteur tangent $T$ et du vecteur bitangent $B$ :
+$$
+E_1 = \Delta U_1T + \Delta V_1B
+$$
+$$
+E_2 = \Delta U_2T + \Delta V_2B
+$$
+Que l&rsquo;on peut aussi écrire:
+$$
+(E_{1x},E_{1y},E_{1z})=\Delta U_1(T_x,T_y,T_z)+\Delta V_1(B_x,B_y,B_z)
+$$
+$$
+(E_{2x},E_{2y},E_{2z})=\Delta U_2(T_x,T_y,T_z)+\Delta V_2(B_x,B_y,B_z)
+$$
+Nous pouvons calculer $E$ comme le vecteur de différence entre les positions de deux triangles, et $ΔU$ et $ΔV$ comme leurs différences de coordonnées de texture. Nous nous retrouvons alors avec deux inconnues (tangente $T$ et bitangente $B$) et deux équations. Vous vous souvenez peut-être de vos cours d&rsquo;algèbre, qui nous permettent de résoudre $T$ et $B$.</p>
+<h1 id="endbmatrix">La dernière équation nous permet de l&rsquo;écrire sous une forme différente : celle de la multiplication matricielle :
+$$
+\begin{bmatrix}
+E_{1x} &amp; E_{1y} &amp; E_{1z} \
+E_{2x} &amp; E_{2y} &amp; E_{2z}
+\end{bmatrix}</h1>
+<p>\begin{bmatrix}
+\Delta U_1 &amp; \Delta V_1  \
+\Delta U_2 &amp; \Delta V_2
+\end{bmatrix}
+\begin{bmatrix}
+T_x &amp; T_y &amp; T_z  \
+B_x &amp; B_y &amp; B_z
+\end{bmatrix}
+$$
+Essayez de visualiser les multiplications de la matrice dans votre tête et confirmez qu&rsquo;il s&rsquo;agit bien de la même équation. La réécriture des équations sous forme de matrice présente l&rsquo;avantage de rendre la résolution de $T$ et $B$ plus facile à comprendre. Si nous multiplions les deux côtés des équations par l&rsquo;inverse de la matrice $ΔUΔV$, nous obtenons :</p>
+<h1 id="endbmatrix-1">$$
+\begin{bmatrix}
+\Delta U_1 &amp; \Delta V_1  \
+\Delta U_2 &amp; \Delta V_2
+\end{bmatrix}^{-1}
+\begin{bmatrix}
+E_{1x} &amp; E_{1y} &amp; E_{1z} \
+E_{2x} &amp; E_{2y} &amp; E_{2z}
+\end{bmatrix}</h1>
+<p>\begin{bmatrix}
+T_x &amp; T_y &amp; T_z  \
+B_x &amp; B_y &amp; B_z
+\end{bmatrix}
+$$
+Cela nous permet de résoudre $T$ et $B$. Nous devons pour cela calculer l&rsquo;inverse de la matrice des coordonnées de texture delta. Je n&rsquo;entrerai pas dans les détails mathématiques du calcul de l&rsquo;inverse d&rsquo;une matrice, mais cela se traduit grosso modo par 1 sur le déterminant de la matrice, multiplié par sa matrice adjacente (?) :
+$$
+\begin{bmatrix}
+T_x &amp; T_y &amp; T_z  \
+B_x &amp; B_y &amp; B_z
+\end{bmatrix}</p>
+<h2 id="delta-u_1-delta-v_2">=
+{
+1
+\over
+\Delta U_1 \Delta V_2</h2>
+<p>\Delta U_2 \Delta V_1
+}
+\begin{bmatrix}
+\Delta V_2 &amp; -\Delta V_1 \
+-\Delta U_2 &amp; \Delta U_1
+\end{bmatrix}
+\begin{bmatrix}
+E_{1x} &amp; E_{1y} &amp; E_{1z} \
+E_{2x} &amp; E_{2y} &amp; E_{2z}
+\end{bmatrix}
+$$</p>
+<p>Cette dernière équation nous donne une formule pour calculer le vecteur tangent $T$ et le vecteur bitangent $B$ à partir des deux arêtes d&rsquo;un triangle et de ses coordonnées de texture.</p>
+<p>Ne vous inquiétez pas si vous ne comprenez pas entièrement les mathématiques sous-jacentes. Tant que vous comprenez que nous pouvons calculer les tangentes et les bitangentes à partir des sommets d&rsquo;un triangle et de ses coordonnées de texture (puisque les coordonnées de texture se trouvent dans le même espace que les vecteurs tangents), vous avez fait la moitié du chemin.</p>
+<h3 id="calcul-manuel-des-tangentes-et-bitangentes">Calcul manuel des tangentes et bitangentes</h3>
+<p>Dans la démonstration précédente, nous avions un simple plan normal orienté vers la direction z positive. Cette fois-ci, nous voulons implémenter le mapping de normales en utilisant l&rsquo;espace tangent afin de pouvoir orienter ce plan comme nous le souhaitons et que le mapping de normales fonctionne toujours. En utilisant les mathématiques discutées précédemment, nous allons calculer manuellement les vecteurs tangents et bitangents de cette surface.</p>
+<p>Supposons que le plan soit construit à partir des vecteurs suivants (avec 1, 2, 3 et 1, 3, 4 comme ses deux triangles) :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// positions
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glm<span style="color:#f92672">::</span>vec3 pos1(<span style="color:#f92672">-</span><span style="color:#ae81ff">1.0</span>,  <span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 pos2(<span style="color:#f92672">-</span><span style="color:#ae81ff">1.0</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 pos3( <span style="color:#ae81ff">1.0</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 pos4( <span style="color:#ae81ff">1.0</span>,  <span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// texture coordinates
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glm<span style="color:#f92672">::</span>vec2 uv1(<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec2 uv2(<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec2 uv3(<span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec2 uv4(<span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// normal vector
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glm<span style="color:#f92672">::</span>vec3 nm(<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>);  
+</span></span></code></pre></div><p>Nous commençons par calculer les arêtes du premier triangle et les coordonnées delta UV :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 edge1 <span style="color:#f92672">=</span> pos2 <span style="color:#f92672">-</span> pos1;
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec3 edge2 <span style="color:#f92672">=</span> pos3 <span style="color:#f92672">-</span> pos1;
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec2 deltaUV1 <span style="color:#f92672">=</span> uv2 <span style="color:#f92672">-</span> uv1;
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>vec2 deltaUV2 <span style="color:#f92672">=</span> uv3 <span style="color:#f92672">-</span> uv1;  
+</span></span></code></pre></div><p>Avec les données nécessaires au calcul des tangentes et des bitangentes, nous pouvons commencer à suivre l&rsquo;équation de la section précédente :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> f <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0f</span> <span style="color:#f92672">/</span> (deltaUV1.x <span style="color:#f92672">*</span> deltaUV2.y <span style="color:#f92672">-</span> deltaUV2.x <span style="color:#f92672">*</span> deltaUV1.y);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>tangent1.x <span style="color:#f92672">=</span> f <span style="color:#f92672">*</span> (deltaUV2.y <span style="color:#f92672">*</span> edge1.x <span style="color:#f92672">-</span> deltaUV1.y <span style="color:#f92672">*</span> edge2.x);
+</span></span><span style="display:flex;"><span>tangent1.y <span style="color:#f92672">=</span> f <span style="color:#f92672">*</span> (deltaUV2.y <span style="color:#f92672">*</span> edge1.y <span style="color:#f92672">-</span> deltaUV1.y <span style="color:#f92672">*</span> edge2.y);
+</span></span><span style="display:flex;"><span>tangent1.z <span style="color:#f92672">=</span> f <span style="color:#f92672">*</span> (deltaUV2.y <span style="color:#f92672">*</span> edge1.z <span style="color:#f92672">-</span> deltaUV1.y <span style="color:#f92672">*</span> edge2.z);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>bitangent1.x <span style="color:#f92672">=</span> f <span style="color:#f92672">*</span> (<span style="color:#f92672">-</span>deltaUV2.x <span style="color:#f92672">*</span> edge1.x <span style="color:#f92672">+</span> deltaUV1.x <span style="color:#f92672">*</span> edge2.x);
+</span></span><span style="display:flex;"><span>bitangent1.y <span style="color:#f92672">=</span> f <span style="color:#f92672">*</span> (<span style="color:#f92672">-</span>deltaUV2.x <span style="color:#f92672">*</span> edge1.y <span style="color:#f92672">+</span> deltaUV1.x <span style="color:#f92672">*</span> edge2.y);
+</span></span><span style="display:flex;"><span>bitangent1.z <span style="color:#f92672">=</span> f <span style="color:#f92672">*</span> (<span style="color:#f92672">-</span>deltaUV2.x <span style="color:#f92672">*</span> edge1.z <span style="color:#f92672">+</span> deltaUV1.x <span style="color:#f92672">*</span> edge2.z);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>[...] <span style="color:#75715e">// similar procedure for calculating tangent/bitangent for plane&#39;s second triangle
+</span></span></span></code></pre></div><p>Ici, nous pré-calculons d&rsquo;abord la partie fractionnaire de l&rsquo;équation sous la forme <code>f</code>, puis, pour chaque composante vectorielle, nous effectuons la multiplication matricielle correspondante multipliée par <code>f</code>. Si vous comparez ce code avec l&rsquo;équation finale, vous pouvez voir qu&rsquo;il s&rsquo;agit d&rsquo;une traduction directe. Comme un triangle est toujours une forme plate, nous n&rsquo;avons besoin de calculer qu&rsquo;une seule paire tangente/bitangente par triangle car elles seront les mêmes pour chacun des sommets du triangle.</p>
+<p>Le vecteur tangent et bitangent résultant doit avoir une valeur de (1,0,0) et (0,1,0) respectivement qui, avec la normale (0,0,1), forme une matrice TBN orthogonale. Visualisés sur le plan, les vecteurs TBN se présentent comme suit :</p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c03_normal_mapping-20230902-normal11.png" alt="03_normal_mapping-20230902-normal11"/>
+Avec les vecteurs tangents et bitangents définis pour chaque sommet, nous pouvons commencer à mettre en œuvre un mapping de normales approprié.</p>
+<h3 id="mapping-des-normales-dans-lespace-tangent">Mapping des normales dans l&rsquo;espace tangent</h3>
+<p>Pour que le mapping des normales fonctionne, nous devons d&rsquo;abord créer une matrice TBN dans les shaders. Pour ce faire, nous transmettons les vecteurs de tangente et de bitangente calculés précédemment au shader de vertex en tant qu&rsquo;attributs de vertex :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec3 aPos;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>) in vec3 aNormal;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>) in vec2 aTexCoords;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>) in vec3 aTangent;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>) in vec3 aBitangent;  
+</span></span></code></pre></div><p>Ensuite, dans la fonction principale du vertex shader, nous créons la matrice TBN :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   [...]
+</span></span><span style="display:flex;"><span>   vec3 T <span style="color:#f92672">=</span> normalize(vec3(model <span style="color:#f92672">*</span> vec4(aTangent,   <span style="color:#ae81ff">0.0</span>)));
+</span></span><span style="display:flex;"><span>   vec3 B <span style="color:#f92672">=</span> normalize(vec3(model <span style="color:#f92672">*</span> vec4(aBitangent, <span style="color:#ae81ff">0.0</span>)));
+</span></span><span style="display:flex;"><span>   vec3 N <span style="color:#f92672">=</span> normalize(vec3(model <span style="color:#f92672">*</span> vec4(aNormal,    <span style="color:#ae81ff">0.0</span>)));
+</span></span><span style="display:flex;"><span>   mat3 TBN <span style="color:#f92672">=</span> mat3(T, B, N);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Ici, nous transformons d&rsquo;abord tous les vecteurs TBN dans le système de coordonnées dans lequel nous souhaitons travailler, qui dans ce cas est l&rsquo;espace monde, car nous les multiplions avec la matrice du modèle. Ensuite, nous créons la matrice TBN réelle en fournissant directement au constructeur de <code>mat3</code> les vecteurs de colonnes appropriés. Notez que si nous voulons être vraiment précis, nous multiplierons les vecteurs TBN avec la matrice normale, car nous ne nous soucions que de l&rsquo;orientation des vecteurs.</p>
+<blockquote>
+<p>Techniquement, la variable bitangente n&rsquo;est pas nécessaire dans le vertex shader. Les trois vecteurs TBN sont perpendiculaires l&rsquo;un à l&rsquo;autre, nous pouvons donc calculer la bitangente nous-mêmes dans le vertex shader en prenant le produit vectoriel des vecteurs $T$ et $N$ : <code>vec3 B = cross(N, T) ;</code></p>
+</blockquote>
+<p>Maintenant que nous disposons d&rsquo;une matrice TBN, comment allons-nous l&rsquo;utiliser ? Il y a deux façons d&rsquo;utiliser une matrice TBN pour le mapping de normales, et nous allons les présenter toutes les deux :</p>
+<ol>
+<li>Nous prenons la matrice TBN qui transforme tout vecteur de l&rsquo;espace tangent à l&rsquo;espace monde, nous la donnons au shader de fragments et nous transformons la normale échantillonnée de l&rsquo;espace tangent à l&rsquo;espace monde en utilisant la matrice TBN ; la normale se trouve alors dans le même espace que les autres variables d&rsquo;éclairage.</li>
+<li>Nous prenons l&rsquo;inverse de la matrice TBN qui transforme tout vecteur de l&rsquo;espace monde à l&rsquo;espace tangent, et nous utilisons cette matrice pour transformer non pas la normale, mais les autres variables d&rsquo;éclairage pertinentes dans l&rsquo;espace tangent ; la normale se trouve alors à nouveau dans le même espace que les autres variables d&rsquo;éclairage.</li>
+</ol>
+<p>Examinons le premier cas. Le vecteur normal que nous échantillonnons à partir de la map des normales est exprimé dans l&rsquo;espace tangent alors que les autres vecteurs d&rsquo;éclairage (lumière et direction de la vue) sont exprimés dans l&rsquo;espace monde. En passant la matrice TBN au fragment shader, nous pouvons multiplier la normale échantillonnée dans l&rsquo;espace tangent avec cette matrice TBN pour transformer le vecteur normal dans le même espace de référence que les autres vecteurs d&rsquo;éclairage. De cette manière, tous les calculs d&rsquo;éclairage (en particulier le produit scalaire) ont un sens.</p>
+<p>Il est facile d&rsquo;envoyer la matrice TBN au fragment shader :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>out VS_OUT {
+</span></span><span style="display:flex;"><span>    vec3 FragPos;
+</span></span><span style="display:flex;"><span>    vec2 TexCoords;
+</span></span><span style="display:flex;"><span>    mat3 TBN;
+</span></span><span style="display:flex;"><span>} vs_out;  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    [...]
+</span></span><span style="display:flex;"><span>    vs_out.TBN <span style="color:#f92672">=</span> mat3(T, B, N);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Dans le fragment shader, nous prenons également un <code>mat3</code> comme variable d&rsquo;entrée :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>in VS_OUT {
+</span></span><span style="display:flex;"><span>    vec3 FragPos;
+</span></span><span style="display:flex;"><span>    vec2 TexCoords;
+</span></span><span style="display:flex;"><span>    mat3 TBN;
+</span></span><span style="display:flex;"><span>} fs_in;  
+</span></span></code></pre></div><p>Avec cette matrice TBN, nous pouvons maintenant mettre à jour le code de mapping normale pour inclure la transformation de l&rsquo;espace tangent à l&rsquo;espace monde :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>normal <span style="color:#f92672">=</span> texture(normalMap, fs_in.TexCoords).rgb;
+</span></span><span style="display:flex;"><span>normal <span style="color:#f92672">=</span> normal <span style="color:#f92672">*</span> <span style="color:#ae81ff">2.0</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1.0</span>;   
+</span></span><span style="display:flex;"><span>normal <span style="color:#f92672">=</span> normalize(fs_in.TBN <span style="color:#f92672">*</span> normal); 
+</span></span></code></pre></div><p>Comme la normale résultante est maintenant dans l&rsquo;espace monde, il n&rsquo;est pas nécessaire de modifier le code du fragment shader, car le code d&rsquo;éclairage suppose que le vecteur normal est dans l&rsquo;espace monde.</p>
+<p>Examinons également le second cas, où nous prenons l&rsquo;inverse de la matrice TBN pour transformer tous les vecteurs pertinents de l&rsquo;espace mondial en l&rsquo;espace dans lequel se trouvent les vecteurs normaux échantillonnés : l&rsquo;espace tangent. La construction de la matrice TBN reste la même, mais nous inversons d&rsquo;abord la matrice avant de l&rsquo;envoyer au fragment shader :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vs_out.TBN <span style="color:#f92672">=</span> transpose(mat3(T, B, N));   
+</span></span></code></pre></div><p>Notez que nous utilisons ici la fonction transposée au lieu de la fonction inverse. <strong>Une grande propriété des matrices orthogonales (chaque axe est un vecteur unitaire perpendiculaire) est que la transposée d&rsquo;une matrice orthogonale est égale à son inverse.</strong> C&rsquo;est une excellente propriété car l&rsquo;inverse est coûteux, ce qui n&rsquo;est pas le cas de la transposée.</p>
+<p>Dans le fragment shader, nous ne transformons pas le vecteur normal, mais nous transformons les autres vecteurs pertinents dans l&rsquo;espace tangent, à savoir les vecteurs <code>lightDir</code> et <code>viewDir</code>. Ainsi, chaque vecteur se trouve dans le même espace de coordonnées : l&rsquo;espace tangent.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{           
+</span></span><span style="display:flex;"><span>    vec3 normal <span style="color:#f92672">=</span> texture(normalMap, fs_in.TexCoords).rgb;
+</span></span><span style="display:flex;"><span>    normal <span style="color:#f92672">=</span> normalize(normal <span style="color:#f92672">*</span> <span style="color:#ae81ff">2.0</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1.0</span>);   
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span>    vec3 lightDir <span style="color:#f92672">=</span> fs_in.TBN <span style="color:#f92672">*</span> normalize(lightPos <span style="color:#f92672">-</span> fs_in.FragPos);
+</span></span><span style="display:flex;"><span>    vec3 viewDir  <span style="color:#f92672">=</span> fs_in.TBN <span style="color:#f92672">*</span> normalize(viewPos <span style="color:#f92672">-</span> fs_in.FragPos);    
+</span></span><span style="display:flex;"><span>    [...]
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>La seconde approche semble demander plus de travail et nécessite également des multiplications de matrices dans le shader de fragment, alors pourquoi s&rsquo;embêter avec la seconde approche ?</p>
+<p>Eh bien, la transformation des vecteurs de l&rsquo;espace monde à l&rsquo;espace tangent présente un avantage supplémentaire : nous pouvons transformer tous les vecteurs d&rsquo;éclairage pertinents dans l&rsquo;espace tangent dans le shader de sommets plutôt que dans le shader de fragments. Cela fonctionne parce que <code>lightPos</code> et <code>viewPos</code> ne sont pas mis à jour à chaque fragment, et pour <code>fs_in.FragPos</code> nous pouvons calculer sa position dans l&rsquo;espace tangent dans le vertex shader et laisser l&rsquo;interpolation des fragments faire son travail. Il n&rsquo;est effectivement pas nécessaire de transformer un vecteur en espace tangent dans le shader de fragments, alors que c&rsquo;est nécessaire avec la première approche car les vecteurs normaux échantillonnés sont spécifiques à chaque exécution du shader de fragments.</p>
+<p>Ainsi, au lieu d&rsquo;envoyer l&rsquo;inverse de la matrice TBN au fragment shader, nous envoyons la position de la lumière dans l&rsquo;espace tangent, la position de la vue et la position du sommet au fragment shader. Cela nous évite d&rsquo;avoir à effectuer des multiplications de matrices dans le shader de fragment. Il s&rsquo;agit d&rsquo;une optimisation intéressante, car le shader de sommets s&rsquo;exécute beaucoup moins souvent que le shader de fragments. C&rsquo;est également la raison pour laquelle cette approche est souvent privilégiée.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>out VS_OUT {
+</span></span><span style="display:flex;"><span>    vec3 FragPos;
+</span></span><span style="display:flex;"><span>    vec2 TexCoords;
+</span></span><span style="display:flex;"><span>    vec3 TangentLightPos;
+</span></span><span style="display:flex;"><span>    vec3 TangentViewPos;
+</span></span><span style="display:flex;"><span>    vec3 TangentFragPos;
+</span></span><span style="display:flex;"><span>} vs_out;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform vec3 lightPos;
+</span></span><span style="display:flex;"><span>uniform vec3 viewPos;
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>[...]
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> main()
+</span></span><span style="display:flex;"><span>{    
+</span></span><span style="display:flex;"><span>    [...]
+</span></span><span style="display:flex;"><span>    mat3 TBN <span style="color:#f92672">=</span> transpose(mat3(T, B, N));
+</span></span><span style="display:flex;"><span>    vs_out.TangentLightPos <span style="color:#f92672">=</span> TBN <span style="color:#f92672">*</span> lightPos;
+</span></span><span style="display:flex;"><span>    vs_out.TangentViewPos  <span style="color:#f92672">=</span> TBN <span style="color:#f92672">*</span> viewPos;
+</span></span><span style="display:flex;"><span>    vs_out.TangentFragPos  <span style="color:#f92672">=</span> TBN <span style="color:#f92672">*</span> vec3(model <span style="color:#f92672">*</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>));
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Dans le shader de fragment, nous utilisons ensuite ces nouvelles variables d&rsquo;entrée pour calculer l&rsquo;éclairage dans l&rsquo;espace tangent. Comme le vecteur normal est déjà dans l&rsquo;espace tangent, l&rsquo;éclairage est logique.</p>
+<p>Avec le mapping de normales appliqué dans l&rsquo;espace tangent, nous devrions obtenir des résultats similaires à ceux que nous avons eus au début de ce chapitre. Cette fois, cependant, nous pouvons orienter notre plan comme nous le souhaitons et l&rsquo;éclairage sera toujours correct :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>mat4 model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>mat4(<span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>rotate(model, (<span style="color:#66d9ef">float</span>)glfwGetTime() <span style="color:#f92672">*</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">10.0f</span>, glm<span style="color:#f92672">::</span>normalize(glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>)));
+</span></span><span style="display:flex;"><span>shader.setMat4(<span style="color:#e6db74">&#34;model&#34;</span>, model);
+</span></span><span style="display:flex;"><span>RenderQuad();
+</span></span></code></pre></div><p>Ce qui ressemble en effet à un mapping de normales correct :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c03_normal_mapping-20230902-normal13.png" alt="03_normal_mapping-20230902-normal13"/>
+Vous pouvez trouver le code source <a href="https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/4.normal_mapping/normal_mapping.cpp">ici</a>.</p>
+<h2 id="objets-complexes">Objets complexes</h2>
+<p>Nous avons démontré comment nous pouvons utiliser le normal mapping, ainsi que les transformations de l&rsquo;espace tangent, en calculant manuellement les vecteurs tangents et bitangents. Heureusement pour nous, le calcul manuel de ces vecteurs tangents et bitangents n&rsquo;est pas quelque chose que nous faisons très souvent. La plupart du temps, vous l&rsquo;implémentez une fois dans un chargeur de modèle personnalisé, ou dans notre cas, vous utilisez un chargeur de modèle utilisant Assimp.</p>
+<p>Assimp dispose d&rsquo;un bit de configuration très utile que nous pouvons définir lors du chargement d&rsquo;un modèle, appelé <code>aiProcess_CalcTangentSpace</code>. Lorsque le bit <code>aiProcess_CalcTangentSpace</code> est fourni à la fonction <code>ReadFile</code> d&rsquo;Assimp, Assimp calcule des vecteurs tangents et bitangents lisses pour chacun des sommets chargés, de la même manière que nous l&rsquo;avons fait dans ce chapitre.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> aiScene <span style="color:#f92672">*</span>scene <span style="color:#f92672">=</span> importer.ReadFile(
+</span></span><span style="display:flex;"><span>    path, aiProcess_Triangulate <span style="color:#f92672">|</span> aiProcess_FlipUVs <span style="color:#f92672">|</span> aiProcess_CalcTangentSpace
+</span></span><span style="display:flex;"><span>);  
+</span></span></code></pre></div><p>Dans Assimp, nous pouvons ensuite récupérer les tangentes calculées via :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vector.x <span style="color:#f92672">=</span> mesh<span style="color:#f92672">-&gt;</span>mTangents[i].x;
+</span></span><span style="display:flex;"><span>vector.y <span style="color:#f92672">=</span> mesh<span style="color:#f92672">-&gt;</span>mTangents[i].y;
+</span></span><span style="display:flex;"><span>vector.z <span style="color:#f92672">=</span> mesh<span style="color:#f92672">-&gt;</span>mTangents[i].z;
+</span></span><span style="display:flex;"><span>vertex.Tangent <span style="color:#f92672">=</span> vector;  
+</span></span></code></pre></div><p>Vous devrez alors mettre à jour le chargeur de modèle pour qu&rsquo;il puisse également charger les maps de normales d&rsquo;un modèle texturé. Le format d&rsquo;objet wavefront (.obj) exporte les maps de normales légèrement différemment des conventions d&rsquo;Assimp car <code>aiTextureType_NORMAL</code> ne charge pas les maps de normales, alors que <code>aiTextureType_HEIGHT</code> le fait :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vector<span style="color:#f92672">&lt;</span>Texture<span style="color:#f92672">&gt;</span> normalMaps <span style="color:#f92672">=</span> loadMaterialTextures(material, aiTextureType_HEIGHT, <span style="color:#e6db74">&#34;texture_normal&#34;</span>);  
+</span></span></code></pre></div><p>Bien sûr, cela est différent pour chaque type de modèle chargé et de format de fichier.</p>
+<p>L&rsquo;exécution de l&rsquo;application sur un modèle avec des maps de spéculaires et de normales, en utilisant un chargeur de modèle mis à jour, donne le résultat suivant :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c03_normal_mapping-20230903-normalmap1.png" alt="03_normal_mapping-20230903-normalmap1"/>
+Comme vous pouvez le constater, le mapping de normales permet d&rsquo;augmenter considérablement le niveau de détail d&rsquo;un objet sans trop de frais supplémentaires.</p>
+<p>L&rsquo;utilisation du mapping de normales est également un excellent moyen d&rsquo;améliorer les performances. Avant le mapping de normales, il fallait utiliser un grand nombre de sommets pour obtenir un niveau de détail élevé sur un mesh. Avec le normal mapping, nous pouvons obtenir le même niveau de détail sur un mesh en utilisant beaucoup moins de sommets. L&rsquo;image ci-dessous de Paolo Cignoni montre une belle comparaison des deux méthodes :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c03_normal_mapping-20230903-normalmap2.png" alt="03_normal_mapping-20230903-normalmap2"/></p>
+<p>Les détails du mesh high poly et du mesh low poly avec la conversion normale sont presque impossibles à distinguer. Le normal mapping n&rsquo;est donc pas seulement esthétique, c&rsquo;est aussi un excellent outil pour remplacer les meshes high poly par des meshes low poly sans perdre (trop) de détails.</p>
+<h2 id="une-dernière-chose">Une dernière chose</h2>
+<p>Il reste une dernière astuce qui permet d&rsquo;améliorer légèrement la qualité sans trop de frais supplémentaires.</p>
+<p>Lorsque les vecteurs tangents sont calculés sur des meshes plus importants qui partagent un nombre considérable de sommets, la moyenne des vecteurs tangents est généralement calculée afin d&rsquo;obtenir des résultats agréables et lisses. Le problème de cette approche est que les trois vecteurs TBN peuvent se retrouver non perpendiculaires, ce qui signifie que la matrice TBN résultante n&rsquo;est plus orthogonale. Le normal mapping ne serait que légèrement altéré par une matrice TBN non orthogonale, mais nous pouvons encore l&rsquo;améliorer.</p>
+<p>En utilisant une astuce mathématique appelée <strong>processus de Gram-Schmidt</strong>, nous pouvons réorthogonaliser les vecteurs TBN de sorte que chaque vecteur soit à nouveau perpendiculaire aux autres vecteurs. Dans le vertex shader, nous procédons de la manière suivante :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 T <span style="color:#f92672">=</span> normalize(vec3(model <span style="color:#f92672">*</span> vec4(aTangent, <span style="color:#ae81ff">0.0</span>)));
+</span></span><span style="display:flex;"><span>vec3 N <span style="color:#f92672">=</span> normalize(vec3(model <span style="color:#f92672">*</span> vec4(aNormal, <span style="color:#ae81ff">0.0</span>)));
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// re-orthogonalize T with respect to N
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>T <span style="color:#f92672">=</span> normalize(T <span style="color:#f92672">-</span> dot(T, N) <span style="color:#f92672">*</span> N);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// then retrieve perpendicular vector B with the cross product of T and N
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>vec3 B <span style="color:#f92672">=</span> cross(N, T);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mat3 TBN <span style="color:#f92672">=</span> mat3(T, B, N) 
+</span></span></code></pre></div><p>Cela améliore généralement les résultats du normal mapping, même si ce n&rsquo;est que dans une faible mesure, pour un coût supplémentaire minime. Jetez un coup d&rsquo;œil à la fin de la vidéo &ldquo;Normal Mapping Mathematics&rdquo; dans les ressources supplémentaires pour une explication détaillée du fonctionnement de ce processus.</p>
+<h2 id="ressources-supplémentaires">Ressources supplémentaires</h2>
+<ul>
+<li><a href="http://ogldev.atspace.co.uk/www/tutorial26/tutorial26.html">Tutoriel 26 : Normal Mapping</a> : tutoriel sur le normal mapping par ogldev.</li>
+<li><a href="https://www.youtube.com/watch?v=LIOPYmknj5Q">How Normal Mapping Works</a> : un tutoriel vidéo intéressant sur le fonctionnement du normal mapping par TheBennyBox.</li>
+<li><a href="https://www.youtube.com/watch?v=4FaWLgsctqY">Normal Mapping Mathematics</a> : une vidéo similaire de TheBennyBox sur les mathématiques du normal mapping.</li>
+<li><a href="http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/">Tutoriel 13 : Normal Mapping</a> : tutoriel sur le normal mapping par opengl-tutorial.org.</li>
+</ul>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

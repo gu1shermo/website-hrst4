@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cg">cg</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/opengl">opengl</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/computer-graphics">computer graphics</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cpp">cpp</a>
+  
+
+<br><br>
+<h1 id="basic-lighting">Basic lighting</h1>
+<p>L&rsquo;éclairage dans le monde réel est extrêmement compliqué et dépend de beaucoup trop de facteurs, ce que nous ne pouvons pas nous permettre de calculer avec la puissance de traitement limitée dont nous disposons. L&rsquo;éclairage dans OpenGL est donc basé sur des approximations de la réalité en utilisant des modèles simplifiés qui sont beaucoup plus faciles à traiter et relativement similaires. Ces modèles d&rsquo;éclairage sont basés sur la physique de la lumière telle que nous la comprenons. L&rsquo;un de ces modèles est appelé le modèle d&rsquo;éclairage Phong (<em>Phong lighting model</em>). Les principales composantes du modèle d&rsquo;éclairage Phong sont au nombre de trois : l&rsquo;éclairage <strong>ambiant</strong>, l&rsquo;éclairage <strong>diffus</strong> et l&rsquo;éclairage <strong>spéculaire</strong>. Vous pouvez voir ci-dessous à quoi ressemblent ces composants d&rsquo;éclairage, seuls ou combinés :</p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c01_Basic%20Lighting%5cbasicl1.png" alt="basicl1"/></p>
+<ul>
+<li><strong>ambiant</strong> : même lorsqu&rsquo;il fait sombre, il reste généralement de la lumière quelque part dans le monde (la lune, une lumière lointaine), de sorte que les objets ne sont presque jamais complètement sombres. Pour simuler cela, nous utilisons une constante d&rsquo;éclairage ambiant qui donne toujours de la couleur à l&rsquo;objet.</li>
+<li><strong>diffuse</strong> : simule l&rsquo;impact directionnel d&rsquo;un objet lumineux sur un objet. Il s&rsquo;agit de la composante la plus visuellement significative du modèle d&rsquo;éclairage. Plus une partie d&rsquo;un objet est orientée vers la source de lumière, plus elle devient lumineuse.</li>
+<li><strong>specular</strong> : simule le point lumineux d&rsquo;une lumière qui apparaît sur les objets brillants. Les reflets spéculaires sont davantage liés à la couleur de la lumière qu&rsquo;à celle de l&rsquo;objet.</li>
+</ul>
+<p>Pour créer des scènes visuellement intéressantes, nous voulons au moins simuler ces trois composantes de l&rsquo;éclairage. Nous commencerons par la plus simple : l&rsquo;éclairage ambiant.</p>
+<h2 id="ambiant">Ambiant</h2>
+<p>La lumière ne provient généralement pas d&rsquo;une source lumineuse unique, mais de nombreuses sources lumineuses dispersées tout autour de nous, même lorsqu&rsquo;elles ne sont pas immédiatement visibles. <strong>L&rsquo;une des propriétés de la lumière est qu&rsquo;elle peut se disperser et rebondir dans de nombreuses directions</strong>, atteignant des endroits qui ne sont pas directement visibles ; la lumière peut donc se refléter sur d&rsquo;autres surfaces et avoir un impact indirect sur l&rsquo;éclairage d&rsquo;un objet. <strong>Les algorithmes qui prennent cela en considération sont appelés algorithmes d&rsquo;illumination globale, mais ils sont compliqués et coûteux à calculer.</strong></p>
+<p>Comme nous ne sommes pas de grands amateurs d&rsquo;algorithmes compliqués et coûteux, <strong>nous commencerons par utiliser un modèle très simpliste d&rsquo;illumination globale, à savoir l&rsquo;éclairage ambiant</strong>. Comme vous l&rsquo;avez vu dans la section précédente, nous utilisons une petite couleur constante (claire) que nous <strong>ajoutons</strong> à la couleur finale des fragments de l&rsquo;objet, ce qui donne l&rsquo;impression qu&rsquo;il y a toujours un peu de lumière diffuse même lorsqu&rsquo;il n&rsquo;y a pas de source de lumière directe.</p>
+<p>Ajouter un éclairage ambiant à la scène est très simple. Nous prenons la couleur de la lumière, nous la multiplions avec un petit facteur ambiant constant, nous la multiplions avec la couleur de l&rsquo;objet et nous l&rsquo;utilisons comme couleur du fragment dans le shader de l&rsquo;objet cube :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> ambientStrength <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>;
+</span></span><span style="display:flex;"><span>    vec3 ambient <span style="color:#f92672">=</span> ambientStrength <span style="color:#f92672">*</span> lightColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    vec3 result <span style="color:#f92672">=</span> ambient <span style="color:#f92672">*</span> objectColor;
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(result, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Si vous exécutez maintenant le programme, vous remarquerez que la première étape de l&rsquo;éclairage est maintenant appliquée avec succès à l&rsquo;objet. L&rsquo;objet est assez sombre, mais pas complètement puisque l&rsquo;éclairage ambiant est appliqué (notez que le cube de lumière n&rsquo;est pas affecté car nous utilisons un shader différent). L&rsquo;objet devrait ressembler à ceci :</p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c01_Basic%20Lighting%5cbasicl2.png" alt="basicl2"/></p>
+<h2 id="diffuse">Diffuse</h2>
+<p>L&rsquo;éclairage ambiant en lui-même ne produit pas les résultats les plus intéressants, mais l&rsquo;éclairage diffus commence à avoir un impact visuel significatif sur l&rsquo;objet. L&rsquo;éclairage diffus donne à l&rsquo;objet plus de luminosité au fur et à mesure que ses fragments sont alignés sur les rayons lumineux d&rsquo;une source de lumière. Pour mieux comprendre l&rsquo;éclairage diffus, regardez l&rsquo;image suivante :
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c01_Basic%20Lighting%5cbasicl3.png" alt="basicl3"/>
+À gauche, nous trouvons une source lumineuse dont le rayon lumineux est dirigé vers un seul fragment de notre objet. Nous devons mesurer l&rsquo;angle sous lequel le rayon lumineux touche le fragment. Si le rayon lumineux est perpendiculaire à la surface de l&rsquo;objet, l&rsquo;impact de la lumière est maximal. Pour mesurer l&rsquo;angle entre le rayon lumineux et le fragment, nous utilisons ce que l&rsquo;on appelle un vecteur normal, c&rsquo;est-à-dire un vecteur perpendiculaire à la surface du fragment (représenté ici par une flèche jaune) ; nous y reviendrons plus tard. L&rsquo;angle entre les deux vecteurs peut alors être facilement calculé à l&rsquo;aide du produit de points.</p>
+<p>Vous vous souvenez peut-être du chapitre sur les transformations que, plus l&rsquo;angle entre deux vecteurs unitaires est faible, plus le produit de points tend vers une valeur de 1. Lorsque l&rsquo;angle entre les deux vecteurs est de 90 degrés, le produit de points est égal à 0. Il en va de même pour θ: plus θ est grand, moins la lumière devrait avoir d&rsquo;impact sur la couleur du fragment.</p>
+<p>Notez que pour obtenir (uniquement) le cosinus de l&rsquo;angle entre les deux vecteurs, nous travaillerons avec des vecteurs unitaires (vecteurs de longueur 1). Nous devons donc nous assurer que tous les vecteurs sont normalisés, sinon le produit point renvoie plus que le cosinus (voir Transformations).</p>
+<p>Le produit de points résultant renvoie donc un scalaire que nous pouvons utiliser pour calculer l&rsquo;impact de la lumière sur la couleur du fragment, ce qui donne des fragments éclairés différemment en fonction de leur orientation par rapport à la lumière.</p>
+<p>De quoi avons-nous besoin pour calculer l&rsquo;éclairage diffus ?</p>
+<ul>
+<li>Vecteur normal : vecteur perpendiculaire à la surface du sommet.</li>
+<li>Le rayon lumineux dirigé : un vecteur de direction qui est le vecteur de différence entre la position de la lumière et la position du fragment. Pour calculer ce rayon lumineux, nous avons besoin du vecteur position de la lumière et du vecteur position du fragment.</li>
+</ul>
+<h2 id="vecteur-normal-normale-à-la-surface">Vecteur normal (normale à la surface)</h2>
+<p>Un vecteur normal est un vecteur (<strong>unitaire</strong>) <strong>perpendiculaire</strong> à la surface d&rsquo;un sommet. Étant donné qu&rsquo;un sommet n&rsquo;a pas de surface en soi (c&rsquo;est juste un point dans l&rsquo;espace), <strong>nous récupérons un vecteur normal en utilisant les sommets qui l&rsquo;entourent pour déterminer la surface du sommet.</strong> Nous pouvons utiliser une petite astuce pour calculer les vecteurs normaux pour tous les sommets du cube en utilisant le produit en croix, mais comme un cube 3D n&rsquo;est pas une forme compliquée, nous pouvons simplement les ajouter manuellement aux données des sommets. Le tableau de données des sommets mis à jour se trouve ici. Essayez de visualiser que les normales sont bien des vecteurs perpendiculaires à la surface de chaque plan (un cube est constitué de 6 plans).</p>
+<p>Puisque nous avons ajouté des données supplémentaires au tableau de vertex, nous devons mettre à jour le vertex shader du cube :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec3 aPos;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>) in vec3 aNormal;
+</span></span></code></pre></div><p>Maintenant que nous avons ajouté un vecteur normal à chacun des sommets et mis à jour le vertex shader, nous devons également mettre à jour les pointeurs d&rsquo;attributs de sommets. Notez que le cube de la source lumineuse utilise le même tableau de vertex pour ses données de vertex, mais que le shader de la lampe n&rsquo;utilise pas les vecteurs de normalité nouvellement ajoutés. Nous n&rsquo;avons pas besoin de mettre à jour les shaders ou les configurations d&rsquo;attributs de la lampe, mais nous devons au moins modifier les pointeurs d&rsquo;attributs de vertex pour refléter la nouvelle taille du tableau de vertex :</p>
+<pre tabindex="0"><code>glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+glEnableVertexAttribArray(0);
+</code></pre><p>Nous ne voulons utiliser que les 3 premiers flottants de chaque sommet et ignorer les 3 derniers flottants. Il nous suffit donc de mettre à jour le paramètre stride à 6 fois la taille d&rsquo;un flottant et le tour est joué.</p>
+<p>Il peut sembler inefficace d&rsquo;utiliser des données de vertex qui ne sont pas complètement utilisées par le shader de la lampe, mais les données de vertex sont déjà stockées dans la mémoire du GPU à partir de l&rsquo;objet conteneur, de sorte que nous n&rsquo;avons pas besoin de stocker de nouvelles données dans la mémoire du GPU. Nous n&rsquo;avons donc pas besoin de stocker de nouvelles données dans la mémoire du GPU. Cela est plus efficace que d&rsquo;allouer un nouveau VBO (vertex buffer object) spécifiquement pour la lampe.</p>
+<p>Tous les calculs d&rsquo;éclairage sont effectués dans le fragment shader, nous devons donc transmettre les vecteurs normaux du vertex shader au fragment shader. C&rsquo;est ce que nous allons faire :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>out vec3 Normal;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> projection <span style="color:#f92672">*</span> view <span style="color:#f92672">*</span> model <span style="color:#f92672">*</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>    Normal <span style="color:#f92672">=</span> aNormal;
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>Ce qu&rsquo;il nous reste à faire est de déclarer la variable d&rsquo;entrée correspondante dans le fragment shader.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>in vec3 Normal;  
+</span></span></code></pre></div><h2 id="calculer-la-couleur-de-diffuse">Calculer la couleur de diffuse</h2>
+<p>Nous avons maintenant le vecteur normal pour chaque sommet, mais nous avons encore besoin du vecteur de position de la lumière et du vecteur de position du fragment. Comme la position de la lumière est une variable statique unique, nous pouvons la déclarer comme uniforme dans le fragment shader :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>uniform vec3 lightPos;  
+</span></span></code></pre></div><p>Puis nous mettons à jour l&rsquo;uniforme dans la boucle de rendu (ou en dehors puisqu&rsquo;il ne change pas par image). Nous utilisons le vecteur <strong>lightPos</strong> déclaré dans le chapitre précédent comme emplacement de la source de lumière diffuse :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>lightingShader.setVec3(<span style="color:#e6db74">&#34;lightPos&#34;</span>, lightPos);  
+</span></span></code></pre></div><p>La dernière chose dont nous avons besoin est la position du fragment. Nous allons effectuer tous les calculs d&rsquo;éclairage dans le world space, nous voulons donc une position de sommet qui soit d&rsquo;abord dans le world space. Nous pouvons y parvenir en multipliant l&rsquo;attribut de position du sommet avec la matrice du modèle uniquement (pas la matrice de vue et de projection) pour le transformer en coordonnées de world space. Cela peut être facilement réalisé dans le vertex shader, déclarons donc une variable de sortie et calculons ses coordonnées dans le world space :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>out vec3 FragPos;  
+</span></span><span style="display:flex;"><span>out vec3 Normal;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> projection <span style="color:#f92672">*</span> view <span style="color:#f92672">*</span> model <span style="color:#f92672">*</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>    FragPos <span style="color:#f92672">=</span> vec3(model <span style="color:#f92672">*</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>));
+</span></span><span style="display:flex;"><span>    Normal <span style="color:#f92672">=</span> aNormal;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Enfin, ajoutez la variable d&rsquo;entrée correspondante au fragment shader :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>in vec3 FragPos;  
+</span></span></code></pre></div><p>Cette variable <code>in</code> sera interpolée à partir des 3 vecteurs du world space du triangle pour former le vecteur <code>FragPos</code> qui est la position en coordonnées world space par fragment. Maintenant que toutes les variables requises sont définies, nous pouvons commencer les calculs d&rsquo;éclairage.</p>
+<p>La première chose que nous devons calculer est le vecteur de direction entre la source de lumière et la position du fragment. La section précédente nous a appris que le vecteur de direction de la lumière est le vecteur de différence entre le vecteur de position de la lumière et le vecteur de position du fragment. Comme vous vous en souvenez peut-être dans le chapitre sur les transformations, nous pouvons facilement calculer cette différence en soustrayant les deux vecteurs l&rsquo;un de l&rsquo;autre. Nous voulons également nous assurer que tous les vecteurs pertinents sont des vecteurs unitaires, c&rsquo;est pourquoi nous normalisons à la fois la normale et le vecteur de direction résultant : </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 norm <span style="color:#f92672">=</span> normalize(Normal);
+</span></span><span style="display:flex;"><span>vec3 lightDir <span style="color:#f92672">=</span> normalize(lightPos <span style="color:#f92672">-</span> FragPos);
+</span></span></code></pre></div><p>Lorsque l&rsquo;on calcule l&rsquo;éclairage, on ne se préoccupe généralement pas de la magnitude d&rsquo;un vecteur ou de sa position, mais uniquement de sa direction. Comme nous ne nous intéressons qu&rsquo;à leur direction, presque tous les calculs sont effectués avec des vecteurs unitaires, car cela simplifie la plupart des calculs (comme le produit scalaire). Par conséquent, lorsque vous effectuez des calculs d&rsquo;éclairage, veillez à <strong>toujours normaliser les vecteurs</strong> concernés afin de vous assurer qu&rsquo;il s&rsquo;agit bien de vecteurs unitaires. <strong>Oublier de normaliser un vecteur est une erreur courante.</strong></p>
+<p>Ensuite, nous devons calculer l&rsquo;impact diffus de la lumière sur le fragment actuel en effectuant le produit scalaire entre les vecteurs norm et lightDir. La valeur obtenue est ensuite multipliée par la couleur de la lumière pour obtenir la composante diffuse, qui est d&rsquo;autant plus sombre que l&rsquo;angle entre les deux vecteurs est grand :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> diff <span style="color:#f92672">=</span> max(dot(norm, lightDir), <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>vec3 diffuse <span style="color:#f92672">=</span> diff <span style="color:#f92672">*</span> lightColor;
+</span></span></code></pre></div><p>Si l&rsquo;angle entre les deux vecteurs est supérieur à 90 degrés, le résultat du produit de points devient négatif et nous obtenons une composante diffuse négative. C&rsquo;est pourquoi nous utilisons la fonction <code>max</code>, qui renvoie la valeur la plus élevée de ses deux paramètres, afin de nous assurer que la composante diffuse (et donc les couleurs) ne devient jamais négative. L&rsquo;éclairage pour les couleurs négatives n&rsquo;est pas vraiment défini, il est donc préférable d&rsquo;éviter cela, à moins que vous ne soyez l&rsquo;un de ces artistes excentriques.</p>
+<p>Maintenant que nous avons une composante ambiante et une composante diffuse, nous ajoutons les deux couleurs l&rsquo;une à l&rsquo;autre, puis nous multiplions le résultat avec la couleur de l&rsquo;objet pour obtenir la couleur de sortie du fragment résultant : </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 result <span style="color:#f92672">=</span> (ambient <span style="color:#f92672">+</span> diffuse) <span style="color:#f92672">*</span> objectColor;
+</span></span><span style="display:flex;"><span>FragColor <span style="color:#f92672">=</span> vec4(result, <span style="color:#ae81ff">1.0</span>);
+</span></span></code></pre></div><p>Si votre application (et vos shaders) ont été compilés avec succès, vous devriez voir quelque chose comme ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c01_Basic%20Lighting%5cbasicl4.png" alt="basicl4"/></p>
+<p>Vous pouvez voir qu&rsquo;avec un éclairage diffus, le cube recommence à ressembler à un vrai cube. Essayez de visualiser les vecteurs normaux dans votre tête et déplacez la caméra autour du cube pour voir que plus l&rsquo;angle entre le vecteur normal et le vecteur de direction de la lumière est grand, plus le fragment devient sombre.</p>
+<p>N&rsquo;hésitez pas à comparer votre code source avec le code source complet <a href="https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/2.1.basic_lighting_diffuse/basic_lighting_diffuse.cpp">ici</a> si vous êtes bloqué.</p>
+<h2 id="une-dernière-chose">Une dernière chose</h2>
+<p>Dans la section précédente, nous avons transmis le vecteur normal directement du vertex shader au fragment shader. Cependant, les calculs dans le fragment shader sont tous effectués dans le world space, donc ne devrions-nous pas transformer les vecteurs normaux en coordonnées world space également ? En principe, oui, mais ce n&rsquo;est pas aussi simple que de les multiplier par une matrice de modèle.</p>
+<p>Tout d&rsquo;abord, les vecteurs normaux ne sont que des vecteurs de direction et ne représentent pas une position spécifique dans l&rsquo;espace. Deuxièmement, les vecteurs normaux n&rsquo;ont pas de coordonnée homogène (la composante <em>w</em> de la position d&rsquo;un sommet). Cela signifie que les translations ne devraient pas avoir d&rsquo;effet sur les vecteurs normaux. Par conséquent, si nous voulons multiplier les vecteurs normaux avec une matrice de modèle, nous voulons supprimer la partie de la matrice relative à la translation en prenant la matrice 3x3 supérieure gauche de la matrice de modèle (notez que nous pourrions également fixer la composante w d&rsquo;un vecteur normal à 0 et la multiplier avec la matrice 4x4).</p>
+<p>Deuxièmement, si la matrice du modèle effectue une mise à l&rsquo;échelle non uniforme, les sommets seront modifiés de telle sorte que le vecteur normal ne sera plus perpendiculaire à la surface. L&rsquo;image suivante montre l&rsquo;effet d&rsquo;une telle matrice de modèle (avec une échelle non uniforme) sur un vecteur normal : </p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c01_Basic%20Lighting%5cbasicl5.png" alt="basicl5"/></p>
+<p>Lorsque nous appliquons une échelle non uniforme (note : une échelle uniforme ne modifie que la magnitude de la normale, pas sa direction, ce qui est facilement corrigé en la normalisant), les vecteurs normaux ne sont plus perpendiculaires à la surface correspondante, ce qui déforme l&rsquo;éclairage.</p>
+<p>L&rsquo;astuce pour corriger ce comportement consiste à utiliser une matrice de modèle différente, spécialement conçue pour les vecteurs normaux. Cette matrice est appelée matrice normale et utilise quelques opérations algébriques linéaires pour supprimer l&rsquo;effet de la mise à l&rsquo;échelle erronée des vecteurs normaux. Si vous souhaitez savoir comment cette matrice est calculée, je vous conseille de lire l&rsquo;<a href="http://www.lighthouse3d.com/tutorials/glsl-tutorial/the-normal-matrix/">article suivant</a>.</p>
+<p><strong>La matrice normale est définie comme &ldquo;la transposée de l&rsquo;inverse de la partie supérieure gauche 3x3 de la matrice du modèle&rdquo;.</strong> Si vous ne comprenez pas vraiment ce que cela signifie, ne vous inquiétez pas ; nous n&rsquo;avons pas encore abordé les matrices inverse et transposée. Notez que la plupart des ressources définissent la matrice normale comme dérivée de la matrice modèle-vue, mais comme nous travaillons dans l&rsquo;espace mondial (et non dans l&rsquo;espace de vue), nous la déduirons de la matrice du modèle.</p>
+<p>Dans le vertex shader, nous pouvons générer la matrice normale en utilisant les fonctions inverse et transposée du vertex shader qui fonctionnent sur n&rsquo;importe quel type de matrice. Notez que nous avons transformé la matrice en une matrice 3x3 pour nous assurer qu&rsquo;elle perd ses propriétés de translation et qu&rsquo;elle peut se multiplier avec le vecteur normal <code>vec3</code> : </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>Normal <span style="color:#f92672">=</span> mat3(transpose(inverse(model))) <span style="color:#f92672">*</span> aNormal;  
+</span></span></code></pre></div><p>L&rsquo;inversion des matrices est une opération coûteuse pour les shaders, donc dans la mesure du possible, essayez d&rsquo;éviter les opérations d&rsquo;inversion puisqu&rsquo;elles doivent être effectuées sur chaque vertex de votre scène. Pour l&rsquo;apprentissage, c&rsquo;est parfait, mais pour une application efficace, vous voudrez probablement calculer la matrice normale sur le processeur et l&rsquo;envoyer aux shaders via un uniforme avant de dessiner (tout comme la matrice de modèle). </p>
+<p>Dans la section sur l&rsquo;éclairage diffus, l&rsquo;éclairage était bon parce que nous n&rsquo;avons pas mis l&rsquo;objet à l&rsquo;échelle, de sorte qu&rsquo;il n&rsquo;était pas vraiment nécessaire d&rsquo;utiliser une matrice normale et que nous aurions pu simplement multiplier les normales avec la matrice du modèle. Cependant, si vous effectuez une mise à l&rsquo;échelle non uniforme, il est essentiel de multiplier vos vecteurs normaux avec la matrice normale.</p>
+<h1 id="specular">Specular</h1>
+<p>Si vous n&rsquo;êtes pas déjà épuisé par toutes ces discussions sur l&rsquo;éclairage, nous pouvons commencer à terminer le modèle d&rsquo;éclairage du Phong en ajoutant des reflets spéculaires.</p>
+<p>Comme l&rsquo;éclairage diffus, **l&rsquo;éclairage spéculaire est basé sur le vecteur de direction de la lumière et les vecteurs de normalité de l&rsquo;objet, mais cette fois, il est également basé sur la direction de la vue, c&rsquo;est-à-dire la direction à partir de laquelle l&rsquo;observateur regarde le fragment.**L&rsquo;éclairage spéculaire est basé sur les propriétés réfléchissantes des surfaces. <strong>Si nous considérons la surface de l&rsquo;objet comme un miroir, l&rsquo;éclairage spéculaire est le plus fort là où nous voyons la lumière se refléter sur la surface.</strong> Vous pouvez voir cet effet dans l&rsquo;image suivante : 
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c01_Basic%20Lighting%5cbasicl6.png" alt="basicl6"/>
+Nous calculons un vecteur de réflexion en réfléchissant la direction de la lumière autour du vecteur normal. Nous calculons ensuite la distance angulaire entre ce vecteur de réflexion et la direction de la vue. Plus l&rsquo;angle entre les deux est proche, plus l&rsquo;impact de la lumière spéculaire est important. L&rsquo;effet résultant est que nous voyons une sorte de surbrillance lorsque nous regardons la direction de la lumière réfléchie par la surface.</p>
+<p><strong>Le vecteur de vue est la seule variable supplémentaire dont nous avons besoin pour l&rsquo;éclairage spéculaire.</strong> Nous pouvons le calculer en utilisant la position de l&rsquo;observateur dans le world space et la position du fragment. Nous calculons ensuite l&rsquo;intensité de l&rsquo;éclairage spéculaire, la multiplions par la couleur de la lumière et l&rsquo;ajoutons aux composantes ambiantes et diffuses. </p>
+<p>Nous avons choisi de faire les calculs d&rsquo;éclairage dans le world space, mais la plupart des gens préfèrent faire l&rsquo;éclairage dans le visual space. L&rsquo;avantage du visual space est que la position de l&rsquo;observateur est toujours à (0,0,0), donc vous avez déjà la position de l&rsquo;observateur gratuitement. Cependant, je trouve que le calcul de l&rsquo;éclairage dans le world space est plus intuitif à des fins d&rsquo;apprentissage. Si vous souhaitez toujours calculer l&rsquo;éclairage dans le view space, vous devez transformer tous les vecteurs pertinents avec la matrice de vue (n&rsquo;oubliez pas de modifier la matrice normale également).</p>
+<p>Pour obtenir les coordonnées du spectateur dans l&rsquo;espace mondial, nous prenons simplement le vecteur de position de l&rsquo;objet caméra (qui est bien sûr le spectateur). Ajoutons donc un autre uniforme au fragment shader et passons le vecteur de position de la caméra au shader :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>uniform vec3 viewPos;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>lightingShader.setVec3(<span style="color:#e6db74">&#34;viewPos&#34;</span>, camera.Position); 
+</span></span></code></pre></div><p>Maintenant que nous disposons de toutes les variables nécessaires, nous pouvons calculer l&rsquo;intensité spéculaire. Nous définissons tout d&rsquo;abord une valeur d&rsquo;intensité spéculaire pour donner à la surbrillance spéculaire une couleur moyennement lumineuse afin qu&rsquo;elle n&rsquo;ait pas trop d&rsquo;impact :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> specularStrength <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.5</span>;
+</span></span></code></pre></div><p>Si nous réglions cette intensité à <code>1.0f</code>, nous obtiendrions une composante spéculaire très brillante, ce qui est un peu trop pour un cube de corail. Dans le prochain chapitre, nous parlerons du réglage correct de toutes ces intensités d&rsquo;éclairage et de la façon dont elles affectent les objets. Ensuite, nous calculons le vecteur de direction de la vue et le vecteur de réflexion correspondant le long de l&rsquo;axe normal : </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 viewDir <span style="color:#f92672">=</span> normalize(viewPos <span style="color:#f92672">-</span> FragPos);
+</span></span><span style="display:flex;"><span>vec3 reflectDir <span style="color:#f92672">=</span> reflect(<span style="color:#f92672">-</span>lightDir, norm);  
+</span></span></code></pre></div><p>Notez que nous rendons négatif le vecteur <code>lightDir</code>. La fonction <code>reflect</code> s&rsquo;attend à ce que le premier vecteur pointe de la source lumineuse vers la position du fragment, mais le vecteur <code>lightDir</code> pointe actuellement dans l&rsquo;autre sens : du fragment vers la source lumineuse (cela dépend de l&rsquo;ordre de soustraction utilisé plus tôt lorsque nous avons calculé le vecteur lightDir). Pour être sûr d&rsquo;obtenir le bon vecteur reflect, nous inversons sa direction en annulant d&rsquo;abord le vecteur lightDir. Le deuxième argument attend un vecteur normal, nous fournissons donc le vecteur normalisé.</p>
+<p>Il ne reste plus qu&rsquo;à calculer la composante spéculaire. Cette opération est réalisée à l&rsquo;aide de la formule suivante : </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> spec <span style="color:#f92672">=</span> pow(max(dot(viewDir, reflectDir), <span style="color:#ae81ff">0.0</span>), <span style="color:#ae81ff">32</span>);
+</span></span><span style="display:flex;"><span>vec3 specular <span style="color:#f92672">=</span> specularStrength <span style="color:#f92672">*</span> spec <span style="color:#f92672">*</span> lightColor;  
+</span></span></code></pre></div><p>Nous calculons d&rsquo;abord le produit de points entre la direction de la vue et la direction du reflet (et nous nous assurons qu&rsquo;il n&rsquo;est pas négatif), puis nous l&rsquo;élevons à la puissance 32. Cette valeur de <strong>32 correspond à la valeur de brillance de la mise en évidence</strong>.** Plus la valeur de brillance d&rsquo;un objet est élevée, plus il réfléchit correctement la lumière au lieu de la disperser tout autour de lui, et plus la zone de surbrillance est petite**. L&rsquo;image ci-dessous montre l&rsquo;impact visuel de différentes valeurs de brillance : 
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c01_Basic%20Lighting%5cbasicl7.png" alt="basicl7"/>
+Nous ne voulons pas que la composante spéculaire soit trop gênante, c&rsquo;est pourquoi nous maintenons l&rsquo;exposant à 32. Il ne reste plus qu&rsquo;à l&rsquo;ajouter aux composantes ambiante et diffuse et à multiplier le résultat combiné par la couleur de l&rsquo;objet :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 result <span style="color:#f92672">=</span> (ambient <span style="color:#f92672">+</span> diffuse <span style="color:#f92672">+</span> specular) <span style="color:#f92672">*</span> objectColor;
+</span></span><span style="display:flex;"><span>FragColor <span style="color:#f92672">=</span> vec4(result, <span style="color:#ae81ff">1.0</span>);
+</span></span></code></pre></div><p>Nous avons maintenant calculé tous les composants d&rsquo;éclairage du modèle d&rsquo;éclairage Phong. En fonction de votre point de vue, vous devriez voir quelque chose comme ceci :</p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c01_Basic%20Lighting%5cbasicl8.png" alt="basicl8"/>
+Vous pouvez trouver le code source complet de l&rsquo;application <a href="https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/2.2.basic_lighting_specular/basic_lighting_specular.cpp">ici</a>.</p>
+<h2 id="remarques">Remarques</h2>
+<p>Dans les premiers temps des lighting shaders, les développeurs avaient l&rsquo;habitude d&rsquo;implémenter le modèle d&rsquo;éclairage Phong dans le vertex shader. L&rsquo;avantage de l&rsquo;éclairage dans le vertex shader est qu&rsquo;il est beaucoup plus efficace car il y a généralement beaucoup moins de sommets que de fragments, de sorte que les calculs d&rsquo;éclairage (coûteux) sont effectués moins souvent. Cependant, la valeur de couleur résultante dans le vertex shader est la couleur d&rsquo;éclairage résultante de ce sommet uniquement et les valeurs de couleur des fragments environnants sont alors le résultat des couleurs d&rsquo;éclairage interpolées. Il en résulte que l&rsquo;éclairage n&rsquo;est pas très réaliste à moins d&rsquo;utiliser un grand nombre de sommets.</p>
+<p>Vous devriez maintenant commencer à voir à quel point les shaders sont puissants. Avec peu d&rsquo;informations, les shaders sont capables de calculer comment l&rsquo;éclairage affecte les couleurs du fragment pour tous nos objets. Dans les prochains chapitres, nous approfondirons ce que nous pouvons faire avec le modèle d&rsquo;éclairage.</p>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

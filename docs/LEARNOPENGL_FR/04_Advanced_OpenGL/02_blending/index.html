@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+<br><br>
+<h1 id="blending-transparenceblending">Blending (transparence/blending)</h1>
+<p>Le blending dans OpenGL est communément connu comme la technique pour implémenter la transparence dans les objets. <strong>La transparence consiste à ce que les objets (ou des parties d&rsquo;objets) n&rsquo;aient pas une couleur unie, mais une combinaison de couleurs provenant de l&rsquo;objet lui-même et de tout autre objet situé derrière lui, avec une intensité variable</strong>. Une fenêtre en verre coloré est un objet transparent ; le verre a sa propre couleur, mais la couleur résultante contient également les couleurs de tous les objets situés derrière le verre. C&rsquo;est aussi de là que vient le nom de blending, puisque nous blendingons plusieurs couleurs de pixels (provenant d&rsquo;objets différents) en une seule couleur. La transparence nous permet donc de voir à travers les objets.
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cblending_transparency.png" alt="blending_transparency"/>
+<strong>Les objets transparents peuvent être complètement transparents (ils laissent passer toutes les couleurs) ou partiellement transparents (ils laissent passer les couleurs, mais aussi certaines de leurs propres couleurs)</strong>. Le degré de transparence d&rsquo;un objet est défini par la valeur alpha de sa couleur. La valeur alpha d&rsquo;une couleur est la quatrième composante d&rsquo;un vecteur de couleur que vous avez probablement vu assez souvent maintenant. Jusqu&rsquo;à ce chapitre, nous avons toujours maintenu cette quatrième composante à <strong>une valeur de 1,0, ce qui donne à l&rsquo;objet une transparence de 0,0. Une valeur alpha de 0,0 signifie que l&rsquo;objet est totalement transparent. Une valeur alpha de 0,5 indique que la couleur de l&rsquo;objet est composée à 50 % de sa propre couleur et à 50 % des couleurs situées derrière l&rsquo;objet.</strong></p>
+<p>Les textures que nous avons utilisées jusqu&rsquo;à présent étaient toutes composées de trois composantes de couleur : rouge, vert et bleu, mais <strong>certaines textures ont également un canal alpha intégré qui contient une valeur alpha par texel</strong>. Cette valeur alpha nous indique exactement quelles parties de la texture sont transparentes et de combien. Par exemple, la texture de fenêtre suivante a une valeur alpha de 0,25 dans sa partie vitrée et une valeur alpha de 0,0 dans ses coins. La partie vitrée devrait normalement être complètement rouge, mais comme elle est transparente à 75 %, elle laisse largement transparaître l&rsquo;arrière-plan de la page, ce qui la rend beaucoup moins rouge :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cblending_transparent_window.png" alt="blending_transparent_window"/>
+Nous ajouterons bientôt cette texture fenêtrée à la scène du chapitre sur les tests de profondeur, mais nous allons d&rsquo;abord discuter d&rsquo;une technique plus simple pour mettre en œuvre la transparence pour les pixels qui sont soit totalement transparents, soit totalement opaques.</p>
+<h2 id="ecarter-des-fragments">Ecarter des fragments</h2>
+<p>Certains effets ne se soucient pas de la transparence partielle, mais veulent montrer quelque chose ou rien du tout en fonction de la valeur de la couleur d&rsquo;une texture. Pensez à l&rsquo;herbe ; <strong>pour créer quelque chose comme de l&rsquo;herbe avec peu d&rsquo;effort, vous collez généralement une texture d&rsquo;herbe sur un carré 2D et vous placez ce carré dans votre scène. Cependant, l&rsquo;herbe n&rsquo;a pas exactement la forme d&rsquo;un carré 2D et vous ne voulez donc afficher que certaines parties de la texture d&rsquo;herbe et ignorer les autres.</strong></p>
+<p>La [texture]https://learnopengl.com/img/textures/grass.png suivante est exactement une texture de ce type : soit elle est totalement opaque (valeur alpha de 1,0), soit elle est totalement transparente (valeur alpha de 0,0), et rien ne se situe entre les deux. Vous pouvez voir que là où il n&rsquo;y a pas d&rsquo;herbe, l&rsquo;image affiche la couleur d&rsquo;arrière-plan de la page au lieu de la sienne.
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cgrass.png" alt="grass.png"/>
+Ainsi, lorsque nous ajoutons de la végétation à une scène, nous ne voulons pas voir une image carrée d&rsquo;herbe, mais seulement l&rsquo;herbe réelle et voir à travers le reste de l&rsquo;image. Nous voulons jeter les fragments qui montrent les parties transparentes de la texture, sans stocker ce fragment dans le tampon de couleur.</p>
+<p>Avant d&rsquo;en arriver là, nous devons d&rsquo;abord apprendre à charger une texture transparente. <code>stb_image</code> charge automatiquement le canal alpha d&rsquo;une image s&rsquo;il est disponible, mais nous devons indiquer à OpenGL que notre texture utilise désormais un canal alpha dans la procédure de génération de la texture :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glTexImage2D(GL_TEXTURE_2D, <span style="color:#ae81ff">0</span>, GL_RGBA, width, height, <span style="color:#ae81ff">0</span>, GL_RGBA, GL_UNSIGNED_BYTE, data);  
+</span></span></code></pre></div><p>Veillez également à récupérer les 4 composantes de couleur de la texture dans le fragment shader, et pas seulement les composantes RVB :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// FragColor = vec4(vec3(texture(texture1, TexCoords)), 1.0);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    FragColor <span style="color:#f92672">=</span> texture(texture1, TexCoords);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Maintenant que nous savons comment charger des textures transparentes, il est temps de les mettre à l&rsquo;épreuve en ajoutant plusieurs de ces feuilles d&rsquo;herbe dans la scène de base présentée dans le chapitre sur les tests de profondeur.</p>
+<p>Nous créons un petit tableau de vecteurs dans lequel nous ajoutons plusieurs vecteurs <code>glm::vec3</code> pour représenter l&rsquo;emplacement des feuilles d&rsquo;herbe :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vector<span style="color:#f92672">&lt;</span>glm<span style="color:#f92672">::</span>vec3<span style="color:#f92672">&gt;</span> vegetation;
+</span></span><span style="display:flex;"><span>vegetation.push_back(glm<span style="color:#f92672">::</span>vec3(<span style="color:#f92672">-</span><span style="color:#ae81ff">1.5f</span>,  <span style="color:#ae81ff">0.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.48f</span>));
+</span></span><span style="display:flex;"><span>vegetation.push_back(glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">1.5f</span>,  <span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">0.51f</span>));
+</span></span><span style="display:flex;"><span>vegetation.push_back(glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">0.0f</span>,  <span style="color:#ae81ff">0.7f</span>));
+</span></span><span style="display:flex;"><span>vegetation.push_back(glm<span style="color:#f92672">::</span>vec3(<span style="color:#f92672">-</span><span style="color:#ae81ff">0.3f</span>,  <span style="color:#ae81ff">0.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">2.3f</span>));
+</span></span><span style="display:flex;"><span>vegetation.push_back(glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">0.5f</span>,  <span style="color:#ae81ff">0.0f</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">0.6f</span>));  
+</span></span></code></pre></div><p>Chaque objet d&rsquo;herbe est rendu sous la forme d&rsquo;un seul quad avec la texture d&rsquo;herbe qui lui est attachée. Ce n&rsquo;est pas une représentation 3D parfaite de l&rsquo;herbe, mais c&rsquo;est beaucoup plus efficace que le chargement et le rendu d&rsquo;un grand nombre de modèles complexes. Avec quelques astuces, comme l&rsquo;ajout de rotations et d&rsquo;échelles aléatoires, vous pouvez obtenir des résultats assez convaincants avec les quads.</p>
+<p>Comme la texture de l&rsquo;herbe sera affichée sur un objet quadratique, nous devrons créer un autre <code>VAO</code>, remplir le <code>VBO</code> et définir les pointeurs d&rsquo;attributs de vertex appropriés. Après avoir rendu le sol et les deux cubes, nous allons rendre les feuilles d&rsquo;herbe :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glBindVertexArray(vegetationVAO);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_2D, grassTexture);  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> vegetation.size(); i<span style="color:#f92672">++</span>) 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>mat4(<span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>translate(model, vegetation[i]);				
+</span></span><span style="display:flex;"><span>    shader.setMat4(<span style="color:#e6db74">&#34;model&#34;</span>, model);
+</span></span><span style="display:flex;"><span>    glDrawArrays(GL_TRIANGLES, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">6</span>);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>L&rsquo;exécution de l&rsquo;application ressemble maintenant à ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cblending_no_discard.png" alt="blending_no_discard"/>
+Cela se produit parce qu&rsquo;OpenGL, par défaut, ne sait pas quoi faire avec les valeurs alpha, ni quand les rejeter. Nous devons le faire manuellement nous-mêmes. Heureusement, c&rsquo;est assez facile grâce à l&rsquo;utilisation des shaders. GLSL nous donne la commande <code>discard</code> qui (une fois appelée) garantit que le fragment ne sera pas traité ultérieurement et ne finira donc pas dans le tampon de couleur. Grâce à cette commande, nous pouvons vérifier si un fragment a une valeur alpha inférieure à un certain seuil et, si c&rsquo;est le cas, jeter le fragment comme s&rsquo;il n&rsquo;avait jamais été traité :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>in vec2 TexCoords;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform sampler2D texture1;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{             
+</span></span><span style="display:flex;"><span>    vec4 texColor <span style="color:#f92672">=</span> texture(texture1, TexCoords);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(texColor.a <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0.1</span>)
+</span></span><span style="display:flex;"><span>        discard;
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> texColor;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Ici, nous vérifions si la couleur de la texture échantillonnée contient une valeur alpha inférieure à un seuil de 0,1 et si c&rsquo;est le cas, nous rejetons le fragment. Ce fragment shader nous assure qu&rsquo;il ne rend que les fragments qui ne sont pas (presque) complètement transparents. Maintenant, l&rsquo;image va ressembler à ce qu&rsquo;elle devrait être :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cblending_discard.png" alt="blending_discard"/></p>
+<blockquote>
+<p>Notez que lors de l&rsquo;échantillonnage des textures sur leurs bords, OpenGL interpole les valeurs des bords avec la valeur répétée suivante de la texture (parce que nous réglons ses paramètres d&rsquo;enveloppement sur <code>GL_REPEAT</code> par défaut). C&rsquo;est généralement correct, mais comme nous utilisons des valeurs transparentes, le haut de l&rsquo;image de la texture voit sa valeur transparente interpolée avec la valeur de la couleur unie de la bordure inférieure. Le résultat est alors une bordure colorée légèrement semi-transparente que vous pouvez voir s&rsquo;enrouler autour de votre quadrillage texturé. Pour éviter cela, réglez la méthode d&rsquo;enveloppement de la texture sur <code>GL_CLAMP_TO_EDGE</code> chaque fois que vous utilisez des textures alpha que vous ne voulez pas répéter :</p>
+</blockquote>
+<p>Vous pouvez trouver le code source <a href="https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/3.1.blending_discard/blending_discard.cpp">ici</a>.</p>
+<h2 id="blending">Blending</h2>
+<p>Bien que l&rsquo;élimination des fragments soit une bonne chose, elle ne nous donne pas la possibilité de rendre des images semi-transparentes ; soit nous rendons le fragment, soit nous l&rsquo;éliminons complètement. Pour rendre des images avec différents niveaux de transparence, nous devons activer le blending. Comme la plupart des fonctionnalités d&rsquo;OpenGL, nous pouvons activer le blending en activant <code>GL_BLEND</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glEnable(GL_BLEND);  
+</span></span></code></pre></div><p>Maintenant que nous avons activé le blending, nous devons dire à OpenGL comment il doit se blendingr.</p>
+<h1 id="vecc_result">Le blending dans OpenGL se fait avec l&rsquo;équation suivante :
+$$
+\vec{C}_{result}</h1>
+<p>\vec{C}<em>{source} * F</em>{source}
++
+\vec{C}<em>{destination} * F</em>{destination}
+$$</p>
+<ul>
+<li>$\vec{C}_{source}$ : le vecteur de couleur source. Il s&rsquo;agit de la couleur de sortie du shader de fragment.</li>
+</ul>
+<ul>
+<li>$\vec{C}_{destination}$ : le vecteur de couleur de destination. Il s&rsquo;agit du vecteur de couleur actuellement stocké dans le tampon de couleur.</li>
+<li>$F_{source}$ : la valeur du facteur de source. Définit l&rsquo;impact de la valeur alpha sur la couleur source.</li>
+<li>$F_{destination}$ : valeur du facteur de destination. Définit l&rsquo;impact de la valeur alpha sur la couleur de destination.</li>
+</ul>
+<p>Une fois que le fragment shader a été exécuté et que tous les tests ont été réussis, cette équation de blending est relâchée (?) sur la sortie couleur du fragment et avec ce qui se trouve actuellement dans le tampon de couleur. Les couleurs source et destination seront automatiquement définies par OpenGL, mais les facteurs source et destination peuvent être définis à une valeur de notre choix. Commençons par un exemple simple :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cblending_equation.png" alt="blending_equation"/>
+Nous avons deux carrés où nous voulons dessiner le carré vert semi-transparent sur le carré rouge. Le carré rouge sera la couleur de destination (et devrait donc être le premier dans le tampon de couleurs) et nous allons maintenant dessiner le carré vert sur le carré rouge.</p>
+<h1 id="vecc_result-1"><strong>La question qui se pose alors est la suivante : à quoi devons-nous fixer les valeurs des facteurs ? Eh bien, nous voulons au moins multiplier le carré vert par sa valeur alpha, donc nous voulons fixer le facteur <code>Fsrc</code></strong> égal à la valeur alpha du vecteur de couleur source, soit $0.6$. Il est donc logique que le carré de destination ait une contribution égale au reste de la valeur alpha. Si le carré vert contribue à hauteur de 60 % à la couleur finale, nous voulons que le carré rouge contribue à hauteur de 40 % à la couleur finale, soit 1,0 - 0,6. Nous fixons donc <code>Fdestination</code> à un moins la valeur alpha du vecteur de couleur source. L&rsquo;équation devient donc :
+$$
+\vec{C}_{result}</h1>
+<p>\begin{bmatrix}
+0.0 \
+1.0 \
+0.0 \
+0.6 \
+\end{bmatrix}
+*
+0.6
++
+\begin{bmatrix}
+1.0 \
+0.0 \
+0.0 \
+1.0 \
+\end{bmatrix}
+*
+(1.0 - 0.6)
+$$
+Le résultat est que les fragments de carrés combinés contiennent une couleur qui est 60% verte et 40% rouge :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cblending_equation_mixed.png" alt="blending_equation_mixed"/>
+La couleur résultante est alors stockée dans le tampon de couleur, remplaçant la couleur précédente.</p>
+<p>C&rsquo;est bien beau tout ça, mais comment dire à OpenGL d&rsquo;utiliser de tels facteurs ? Il se trouve qu&rsquo;il existe une fonction pour cela, appelée <code>glBlendFunc</code>.</p>
+<p>La fonction <code>glBlendFunc(GLenum sfactor, GLenum dfactor)</code> attend deux paramètres qui définissent l&rsquo;option pour le facteur de source et de destination. OpenGL a défini un certain nombre d&rsquo;options que nous allons énumérer ci-dessous. Notez que le vecteur de couleur constante $\vec{C}_{constant}$  peut être défini séparément via la fonction <code>glBlendColor</code>.</p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5c02_blending-20230816.png" alt="02_blending-20230816"/>
+Pour obtenir le résultat du blending de notre petit exemple de deux carrés, nous voulons prendre l&rsquo;<strong>alpha</strong> du vecteur de couleur source pour le facteur source et <strong>1-alpha</strong> du même vecteur de couleur pour le facteur de destination. Cela se traduit par <code>glBlendFunc</code> écrit comme suit :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
+</span></span></code></pre></div><p>Il est également possible de définir des options différentes pour les canaux RVB et alpha en utilisant <code>glBlendFuncSeparate</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+</span></span></code></pre></div><p>Cette fonction définit les composantes RVB comme nous l&rsquo;avons fait précédemment, mais ne laisse que la composante alpha résultante être influencée par la valeur alpha de la source.</p>
+<p>OpenGL nous donne encore plus de flexibilité en nous permettant de changer l&rsquo;opérateur entre la partie source et la partie destination de l&rsquo;équation. Actuellement, les composantes source et destination sont additionnées, mais nous pourrions également les soustraire si nous le souhaitions. glBlendEquation(GLenum mode) nous permet de définir cette opération et dispose de 5 options possibles :</p>
+<ul>
+<li><code>GL_FUNC_ADD</code> : la valeur par défaut, ajoute les deux couleurs l&rsquo;une à l&rsquo;autre : $\vec{C}_{result}=Src+Dst$</li>
+<li><code>GL_FUNC_SUBTRACT</code> : soustrait les deux couleurs l&rsquo;une de l&rsquo;autre : $\vec{C}_{result}=Src-Dst$</li>
+<li><code>GL_FUNC_REVERSE_SUBTRACT</code> : soustrait les deux couleurs, mais inverse l&rsquo;ordre : $\vec{C}_{result}=Dst-Src$</li>
+<li><code>GL_MIN</code> : prend le minimum en composantes des deux couleurs : $\vec{C}_{result}=min(Dst,Src)$</li>
+<li><code>GL_MAX</code> : prend le maximum des deux couleurs en fonction de leurs composantes : $\vec{C}_{result}=max(Dst,Src)$</li>
+</ul>
+<p>En général, nous pouvons simplement omettre d&rsquo;appeler <code>glBlendEquation</code> parce que GL_FUNC_ADD est l&rsquo;équation de blending préférée pour la plupart des opérations, mais si vous essayez vraiment de faire de votre mieux pour sortir du circuit traditionnel, n&rsquo;importe laquelle des autres équations peut répondre à vos besoins.</p>
+<h2 id="rendu-de-textures-semi-transparentes">Rendu de textures semi-transparentes</h2>
+<p>Maintenant que nous savons comment fonctionne OpenGL en ce qui concerne le blending, il est temps de mettre nos connaissances à l&rsquo;épreuve en ajoutant plusieurs fenêtres semi-transparentes. Nous utiliserons la même scène qu&rsquo;au début de ce chapitre, mais au lieu de rendre une texture d&rsquo;herbe, nous utiliserons la texture de <a href="https://learnopengl.com/img/advanced/blending_transparent_window.png">fenêtre transparente</a> du début de ce chapitre.</p>
+<p>Tout d&rsquo;abord, lors de l&rsquo;initialisation, nous activons le blending et définissons la fonction de blending appropriée :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glEnable(GL_BLEND);
+</span></span><span style="display:flex;"><span>glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+</span></span></code></pre></div><p>Puisque nous avons activé le blending, il n&rsquo;est pas nécessaire d&rsquo;éliminer les fragments, nous allons donc réinitialiser le fragment shader à sa version d&rsquo;origine :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>in vec2 TexCoords;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform sampler2D texture1;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{             
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> texture(texture1, TexCoords);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Cette fois-ci (chaque fois qu&rsquo;OpenGL rend un fragment), il combine la couleur du fragment actuel avec la couleur du fragment actuellement dans le tampon de couleur, en se basant sur la valeur alpha de <code>FragColor</code>. Puisque la partie vitrée de la texture de la fenêtre est semi-transparente, nous devrions pouvoir voir le reste de la scène en regardant à travers cette fenêtre.</p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cblending_incorrect_order.png" alt="blending_incorrect_order"/></p>
+<p>Cependant, si vous regardez de plus près, vous remarquerez que quelque chose ne va pas. Les parties transparentes de la fenêtre avant masquent les fenêtres de l&rsquo;arrière-plan. Pourquoi cela se produit-il ?</p>
+<p>La raison en est que le test de profondeur fonctionne de manière un peu délicate en combinaison avec le blending. Lors de l&rsquo;écriture dans le tampon de profondeur, le test de profondeur ne se préoccupe pas de savoir si le fragment est transparent ou non, de sorte que les parties transparentes sont écrites dans le tampon de profondeur comme n&rsquo;importe quelle autre valeur. Il en résulte que les fenêtres d&rsquo;arrière-plan sont testées en profondeur comme tout autre objet opaque, sans tenir compte de la transparence. Même si la partie transparente devrait montrer les fenêtres situées derrière elle, le test de profondeur ne les prend pas en compte.</p>
+<p>Nous ne pouvons donc pas simplement rendre les fenêtres comme nous le voulons et espérer que le tampon de profondeur résoudra tous nos problèmes pour nous ; c&rsquo;est aussi là que le blending devient un peu désagréable. Pour s&rsquo;assurer que les fenêtres affichent les fenêtres situées derrière elles, nous devons d&rsquo;abord dessiner les fenêtres en arrière-plan. Cela signifie que nous devons trier manuellement les fenêtres de la plus éloignée à la plus proche et les dessiner nous-mêmes en conséquence.</p>
+<blockquote>
+<p>Notez qu&rsquo;avec des objets entièrement transparents comme les feuilles d&rsquo;herbe, nous avons la possibilité d&rsquo;éliminer les fragments transparents au lieu de les blendingr, ce qui nous évite quelques maux de tête (pas de problèmes de profondeur).</p>
+</blockquote>
+<h2 id="ne-pas-casser-lordre">Ne pas casser l&rsquo;ordre</h2>
+<p><strong>Pour que le blending fonctionne pour plusieurs objets, nous devons dessiner l&rsquo;objet le plus éloigné en premier et l&rsquo;objet le plus proche en dernier</strong>. Les objets normaux non blendings peuvent toujours être dessinés normalement en utilisant le tampon de profondeur, ils n&rsquo;ont donc pas besoin d&rsquo;être triés. Nous devons nous assurer qu&rsquo;ils sont dessinés en premier avant de dessiner les objets transparents (triés). Lorsque l&rsquo;on dessine une scène avec des objets transparents et non transparents, le schéma général est généralement le suivant :</p>
+<ol>
+<li>Dessiner d&rsquo;abord tous les objets opaques.</li>
+<li>Trier tous les objets transparents.</li>
+<li>Dessinez tous les objets transparents dans l&rsquo;ordre.</li>
+</ol>
+<p>Une façon de trier les objets transparents est de récupérer la distance d&rsquo;un objet du point de vue de l&rsquo;observateur. Pour ce faire, on calcule la distance entre le vecteur de position de la caméra et le vecteur de position de l&rsquo;objet. Nous stockons ensuite cette distance avec le vecteur de position correspondant dans une structure de données de carte de la bibliothèque <code>STL</code>. Une <code>map</code> trie automatiquement ses valeurs en fonction de ses clés. Ainsi, une fois que nous avons ajouté toutes les positions avec leur distance comme clé, elles sont automatiquement triées en fonction de leur valeur de distance :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>std<span style="color:#f92672">::</span>map<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">float</span>, glm<span style="color:#f92672">::</span>vec3<span style="color:#f92672">&gt;</span> sorted;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> windows.size(); i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> distance <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>length(camera.Position <span style="color:#f92672">-</span> windows[i]);
+</span></span><span style="display:flex;"><span>    sorted[distance] <span style="color:#f92672">=</span> windows[i];
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Le résultat est un objet conteneur trié qui stocke chacune des positions des fenêtres en fonction de la valeur de leur clé de distance, de la plus faible à la plus élevée.</p>
+<p>Ensuite, lors du rendu, nous prenons chaque valeur de la <code>map</code> dans l&rsquo;ordre inverse (de la plus éloignée à la plus proche) et nous dessinons les fenêtres correspondantes dans le bon ordre :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(std<span style="color:#f92672">::</span>map<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">float</span>,glm<span style="color:#f92672">::</span>vec3<span style="color:#f92672">&gt;::</span>reverse_iterator it <span style="color:#f92672">=</span> sorted.rbegin(); it <span style="color:#f92672">!=</span> sorted.rend(); <span style="color:#f92672">++</span>it) 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>mat4(<span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>translate(model, it<span style="color:#f92672">-&gt;</span>second);				
+</span></span><span style="display:flex;"><span>    shader.setMat4(<span style="color:#e6db74">&#34;model&#34;</span>, model);
+</span></span><span style="display:flex;"><span>    glDrawArrays(GL_TRIANGLES, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">6</span>);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Nous utilisons un itérateur inverse de la carte pour parcourir chaque élément dans l&rsquo;ordre inverse, puis nous traduisons chaque carré de fenêtre en position de fenêtre correspondante. Cette approche relativement simple du tri des objets transparents résout le problème précédent et la scène ressemble désormais à ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cblending_sorted.png" alt="blending_sorted"/>
+Vous pouvez trouver le code source complet avec le tri <a href="https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/3.2.blending_sort/blending_sorted.cpp">ici</a>.</p>
+<p>Bien que cette approche de tri des objets par leur distance fonctionne bien pour ce scénario spécifique, elle ne prend pas en compte les rotations, la mise à l&rsquo;échelle ou toute autre transformation et les objets de forme bizarre ont besoin d&rsquo;une métrique différente que le simple vecteur de position.</p>
+<p>Le tri des objets dans votre scène est une tâche difficile qui dépend fortement du type de scène que vous avez, sans parler de la puissance de traitement supplémentaire qu&rsquo;il coûte. <strong>Le rendu complet d&rsquo;une scène avec des objets solides et transparents n&rsquo;est pas si simple. Il existe des techniques plus avancées, comme la transparence indépendante de l&rsquo;ordre, mais elles sortent du cadre de ce chapitre.</strong> Pour l&rsquo;instant, vous devrez vous contenter de blendingr normalement vos objets, mais si vous êtes prudent et connaissez les limites, vous pouvez obtenir des implémentations de blending assez décentes.</p>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

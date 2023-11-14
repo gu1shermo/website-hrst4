@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+<br><br>
+<h1 id="ombres-ponctuelles">Ombres ponctuelles</h1>
+<p>Dans le dernier chapitre, nous avons appris à créer des ombres dynamiques avec le shadow mapping. Cette méthode fonctionne très bien, mais elle est surtout adaptée aux lumières directionnelles (ou ponctuelles), car les ombres ne sont générées que dans la direction de la source lumineuse. C&rsquo;est pourquoi elle est également connue sous le nom de mapping directionnel des ombres, car la map de profondeur (ou d&rsquo;ombres) est générée uniquement dans la direction vers laquelle la lumière regarde.</p>
+<p>Ce chapitre se concentre sur la génération d&rsquo;ombres dynamiques dans toutes les directions environnantes. La technique que nous utilisons est parfaite pour les lumières ponctuelles, car une vraie lumière ponctuelle projetterait des ombres dans toutes les directions. Cette technique est connue sous le nom d&rsquo;ombres ponctuelles (lumière) ou plus anciennement sous le nom de maps d&rsquo;ombres omnidirectionnelles.</p>
+<blockquote>
+<p>Ce chapitre s&rsquo;appuie sur le chapitre précédent consacré au mapping des ombres. Par conséquent, si vous n&rsquo;êtes pas familiarisé avec le mapping des ombres traditionnel, il est conseillé de lire d&rsquo;abord le chapitre consacré au <a href="/docs/learnopengl_fr/05_advanced_lighting/02a_shadow_mapping/">mapping des ombres</a>.</p>
+</blockquote>
+<p>La technique est essentiellement similaire au mapping directionnel des ombres : nous générons une map de profondeur à partir de la ou des perspectives de la lumière, nous échantillonnons la map de profondeur en fonction de la position actuelle du fragment et nous comparons chaque fragment à la valeur de profondeur stockée pour voir s&rsquo;il se trouve dans l&rsquo;ombre. La principale différence entre le mappage directionnel des ombres et le mappage omnidirectionnel des ombres est la carte de profondeur utilisée.</p>
+<p>La carte de profondeur dont nous avons besoin nécessite le rendu d&rsquo;une scène à partir de toutes les directions environnantes d&rsquo;une lumière ponctuelle et, de ce fait, une map de profondeur 2D normale ne fonctionnera pas ; et si nous utilisions une cubemap à la place ? Comme une cubemap peut stocker des données d&rsquo;environnement complètes avec seulement 6 faces, il est possible de rendre la scène entière sur chacune des faces d&rsquo;une cubemap et de les échantillonner comme les valeurs de profondeur environnantes de la lumière ponctuelle.
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c02b_point_shadows-20230830-cubemap.png" alt="02b_point_shadows-20230830-cubemap"/>
+Le cubemap de profondeur généré est ensuite transmis au shader de fragment d&rsquo;éclairage qui échantillonne le cubemap avec un vecteur de direction pour obtenir la profondeur la plus proche (du point de vue de la lumière) de ce fragment. La plupart des choses compliquées ont déjà été abordées dans le chapitre sur le <a href="/docs/learnopengl_fr/05_advanced_lighting/02a_shadow_mapping/">shadow mapping</a>. Ce qui rend cette technique un peu plus difficile est la génération du cubemap de profondeur.</p>
+<h2 id="générer-la-cubemap-de-profondeur">Générer la cubemap de profondeur</h2>
+<p>Pour créer une cubemap des valeurs de profondeur environnantes d&rsquo;une lumière, nous devons effectuer le rendu de la scène 6 fois : une fois pour chaque face. Une façon (assez évidente) de le faire est de rendre la scène 6 fois avec 6 matrices de vue différentes, en attachant à chaque fois une face cubemap différente à l&rsquo;objet framebuffer. Cela ressemblerait à quelque chose comme ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">6</span>; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    GLenum face <span style="color:#f92672">=</span> GL_TEXTURE_CUBE_MAP_POSITIVE_X <span style="color:#f92672">+</span> i;
+</span></span><span style="display:flex;"><span>    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, face, depthCubemap, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>    BindViewMatrix(lightViewMatrices[i]);
+</span></span><span style="display:flex;"><span>    RenderScene();  
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Cependant, cela peut s&rsquo;avérer assez coûteux car de nombreux appels de rendu sont nécessaires pour cette seule map de profondeur. Dans ce chapitre, nous allons utiliser une approche alternative (plus organisée) en utilisant une petite astuce dans le shader géométrique qui nous permet de construire le cubemap de profondeur avec une seule passe de rendu.</p>
+<p>Tout d&rsquo;abord, nous devons créer une cubemap :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> depthCubemap;
+</span></span><span style="display:flex;"><span>glGenTextures(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>depthCubemap);
+</span></span></code></pre></div><p>Et attribuer à chacune des faces du cubemap une image de texture 2D évaluée en fonction de la profondeur :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> SHADOW_WIDTH <span style="color:#f92672">=</span> <span style="color:#ae81ff">1024</span>, SHADOW_HEIGHT <span style="color:#f92672">=</span> <span style="color:#ae81ff">1024</span>;
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">6</span>; <span style="color:#f92672">++</span>i)
+</span></span><span style="display:flex;"><span>        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X <span style="color:#f92672">+</span> i, <span style="color:#ae81ff">0</span>, GL_DEPTH_COMPONENT, 
+</span></span><span style="display:flex;"><span>                     SHADOW_WIDTH, SHADOW_HEIGHT, <span style="color:#ae81ff">0</span>, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+</span></span></code></pre></div><p>N&rsquo;oubliez pas de définir les paramètres de texture :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+</span></span></code></pre></div><p>Normalement, nous attacherions une seule face d&rsquo;une texture cubemap à l&rsquo;objet framebuffer et rendrions la scène 6 fois, en changeant à chaque fois la cible du tampon de profondeur du framebuffer pour une face cubemap différente. Puisque nous allons utiliser un shader géométrique, qui nous permet d&rsquo;effectuer le rendu sur toutes les faces en un seul passage, nous pouvons directement attacher la texture cubemap à l&rsquo;objet framebuffer avec <code>glFramebufferTexture</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+</span></span><span style="display:flex;"><span>glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>glDrawBuffer(GL_NONE);
+</span></span><span style="display:flex;"><span>glReadBuffer(GL_NONE);
+</span></span><span style="display:flex;"><span>glBindFramebuffer(GL_FRAMEBUFFER, <span style="color:#ae81ff">0</span>);  
+</span></span></code></pre></div><p>Encore une fois, notez l&rsquo;appel à <code>glDrawBuffer</code> et <code>glReadBuffer</code> : nous ne nous intéressons qu&rsquo;aux valeurs de profondeur lors de la génération d&rsquo;un cubemap de profondeur, nous devons donc explicitement indiquer à OpenGL que cet objet framebuffer n&rsquo;effectue pas de rendu vers un tampon de couleur.</p>
+<p>Avec les maps d&rsquo;ombres omnidirectionnelles, nous avons deux passes de rendu : <strong>premièrement, nous générons la cubemap de profondeur et deuxièmement, nous utilisons la cubemap de profondeur dans la passe de rendu normale pour ajouter des ombres à la scène</strong>. Ce processus ressemble un peu à ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// 1. first render to depth cubemap
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glViewport(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, SHADOW_WIDTH, SHADOW_HEIGHT);
+</span></span><span style="display:flex;"><span>glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+</span></span><span style="display:flex;"><span>    glClear(GL_DEPTH_BUFFER_BIT);
+</span></span><span style="display:flex;"><span>    ConfigureShaderAndMatrices();
+</span></span><span style="display:flex;"><span>    RenderScene();
+</span></span><span style="display:flex;"><span>glBindFramebuffer(GL_FRAMEBUFFER, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 2. then render scene as normal with shadow mapping (using depth cubemap)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glViewport(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, SCR_WIDTH, SCR_HEIGHT);
+</span></span><span style="display:flex;"><span>glClear(GL_COLOR_BUFFER_BIT <span style="color:#f92672">|</span> GL_DEPTH_BUFFER_BIT);
+</span></span><span style="display:flex;"><span>ConfigureShaderAndMatrices();
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
+</span></span><span style="display:flex;"><span>RenderScene();
+</span></span></code></pre></div><p>Le processus est exactement le même que pour le mappage d&rsquo;ombres par défaut, bien que cette fois-ci nous effectuions le rendu et utilisions une texture de profondeur cubemap au lieu d&rsquo;une texture de profondeur 2D.</p>
+<h3 id="light-space-transform">Light space transform</h3>
+<p>Avec le framebuffer et le cubemap définis, nous avons besoin d&rsquo;un moyen de transformer toute la géométrie de la scène vers les espaces de lumière pertinents dans les 6 directions de la lumière. Tout comme pour le chapitre sur le shadow mapping, nous allons avoir besoin d&rsquo;une matrice de transformation de l&rsquo;espace de lumière $T$ mais cette fois-ci une pour chaque face.</p>
+<p>Chaque matrice de transformation de l&rsquo;espace lumière contient à la fois une matrice de projection et une matrice de vue. Pour la matrice de projection, nous allons utiliser une matrice de projection en perspective ; la source lumineuse représente un point dans l&rsquo;espace et la projection en perspective est donc la plus logique. Chaque matrice de transformation de l&rsquo;espace lumière utilise la même matrice de projection :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> aspect <span style="color:#f92672">=</span> (<span style="color:#66d9ef">float</span>)SHADOW_WIDTH<span style="color:#f92672">/</span>(<span style="color:#66d9ef">float</span>)SHADOW_HEIGHT;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> near <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0f</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> far <span style="color:#f92672">=</span> <span style="color:#ae81ff">25.0f</span>;
+</span></span><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>mat4 shadowProj <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>perspective(glm<span style="color:#f92672">::</span>radians(<span style="color:#ae81ff">90.0f</span>), aspect, near, far); 
+</span></span></code></pre></div><p>Il est important de noter que le paramètre de champ de vision de <code>glm::perspective</code> est fixé à 90 degrés. En fixant ce paramètre à 90 degrés, nous nous assurons que le champ de vision est exactement assez grand pour remplir une seule face de la cubemap, de sorte que toutes les faces s&rsquo;alignent correctement les unes sur les autres au niveau des bords.</p>
+<p>Comme la matrice de projection ne change pas en fonction de la direction, nous pouvons la réutiliser pour chacune des 6 matrices de transformation. Nous avons besoin d&rsquo;une matrice de vue différente pour chaque direction. Avec <code>glm::lookAt</code>, nous créons 6 directions de vue, chacune regardant une direction de face du cubemap dans l&rsquo;ordre suivant : droite, gauche, haut, bas, près et loin.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>glm<span style="color:#f92672">::</span>mat4<span style="color:#f92672">&gt;</span> shadowTransforms;
+</span></span><span style="display:flex;"><span>shadowTransforms.push_back(shadowProj <span style="color:#f92672">*</span> 
+</span></span><span style="display:flex;"><span>                 glm<span style="color:#f92672">::</span>lookAt(lightPos, lightPos <span style="color:#f92672">+</span> glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>));
+</span></span><span style="display:flex;"><span>shadowTransforms.push_back(shadowProj <span style="color:#f92672">*</span> 
+</span></span><span style="display:flex;"><span>                 glm<span style="color:#f92672">::</span>lookAt(lightPos, lightPos <span style="color:#f92672">+</span> glm<span style="color:#f92672">::</span>vec3(<span style="color:#f92672">-</span><span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>));
+</span></span><span style="display:flex;"><span>shadowTransforms.push_back(shadowProj <span style="color:#f92672">*</span> 
+</span></span><span style="display:flex;"><span>                 glm<span style="color:#f92672">::</span>lookAt(lightPos, lightPos <span style="color:#f92672">+</span> glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>));
+</span></span><span style="display:flex;"><span>shadowTransforms.push_back(shadowProj <span style="color:#f92672">*</span> 
+</span></span><span style="display:flex;"><span>                 glm<span style="color:#f92672">::</span>lookAt(lightPos, lightPos <span style="color:#f92672">+</span> glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">0.0</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1.0</span>));
+</span></span><span style="display:flex;"><span>shadowTransforms.push_back(shadowProj <span style="color:#f92672">*</span> 
+</span></span><span style="display:flex;"><span>                 glm<span style="color:#f92672">::</span>lookAt(lightPos, lightPos <span style="color:#f92672">+</span> glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>));
+</span></span><span style="display:flex;"><span>shadowTransforms.push_back(shadowProj <span style="color:#f92672">*</span> 
+</span></span><span style="display:flex;"><span>                 glm<span style="color:#f92672">::</span>lookAt(lightPos, lightPos <span style="color:#f92672">+</span> glm<span style="color:#f92672">::</span>vec3( <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1.0</span>), glm<span style="color:#f92672">::</span>vec3(<span style="color:#ae81ff">0.0</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>));
+</span></span></code></pre></div><p>Ici, nous créons 6 matrices de vue et les multiplions avec la matrice de projection pour obtenir un total de 6 matrices de transformation de l&rsquo;espace lumière différentes. Le paramètre cible de <code>glm::lookAt</code> regarde chacun dans la direction d&rsquo;une seule face du cubemap.</p>
+<p>Ces matrices de transformation sont envoyées aux shaders qui rendent la profondeur dans le cubemap.</p>
+<h3 id="shaders-de-profondeur-depth-shaders">Shaders de profondeur (depth shaders)</h3>
+<p>Pour rendre les valeurs de profondeur dans un cubemap de profondeur, nous aurons besoin de trois shaders au total : un vertex et un fragment shader, et un geometry shader entre les deux.</p>
+<p>Le shader de géométrie sera le shader responsable de la transformation de tous les sommets de l&rsquo;espace monde (world space) en 6 espaces de lumière différents. Par conséquent, le shader de sommets transforme simplement les sommets dans l&rsquo;espace-monde et les dirige vers le shader de géométrie :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec3 aPos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform mat4 model;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> model <span style="color:#f92672">*</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Le shader géométrique prend en entrée 3 sommets de triangle et un tableau uniforme de matrices de transformation de l&rsquo;espace lumineux. Le shader géométrique est responsable de la transformation des sommets en espaces de lumière ; c&rsquo;est là que les choses deviennent intéressantes.</p>
+<p>Le shader géométrique possède une variable intégrée appelée <code>gl_Layer</code> qui spécifie la face du cubemap vers laquelle émettre une primitive. Lorsqu&rsquo;il est laissé à lui-même, le shader de géométrie envoie simplement ses primitives le long du pipeline comme d&rsquo;habitude, mais lorsque nous mettons à jour cette variable, nous pouvons contrôler vers quelle face du cubemap nous effectuons le rendu pour chaque primitive. Bien sûr, cela ne fonctionne que lorsque nous avons une texture cubemap attachée au framebuffer actif.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (triangles) in;
+</span></span><span style="display:flex;"><span>layout (triangle_strip, max_vertices<span style="color:#f92672">=</span><span style="color:#ae81ff">18</span>) out;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform mat4 shadowMatrices[<span style="color:#ae81ff">6</span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>out vec4 FragPos; <span style="color:#75715e">// FragPos from GS (output per emitvertex)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> face <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; face <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">6</span>; <span style="color:#f92672">++</span>face)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        gl_Layer <span style="color:#f92672">=</span> face; <span style="color:#75715e">// built-in variable that specifies to which face we render.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">3</span>; <span style="color:#f92672">++</span>i) <span style="color:#75715e">// for each triangle vertex
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        {
+</span></span><span style="display:flex;"><span>            FragPos <span style="color:#f92672">=</span> gl_in[i].gl_Position;
+</span></span><span style="display:flex;"><span>            gl_Position <span style="color:#f92672">=</span> shadowMatrices[face] <span style="color:#f92672">*</span> FragPos;
+</span></span><span style="display:flex;"><span>            EmitVertex();
+</span></span><span style="display:flex;"><span>        }    
+</span></span><span style="display:flex;"><span>        EndPrimitive();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Ce shader géométrique est relativement simple. Nous prenons en entrée un triangle, et sortons un total de 6 triangles (6 * 3 égale 18 sommets). Dans la fonction principale, nous itérons sur 6 faces de cubemap où nous spécifions chaque face comme face de sortie en stockant l&rsquo;entier de la face dans <code>gl_Layer</code>. Nous générons ensuite les triangles de sortie en transformant chaque sommet d&rsquo;entrée de l&rsquo;espace-monde dans l&rsquo;espace-lumière approprié en multipliant <code>FragPos</code> avec la matrice de transformation de l&rsquo;espace-lumière de la face. Notez que nous avons également envoyé la variable <code>FragPos</code> résultante au shader de fragments dont nous aurons besoin pour calculer une valeur de profondeur.</p>
+<p>Dans le chapitre précédent, nous avons utilisé un fragment shader vide et laissé OpenGL calculer les valeurs de profondeur de la map de profondeur. Cette fois-ci, nous allons calculer notre propre profondeur (linéaire) comme la distance linéaire entre chaque position de fragment la plus proche et la position de la source lumineuse. Le calcul de nos propres valeurs de profondeur rend les calculs d&rsquo;ombres ultérieurs un peu plus intuitifs.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>in vec4 FragPos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform vec3 lightPos;
+</span></span><span style="display:flex;"><span>uniform <span style="color:#66d9ef">float</span> far_plane;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// get distance between fragment and light source
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> lightDistance <span style="color:#f92672">=</span> length(FragPos.xyz <span style="color:#f92672">-</span> lightPos);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// map to [0;1] range by dividing by far_plane
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    lightDistance <span style="color:#f92672">=</span> lightDistance <span style="color:#f92672">/</span> far_plane;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// write this as modified depth
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    gl_FragDepth <span style="color:#f92672">=</span> lightDistance;
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>Le fragment shader prend en entrée le <code>FragPos</code> du geometry shader, le vecteur de position de la lumière, et la valeur du plan lointain du frustum. Ici, nous prenons la distance entre le fragment et la source lumineuse, nous l&rsquo;inscrivons dans l&rsquo;intervalle $[0,1]$ et nous l&rsquo;écrivons en tant que valeur de profondeur du fragment.</p>
+<p>Le rendu de la scène avec ces shaders et l&rsquo;objet framebuffer attaché au cubemap actif devrait vous donner un cubemap de profondeur complètement rempli pour les calculs d&rsquo;ombres de la deuxième passe.</p>
+<h2 id="map-dombres-omnidirectionnelles">Map d&rsquo;ombres omnidirectionnelles</h2>
+<p>Une fois que tout est en place, il est temps de rendre les ombres omnidirectionnelles. La procédure est similaire à celle du chapitre sur le mappage directionnel des ombres, bien que cette fois nous lions une texture cubemap au lieu d&rsquo;une texture 2D et que nous transmettions également la variable du plan éloigné de la projection lumineuse aux shaders.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glViewport(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, SCR_WIDTH, SCR_HEIGHT);
+</span></span><span style="display:flex;"><span>glClear(GL_COLOR_BUFFER_BIT <span style="color:#f92672">|</span> GL_DEPTH_BUFFER_BIT);
+</span></span><span style="display:flex;"><span>shader.use();  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ... send uniforms to shader (including light&#39;s far_plane value)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glActiveTexture(GL_TEXTURE0);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ... bind other textures
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>RenderScene();
+</span></span></code></pre></div><p>Ici, la fonction <code>renderScene</code> rend quelques cubes dans une grande pièce cubique dispersés autour d&rsquo;une source lumineuse au centre de la scène.</p>
+<p>Les shaders de sommets et de fragments sont pour la plupart similaires aux shader de shadow mapping originaux : la différence étant que le shader de fragments n&rsquo;a plus besoin d&rsquo;une position de fragment dans l&rsquo;espace lumière puisque nous pouvons maintenant échantillonner les valeurs de profondeur avec un vecteur de direction.</p>
+<p>De ce fait, le vertex shader n&rsquo;a pas besoin de transformer ses vecteurs de position dans l&rsquo;espace lumière et nous pouvons donc supprimer la variable <code>FragPosLightSpace</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec3 aPos;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>) in vec3 aNormal;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>) in vec2 aTexCoords;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>out vec2 TexCoords;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>out VS_OUT {
+</span></span><span style="display:flex;"><span>    vec3 FragPos;
+</span></span><span style="display:flex;"><span>    vec3 Normal;
+</span></span><span style="display:flex;"><span>    vec2 TexCoords;
+</span></span><span style="display:flex;"><span>} vs_out;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform mat4 projection;
+</span></span><span style="display:flex;"><span>uniform mat4 view;
+</span></span><span style="display:flex;"><span>uniform mat4 model;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    vs_out.FragPos <span style="color:#f92672">=</span> vec3(model <span style="color:#f92672">*</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>));
+</span></span><span style="display:flex;"><span>    vs_out.Normal <span style="color:#f92672">=</span> transpose(inverse(mat3(model))) <span style="color:#f92672">*</span> aNormal;
+</span></span><span style="display:flex;"><span>    vs_out.TexCoords <span style="color:#f92672">=</span> aTexCoords;
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> projection <span style="color:#f92672">*</span> view <span style="color:#f92672">*</span> model <span style="color:#f92672">*</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Le code d&rsquo;éclairage Blinn-Phong du fragment shader est exactement le même que celui que nous avions auparavant, avec une multiplication de l&rsquo;ombre à la fin :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>in VS_OUT {
+</span></span><span style="display:flex;"><span>    vec3 FragPos;
+</span></span><span style="display:flex;"><span>    vec3 Normal;
+</span></span><span style="display:flex;"><span>    vec2 TexCoords;
+</span></span><span style="display:flex;"><span>} fs_in;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform sampler2D diffuseTexture;
+</span></span><span style="display:flex;"><span>uniform samplerCube depthMap;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform vec3 lightPos;
+</span></span><span style="display:flex;"><span>uniform vec3 viewPos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform <span style="color:#66d9ef">float</span> far_plane;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">ShadowCalculation</span>(vec3 fragPos)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    [...]
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{           
+</span></span><span style="display:flex;"><span>    vec3 color <span style="color:#f92672">=</span> texture(diffuseTexture, fs_in.TexCoords).rgb;
+</span></span><span style="display:flex;"><span>    vec3 normal <span style="color:#f92672">=</span> normalize(fs_in.Normal);
+</span></span><span style="display:flex;"><span>    vec3 lightColor <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">0.3</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ambient
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 ambient <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.3</span> <span style="color:#f92672">*</span> color;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// diffuse
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 lightDir <span style="color:#f92672">=</span> normalize(lightPos <span style="color:#f92672">-</span> fs_in.FragPos);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> diff <span style="color:#f92672">=</span> max(dot(lightDir, normal), <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>    vec3 diffuse <span style="color:#f92672">=</span> diff <span style="color:#f92672">*</span> lightColor;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// specular
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 viewDir <span style="color:#f92672">=</span> normalize(viewPos <span style="color:#f92672">-</span> fs_in.FragPos);
+</span></span><span style="display:flex;"><span>    vec3 reflectDir <span style="color:#f92672">=</span> reflect(<span style="color:#f92672">-</span>lightDir, normal);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> spec <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>;
+</span></span><span style="display:flex;"><span>    vec3 halfwayDir <span style="color:#f92672">=</span> normalize(lightDir <span style="color:#f92672">+</span> viewDir);  
+</span></span><span style="display:flex;"><span>    spec <span style="color:#f92672">=</span> pow(max(dot(normal, halfwayDir), <span style="color:#ae81ff">0.0</span>), <span style="color:#ae81ff">64.0</span>);
+</span></span><span style="display:flex;"><span>    vec3 specular <span style="color:#f92672">=</span> spec <span style="color:#f92672">*</span> lightColor;    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// calculate shadow
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> shadow <span style="color:#f92672">=</span> ShadowCalculation(fs_in.FragPos);                      
+</span></span><span style="display:flex;"><span>    vec3 lighting <span style="color:#f92672">=</span> (ambient <span style="color:#f92672">+</span> (<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> shadow) <span style="color:#f92672">*</span> (diffuse <span style="color:#f92672">+</span> specular)) <span style="color:#f92672">*</span> color;    
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(lighting, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>Il y a quelques différences subtiles : le code d&rsquo;éclairage est le même, mais nous avons maintenant un uniforme <code>samplerCube</code> et la fonction <code>ShadowCalculation</code> prend la position du fragment actuel comme argument au lieu de la position du fragment dans l&rsquo;espace lumière. Nous incluons également la valeur <code>far_plane</code> du frustum de lumière dont nous aurons besoin plus tard.</p>
+<p>La plus grande différence se trouve dans le contenu de la fonction <code>ShadowCalculation</code> qui échantillonne maintenant les valeurs de profondeur à partir d&rsquo;un cubemap au lieu d&rsquo;une texture 2D. Examinons son contenu étape par étape.</p>
+<p>La première chose à faire est de récupérer la profondeur du cubemap. Vous vous souvenez peut-être que dans la section cubemap de ce chapitre, nous avons stocké la profondeur en tant que distance linéaire entre le fragment et la position de la lumière ; nous adoptons une approche similaire ici :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">ShadowCalculation</span>(vec3 fragPos)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    vec3 fragToLight <span style="color:#f92672">=</span> fragPos <span style="color:#f92672">-</span> lightPos; 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> closestDepth <span style="color:#f92672">=</span> texture(depthMap, fragToLight).r;
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Ici, nous prenons le vecteur de différence entre la position du fragment et la position de la lumière et nous utilisons ce vecteur comme vecteur de direction pour échantillonner le cubemap. Le vecteur de direction n&rsquo;a pas besoin d&rsquo;être un vecteur unitaire pour échantillonner à partir d&rsquo;un cubemap, il n&rsquo;est donc pas nécessaire de le normaliser. La valeur <code>closeestDepth</code> résultante est la valeur de profondeur normalisée entre la source lumineuse et le fragment visible le plus proche.</p>
+<p>La valeur <code>closestDepth</code> est actuellement comprise dans l&rsquo;intervalle $[0,1]$, nous la transformons donc d&rsquo;abord en $[0,far_plane]$ en la multipliant par <code>far_plane</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>closestDepth <span style="color:#f92672">*=</span> far_plane;  
+</span></span></code></pre></div><p>Ensuite, nous récupérons la valeur de profondeur entre le fragment actuel et la source lumineuse, que nous pouvons facilement obtenir en prenant la longueur de <code>fragToLight</code> en raison de la façon dont nous avons calculé les valeurs de profondeur dans le cubemap :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> currentDepth <span style="color:#f92672">=</span> length(fragToLight);  
+</span></span></code></pre></div><p>Cela renvoie une valeur de profondeur dans le même intervalle (ou plus grand) que <code>closestDepth</code>.</p>
+<p>Nous pouvons maintenant comparer les deux valeurs de profondeur pour voir laquelle est la plus proche de l&rsquo;autre et déterminer si le fragment actuel est dans l&rsquo;ombre. Nous incluons également un biais d&rsquo;ombre afin de ne pas obtenir d&rsquo;acné d&rsquo;ombre, comme nous l&rsquo;avons vu dans le chapitre précédent.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> bias <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.05</span>; 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> shadow <span style="color:#f92672">=</span> currentDepth <span style="color:#f92672">-</span>  bias <span style="color:#f92672">&gt;</span> closestDepth <span style="color:#f92672">?</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">:</span> <span style="color:#ae81ff">0.0</span>; 
+</span></span></code></pre></div><p>La fonction devient alors :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">ShadowCalculation</span>(vec3 fragPos)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// get vector between fragment position and light position
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 fragToLight <span style="color:#f92672">=</span> fragPos <span style="color:#f92672">-</span> lightPos;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// use the light to fragment vector to sample from the depth map    
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> closestDepth <span style="color:#f92672">=</span> texture(depthMap, fragToLight).r;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// it is currently in linear range between [0,1]. Re-transform back to original value
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    closestDepth <span style="color:#f92672">*=</span> far_plane;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// now get current linear depth as the length between the fragment and light position
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> currentDepth <span style="color:#f92672">=</span> length(fragToLight);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// now test for shadows
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> bias <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.05</span>; 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> shadow <span style="color:#f92672">=</span> currentDepth <span style="color:#f92672">-</span>  bias <span style="color:#f92672">&gt;</span> closestDepth <span style="color:#f92672">?</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">:</span> <span style="color:#ae81ff">0.0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> shadow;
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Avec ces shaders, nous obtenons déjà de bonnes ombres, et cette fois dans toutes les directions environnantes, à partir d&rsquo;une lumière ponctuelle. Avec une lumière ponctuelle positionnée au centre d&rsquo;une scène simple, cela ressemblera un peu à ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c02b_point_shadows-20230902_shadow01.png" alt="02b_point_shadows-20230902_shadow01"/>
+Vous pouvez trouver le code source de cette démo <a href="https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/3.2.1.point_shadows/point_shadows.cpp">ici</a>.</p>
+<h2 id="visualisation-du-tampon-de-profondeur-cubemap">Visualisation du tampon de profondeur cubemap</h2>
+<p>Si vous êtes un peu comme moi, vous n&rsquo;avez probablement pas réussi du premier coup, il est donc logique de faire un peu de débogage, l&rsquo;une des vérifications évidentes étant de valider si la map de profondeur a été construite correctement. Une astuce simple pour visualiser le tampon de profondeur est de prendre la variable <code>closestDepth</code> dans la fonction <code>ShadowCalculation</code> et de l&rsquo;afficher comme suit :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>FragColor <span style="color:#f92672">=</span> vec4(vec3(closestDepth <span style="color:#f92672">/</span> far_plane), <span style="color:#ae81ff">1.0</span>);  
+</span></span></code></pre></div><p>Le résultat est une scène grisée où chaque couleur représente les valeurs de profondeur linéaire de la scène :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c02b_point_shadows-20230902_depth.png" alt="02b_point_shadows-20230902_depth"/>
+Vous pouvez également voir les zones d&rsquo;ombre à venir sur le mur extérieur. Si l&rsquo;aspect est similaire, vous savez que le cubemap de profondeur a été correctement généré.</p>
+<h2 id="pcf">PCF</h2>
+<p>Comme les maps d&rsquo;ombres omnidirectionnelles sont basées sur les mêmes principes que les maps d&rsquo;ombres traditionnelles, elles présentent les mêmes artefacts dépendant de la résolution. Si vous zoomez suffisamment près, vous pouvez à nouveau voir des bords irréguliers. Le filtrage par pourcentage de proximité (Percentage-closer filtering ou PCF) nous permet de lisser ces bords irréguliers en filtrant plusieurs échantillons autour de la position du fragment et en faisant la moyenne des résultats.</p>
+<p>Si nous prenons le même filtre PCF simple du chapitre précédent et que nous y ajoutons une troisième dimension, nous obtenons :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> shadow  <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> bias    <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.05</span>; 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> samples <span style="color:#f92672">=</span> <span style="color:#ae81ff">4.0</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> offset  <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.1</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">float</span> x <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>offset; x <span style="color:#f92672">&lt;</span> offset; x <span style="color:#f92672">+=</span> offset <span style="color:#f92672">/</span> (samples <span style="color:#f92672">*</span> <span style="color:#ae81ff">0.5</span>))
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">float</span> y <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>offset; y <span style="color:#f92672">&lt;</span> offset; y <span style="color:#f92672">+=</span> offset <span style="color:#f92672">/</span> (samples <span style="color:#f92672">*</span> <span style="color:#ae81ff">0.5</span>))
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">float</span> z <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>offset; z <span style="color:#f92672">&lt;</span> offset; z <span style="color:#f92672">+=</span> offset <span style="color:#f92672">/</span> (samples <span style="color:#f92672">*</span> <span style="color:#ae81ff">0.5</span>))
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">float</span> closestDepth <span style="color:#f92672">=</span> texture(depthMap, fragToLight <span style="color:#f92672">+</span> vec3(x, y, z)).r; 
+</span></span><span style="display:flex;"><span>            closestDepth <span style="color:#f92672">*=</span> far_plane;   <span style="color:#75715e">// undo mapping [0;1]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span>(currentDepth <span style="color:#f92672">-</span> bias <span style="color:#f92672">&gt;</span> closestDepth)
+</span></span><span style="display:flex;"><span>                shadow <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1.0</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>shadow <span style="color:#f92672">/=</span> (samples <span style="color:#f92672">*</span> samples <span style="color:#f92672">*</span> samples);
+</span></span></code></pre></div><p>Le code n&rsquo;est pas très différent du code traditionnel de shadow mapping. Nous calculons et ajoutons des décalages de texture dynamiquement pour chaque axe sur la base d&rsquo;un nombre fixe d&rsquo;échantillons. Pour chaque échantillon, nous répétons le processus d&rsquo;ombrage original sur la direction de l&rsquo;échantillon décalé et nous faisons la moyenne des résultats à la fin.</p>
+<p>Les ombres sont maintenant plus douces et lisses et donnent des résultats plus plausibles.
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c02b_point_shadows-20230902-PCF.png" alt="02b_point_shadows-20230902-PCF"/>
+Cependant, avec des échantillons réglés sur $4.0$, nous prélevons un total de 64 échantillons par fragment, ce qui est beaucoup !</p>
+<p>Comme la plupart de ces échantillons sont redondants en ce sens qu&rsquo;ils échantillonnent à proximité du vecteur de direction original, il pourrait être plus judicieux de n&rsquo;échantillonner que dans les directions perpendiculaires au vecteur de direction de l&rsquo;échantillon. Cependant, comme il n&rsquo;y a pas de moyen (facile) de déterminer quelles sous-directions sont redondantes, cela devient difficile. Une astuce consiste à prendre un tableau de directions de décalage qui sont toutes à peu près séparables, c&rsquo;est-à-dire que chacune d&rsquo;entre elles pointe dans des directions complètement différentes. Cela permet de réduire considérablement le nombre de sous-directions proches les unes des autres. Nous présentons ci-dessous un tableau de 20 directions de décalage au maximum :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 sampleOffsetDirections[<span style="color:#ae81ff">20</span>] <span style="color:#f92672">=</span> vec3[]
+</span></span><span style="display:flex;"><span>(
+</span></span><span style="display:flex;"><span>   vec3( <span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">1</span>), vec3( <span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">1</span>), vec3(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">1</span>), vec3(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">1</span>), 
+</span></span><span style="display:flex;"><span>   vec3( <span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>), vec3( <span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>), vec3(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>), vec3(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>),
+</span></span><span style="display:flex;"><span>   vec3( <span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">0</span>), vec3( <span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">0</span>), vec3(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">0</span>), vec3(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">0</span>),
+</span></span><span style="display:flex;"><span>   vec3( <span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">0</span>,  <span style="color:#ae81ff">1</span>), vec3(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">0</span>,  <span style="color:#ae81ff">1</span>), vec3( <span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">0</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>), vec3(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">0</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>),
+</span></span><span style="display:flex;"><span>   vec3( <span style="color:#ae81ff">0</span>,  <span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">1</span>), vec3( <span style="color:#ae81ff">0</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,  <span style="color:#ae81ff">1</span>), vec3( <span style="color:#ae81ff">0</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>), vec3( <span style="color:#ae81ff">0</span>,  <span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>);   
+</span></span></code></pre></div><p>À partir de là, nous pouvons adapter l&rsquo;algorithme PCF pour qu&rsquo;il prenne une quantité fixe d&rsquo;échantillons à partir de <code>sampleOffsetDirections</code> et qu&rsquo;il les utilise pour échantillonner le cubemap. L&rsquo;avantage est que nous avons besoin de beaucoup moins d&rsquo;échantillons pour obtenir des résultats visuellement similaires.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> shadow <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> bias   <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.15</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> samples  <span style="color:#f92672">=</span> <span style="color:#ae81ff">20</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> viewDistance <span style="color:#f92672">=</span> length(viewPos <span style="color:#f92672">-</span> fragPos);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> diskRadius <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.05</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> samples; <span style="color:#f92672">++</span>i)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> closestDepth <span style="color:#f92672">=</span> texture(depthMap, fragToLight <span style="color:#f92672">+</span> sampleOffsetDirections[i] <span style="color:#f92672">*</span> diskRadius).r;
+</span></span><span style="display:flex;"><span>    closestDepth <span style="color:#f92672">*=</span> far_plane;   <span style="color:#75715e">// undo mapping [0;1]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span>(currentDepth <span style="color:#f92672">-</span> bias <span style="color:#f92672">&gt;</span> closestDepth)
+</span></span><span style="display:flex;"><span>        shadow <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1.0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>shadow <span style="color:#f92672">/=</span> <span style="color:#66d9ef">float</span>(samples); 
+</span></span></code></pre></div><p>Ici, nous ajoutons plusieurs décalages, mis à l&rsquo;échelle par un certain <code>diskRadius</code>, autour du vecteur de direction <code>fragToLight</code> original pour échantillonner à partir du cubemap.</p>
+<p>Une autre astuce intéressante que nous pouvons appliquer ici est que nous pouvons changer le <code>diskRadius</code> en fonction de la distance de l&rsquo;observateur au fragment, rendant les ombres plus douces lorsqu&rsquo;elles sont éloignées et plus nettes lorsqu&rsquo;elles sont proches.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> diskRadius <span style="color:#f92672">=</span> (<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">+</span> (viewDistance <span style="color:#f92672">/</span> far_plane)) <span style="color:#f92672">/</span> <span style="color:#ae81ff">25.0</span>;  
+</span></span></code></pre></div><p>Les résultats de l&rsquo;algorithme PCF mis à jour donnent des résultats tout aussi bons, voire meilleurs, pour les ombres douces :
+<img src="/docs%5cLEARNOPENGL_FR%5c05_Advanced_Lighting%5c02b_point_shadows-20230902-PCF2.png" alt="02b_point_shadows-20230902-PCF2"/></p>
+<p>Bien entendu, le biais que nous ajoutons à chaque échantillon dépend fortement du contexte et devra toujours être ajusté en fonction de la scène avec laquelle vous travaillez. Jouez avec toutes les valeurs et voyez comment elles affectent la scène.</p>
+<p>Vous pouvez trouver le code final <a href="https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/3.2.2.point_shadows_soft/point_shadows_soft.cpp">ici</a>.</p>
+<p>Je dois mentionner que l&rsquo;utilisation de shaders géométriques pour générer une map de profondeur n&rsquo;est pas nécessairement plus rapide que de rendre la scène 6 fois pour chaque face. L&rsquo;utilisation d&rsquo;un shader géométrique comme celui-ci a ses propres inconvénients en termes de performances qui peuvent l&rsquo;emporter sur le gain de performance de l&rsquo;utilisation d&rsquo;un shader géométrique en premier lieu. Cela dépend bien sûr du type d&rsquo;environnement, des pilotes spécifiques de la carte vidéo et de nombreux autres facteurs. Par conséquent, si vous souhaitez vraiment tirer le meilleur parti de votre système, assurez-vous d&rsquo;établir le profil des deux méthodes et de sélectionner la plus efficace pour votre scène.</p>
+<h2 id="ressources-additionnelles">Ressources additionnelles</h2>
+<ul>
+<li><a href="http://www.sunandblackcat.com/tipFullView.php?l=eng&amp;topicid=36">Cartographie des ombres pour les sources lumineuses ponctuelles dans OpenGL</a> : tutoriel de cartographie des ombres omnidirectionnelle par sunandblackcat.</li>
+<li><a href="http://ogldev.atspace.co.uk/www/tutorial43/tutorial43.html">Multipass Shadow Mapping With Point Lights</a> : tutoriel sur les ombres omnidirectionnelles par ogldev.</li>
+<li><a href="http://www.cg.tuwien.ac.at/~husky/RTR/OmnidirShadows-whyCaps.pdf">Ombres omnidirectionnelles</a> : une belle série de diapositives sur le mappage omnidirectionnel des ombres par Peter Houska.</li>
+</ul>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

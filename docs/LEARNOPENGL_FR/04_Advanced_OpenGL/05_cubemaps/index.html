@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+<br><br>
+<h1 id="cubemaps">Cubemaps</h1>
+<p>Nous utilisons des textures 2D depuis un certain temps, mais il existe d&rsquo;autres types de textures que nous n&rsquo;avons pas encore explorés. Dans ce chapitre, nous aborderons un type de texture qui est une combinaison de plusieurs textures mappées en une seule : une <strong>cubemap</strong>.</p>
+<p><strong>Une cubemap est une texture qui contient 6 textures 2D individuelles qui forment chacune un côté d&rsquo;un cube : un cube texturé</strong>. Vous vous demandez peut-être quel est l&rsquo;intérêt d&rsquo;un tel cube ? <strong>Pourquoi se donner la peine de combiner 6 textures individuelles en une seule entité au lieu d&rsquo;utiliser simplement 6 textures individuelles ?</strong> Eh bien, les cubemaps ont la propriété utile de pouvoir être indexées/échantillonnées à l&rsquo;aide d&rsquo;un vecteur de direction. Imaginons que nous ayons un cube de 1x1x1 unités avec l&rsquo;origine d&rsquo;un vecteur de direction résidant en son centre. L&rsquo;échantillonnage d&rsquo;une valeur de texture à partir de la carte du cube avec un vecteur de direction orange ressemble un peu à ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5ccubemaps_sampling.png" alt="cubemaps_sampling"/></p>
+<blockquote>
+<p>La magnitude du vecteur de direction n&rsquo;a pas d&rsquo;importance. Tant qu&rsquo;une direction est fournie, OpenGL récupère les texels correspondants que la direction atteint (éventuellement) et renvoie la valeur de texture correctement échantillonnée.</p>
+</blockquote>
+<p>Si nous imaginons que nous avons une forme de cube à laquelle nous attachons une telle cubemap, ce vecteur de direction serait similaire à la position locale (interpolée) des sommets du cube. De cette manière, nous pouvons échantillonner la cubemap en utilisant les vecteurs de position réels du cube tant que le cube est centré sur l&rsquo;origine. Nous considérons donc que toutes les positions des sommets du cube sont ses coordonnées de texture lors de l&rsquo;échantillonnage d&rsquo;un cubemap. Le résultat est une coordonnée de texture qui accède à la texture de la face individuelle appropriée du cubemap.</p>
+<h2 id="créer-une-cubemap">Créer une cubemap</h2>
+<p>Une cubemap est une texture comme une autre, donc pour en créer une, nous générons une texture et la lions à la cible de texture appropriée avant d&rsquo;effectuer d&rsquo;autres opérations de texture. Cette fois-ci, nous la lions à <code>GL_TEXTURE_CUBE_MAP</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> textureID;
+</span></span><span style="display:flex;"><span>glGenTextures(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>textureID);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+</span></span></code></pre></div><p>Parce qu&rsquo;une cubemap contient 6 textures, une pour chaque face, nous devons appeler <code>glTexImage2D</code> six fois avec des paramètres réglés de la même manière que dans les chapitres précédents. Cette fois-ci cependant, nous devons définir le paramètre de la cible de la texture pour qu&rsquo;elle corresponde à une face spécifique du cubemap, indiquant à OpenGL pour quel côté du cubemap nous créons une texture. Cela signifie que nous devons appeler <code>glTexImage2D</code> une fois pour chaque face du cubemap.</p>
+<p>Puisque nous avons 6 faces, OpenGL nous donne 6 cibles de texture spéciales pour cibler une face du cubemap :</p>
+<table>
+<thead>
+<tr>
+<th>Texture target</th>
+<th>Orientation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GL_TEXTURE_CUBE_MAP_POSITIVE_X</code></td>
+<td>Right</td>
+</tr>
+<tr>
+<td><code>GL_TEXTURE_CUBE_MAP_NEGATIVE_X</code></td>
+<td>Left</td>
+</tr>
+<tr>
+<td><code>GL_TEXTURE_CUBE_MAP_POSITIVE_Y</code></td>
+<td>Top</td>
+</tr>
+<tr>
+<td><code>GL_TEXTURE_CUBE_MAP_NEGATIVE_Y</code></td>
+<td>Bottom</td>
+</tr>
+<tr>
+<td><code>GL_TEXTURE_CUBE_MAP_POSITIVE_Z</code></td>
+<td>Back</td>
+</tr>
+<tr>
+<td><code>GL_TEXTURE_CUBE_MAP_NEGATIVE_Z</code></td>
+<td>Front</td>
+</tr>
+</tbody>
+</table>
+<p>Comme beaucoup d&rsquo;enums (énumérations) d&rsquo;OpenGL, leur valeur <code>int</code> est incrémentée linéairement, donc si nous avions un tableau ou un vecteur d&rsquo;emplacements de textures, nous pourrions les boucler en commençant par <code>GL_TEXTURE_CUBE_MAP_POSITIVE_X</code> et en incrémentant l&rsquo;enum de 1 à chaque itération, bouclant effectivement à travers toutes les cibles de textures :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> width, height, nrChannels;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>data;  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> textures_faces.size(); i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    data <span style="color:#f92672">=</span> stbi_load(textures_faces[i].c_str(), <span style="color:#f92672">&amp;</span>width, <span style="color:#f92672">&amp;</span>height, <span style="color:#f92672">&amp;</span>nrChannels, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>    glTexImage2D(
+</span></span><span style="display:flex;"><span>        GL_TEXTURE_CUBE_MAP_POSITIVE_X <span style="color:#f92672">+</span> i, 
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">0</span>, GL_RGB, width, height, <span style="color:#ae81ff">0</span>, GL_RGB, GL_UNSIGNED_BYTE, data
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Nous avons ici un vecteur appelé <code>textures_faces</code> qui contient les emplacements de toutes les textures requises pour le cubemap dans l&rsquo;ordre indiqué dans le tableau. Cela génère une texture pour chaque face du cubemap actuellement lié.</p>
+<p>Étant donné qu&rsquo;une cubemap est une texture comme les autres, nous allons également spécifier ses méthodes de wrapping et de filtering (filtrage) :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+</span></span></code></pre></div><p>Ne soyez pas effrayé par <code>GL_TEXTURE_WRAP_R</code>, cela définit simplement la méthode de wrapping pour la coordonnée R de la texture qui correspond à la 3ème dimension de la texture (comme z pour les positions). Nous définissons la méthode de wrapping à <code>GL_CLAMP_TO_EDGE</code> puisque les coordonnées de la texture qui sont exactement entre deux faces peuvent ne pas atteindre une face exacte (en raison de certaines limitations matérielles). En utilisant <code>GL_CLAMP_TO_EDGE</code>, OpenGL renvoie toujours leurs valeurs de bord chaque fois que nous échantillonnons entre les faces.</p>
+<p>Ensuite, avant de dessiner les objets qui utiliseront le cubemap, nous activons l&rsquo;unité de texture correspondante et lions le cubemap avant le rendu ; ce n&rsquo;est pas une grande différence par rapport aux textures 2D normales.</p>
+<p>Dans le fragment shader, nous devons également utiliser un sampler différent du type <code>samplerCube</code> que nous échantillonnons à l&rsquo;aide de la fonction texture, mais cette fois en utilisant un vecteur de direction <code>vec3</code> au lieu d&rsquo;un <code>vec2</code>. Un exemple de fragment shader utilisant une cubemap ressemble à ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>in vec3 textureDir; <span style="color:#75715e">// direction vector representing a 3D texture coordinate
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>uniform samplerCube cubemap; <span style="color:#75715e">// cubemap texture sampler
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{             
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> texture(cubemap, textureDir);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>C&rsquo;est toujours très bien, mais pourquoi s&rsquo;en préoccuper ? Eh bien, il se trouve qu&rsquo;il y a quelques techniques intéressantes qui sont beaucoup plus faciles à mettre en œuvre avec une cubemap.
+L&rsquo;une de ces techniques est la création d&rsquo;une <strong>skybox</strong>.</p>
+<h2 id="skybox">Skybox</h2>
+<p>Une skybox est un (grand) cube qui englobe toute la scène et contient 6 images de l&rsquo;environnement, donnant au joueur / à l&rsquo;observateur l&rsquo;illusion que l&rsquo;environnement dans lequel il se trouve est en fait beaucoup plus grand qu&rsquo;il ne l&rsquo;est en réalité. Certains exemples de skybox utilisés dans les jeux vidéo sont des images de montagnes, de nuages ou d&rsquo;un ciel étoilé. Un exemple de skybox, utilisant des images de ciel étoilé, peut être vu dans la capture d&rsquo;écran suivante du troisième jeu Elder Scrolls :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5ccubemaps_morrowind.jpg" alt="cubemaps_morrowind"/>
+Vous avez probablement deviné que les skyboxes comme celle-ci conviennent parfaitement aux cubemaps : nous avons un cube qui a 6 faces et qui doit être texturé par face. Dans l&rsquo;image précédente, ils ont utilisé plusieurs images d&rsquo;un ciel nocturne pour donner l&rsquo;illusion que le joueur se trouve dans un grand univers alors qu&rsquo;il est en fait à l&rsquo;intérieur d&rsquo;une toute petite boîte.</p>
+<p>Il y a généralement suffisamment de ressources en ligne pour trouver des skyboxes de ce type. Ces images de skyboxes présentent généralement le schéma suivant :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5ccubemaps_skybox.png" alt="cubemaps_skybox"/>
+Si vous pliez ces 6 faces dans un cube, vous obtiendrez un cube entièrement texturé qui simule un grand paysage. Certaines ressources fournissent la skybox dans un tel format, auquel cas vous devrez extraire manuellement les 6 images de face, mais dans la plupart des cas, elles sont fournies sous la forme de 6 images de texture unique.</p>
+<p>Cette skybox particulière (de haute qualité) est celle que nous utiliserons pour notre scène et peut être téléchargée <a href="https://learnopengl.com/img/textures/skybox.zip">ici</a>.</p>
+<h2 id="charger-une-skybox">Charger une skybox</h2>
+<p>Puisqu&rsquo;une skybox n&rsquo;est en soi qu&rsquo;un cubemap, le chargement d&rsquo;une skybox n&rsquo;est pas très différent de ce que nous avons vu au début de ce chapitre. Pour charger la skybox, nous allons utiliser la fonction suivante qui accepte un vecteur de 6 emplacements de texture :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">loadCubemap</span>(vector<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>string<span style="color:#f92672">&gt;</span> faces)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> textureID;
+</span></span><span style="display:flex;"><span>    glGenTextures(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>textureID);
+</span></span><span style="display:flex;"><span>    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> width, height, nrChannels;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> faces.size(); i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>data <span style="color:#f92672">=</span> stbi_load(faces[i].c_str(), <span style="color:#f92672">&amp;</span>width, <span style="color:#f92672">&amp;</span>height, <span style="color:#f92672">&amp;</span>nrChannels, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (data)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X <span style="color:#f92672">+</span> i, 
+</span></span><span style="display:flex;"><span>                         <span style="color:#ae81ff">0</span>, GL_RGB, width, height, <span style="color:#ae81ff">0</span>, GL_RGB, GL_UNSIGNED_BYTE, data
+</span></span><span style="display:flex;"><span>            );
+</span></span><span style="display:flex;"><span>            stbi_image_free(data);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Cubemap tex failed to load at path: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> faces[i] <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>            stbi_image_free(data);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+</span></span><span style="display:flex;"><span>    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+</span></span><span style="display:flex;"><span>    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> textureID;
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>La fonction elle-même ne devrait pas être trop surprenante. Il s&rsquo;agit essentiellement de tout le code cubemap que nous avons vu dans la section précédente, mais combiné dans une seule fonction gérable.</p>
+<p>Avant d&rsquo;appeler cette fonction, nous allons charger les chemins de texture appropriés dans un vecteur, dans l&rsquo;ordre spécifié par les enums cubemap :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vector<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>string<span style="color:#f92672">&gt;</span> faces;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;right.jpg&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;left.jpg&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;top.jpg&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;bottom.jpg&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;front.jpg&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;back.jpg&#34;</span>
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> cubemapTexture <span style="color:#f92672">=</span> loadCubemap(faces);  
+</span></span></code></pre></div><p>Nous avons chargé la skybox en tant que cubemap avec <code>cubemapTexture</code> comme id. Nous pouvons maintenant la lier à un cube pour remplacer la couleur claire que nous avons utilisée pendant tout ce temps.</p>
+<h2 id="afficher-une-skybox">Afficher une skybox</h2>
+<p>Comme la skybox est dessinée sur un cube, nous aurons besoin d&rsquo;un autre <code>VAO</code>, d&rsquo;un <code>VBO</code> et d&rsquo;un nouveau ensemble de sommets, comme pour tout autre objet 3D. Vous pouvez obtenir ses données de vertex <a href="https://learnopengl.com/code_viewer.php?code=advanced/cubemaps_skybox_data">ici</a>.</p>
+<p>Un cubemap utilisé pour texturer un cube 3D peut être échantillonné en utilisant les positions locales du cube comme coordonnées de texture. Lorsqu&rsquo;un cube est centré sur l&rsquo;origine (0,0,0), chacun de ses vecteurs de position est également un vecteur de direction à partir de l&rsquo;origine. Ce vecteur de direction est exactement ce dont nous avons besoin pour obtenir la valeur de texture correspondante à la position spécifique de ce cube. <strong>C&rsquo;est pourquoi nous n&rsquo;avons besoin que des vecteurs de position et non des coordonnées de texture.</strong></p>
+<p>Pour rendre la skybox, nous aurons besoin d&rsquo;un nouvel ensemble de shaders qui ne sont pas trop compliqués. Comme nous n&rsquo;avons qu&rsquo;un seul attribut de vertex, le vertex shader est assez simple :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec3 aPos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>out vec3 TexCoords;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform mat4 projection;
+</span></span><span style="display:flex;"><span>uniform mat4 view;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    TexCoords <span style="color:#f92672">=</span> aPos;
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> projection <span style="color:#f92672">*</span> view <span style="color:#f92672">*</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>La partie intéressante de ce shader de sommets est que nous définissons le vecteur de position entrant comme la coordonnée de texture sortante pour une utilisation (interpolée) dans le shaders de fragments. Le shader de fragment prend ensuite ces coordonnées en entrée pour échantillonner un <code>samplerCube</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>in vec3 TexCoords;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform samplerCube skybox;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{    
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> texture(skybox, TexCoords);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Le fragment shader est relativement simple. Nous prenons le vecteur de position interpolé de l&rsquo;attribut de sommet comme vecteur de direction de la texture et nous l&rsquo;utilisons pour échantillonner les valeurs de la texture à partir de la cubemap.</p>
+<p>Le rendu de la skybox est facile maintenant que nous avons une texture cubemap, nous lions simplement la texture cubemap et le sampler de la skybox est automatiquement rempli avec la cubemap de la skybox. Pour dessiner la skybox, nous allons la dessiner en tant que premier objet de la scène et désactiver l&rsquo;écriture de la profondeur. De cette façon, la skybox sera toujours dessinée à l&rsquo;arrière-plan de tous les autres objets puisque le cube de l&rsquo;unité est probablement plus petit que le reste de la scène.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glDepthMask(GL_FALSE);
+</span></span><span style="display:flex;"><span>skyboxShader.use();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ... set view and projection matrix
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glBindVertexArray(skyboxVAO);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+</span></span><span style="display:flex;"><span>glDrawArrays(GL_TRIANGLES, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">36</span>);
+</span></span><span style="display:flex;"><span>glDepthMask(GL_TRUE);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ... draw rest of the scene
+</span></span></span></code></pre></div><p>Si vous exécutez ce projet, vous rencontrerez des difficultés. Nous voulons que la skybox soit centrée autour du joueur, de sorte que peu importe la distance à laquelle le joueur se déplace, la skybox ne se rapproche pas, ce qui donne l&rsquo;impression que l&rsquo;environnement est extrêmement grand. La matrice de vue actuelle transforme cependant toutes les positions de la skybox en les faisant pivoter, en les mettant à l&rsquo;échelle et en les translatant, de sorte que si le joueur se déplace, le cubemap se déplace également ! Nous voulons supprimer la partie translation de la matrice de vue afin que seule la rotation affecte les vecteurs de position de la skybox.</p>
+<p>Vous vous souvenez peut-être du chapitre sur l&rsquo;éclairage de base que nous pouvons supprimer la section de translation des matrices de transformation en prenant la matrice 3x3 supérieure gauche de la matrice 4x4. Nous pouvons y parvenir en convertissant la matrice de vue en une matrice 3x3 (en supprimant la translation) et en la reconvertissant en une matrice 4x4 :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glm<span style="color:#f92672">::</span>mat4 view <span style="color:#f92672">=</span> glm<span style="color:#f92672">::</span>mat4(glm<span style="color:#f92672">::</span>mat3(camera.GetViewMatrix()));  
+</span></span></code></pre></div><p>Cela supprime toute translation, mais conserve toutes les transformations de rotation afin que l&rsquo;utilisateur puisse toujours regarder autour de la scène.</p>
+<p>Le résultat est une scène qui semble instantanément énorme grâce à notre skybox. Si vous vous déplacez autour du conteneur (la caisse) de base, vous obtenez immédiatement une sensation d&rsquo;échelle qui améliore considérablement le réalisme de la scène. Le résultat ressemble à ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5ccubemaps_skybox_result.png" alt="cubemaps_skybox_result"/>
+Essayez d&rsquo;expérimenter différentes skyboxes et voyez comment elles peuvent avoir un impact énorme sur l&rsquo;aspect et la sensation de votre scène.</p>
+<h2 id="une-optimisation">Une optimisation</h2>
+<p>Pour l&rsquo;instant, nous avons rendu la skybox en premier avant de rendre tous les autres objets de la scène. Cela fonctionne très bien, mais n&rsquo;est pas très efficace. Si nous rendons la skybox en premier, nous exécutons le shader de fragments pour chaque pixel de l&rsquo;écran alors que seule une petite partie de la skybox sera finalement visible ; des fragments qui auraient pu être facilement éliminés en utilisant le test de profondeur précoce, ce qui nous a permis d&rsquo;économiser une bande passante précieuse.</p>
+<p><strong>Ainsi, pour améliorer légèrement les performances, nous allons effectuer le rendu de la skybox en dernier</strong>. De cette façon, le tampon de profondeur est complètement rempli avec toutes les valeurs de profondeur de la scène, de sorte que nous n&rsquo;avons qu&rsquo;à rendre les fragments de la skybox chaque fois que le test de profondeur précoce réussit, ce qui réduit considérablement le nombre d&rsquo;appels au shader de fragments. Le problème est que la skybox sera très probablement rendue au-dessus de tous les autres objets puisqu&rsquo;elle n&rsquo;est qu&rsquo;un cube de 1x1x1, réussissant ainsi la plupart des tests de profondeur. Un simple rendu sans test de profondeur n&rsquo;est pas une solution car la skybox écrasera tous les autres objets de la scène puisqu&rsquo;elle est rendue en dernier. Nous devons faire croire au tampon de profondeur que la skybox a une valeur de profondeur maximale de 1,0 afin qu&rsquo;elle échoue au test de profondeur chaque fois qu&rsquo;un objet différent se trouve devant elle.</p>
+<p>Dans le chapitre sur les systèmes de coordonnées, nous avons dit que la division de la perspective est effectuée après l&rsquo;exécution du vertex shader, en divisant les coordonnées xyz de la <code>gl_Position</code> par sa composante w. Nous savons également, grâce au chapitre sur les tests de profondeur, que la division résultante est égale à la valeur de profondeur de ce vertex. Nous savons également, grâce au chapitre sur les tests de profondeur, que la composante z de la division résultante est égale à la valeur de profondeur de ce sommet. En utilisant ces informations, nous pouvons définir la composante z de la position de sortie comme étant égale à sa composante w, ce qui se traduira par une composante z toujours égale à 1,0, car lorsque la division de la perspective est appliquée, sa composante z se traduit par w / w = 1,0 :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    TexCoords <span style="color:#f92672">=</span> aPos;
+</span></span><span style="display:flex;"><span>    vec4 pos <span style="color:#f92672">=</span> projection <span style="color:#f92672">*</span> view <span style="color:#f92672">*</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> pos.xyww;
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Les coordonnées normalisées du device (NDC) qui en résultent auront toujours une valeur z égale à $1.0$ : la valeur de profondeur maximale. La boîte à ciel ne sera donc rendue que là où il n&rsquo;y a pas d&rsquo;objets visibles (ce n&rsquo;est qu&rsquo;à ce moment-là qu&rsquo;elle passera le test de profondeur, tout le reste se trouvant devant la skybox).</p>
+<p>Nous devons modifier légèrement la fonction de profondeur en la réglant sur <code>GL_LEQUAL</code> au lieu de <code>GL_LESS</code> par défaut. Le tampon de profondeur sera rempli avec des valeurs de 1.0 pour la skybox, nous devons donc nous assurer que la skybox passe les tests de profondeur avec des valeurs inférieures ou égales au tampon de profondeur au lieu de inférieures à.</p>
+<p>Vous pouvez trouver la version optimisée du code source <a href="https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/6.1.cubemaps_skybox/cubemaps_skybox.cpp">ici</a>.</p>
+<h2 id="environment-mapping">Environment mapping</h2>
+<p>Nous disposons désormais de l&rsquo;ensemble de l&rsquo;environnement dans un seul objet de texture et nous pouvons utiliser ces informations pour bien plus qu&rsquo;une simple skybox. En utilisant un cubemap avec un environnement, nous pouvons donner aux objets des propriétés de réflexion ou de réfraction. <strong>Les techniques qui utilisent un cubemap d&rsquo;environnement de cette manière sont appelées techniques de mappage d&rsquo;environnement et les deux plus populaires sont la réflexion et la réfraction.</strong></p>
+<h2 id="réflexion">Réflexion</h2>
+<p>La réflexion est la propriété d&rsquo;un objet (ou d&rsquo;une partie d&rsquo;un objet) de refléter son environnement, c&rsquo;est-à-dire que les couleurs de l&rsquo;objet sont plus ou moins égales à celles de son environnement en fonction de l&rsquo;angle de vue de l&rsquo;observateur. Un miroir, par exemple, est un objet réfléchissant : il reflète son environnement en fonction de l&rsquo;angle de vue de l&rsquo;observateur.</p>
+<p>Les principes de base de la réflexion ne sont pas si difficiles à comprendre. L&rsquo;image suivante montre comment nous pouvons calculer un vecteur de réflexion et utiliser ce vecteur pour échantillonner à partir d&rsquo;un cubemap :</p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5ccubemaps_reflection_theory.png" alt="cubemaps_reflection_theory.png"/>
+Nous calculons un vecteur de réflexion $\vec{R}$ autour du vecteur normal de l&rsquo;objet $\vec{N}$ sur la base du vecteur de direction de vue $\vec{I}$. Nous pouvons calculer ce vecteur de réflexion à l&rsquo;aide de la fonction <code>reflect</code> intégrée à GLSL. Le vecteur résultant $\vec{R}$ est ensuite utilisé comme vecteur de direction pour indexer/échantillonner le cubemap, ce qui renvoie une valeur de couleur de l&rsquo;environnement. L&rsquo;effet résultant est que l&rsquo;objet semble refléter la skybox.</p>
+<p>Puisque nous avons déjà une skybox dans notre scène, créer des reflets n&rsquo;est pas trop difficile. Nous allons modifier le fragment shader utilisé par la caisse pour lui donner des propriétés réfléchissantes :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>in vec3 Normal;
+</span></span><span style="display:flex;"><span>in vec3 Position;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform vec3 cameraPos;
+</span></span><span style="display:flex;"><span>uniform samplerCube skybox;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{             
+</span></span><span style="display:flex;"><span>    vec3 I <span style="color:#f92672">=</span> normalize(Position <span style="color:#f92672">-</span> cameraPos);
+</span></span><span style="display:flex;"><span>    vec3 R <span style="color:#f92672">=</span> reflect(I, normalize(Normal));
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(texture(skybox, R).rgb, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Nous calculons d&rsquo;abord le vecteur de direction de la vue/caméra $\vec{I}$ et l&rsquo;utilisons pour calculer le vecteur de réflexion $\vec{R}$ que nous utilisons ensuite pour échantillonner à partir de la cubemap de la skybox. Notez que nous avons à nouveau les variables <code>Normal</code> et <code>Position</code> interpolées du fragment, nous devrons donc également ajuster le vertex shader :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec3 aPos;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>) in vec3 aNormal;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>out vec3 Normal;
+</span></span><span style="display:flex;"><span>out vec3 Position;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform mat4 model;
+</span></span><span style="display:flex;"><span>uniform mat4 view;
+</span></span><span style="display:flex;"><span>uniform mat4 projection;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Normal <span style="color:#f92672">=</span> mat3(transpose(inverse(model))) <span style="color:#f92672">*</span> aNormal;
+</span></span><span style="display:flex;"><span>    Position <span style="color:#f92672">=</span> vec3(model <span style="color:#f92672">*</span> vec4(aPos, <span style="color:#ae81ff">1.0</span>));
+</span></span><span style="display:flex;"><span>    gl_Position <span style="color:#f92672">=</span> projection <span style="color:#f92672">*</span> view <span style="color:#f92672">*</span> vec4(Position, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Nous utilisons des vecteurs normaux, nous devrons donc les transformer à nouveau à l&rsquo;aide d&rsquo;une matrice normale. Le vecteur de sortie <code>Position</code> est un vecteur de position dans l&rsquo;espace monde. Cette sortie <code>Position</code> du vertex shader est utilisée pour calculer le vecteur de direction de la vue dans le fragment shader.</p>
+<p>Comme nous utilisons des normales, vous devrez mettre à jour les données du vertex et les pointeurs d&rsquo;attributs. Veillez également à définir l&rsquo;uniforme <code>cameraPos</code>.</p>
+<p>Ensuite, nous voulons lier la texture cubemap avant de rendre le conteneur :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glBindVertexArray(cubeVAO);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);  		
+</span></span><span style="display:flex;"><span>glDrawArrays(GL_TRIANGLES, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">36</span>);
+</span></span></code></pre></div><p>En compilant et en exécutant votre code, vous obtenez une caisse qui agit comme un miroir parfait. Le ciel environnant est parfaitement reflété sur le conteneur :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5ccubemaps_reflection.png" alt="cubemaps_reflection"/></p>
+<p>Vous pouvez trouver le code source complet <a href="https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/6.2.cubemaps_environment_mapping/cubemaps_environment_mapping.cpp">ici</a>.</p>
+<p>Lorsque la réflexion est appliquée à un objet entier (comme la caisse), l&rsquo;objet a l&rsquo;air d&rsquo;être fait d&rsquo;un matériau très réfléchissant comme l&rsquo;acier ou le chrome. Si nous devions charger un objet plus intéressant (comme le modèle de sac à dos des chapitres sur le chargement des modèles), nous obtiendrions l&rsquo;effet que l&rsquo;objet semble entièrement fait de chrome :</p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5ccubemaps_reflection_nanosuit.png" alt="cubemaps_reflection_nanosuit"/>
+Cela semble assez impressionnant, mais en réalité, la plupart des modèles ne sont pas complètement réfléchissants. Nous pourrions par exemple introduire des maps de réflexion qui donneraient aux modèles un niveau de détail supplémentaire. Tout comme les maps diffuses et spéculaires, les maps de réflexion sont des images de texture que nous pouvons échantillonner pour déterminer la réflectivité d&rsquo;un fragment. En utilisant ces maps de réflexion, nous pouvons déterminer quelles parties du modèle sont réfléchissantes et avec quelle intensité.</p>
+<h3 id="réfraction">Réfraction</h3>
+<p>Une autre forme de mapping de l&rsquo;environnement est appelée <strong>réfraction</strong> et est similaire à la réflexion. <strong>La réfraction est le changement de direction de la lumière dû à la modification du matériau qu&rsquo;elle traverse. La réfraction est ce que l&rsquo;on voit généralement avec les surfaces semblables à de l&rsquo;eau, où la lumière n&rsquo;entre pas directement, mais se courbe un peu</strong>. C&rsquo;est comme si vous regardiez votre bras à mi-chemin dans l&rsquo;eau.</p>
+<p>La réfraction est décrite par la <a href="http://en.wikipedia.org/wiki/Snell%27s_law">loi de Snell</a> qui, avec les maps de l&rsquo;environnement, ressemble un peu à ceci :</p>
+<p><img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5ccubemaps_refraction_theory-1.png" alt="cubemaps_refraction_theory-1"/></p>
+<p>Nous avons à nouveau un vecteur de vue $\vec{I}$, un vecteur normal $\vec{N}$ et, cette fois, un vecteur de réfraction $\vec{R}$. Comme vous pouvez le voir, la direction du vecteur de vue est légèrement courbée. Ce vecteur courbé $\vec{R}$ est ensuite utilisé pour échantillonner le cubemap.</p>
+<p>La réfraction est assez facile à mettre en œuvre grâce à la fonction <code>refract</code> intégrée de GLSL qui attend un vecteur normal, une direction de vue et un rapport entre les indices de réfraction des deux matériaux.</p>
+<p><strong>L&rsquo;indice de réfraction détermine le degré de déformation ou de courbure de la lumière dans un matériau, chaque matériau ayant son propre indice de réfraction.</strong>
+Une liste des indices de réfraction les plus courants est donnée dans le tableau suivant :</p>
+<table>
+<thead>
+<tr>
+<th>Matériau</th>
+<th>Indice de réfraction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Air</td>
+<td>$1.0$</td>
+</tr>
+<tr>
+<td>Eau</td>
+<td>$1.33$</td>
+</tr>
+<tr>
+<td>Glace</td>
+<td>$1.309$</td>
+</tr>
+<tr>
+<td>Verre</td>
+<td>$1.52$</td>
+</tr>
+<tr>
+<td>Diamant</td>
+<td>$2.42$</td>
+</tr>
+<tr>
+<td>Nous utilisons ces indices de réfraction pour calculer le rapport entre les deux matériaux traversés par la lumière. Dans notre cas, le rayon lumineux passe de l&rsquo;air au verre (si nous supposons que l&rsquo;objet est en verre), le rapport est donc de :</td>
+<td></td>
+</tr>
+<tr>
+<td>$$</td>
+<td></td>
+</tr>
+<tr>
+<td>1.00/1.52=0.658</td>
+<td></td>
+</tr>
+<tr>
+<td>$$</td>
+<td></td>
+</tr>
+<tr>
+<td>Nous avons déjà délimité le cubemap, fourni les données de vertex avec des normales, et défini la position de la caméra comme un uniforme. La seule chose que nous devons changer est le fragment shader :</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{             
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> ratio <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.00</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">1.52</span>;
+</span></span><span style="display:flex;"><span>    vec3 I <span style="color:#f92672">=</span> normalize(Position <span style="color:#f92672">-</span> cameraPos);
+</span></span><span style="display:flex;"><span>    vec3 R <span style="color:#f92672">=</span> refract(I, normalize(Normal), ratio);
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(texture(skybox, R).rgb, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>En modifiant les indices de réfraction, vous pouvez créer des résultats visuels complètement différents. La compilation de l&rsquo;application et l&rsquo;exécution des résultats sur l&rsquo;objet conteneur n&rsquo;est pas très intéressante car elle ne montre pas vraiment l&rsquo;effet de la réfraction, hormis le fait qu&rsquo;elle agit comme une loupe pour l&rsquo;instant. En revanche, l&rsquo;utilisation des mêmes shaders sur le modèle 3D chargé permet d&rsquo;obtenir l&rsquo;effet recherché : un objet ressemblant à du verre.
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5ccubemaps_refraction.png" alt="cubemaps_refraction.png"/></p>
+<p>Vous pouvez imaginer qu&rsquo;avec la bonne combinaison d&rsquo;éclairage, de réflexion, de réfraction et de mouvement des vertex, vous pouvez créer des graphiques d&rsquo;eau très soignés. Notez que pour obtenir des résultats physiquement exacts, nous devrions réfracter la lumière à nouveau lorsqu&rsquo;elle quitte l&rsquo;objet ; pour l&rsquo;instant, nous avons simplement utilisé une réfraction unilatérale, ce qui convient à la plupart des usages.</p>
+<h2 id="maps-denvironnement-dynamiques">Maps d&rsquo;environnement dynamiques</h2>
+<p>Pour l&rsquo;instant, nous avons utilisé une combinaison statique d&rsquo;images comme skybox, ce qui est très bien, mais cela n&rsquo;inclut pas la scène 3D réelle avec des objets éventuellement en mouvement. Nous n&rsquo;avons pas vraiment remarqué cela jusqu&rsquo;à présent, car nous n&rsquo;avons utilisé qu&rsquo;un seul objet. Si nous avions un objet miroir avec plusieurs objets environnants, seule la skybox serait visible dans le miroir, comme si elle était le seul objet de la scène.</p>
+<p>En utilisant les framebuffers, il est possible de créer une texture de la scène pour les 6 angles différents de l&rsquo;objet en question et de les stocker dans un cubemap à chaque image. Nous pouvons ensuite utiliser ce cubemap (généré dynamiquement) pour créer des surfaces de réflexion et de réfraction réalistes qui incluent tous les autres objets. C&rsquo;est ce qu&rsquo;on appelle le mapping dynamique de l&rsquo;environnement, car nous créons dynamiquement un cubemap de l&rsquo;environnement d&rsquo;un objet et l&rsquo;utilisons comme map de l&rsquo;environnement.</p>
+<p>Bien que cette méthode soit très esthétique, elle présente un énorme inconvénient : nous devons effectuer le rendu de la scène six fois par objet utilisant une map d&rsquo;environnement, ce qui représente une énorme pénalité en termes de performances pour votre application. Les applications modernes essaient d&rsquo;utiliser la skybox autant que possible et, si possible, de pré-rendre les cubemaps chaque fois qu&rsquo;elles le peuvent afin de créer des maps d&rsquo;environnement dynamiques. Bien que le mapping dynamique de l&rsquo;environnement soit une excellente technique, il faut beaucoup d&rsquo;astuces pour la faire fonctionner dans une application de rendu sans trop de pertes de performances.</p>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+<br><br>
+<h1 id="face-culling">Face culling</h1>
+<p>Essayez de visualiser mentalement un cube en 3D et comptez le nombre maximum de faces que vous pourrez voir dans n&rsquo;importe quelle direction. Si votre imagination n&rsquo;est pas trop créative, vous avez probablement abouti à un nombre maximal de 3. Vous pouvez voir un cube dans n&rsquo;importe quelle position et/ou direction, mais vous ne pourrez jamais voir plus de 3 faces. Alors pourquoi gaspiller l&rsquo;effort de dessiner ces 3 autres faces que nous ne pouvons même pas voir. Si nous pouvions les éliminer d&rsquo;une manière ou d&rsquo;une autre, nous économiserions plus de 50 % du nombre total d&rsquo;exécutions du fragment shader de ce cube !</p>
+<blockquote>
+<p>Nous disons plus de 50 % au lieu de 50 %, car sous certains angles, seuls 2 ou même 1 face peuvent être visibles. Dans ce cas, nous économisons plus de 50 %.</p>
+</blockquote>
+<p>C&rsquo;est une très bonne idée, mais il y a un problème à résoudre : comment savoir si une face d&rsquo;un objet n&rsquo;est pas visible du point de vue de l&rsquo;observateur ? Si nous imaginons une forme fermée, chacune de ses faces a deux côtés. Chaque face fait face à l&rsquo;utilisateur ou lui tourne le dos. Et si nous ne pouvions rendre que les faces qui font face à l&rsquo;utilisateur ?</p>
+<p><strong>C&rsquo;est exactement ce que fait le face culling. OpenGL vérifie toutes les faces qui font face à l&rsquo;observateur et les rend tout en rejetant toutes les faces qui font face à l&rsquo;arrière, ce qui nous permet d&rsquo;économiser beaucoup d&rsquo;appels au fragment shader.</strong> Nous devons indiquer à OpenGL lesquelles des faces que nous utilisons sont les faces avant et lesquelles sont les faces arrière. OpenGL utilise une astuce intelligente pour cela en analysant l&rsquo;ordre d&rsquo;enroulement (winding order) des données de vertex.</p>
+<h2 id="winding-order">Winding order</h2>
+<p><strong>Lorsque nous définissons un ensemble de sommets de triangle, nous les définissons dans un certain ordre d&rsquo;enroulement, soit dans le sens des aiguilles d&rsquo;une montre, soit dans le sens inverse.</strong> Chaque triangle est composé de 3 sommets et nous spécifions ces 3 sommets dans un ordre d&rsquo;enroulement vu du centre du triangle.
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cPasted%20image%2020230816161422.png" alt="Pasted image 20230816161422"/>
+Comme vous pouvez le voir sur l&rsquo;image, nous définissons d&rsquo;abord le sommet 1 et, à partir de là, nous pouvons choisir si le sommet suivant est 2 ou 3. Ce choix définit l&rsquo;ordre d&rsquo;enroulement de ce triangle. Le code suivant l&rsquo;illustre :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> vertices[] <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// clockwise
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vertices[<span style="color:#ae81ff">0</span>], <span style="color:#75715e">// vertex 1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vertices[<span style="color:#ae81ff">1</span>], <span style="color:#75715e">// vertex 2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vertices[<span style="color:#ae81ff">2</span>], <span style="color:#75715e">// vertex 3
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// counter-clockwise
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vertices[<span style="color:#ae81ff">0</span>], <span style="color:#75715e">// vertex 1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vertices[<span style="color:#ae81ff">2</span>], <span style="color:#75715e">// vertex 3
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vertices[<span style="color:#ae81ff">1</span>]  <span style="color:#75715e">// vertex 2  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>};
+</span></span></code></pre></div><p>Chaque ensemble de 3 sommets qui forment un triangle primitif contient donc un ordre d&rsquo;enroulement. OpenGL utilise cette information lors du rendu de vos primitives pour déterminer si un triangle est orienté vers l&rsquo;avant ou vers l&rsquo;arrière. <strong>Par défaut, les triangles définis avec des sommets dans le sens inverse des aiguilles d&rsquo;une montre sont traités comme des triangles orientés vers l&rsquo;avant.</strong></p>
+<p>Lorsque vous définissez l&rsquo;ordre des sommets, vous visualisez le triangle correspondant comme s&rsquo;il vous faisait face, de sorte que chaque triangle que vous spécifiez doit être traité dans le sens inverse des aiguilles d&rsquo;une montre, comme si vous lui faisiez directement face. L&rsquo;avantage de spécifier tous les sommets de cette manière est que l&rsquo;ordre d&rsquo;enroulement réel est calculé lors de l&rsquo;étape de rastérisation, c&rsquo;est-à-dire lorsque le shader de sommets a déjà été exécuté. Les sommets sont alors vus du point de vue de l&rsquo;observateur.</p>
+<p>Tous les sommets des triangles auxquels le spectateur fait face sont effectivement dans l&rsquo;ordre d&rsquo;enroulement correct tel que nous l&rsquo;avons spécifié, mais les sommets des triangles situés de l&rsquo;autre côté du cube sont maintenant rendus de telle sorte que leur ordre d&rsquo;enroulement est inversé. Le résultat est que les triangles auxquels nous faisons face sont vus comme des triangles orientés vers l&rsquo;avant et les triangles à l&rsquo;arrière sont vus comme des triangles orientés vers l&rsquo;arrière. L&rsquo;image suivante illustre cet effet :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5c03_face_culling-20230816.png" alt="03_face_culling-20230816"/>
+Dans les données relatives aux sommets, nous avons défini les deux triangles dans le sens inverse des aiguilles d&rsquo;une montre (les triangles avant et arrière étant 1, 2, 3). Cependant, du point de vue de l&rsquo;observateur, le triangle arrière est rendu dans le sens des aiguilles d&rsquo;une montre si nous le dessinons dans l&rsquo;ordre 1, 2 et 3 du point de vue actuel de l&rsquo;observateur. Même si nous avons spécifié le triangle arrière dans le sens inverse des aiguilles d&rsquo;une montre, il est maintenant rendu dans le sens des aiguilles d&rsquo;une montre. C&rsquo;est exactement ce que nous voulons pour éliminer les faces non visibles !</p>
+<h2 id="face-culling-1">Face culling</h2>
+<p>Au début de ce chapitre, nous avons dit qu&rsquo;OpenGL est capable de rejeter les primitives triangulaires si elles sont rendues sous forme de triangles orientés vers l&rsquo;arrière. Maintenant que nous savons comment définir l&rsquo;ordre d&rsquo;enroulement des sommets, nous pouvons commencer à utiliser l&rsquo;option d&rsquo;élimination des faces d&rsquo;OpenGL qui est désactivée par défaut.</p>
+<p>Les données des sommets du cube que nous avons utilisées dans les chapitres précédents n&rsquo;ont pas été définies en tenant compte de l&rsquo;ordre d&rsquo;enroulement dans le sens inverse des aiguilles d&rsquo;une montre, j&rsquo;ai donc mis à jour les données des sommets pour refléter un ordre d&rsquo;enroulement dans le sens inverse des aiguilles d&rsquo;une montre, que vous pouvez copier ici. C&rsquo;est une bonne pratique d&rsquo;essayer de visualiser que ces sommets sont effectivement tous définis dans l&rsquo;ordre inverse des aiguilles d&rsquo;une montre pour chaque triangle.</p>
+<p>Pour activer le face culling, il suffit d&rsquo;activer l&rsquo;option GL_CULL_FACE d&rsquo;OpenGL :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glEnable(GL_CULL_FACE);  
+</span></span></code></pre></div><p>A partir de là, toutes les faces qui ne sont pas des faces avant sont éliminées (essayez de vous déplacer à l&rsquo;intérieur du cube pour voir que toutes les faces intérieures sont effectivement éliminées). Actuellement, nous économisons plus de 50% de performance sur le rendu des fragments si OpenGL décide de rendre les faces arrière en premier (sinon le test de profondeur les aurait déjà éliminées). <strong>Notez que cela ne fonctionne vraiment qu&rsquo;avec des formes fermées comme un cube. Nous devons à nouveau désactiver le face culling lorsque nous dessinons les feuilles d&rsquo;herbe du chapitre précédent, puisque leurs faces avant et arrière doivent être visibles.</strong></p>
+<p>OpenGL nous permet également de changer le type de face que nous voulons éliminer. Que faire si nous voulons éliminer les faces avant et non les faces arrière ? Nous pouvons définir ce comportement avec <code>glCullFace</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glCullFace(GL_FRONT);  
+</span></span></code></pre></div><p>La fonction <code>glCullFace</code> a trois options possibles :</p>
+<ul>
+<li><code>GL_BACK</code> : Ne traite que les faces arrière.</li>
+<li><code>GL_FRONT</code> : ne traite que les faces avant.</li>
+<li><code>GL_FRONT_AND_BACK</code> : élimine les faces avant et arrière.</li>
+</ul>
+<p>La valeur initiale de <code>glCullFace</code> est GL_BACK. Nous pouvons également indiquer à OpenGL que nous préférons les faces avant dans le sens des aiguilles d&rsquo;une montre plutôt que dans le sens inverse des aiguilles d&rsquo;une montre via <code>glFrontFace</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glFrontFace(GL_CCW);  
+</span></span></code></pre></div><p>La valeur par défaut est <code>GL_CCW</code> qui correspond à un ordre dans le sens inverse des aiguilles d&rsquo;une montre, l&rsquo;autre option étant <code>GL_CW</code> qui correspond (évidemment) à un ordre dans le sens des aiguilles d&rsquo;une montre.</p>
+<p>Pour un simple test, nous pouvons inverser l&rsquo;ordre d&rsquo;enroulement en disant à OpenGL que les faces avant sont maintenant déterminées par un ordre dans le sens des aiguilles d&rsquo;une montre au lieu d&rsquo;un ordre dans le sens inverse :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glEnable(GL_CULL_FACE);
+</span></span><span style="display:flex;"><span>glCullFace(GL_BACK);
+</span></span><span style="display:flex;"><span>glFrontFace(GL_CW);
+</span></span></code></pre></div><p>Il en résulte que seules les faces arrière sont rendues :
+<img src="/docs%5cLEARNOPENGL_FR%5c04_Advanced_OpenGL%5cfaceculling_reverse.png" alt="faceculling_reverse"/></p>
+<p>Notez que vous pouvez créer le même effet en éliminant les faces avant avec l&rsquo;ordre d&rsquo;enroulement par défaut dans le sens inverse des aiguilles d&rsquo;une montre :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glEnable(GL_CULL_FACE);
+</span></span><span style="display:flex;"><span>glCullFace(GL_FRONT);  
+</span></span></code></pre></div><p>Comme vous pouvez le constater, l&rsquo;élimination des faces est un excellent outil pour augmenter les performances de vos applications OpenGL avec un minimum d&rsquo;effort, d&rsquo;autant plus que toutes les applications 3D exportent des modèles avec des ordres d&rsquo;enroulement cohérents (<code>CCW</code> par défaut). Vous devez garder une trace des objets qui bénéficieront réellement de l&rsquo;élimination des faces et de ceux qui ne devraient pas être éliminés du tout.</p>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

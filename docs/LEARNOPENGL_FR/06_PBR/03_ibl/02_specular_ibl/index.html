@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+<br><br>
+<ul>
+<li>*# IBL Spéculaire
+Dans le chapitre précédent, nous avons mis en place le PBR en combinaison avec l&rsquo;éclairage basé sur l&rsquo;image en pré-calculant une map d&rsquo;irradiance comme partie diffuse indirecte de l&rsquo;éclairage. Dans ce chapitre, nous allons nous concentrer sur la partie spéculaire de l&rsquo;équation de réflectance :
+$$
+L_o(p,w_o)
+=
+\int_{\Omega}
+(
+k_d
+{
+c
+\over
+\pi
+}</li>
+</ul>
+<ul>
+<li></li>
+</ul>
+<p>k_s
+{
+DFG
+\over
+4(w_o<em>n)(w_i</em>n)
+}
+L_i(p,w_i)n*w_idw_i
+)
+$$
+Vous remarquerez que la partie spéculaire de Cook-Torrance (multipliée par $k_S$) n&rsquo;est pas constante sur l&rsquo;intégrale et dépend de la direction de la lumière entrante, mais aussi de la direction de la vue entrante. Essayer de résoudre l&rsquo;intégrale pour toutes les directions de lumière entrante, y compris toutes les directions de vue possibles, est une surcharge combinatoire et beaucoup trop coûteuse à calculer en temps réel. Epic Games a proposé une solution permettant de pré-convoluer la partie spéculaire en temps réel, moyennant quelques compromis, connue sous le nom d&rsquo;approximation de la somme divisée (<em>split sum approximation</em>).</p>
+<h1 id="l_opw_o">Cette approximation divise la partie spéculaire de l&rsquo;équation de réflectance en deux parties distinctes que nous pouvons convoluer individuellement et combiner plus tard dans le shader PBR pour un éclairage spéculaire indirect basé sur l&rsquo;image. De la même manière que nous avons pré-convolué la map d&rsquo;irradiance, l&rsquo;approximation de la somme divisée nécessite une map d&rsquo;environnement HDR comme entrée de convolution. Pour comprendre l&rsquo;approximation de la somme fractionnée, nous allons à nouveau examiner l&rsquo;équation de réflectance, mais en nous concentrant cette fois sur la partie spéculaire :
+$$
+L_o(p,w_o)</h1>
+<h1 id="heading">\int_{\Omega}
+(
+k_s
+{
+DFG
+\over
+4(w_o<em>n)(w_i</em>n)
+}
+L_i(p,w_i)n*w_idw_i
+)</h1>
+<h1 id="f_rpw_iw_o">\int_\Omega
+f_r(p,w_i,w_o)L_i(p,w_i)n*w_idw_i
+$$
+Pour les mêmes raisons (de performance) que pour la convolution de l&rsquo;irradiance, nous ne pouvons pas résoudre la partie spéculaire de l&rsquo;intégrale en temps réel et espérer une performance raisonnable. Il serait donc préférable de pré-calculer cette intégrale pour obtenir quelque chose comme une map IBL spéculaire, d&rsquo;échantillonner cette map avec la normale du fragment et d&rsquo;en finir. Cependant, c&rsquo;est là que les choses se compliquent. Nous avons pu pré-calculer la carte d&rsquo;irradiance car l&rsquo;intégrale ne dépendait que de $\omega_i$ et nous avons pu déplacer les termes d&rsquo;albédo diffus constants hors de l&rsquo;intégrale. Cette fois, l&rsquo;intégrale ne dépend pas seulement de $\omega_i$, comme le montre la BRDF :
+$$
+f_r(p,w_i,w_o)</h1>
+<p>{
+DFG
+\over
+4(w_o<em>n)(w_i</em>n)
+}
+$$
+L&rsquo;intégrale dépend également de $w_o$, et nous ne pouvons pas vraiment échantillonner un cubemap pré-calculé avec deux vecteurs de direction. La position $p$ n&rsquo;est pas pertinente ici, comme décrit dans le chapitre précédent. Le calcul préalable de cette intégrale pour toutes les combinaisons possibles de $ω_i$ et $ω_o$ n&rsquo;est pas pratique dans un environnement en temps réel.</p>
+<h1 id="l_opw_o-1">L&rsquo;approximation de la somme divisée d&rsquo;Epic Games résout le problème en divisant le pré-calcul en deux parties individuelles que nous pouvons ensuite combiner pour obtenir le résultat pré-calculé que nous recherchons. L&rsquo;approximation de la somme divisée divise l&rsquo;intégrale spéculaire en deux intégrales distinctes :
+$$
+L_o(p,w_o)</h1>
+<p>\int_\Omega
+L_i(p,w_i)dw_i
+*
+\int_\Omega
+f_r(p,w_i,w_o)n * w_idw_i
+$$
+La première partie (lorsqu&rsquo;elle est convoluée) est connue sous le nom de <strong>map d&rsquo;environnement pré-filtrée</strong>. Il s&rsquo;agit (comme pour la map d&rsquo;irradiance) d&rsquo;une carte de convolution d&rsquo;environnement pré-calculée, mais qui prend cette fois en compte la rugosité. Pour des niveaux de rugosité croissants, la map d&rsquo;environnement est convoluée avec davantage de vecteurs d&rsquo;échantillons dispersés, ce qui crée des réflexions plus floues. Pour chaque niveau de rugosité que nous convoluons, nous stockons les résultats séquentiellement plus flous dans les niveaux mipmap de la map pré-filtrée. Par exemple, une map d&rsquo;environnement pré-filtrée stockant le résultat pré-convolué de 5 valeurs de rugosité différentes dans ses 5 niveaux mipmap se présente comme suit :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c02_specular_ibl-20230910-pbribl1.png" alt="02_specular_ibl-20230910-pbribl1.png"/>
+Nous générons les vecteurs d&rsquo;échantillonnage et leur quantité de diffusion en utilisant la fonction de distribution normale (NDF) de la BRDF de Cook-Torrance qui prend en entrée la normale et la direction de la vue. Comme nous ne connaissons pas à l&rsquo;avance la direction de la vue lors de la convolution de la map de l&rsquo;environnement, Epic Games fait une approximation supplémentaire en supposant que la direction de la vue (et donc la direction de la réflexion spéculaire) est égale à la direction de l&rsquo;échantillon de sortie $ω_o$. Cela se traduit par le code suivant :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 N <span style="color:#f92672">=</span> normalize(w_o);
+</span></span><span style="display:flex;"><span>vec3 R <span style="color:#f92672">=</span> N;
+</span></span><span style="display:flex;"><span>vec3 V <span style="color:#f92672">=</span> R;
+</span></span></code></pre></div><p>De cette façon, la convolution pré-filtrée de l&rsquo;environnement n&rsquo;a pas besoin d&rsquo;être consciente de la direction de la vue. Cela signifie que nous n&rsquo;obtenons pas de belles réflexions spéculaires rasantes lorsque nous regardons des réflexions de surface spéculaire depuis un angle, comme le montre l&rsquo;image ci-dessous (avec l&rsquo;autorisation de l&rsquo;article Moving Frostbite to PBR) ; ceci est cependant généralement considéré comme un compromis acceptable :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c02_specular_ibl-20230910-pbribl2.png" alt="02_specular_ibl-20230910-pbribl2.png"/>
+La deuxième partie de l&rsquo;équation de la somme fractionnée est égale à la partie BRDF de l&rsquo;intégrale spéculaire. Si nous supposons que la radiance entrante est complètement blanche pour chaque direction (donc $L(p,x)=1.0$), nous pouvons pré-calculer la réponse de la BRDF en fonction d&rsquo;une rugosité d&rsquo;entrée et d&rsquo;un angle d&rsquo;entrée entre la normale $\vec{n}$ et la direction de la lumière $ω_i$, ou $n⋅ω_i$. Epic Games stocke la réponse précalculée de la BRDF à chaque combinaison de normale et de direction de la lumière sur des valeurs de rugosité variables dans une texture de consultation 2D (LUT) connue sous le nom de map d&rsquo;intégration de la BRDF. La texture de consultation 2D fournit une échelle (rouge) et une valeur de biais (verte) à la réponse de Fresnel de la surface, ce qui nous donne la deuxième partie de l&rsquo;intégrale spéculaire divisée :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c02_specular_ibl-20230910-pbribl3.png" alt="02_specular_ibl-20230910-pbribl3.png"/>
+Nous générons la texture de recherche en traitant la coordonnée de texture horizontale (comprise entre $0.0$ et $1.0$) d&rsquo;un plan comme l&rsquo;entrée $n⋅ω_i$ de la BRDF, et sa coordonnée de texture verticale comme la valeur de rugosité d&rsquo;entrée. Avec cette map d&rsquo;intégration de la BRDF et la map d&rsquo;environnement pré-filtrée, nous pouvons combiner les deux pour obtenir le résultat de l&rsquo;intégrale spéculaire :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> lod             <span style="color:#f92672">=</span> getMipLevelFromRoughness(roughness);
+</span></span><span style="display:flex;"><span>vec3 prefilteredColor <span style="color:#f92672">=</span> textureCubeLod(PrefilteredEnvMap, refVec, lod);
+</span></span><span style="display:flex;"><span>vec2 envBRDF          <span style="color:#f92672">=</span> texture2D(BRDFIntegrationMap, vec2(NdotV, roughness)).xy;
+</span></span><span style="display:flex;"><span>vec3 indirectSpecular <span style="color:#f92672">=</span> prefilteredColor <span style="color:#f92672">*</span> (F <span style="color:#f92672">*</span> envBRDF.x <span style="color:#f92672">+</span> envBRDF.y) 
+</span></span></code></pre></div><p>Cela devrait vous donner un aperçu de la façon dont l&rsquo;approximation de la somme fractionnée d&rsquo;Epic Games aborde la partie spéculaire indirecte de l&rsquo;équation de réflectance. Essayons maintenant de construire nous-mêmes les parties pré-convoluées.</p>
+<h2 id="pré-filtrage-dune-carte-denvironnement-hdr">Pré-filtrage d&rsquo;une carte d&rsquo;environnement HDR</h2>
+<p>Le pré-filtrage d&rsquo;une map d&rsquo;environnement est assez similaire à la manière dont nous avons convolué une map d&rsquo;irradiance. La différence est que nous tenons compte de la rugosité et que nous stockons séquentiellement les réflexions les plus rugueuses dans les niveaux mip de la map pré-filtrée.</p>
+<p>Tout d&rsquo;abord, nous devons générer une nouvelle cubemap pour contenir les données de la map d&rsquo;environnement pré-filtrée. Pour être sûr d&rsquo;allouer suffisamment de mémoire pour les niveaux mip, nous appelons <code>glGenerateMipmap</code> afin d&rsquo;allouer facilement la quantité de mémoire nécessaire :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> prefilterMap;
+</span></span><span style="display:flex;"><span>glGenTextures(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>prefilterMap);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">6</span>; <span style="color:#f92672">++</span>i)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X <span style="color:#f92672">+</span> i, <span style="color:#ae81ff">0</span>, GL_RGB16F, <span style="color:#ae81ff">128</span>, <span style="color:#ae81ff">128</span>, <span style="color:#ae81ff">0</span>, GL_RGB, GL_FLOAT, <span style="color:#66d9ef">nullptr</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+</span></span></code></pre></div><p>Notez qu&rsquo;étant donné que nous prévoyons d&rsquo;échantillonner les mipmaps de <code>prefilterMap</code>, vous devrez vous assurer que son filtre de minification est réglé sur <code>GL_LINEAR_MIPMAP_LINEAR</code> afin d&rsquo;activer le filtrage trilinéaire. Nous stockons les réflexions spéculaires pré-filtrées dans une résolution par face de 128 par 128 au niveau du mip de base. Cela devrait suffire pour la plupart des réflexions, mais si vous avez un grand nombre de matériaux lisses (pensez aux réflexions des voitures), vous voudrez peut-être augmenter la résolution.</p>
+<p>Dans le chapitre précédent, nous avons convolué la carte de l&rsquo;environnement en générant des vecteurs d&rsquo;échantillonnage uniformément répartis sur l&rsquo;hémisphère $\Omega$ en utilisant des coordonnées sphériques. Si cette méthode fonctionne parfaitement pour l&rsquo;irradiation, elle est moins efficace pour les réflexions spéculaires. En ce qui concerne les réflexions spéculaires, en fonction de la rugosité d&rsquo;une surface, la lumière se reflète de près ou de loin autour d&rsquo;un vecteur de réflexion $\vec{r}$ sur une normale $\vec{n}$, mais (à moins que la surface ne soit extrêmement rugueuse) autour du vecteur de réflexion tout de même :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c02_specular_ibl-20230910-pblibr4.png" alt="02_specular_ibl-20230910-pblibr4.png"/>
+La forme générale des réflexions possibles de la lumière sortante est connue sous le nom de <strong>lobe spéculaire</strong>. Plus la rugosité augmente, plus la taille du lobe spéculaire augmente ; et la forme du lobe spéculaire change en fonction de la direction de la lumière entrante. La forme du lobe spéculaire dépend donc fortement du matériau.</p>
+<p>En ce qui concerne le modèle de microsurface, nous pouvons imaginer le lobe spéculaire comme l&rsquo;orientation de la réflexion autour des vecteurs de la micro-facette en fonction de la direction de la lumière entrante. Étant donné que la plupart des rayons lumineux aboutissent à un lobe spéculaire réfléchi autour des vecteurs médians de la micro-facette, il est logique de générer les vecteurs d&rsquo;échantillonnage d&rsquo;une manière similaire, car la plupart d&rsquo;entre eux seraient sinon gaspillés. Ce processus est connu sous le nom d&rsquo;échantillonnage d&rsquo;importance.</p>
+<h3 id="intégration-de-monte-carlo-et-échantillonnage-dimportance">Intégration de Monte Carlo et échantillonnage d&rsquo;importance</h3>
+<p>Pour bien comprendre l&rsquo;importance de l&rsquo;échantillonnage, il convient d&rsquo;abord de se pencher sur la construction mathématique connue sous le nom d&rsquo;<strong>intégration de Monte Carlo</strong>. L&rsquo;intégration de Monte Carlo repose principalement sur une combinaison de statistiques et de théorie des probabilités. Monte Carlo nous aide à résoudre discrètement le problème de la détermination d&rsquo;une statistique ou d&rsquo;une valeur d&rsquo;une population sans avoir à prendre en considération l&rsquo;ensemble de la population.</p>
+<p>Par exemple, supposons que vous souhaitiez calculer la taille moyenne de tous les citoyens d&rsquo;un pays. Pour obtenir votre résultat, vous pourriez mesurer chaque citoyen et faire la moyenne de sa taille, ce qui vous donnerait la réponse exacte que vous recherchez. Cependant, étant donné que la plupart des pays ont une population considérable, cette approche n&rsquo;est pas réaliste : elle nécessiterait trop d&rsquo;efforts et de temps.</p>
+<p>Une approche différente consiste à choisir un sous-ensemble beaucoup plus petit et totalement aléatoire (sans biais) de cette population, à mesurer leur taille et à faire la moyenne des résultats. Cette population peut se limiter à une centaine de personnes. Bien que la réponse ne soit pas aussi précise que la réponse exacte, vous obtiendrez une réponse relativement proche de la vérité de terrain. C&rsquo;est ce qu&rsquo;on appelle <strong>la loi des grands nombres</strong>. L&rsquo;idée est que si vous mesurez un ensemble plus petit de taille $N$ d&rsquo;échantillons réellement aléatoires de la population totale, le résultat sera relativement proche de la vraie réponse et se rapprochera au fur et à mesure que le nombre d&rsquo;échantillons $N$ augmente.</p>
+<p>L&rsquo;intégration de Monte Carlo s&rsquo;appuie sur cette loi des grands nombres et adopte la même approche pour résoudre une intégrale. Plutôt que de résoudre une intégrale pour toutes les valeurs possibles (théoriquement infinies) de l&rsquo;échantillon $x$ il suffit de générer $N$ valeurs d&rsquo;échantillon choisies au hasard dans la population totale et d&rsquo;en faire la moyenne. Au fur et à mesure que $N$ augmente, nous sommes assurés d&rsquo;obtenir un résultat plus proche de la réponse exacte de l&rsquo;intégrale :
+$$
+O=
+\int_a^bf(x)dx=
+{
+1
+\over
+N
+}
+\sum_{i=0}^{N-1}
+{
+f(x)
+\over
+pdf(x)
+}
+$$
+Pour résoudre l&rsquo;intégrale, nous prélevons $N$ échantillons aléatoires sur la population $a$ à $b$, nous les additionnons et nous les divisons par le nombre total d&rsquo;échantillons pour en faire la moyenne. La <strong>pdf</strong> est la fonction de densité de probabilité qui nous indique la probabilité qu&rsquo;un échantillon spécifique se produise sur l&rsquo;ensemble des échantillons. Par exemple, la <strong>pdf</strong> de la taille d&rsquo;une population ressemblerait à ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c02_specular_ibl-20230910-pbribl7.png" alt="02_specular_ibl-20230910-pbribl7.png"/>
+Ce graphique montre que si l&rsquo;on prend un échantillon aléatoire de la population, il y a plus de chances d&rsquo;obtenir un échantillon d&rsquo;une personne de taille $1.70$ que de chances d&rsquo;obtenir un échantillon d&rsquo;une personne de taille $1.50$.</p>
+<p>En ce qui concerne l&rsquo;intégration de Monte Carlo, certains échantillons peuvent avoir une probabilité plus élevée d&rsquo;être générés que d&rsquo;autres. C&rsquo;est pourquoi, pour toute estimation Monte Carlo générale, nous divisons ou multiplions la valeur échantillonnée par la probabilité de l&rsquo;échantillon, conformément à une $pdf$. Jusqu&rsquo;à présent, dans chacun de nos cas d&rsquo;estimation d&rsquo;une intégrale, les échantillons que nous avons générés étaient uniformes, c&rsquo;est-à-dire qu&rsquo;ils avaient exactement la même probabilité d&rsquo;être générés. Nos estimations jusqu&rsquo;à présent étaient sans biais, ce qui signifie qu&rsquo;avec un nombre toujours croissant d&rsquo;échantillons, nous finirons par converger vers la solution exacte de l&rsquo;intégrale.</p>
+<p><strong>Cependant, certains estimateurs de Monte Carlo sont biaisés</strong>, ce qui signifie que les échantillons générés ne sont pas complètement aléatoires, mais orientés vers une valeur ou une direction spécifique. Ces estimateurs de Monte Carlo biaisés ont un taux de convergence plus rapide, ce qui signifie qu&rsquo;ils peuvent converger vers la solution exacte à un rythme beaucoup plus rapide, mais en raison de leur nature biaisée, il est probable qu&rsquo;ils ne convergent jamais vers la solution exacte. Il s&rsquo;agit généralement d&rsquo;un compromis acceptable, en particulier dans le domaine de l&rsquo;infographie, car la solution exacte n&rsquo;est pas très importante tant que les résultats sont visuellement acceptables. Comme nous le verrons bientôt avec l&rsquo;échantillonnage d&rsquo;importance (qui utilise un estimateur biaisé), les échantillons générés sont biaisés vers des directions spécifiques, auquel cas nous en tenons compte en multipliant ou en divisant chaque échantillon par sa <strong>pdf</strong> correspondante.</p>
+<p>L&rsquo;intégration de Monte Carlo est très répandue dans l&rsquo;infographie, car c&rsquo;est un moyen assez intuitif d&rsquo;approximer des intégrales continues d&rsquo;une manière discrète et efficace : prenez une zone/un volume quelconque à échantillonner (comme l&rsquo;hémisphère $\Omega$), générer un nombre $N$ d&rsquo;échantillons aléatoires à l&rsquo;intérieur de la zone/du volume, et additionner et pondérer la contribution de chaque échantillon au résultat final.</p>
+<p>L&rsquo;intégration de Monte Carlo est un sujet mathématique très vaste et je ne m&rsquo;attarderai pas sur les détails, mais nous mentionnerons qu&rsquo;il existe plusieurs façons de générer les échantillons aléatoires. Par défaut, chaque échantillon est complètement (pseudo)aléatoire, comme nous en avons l&rsquo;habitude, mais en utilisant certaines propriétés des séquences semi-aléatoires, nous pouvons générer des vecteurs d&rsquo;échantillons qui sont toujours aléatoires, mais qui ont des propriétés intéressantes. Par exemple, nous pouvons effectuer une intégration Monte Carlo sur ce que l&rsquo;on appelle des <strong>séquences à faible discrépance</strong> (?), qui génèrent toujours des échantillons aléatoires, mais chaque échantillon est distribué plus uniformément (image fournie par James Heald) :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c02_specular_ibl-20230910-pbribl8.png" alt="02_specular_ibl-20230910-pbribl8.png"/>
+Lorsque l&rsquo;on utilise une séquence à faible discrépance pour générer les vecteurs d&rsquo;échantillonnage de Monte Carlo, le processus est connu sous le nom d&rsquo;<strong>intégration Quasi-Monte Carlo</strong>. <strong>Les méthodes de Quasi-Monte Carlo ont un taux de convergence plus rapide, ce qui les rend intéressantes pour les applications gourmandes en performances.</strong></p>
+<p>Compte tenu de notre nouvelle connaissance de Monte Carlo et de l&rsquo;intégration Quasi-Monte Carlo, il existe une propriété intéressante que nous pouvons utiliser pour obtenir un taux de convergence encore plus rapide : <strong>l&rsquo;échantillonnage d&rsquo;importance</strong>. Nous l&rsquo;avons déjà mentionné dans ce chapitre, mais lorsqu&rsquo;il s&rsquo;agit de réflexions spéculaires de la lumière, les vecteurs de lumière réfléchie sont contraints dans un lobe spéculaire dont la taille est déterminée par la rugosité de la surface. Étant donné que tout échantillon généré (quasi-)aléatoirement en dehors du lobe spéculaire n&rsquo;est pas pertinent pour l&rsquo;intégrale spéculaire, il est logique de concentrer la génération d&rsquo;échantillons à l&rsquo;intérieur du lobe spéculaire, au prix d&rsquo;un biais de l&rsquo;estimateur de Monte Carlo.</p>
+<p>C&rsquo;est essentiellement l&rsquo;objet de l&rsquo;échantillonnage d&rsquo;importance : générer des vecteurs d&rsquo;échantillonnage dans une région limitée par la rugosité orientée autour du vecteur médian de la micro-facette. En combinant l&rsquo;échantillonnage Quasi-Monte Carlo avec une séquence à faible discrépance et en biaisant les vecteurs d&rsquo;échantillonnage à l&rsquo;aide de l&rsquo;échantillonnage d&rsquo;importance, nous obtenons un taux de convergence élevé. Comme nous atteignons la solution plus rapidement, nous aurons besoin de beaucoup moins d&rsquo;échantillons pour obtenir une approximation suffisante.</p>
+<h3 id="une-séquence-à-faible-discrépance">Une séquence à faible discrépance</h3>
+<p>Dans ce chapitre, nous allons pré-calculer la partie spéculaire de l&rsquo;équation de réflectance indirecte en utilisant l&rsquo;échantillonnage d&rsquo;importance à partir d&rsquo;une séquence aléatoire à faible discrépance basée sur la méthode Quasi-Monte Carlo. La séquence que nous utiliserons est connue sous le nom de <strong>séquence de Hammersley</strong>, telle qu&rsquo;elle a été soigneusement décrite par Holger Dammertz. La séquence de Hammersley est basée sur la séquence de Van Der Corput qui reflète une représentation binaire décimale autour de son point décimal.</p>
+<p>Grâce à quelques astuces, nous pouvons générer efficacement la séquence de Van Der Corput dans un programme d&rsquo;ombrage que nous utiliserons pour obtenir un échantillon i de la séquence de Hammersley sur un total de $N$ échantillons :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">RadicalInverse_VdC</span>(uint bits) 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    bits <span style="color:#f92672">=</span> (bits <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">16u</span>) <span style="color:#f92672">|</span> (bits <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">16u</span>);
+</span></span><span style="display:flex;"><span>    bits <span style="color:#f92672">=</span> ((bits <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x55555555u</span>) <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">1u</span>) <span style="color:#f92672">|</span> ((bits <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xAAAAAAAAu</span>) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">1u</span>);
+</span></span><span style="display:flex;"><span>    bits <span style="color:#f92672">=</span> ((bits <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x33333333u</span>) <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">2u</span>) <span style="color:#f92672">|</span> ((bits <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xCCCCCCCCu</span>) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">2u</span>);
+</span></span><span style="display:flex;"><span>    bits <span style="color:#f92672">=</span> ((bits <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x0F0F0F0Fu</span>) <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">4u</span>) <span style="color:#f92672">|</span> ((bits <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xF0F0F0F0u</span>) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">4u</span>);
+</span></span><span style="display:flex;"><span>    bits <span style="color:#f92672">=</span> ((bits <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x00FF00FFu</span>) <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8u</span>) <span style="color:#f92672">|</span> ((bits <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF00FF00u</span>) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">8u</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">float</span>(bits) <span style="color:#f92672">*</span> <span style="color:#ae81ff">2.3283064365386963e-10</span>; <span style="color:#75715e">// / 0x100000000
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ----------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>vec2 <span style="color:#a6e22e">Hammersley</span>(uint i, uint N)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> vec2(<span style="color:#66d9ef">float</span>(i)<span style="color:#f92672">/</span><span style="color:#66d9ef">float</span>(N), RadicalInverse_VdC(i));
+</span></span></code></pre></div><p>La fonction GLSL <code>Hammersley</code> nous donne l&rsquo;échantillon $i$ à faible discrépance de l&rsquo;ensemble de l&rsquo;échantillon de taille $N$.</p>
+<blockquote>
+<p>Séquence de Hammersley sans support des opérateurs de bits</p>
+</blockquote>
+<blockquote>
+<p>Tous les pilotes OpenGL ne supportent pas les opérateurs de bits (WebGL et OpenGL ES 2.0 par exemple). Dans ce cas, vous pouvez utiliser une version alternative de la séquence de Van Der Corput qui ne s&rsquo;appuie pas sur les opérateurs de bits :</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">VanDerCorput</span>(uint n, uint base)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> invBase <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">/</span> <span style="color:#66d9ef">float</span>(base);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> denom   <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> result  <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(uint i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0u</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">32u</span>; <span style="color:#f92672">++</span>i)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span>(n <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0u</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            denom   <span style="color:#f92672">=</span> mod(<span style="color:#66d9ef">float</span>(n), <span style="color:#ae81ff">2.0</span>);
+</span></span><span style="display:flex;"><span>            result <span style="color:#f92672">+=</span> denom <span style="color:#f92672">*</span> invBase;
+</span></span><span style="display:flex;"><span>            invBase <span style="color:#f92672">=</span> invBase <span style="color:#f92672">/</span> <span style="color:#ae81ff">2.0</span>;
+</span></span><span style="display:flex;"><span>            n       <span style="color:#f92672">=</span> uint(<span style="color:#66d9ef">float</span>(n) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2.0</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ----------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>vec2 <span style="color:#a6e22e">HammersleyNoBitOps</span>(uint i, uint N)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> vec2(<span style="color:#66d9ef">float</span>(i)<span style="color:#f92672">/</span><span style="color:#66d9ef">float</span>(N), VanDerCorput(i, <span style="color:#ae81ff">2u</span>));
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>Notez qu&rsquo;en raison des restrictions de boucle GLSL dans le matériel plus ancien, la séquence boucle sur tous les 32 bits possibles. Cette version est moins performante, mais fonctionne sur tout le matériel si vous vous retrouvez sans opérateurs de bits.</p>
+</blockquote>
+<h3 id="ggx-échantillonnage-de-limportance">GGX Échantillonnage de l&rsquo;importance</h3>
+<p>Au lieu de générer uniformément ou aléatoirement (Monte Carlo) des vecteurs d&rsquo;échantillonnage sur l&rsquo;hémisphère $\Omega$ de l&rsquo;intégrale, nous générerons des vecteurs d&rsquo;échantillonnage biaisés en fonction de l&rsquo;orientation générale de la réflexion du vecteur à mi-chemin de la microsurface, basé sur la rugosité de la surface. Le processus d&rsquo;échantillonnage sera similaire à ce que nous avons vu auparavant : commencer une grande boucle, générer une valeur de séquence aléatoire (à faible discrépance), prendre la valeur de séquence pour générer un vecteur d&rsquo;échantillon dans l&rsquo;espace tangent, transformer en espace monde et échantillonner la radiance de la scène. Ce qui est différent, c&rsquo;est que nous utilisons maintenant une valeur de séquence à faible discrépance comme entrée pour générer un vecteur d&rsquo;échantillonnage :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> uint SAMPLE_COUNT <span style="color:#f92672">=</span> <span style="color:#ae81ff">4096u</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(uint i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0u</span>; i <span style="color:#f92672">&lt;</span> SAMPLE_COUNT; <span style="color:#f92672">++</span>i)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    vec2 Xi <span style="color:#f92672">=</span> Hammersley(i, SAMPLE_COUNT); 
+</span></span></code></pre></div><p>De plus, pour construire un vecteur d&rsquo;échantillonnage, nous avons besoin d&rsquo;un moyen d&rsquo;orienter et de biaiser le vecteur d&rsquo;échantillonnage vers le lobe spéculaire d&rsquo;une certaine rugosité de surface. Nous pouvons prendre le <strong>NDF</strong> tel que décrit dans le chapitre <a href="/docs/learnopengl_fr/06_pbr/01_theory/">théorique</a> et combiner le GGX NDF dans le processus de vecteur d&rsquo;échantillon sphérique tel que décrit par Epic Games :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 <span style="color:#a6e22e">ImportanceSampleGGX</span>(vec2 Xi, vec3 N, <span style="color:#66d9ef">float</span> roughness)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> a <span style="color:#f92672">=</span> roughness<span style="color:#f92672">*</span>roughness;
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> phi <span style="color:#f92672">=</span> <span style="color:#ae81ff">2.0</span> <span style="color:#f92672">*</span> PI <span style="color:#f92672">*</span> Xi.x;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> cosTheta <span style="color:#f92672">=</span> sqrt((<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> Xi.y) <span style="color:#f92672">/</span> (<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">+</span> (a<span style="color:#f92672">*</span>a <span style="color:#f92672">-</span> <span style="color:#ae81ff">1.0</span>) <span style="color:#f92672">*</span> Xi.y));
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> sinTheta <span style="color:#f92672">=</span> sqrt(<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> cosTheta<span style="color:#f92672">*</span>cosTheta);
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// from spherical coordinates to cartesian coordinates
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 H;
+</span></span><span style="display:flex;"><span>    H.x <span style="color:#f92672">=</span> cos(phi) <span style="color:#f92672">*</span> sinTheta;
+</span></span><span style="display:flex;"><span>    H.y <span style="color:#f92672">=</span> sin(phi) <span style="color:#f92672">*</span> sinTheta;
+</span></span><span style="display:flex;"><span>    H.z <span style="color:#f92672">=</span> cosTheta;
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// from tangent-space vector to world-space sample vector
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec3 up        <span style="color:#f92672">=</span> abs(N.z) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0.999</span> <span style="color:#f92672">?</span> vec3(<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>) <span style="color:#f92672">:</span> vec3(<span style="color:#ae81ff">1.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>    vec3 tangent   <span style="color:#f92672">=</span> normalize(cross(up, N));
+</span></span><span style="display:flex;"><span>    vec3 bitangent <span style="color:#f92672">=</span> cross(N, tangent);
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>    vec3 sampleVec <span style="color:#f92672">=</span> tangent <span style="color:#f92672">*</span> H.x <span style="color:#f92672">+</span> bitangent <span style="color:#f92672">*</span> H.y <span style="color:#f92672">+</span> N <span style="color:#f92672">*</span> H.z;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> normalize(sampleVec);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Cela nous donne un vecteur d&rsquo;échantillonnage quelque peu orienté autour du vecteur de la microsurface attendu en fonction d&rsquo;une certaine rugosité d&rsquo;entrée et de la valeur de séquence $X_i$ à faible discrépance. Notez qu&rsquo;Epic Games utilise la rugosité au carré pour obtenir de meilleurs résultats visuels, conformément à la recherche PBR originale de Disney.</p>
+<p>Une fois la séquence d&rsquo;Hammersley à faible écart et la génération d&rsquo;échantillons définies, nous pouvons finaliser le shader de convolution pré-filtre :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>out vec4 FragColor;
+</span></span><span style="display:flex;"><span>in vec3 localPos;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform samplerCube environmentMap;
+</span></span><span style="display:flex;"><span>uniform <span style="color:#66d9ef">float</span> roughness;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> PI <span style="color:#f92672">=</span> <span style="color:#ae81ff">3.14159265359</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">RadicalInverse_VdC</span>(uint bits);
+</span></span><span style="display:flex;"><span>vec2 <span style="color:#a6e22e">Hammersley</span>(uint i, uint N);
+</span></span><span style="display:flex;"><span>vec3 <span style="color:#a6e22e">ImportanceSampleGGX</span>(vec2 Xi, vec3 N, <span style="color:#66d9ef">float</span> roughness);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{		
+</span></span><span style="display:flex;"><span>    vec3 N <span style="color:#f92672">=</span> normalize(localPos);    
+</span></span><span style="display:flex;"><span>    vec3 R <span style="color:#f92672">=</span> N;
+</span></span><span style="display:flex;"><span>    vec3 V <span style="color:#f92672">=</span> R;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> uint SAMPLE_COUNT <span style="color:#f92672">=</span> <span style="color:#ae81ff">1024u</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> totalWeight <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>;   
+</span></span><span style="display:flex;"><span>    vec3 prefilteredColor <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">0.0</span>);     
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(uint i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0u</span>; i <span style="color:#f92672">&lt;</span> SAMPLE_COUNT; <span style="color:#f92672">++</span>i)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        vec2 Xi <span style="color:#f92672">=</span> Hammersley(i, SAMPLE_COUNT);
+</span></span><span style="display:flex;"><span>        vec3 H  <span style="color:#f92672">=</span> ImportanceSampleGGX(Xi, N, roughness);
+</span></span><span style="display:flex;"><span>        vec3 L  <span style="color:#f92672">=</span> normalize(<span style="color:#ae81ff">2.0</span> <span style="color:#f92672">*</span> dot(V, H) <span style="color:#f92672">*</span> H <span style="color:#f92672">-</span> V);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">float</span> NdotL <span style="color:#f92672">=</span> max(dot(N, L), <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span>(NdotL <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0.0</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            prefilteredColor <span style="color:#f92672">+=</span> texture(environmentMap, L).rgb <span style="color:#f92672">*</span> NdotL;
+</span></span><span style="display:flex;"><span>            totalWeight      <span style="color:#f92672">+=</span> NdotL;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    prefilteredColor <span style="color:#f92672">=</span> prefilteredColor <span style="color:#f92672">/</span> totalWeight;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> vec4(prefilteredColor, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Nous pré-filtrons l&rsquo;environnement, sur la base d&rsquo;une certaine rugosité d&rsquo;entrée qui varie pour chaque niveau de mipmap du cubemap pré-filtré (de $0.0$ à $1.0$), et nous stockons le résultat dans <code>prefilteredColor</code> (couleur pré-filtrée). La couleur pré filtrée résultante est divisée par le poids total de l&rsquo;échantillon, les échantillons ayant moins d&rsquo;influence sur le résultat final (pour les petits <code>NdotL</code>) contribuant moins au poids final.</p>
+<h2 id="capturer-les-niveaux-de-mipmap-avant-le-filtre">Capturer les niveaux de mipmap avant le filtre</h2>
+<p>Ce qu&rsquo;il reste à faire est de laisser OpenGL pré-filtrer la carte de l&rsquo;environnement avec différentes valeurs de rugosité sur plusieurs niveaux de la mipmap. C&rsquo;est en fait assez facile à faire avec la configuration originale du chapitre sur l&rsquo;<a href="/docs/learnopengl_fr/06_pbr/03_ibl/01_diffuse_irradiance/">irradiation</a> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>prefilterShader.use();
+</span></span><span style="display:flex;"><span>prefilterShader.setInt(<span style="color:#e6db74">&#34;environmentMap&#34;</span>, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>prefilterShader.setMat4(<span style="color:#e6db74">&#34;projection&#34;</span>, captureProjection);
+</span></span><span style="display:flex;"><span>glActiveTexture(GL_TEXTURE0);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> maxMipLevels <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> mip <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; mip <span style="color:#f92672">&lt;</span> maxMipLevels; <span style="color:#f92672">++</span>mip)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// reisze framebuffer according to mip-level size.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> mipWidth  <span style="color:#f92672">=</span> <span style="color:#ae81ff">128</span> <span style="color:#f92672">*</span> std<span style="color:#f92672">::</span>pow(<span style="color:#ae81ff">0.5</span>, mip);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> mipHeight <span style="color:#f92672">=</span> <span style="color:#ae81ff">128</span> <span style="color:#f92672">*</span> std<span style="color:#f92672">::</span>pow(<span style="color:#ae81ff">0.5</span>, mip);
+</span></span><span style="display:flex;"><span>    glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+</span></span><span style="display:flex;"><span>    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
+</span></span><span style="display:flex;"><span>    glViewport(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, mipWidth, mipHeight);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> roughness <span style="color:#f92672">=</span> (<span style="color:#66d9ef">float</span>)mip <span style="color:#f92672">/</span> (<span style="color:#66d9ef">float</span>)(maxMipLevels <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>    prefilterShader.setFloat(<span style="color:#e6db74">&#34;roughness&#34;</span>, roughness);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">6</span>; <span style="color:#f92672">++</span>i)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        prefilterShader.setMat4(<span style="color:#e6db74">&#34;view&#34;</span>, captureViews[i]);
+</span></span><span style="display:flex;"><span>        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+</span></span><span style="display:flex;"><span>                               GL_TEXTURE_CUBE_MAP_POSITIVE_X <span style="color:#f92672">+</span> i, prefilterMap, mip);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        glClear(GL_COLOR_BUFFER_BIT <span style="color:#f92672">|</span> GL_DEPTH_BUFFER_BIT);
+</span></span><span style="display:flex;"><span>        renderCube();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>glBindFramebuffer(GL_FRAMEBUFFER, <span style="color:#ae81ff">0</span>);
+</span></span></code></pre></div><p>Le processus est similaire à la convolution de la map d&rsquo;irradiance, mais cette fois, nous mettons à l&rsquo;échelle les dimensions du framebuffer à l&rsquo;échelle appropriée de la mipmap, chaque niveau de mip réduisant les dimensions d&rsquo;une échelle de 2. En outre, nous spécifions le niveau de mip dans lequel nous effectuons le rendu dans le dernier paramètre de <code>glFramebufferTexture2D</code> et nous passons la rugosité que nous pré-filtrons au shader de pré-filtrage.</p>
+<p>Cela devrait nous donner une map d&rsquo;environnement correctement pré-filtrée qui renvoie des réflexions plus floues au fur et à mesure que nous y accédons par un niveau de mip plus élevé. Si nous utilisons la cubemap d&rsquo;environnement pré-filtrée dans le shader de la skybox et que nous forçons l&rsquo;échantillonnage un peu plus haut que son premier niveau de mip comme ceci :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 envColor <span style="color:#f92672">=</span> textureLod(environmentMap, WorldPos, <span style="color:#ae81ff">1.2</span>).rgb; 
+</span></span></code></pre></div><p>Nous obtenons un résultat qui ressemble effectivement à une version plus floue de l&rsquo;environnement original :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c02_specular_ibl-20230917-ibl0.png" alt="02_specular_ibl-20230917-ibl0.png"/>
+Si l&rsquo;aspect est similaire, vous avez réussi à pré-filtrer la map de l&rsquo;environnement HDR. Jouez avec différents niveaux de mipmap pour voir la map pré-filtrée passer progressivement de reflets nets à des reflets flous à mesure que les niveaux de mip augmentent.</p>
+<h2 id="artefacts-de-convolution-du-pré-filtre">Artefacts de convolution du pré-filtre</h2>
+<p>Bien que la map pré-filtre actuelle fonctionne bien dans la plupart des cas, tôt ou tard vous rencontrerez plusieurs artefacts de rendu qui sont directement liés à la convolution du pré-filtre. Je vais énumérer ici les artefacts les plus courants et expliquer comment les corriger.</p>
+<h3 id="coutures-cubemap-à-forte-rugosité">Coutures Cubemap à forte rugosité</h3>
+<p>L&rsquo;échantillonnage de la map de pré filtre sur les surfaces rugueuses signifie l&rsquo;échantillonnage de la map de pré filtre sur certains de ses niveaux de mip inférieurs. Lors de l&rsquo;échantillonnage de cubemaps, OpenGL par défaut n&rsquo;interpole pas linéairement les faces du cubemap. Parce que les niveaux de mip inférieurs sont à la fois d&rsquo;une résolution plus faible et que la map de pré-filtre est convoluée avec un lobe d&rsquo;échantillonnage beaucoup plus grand, le manque de filtrage entre les faces du cubemap devient assez évident :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c02_specular_ibl-20230917-ibl1.png" alt="02_specular_ibl-20230917-ibl1.png"/>
+Heureusement pour nous, OpenGL nous donne la possibilité de filtrer correctement les faces du cubemap en activant <code>GL_TEXTURE_CUBE_MAP_SEAMLESS</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);  
+</span></span></code></pre></div><p>Il suffit d&rsquo;activer cette propriété quelque part au début de votre application pour que les coutures disparaissent.</p>
+<h3 id="points-lumineux-dans-la-convolution-du-pré-filtre">Points lumineux dans la convolution du pré-filtre</h3>
+<p>En raison des détails à haute fréquence et des intensités lumineuses extrêmement variables dans les réflexions spéculaires, la convolution des réflexions spéculaires nécessite un grand nombre d&rsquo;échantillons pour tenir compte de la nature extrêmement variable des réflexions environnementales HDR. Nous prenons déjà un très grand nombre d&rsquo;échantillons, mais dans certains environnements, cela peut ne pas suffire pour les niveaux de mip les plus grossiers, auquel cas vous commencerez à voir apparaître des motifs en pointillés autour des zones lumineuses :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c02_specular_ibl-20230917-ibr3.png" alt="02_specular_ibl-20230917-ibr3.png"/>
+Une option consiste à augmenter le nombre d&rsquo;échantillons, mais cela ne suffira pas pour tous les environnements. Comme l&rsquo;a décrit Chetan Jags, nous pouvons réduire cet artefact (pendant la convolution du pré filtre) en n&rsquo;échantillonnant pas directement la map de l&rsquo;environnement, mais en échantillonnant un niveau de mip de la map de l&rsquo;environnement basé sur le PDF de l&rsquo;intégrale et la rugosité :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> D   <span style="color:#f92672">=</span> DistributionGGX(NdotH, roughness);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> pdf <span style="color:#f92672">=</span> (D <span style="color:#f92672">*</span> NdotH <span style="color:#f92672">/</span> (<span style="color:#ae81ff">4.0</span> <span style="color:#f92672">*</span> HdotV)) <span style="color:#f92672">+</span> <span style="color:#ae81ff">0.0001</span>; 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> resolution <span style="color:#f92672">=</span> <span style="color:#ae81ff">512.0</span>; <span style="color:#75715e">// resolution of source cubemap (per face)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">float</span> saTexel  <span style="color:#f92672">=</span> <span style="color:#ae81ff">4.0</span> <span style="color:#f92672">*</span> PI <span style="color:#f92672">/</span> (<span style="color:#ae81ff">6.0</span> <span style="color:#f92672">*</span> resolution <span style="color:#f92672">*</span> resolution);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> saSample <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">/</span> (<span style="color:#66d9ef">float</span>(SAMPLE_COUNT) <span style="color:#f92672">*</span> pdf <span style="color:#f92672">+</span> <span style="color:#ae81ff">0.0001</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> mipLevel <span style="color:#f92672">=</span> roughness <span style="color:#f92672">==</span> <span style="color:#ae81ff">0.0</span> <span style="color:#f92672">?</span> <span style="color:#ae81ff">0.0</span> <span style="color:#f92672">:</span> <span style="color:#ae81ff">0.5</span> <span style="color:#f92672">*</span> log2(saSample <span style="color:#f92672">/</span> saTexel); 
+</span></span></code></pre></div><p>N&rsquo;oubliez pas d&rsquo;activer le filtrage trilinéaire sur la map d&rsquo;environnement dont vous voulez échantillonner les niveaux de mip :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+</span></span></code></pre></div><p>Et laisser OpenGL générer les mipmaps après que la texture de base de la cubemap ait été définie :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// convert HDR equirectangular environment map to cubemap equivalent
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>[...]
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// then generate mipmaps
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+</span></span><span style="display:flex;"><span>glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+</span></span></code></pre></div><p>Cette méthode fonctionne étonnamment bien et devrait permettre d&rsquo;éliminer la plupart, voire la totalité, des points de votre map de pré filtre sur les surfaces plus rugueuses.</p>
+<h2 id="précalcul-de-la-brdf">Précalcul de la BRDF</h2>
+<h1 id="l_opomega_o">L&rsquo;environnement pré-filtré étant opérationnel, nous pouvons nous concentrer sur la deuxième partie de l&rsquo;approximation de la somme fractionnée : la BRDF. Revenons brièvement sur l&rsquo;approximation de la somme fractionnée spéculaire :
+$$
+L_o(p,\omega_o)</h1>
+<h1 id="int_omega-f_rpomega_iomega_on-cdot-omega_idomega_i">\int_\Omega L_i(p,\omega_i)d\omega_i
+*
+\int_\Omega f_r(p,\omega_i,\omega_o)n \cdot \omega_id\omega_i
+$$
+Nous avons pré-calculé la partie gauche de l&rsquo;approximation de la somme fractionnée dans la map de pré-filtrage pour différents niveaux de rugosité. La partie droite nous oblige à convoluer l&rsquo;équation de la BRDF sur l&rsquo;angle $n⋅\omega_o$, la rugosité de la surface et le $F_0$ de Fresnel. Ceci est similaire à l&rsquo;intégration de la BRDF spéculaire avec un environnement blanc solide ou une radiance constante $L_i$ de $1.0$. Convoluer la BRDF sur 3 variables est un peu trop, mais nous pouvons essayer de sortir $F_0$ de l&rsquo;équation de la BRDF spéculaire :
+$$
+\int_\Omega f_r(p,\omega_i,\omega_o)n \cdot \omega_id\omega_i</h1>
+<p>\int_\Omega f_r(p,\omega_i,\omega_o)
+{
+F(\omega_o,h)
+\over
+F(\omega_o,h)
+}
+n \cdot \omega_id\omega_i
+$$
+F étant l&rsquo;équation de Fresnel. En déplaçant le dénominateur de Fresnel vers la BRDF, on obtient l&rsquo;équation équivalente suivante :
+$$
+\int_\Omega
+{
+f_r(p,\omega_i,\omega_o)
+\over
+F(\omega_o,h)
+}
+F(\omega_o,h)n \cdot \omega_id\omega_i
+$$
+En remplaçant le F le plus à droite par l&rsquo;approximation de Fresnel-Schlick, on obtient :
+$$
+\int_\Omega
+{
+f_r(p,\omega_i,\omega_o)
+\over
+F(\omega_o,h)
+}
+(F_0 + (1-F_0)(1-\omega_o \cdot h)⁵)n \cdot \omega_id\omega_i
+$$
+Remplaçons $(1-\omega_o \cdot h)^5$ par $\alpha$ pour faciliter la résolution de $F_0$.
+$$
+\int_\Omega
+{
+f_r(p,\omega_i,\omega_o)
+\over
+F(\omega_o,h)
+}
+(F_0 + (1-F_0)\alpha)n \cdot \omega_id\omega_i
+$$
+$$
+\int_\Omega
+{
+f_r(p,\omega_i,\omega_o)
+\over
+F(\omega_o,h)
+}
+(F_0 + 1*\alpha - F_0*\alpha)n \cdot \omega_id\omega_i
+$$
+$$
+\int_\Omega
+{
+f_r(p,\omega_i,\omega_o)
+\over
+F(\omega_o,h)
+}
+(F_0(1-\alpha) + \alpha)n \cdot \omega_id\omega_i
+$$
+Ensuite, nous divisons la fonction de Fresnel $F$ en deux intégrales :
+$$
+\int_\Omega
+{
+f_r(p,\omega_i,\omega_o)
+\over
+F(\omega_o,h)
+}
+(F_0(1-\alpha))n \cdot \omega_id\omega_i
++
+\int_\Omega
+{
+f_r(p,\omega_i,\omega_o)
+\over
+F(\omega_o,h)
+}
+(\alpha)n \cdot \omega_id\omega_i
+$$
+De cette façon, $F_0$ est constant sur l&rsquo;intégrale et nous pouvons retirer $F_0$ de l&rsquo;intégrale. Ensuite, nous remplaçons $\alpha$ par sa forme originale, ce qui nous donne l&rsquo;équation finale de la somme fractionnée de la BRDF :</p>
+<p>$$
+F_0
+\int_\Omega</p>
+<p>f_r(p,\omega_i,\omega_o)
+(1-(1 -\omega_o \cdot h)⁵)n \cdot \omega_id\omega_i
++
+\int_\Omega</p>
+<p>f_r(p,\omega_i,\omega_o)
+(1 -\omega_o \cdot h)⁵n \cdot \omega_id\omega_i</p>
+<p>$$
+Les deux intégrales résultantes représentent respectivement une échelle et un biais par rapport à $F_0$. Notez que comme $f_r(p,\omega_i,\omega_o)$ contient déjà un terme pour $F$, ils s&rsquo;annulent tous les deux, supprimant $F$ de $f_r$.</p>
+<p>De la même manière que pour les maps d&rsquo;environnement convoluées précédentes, nous pouvons convoluer les équations de la BRDF sur leurs entrées : l&rsquo;angle entre $n$ et $\omega_o$ et la rugosité. Nous stockons les résultats convolués dans une lookup texture 2D (LUT) connue sous le nom de map d&rsquo;intégration BRDF que nous utilisons ensuite dans notre shader d&rsquo;éclairage PBR pour obtenir le résultat spéculaire indirect convolué final.</p>
+<p>Le shader de convolution BRDF opère sur un plan 2D, en utilisant ses coordonnées de texture 2D directement comme entrées pour la convolution BRDF (<code>NdotV</code> et rugosité). Le code de convolution est largement similaire à la convolution pré-filtre, sauf qu&rsquo;il traite maintenant le vecteur d&rsquo;échantillon selon la fonction géométrique de notre BRDF et l&rsquo;approximation de Fresnel-Schlick :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec2 <span style="color:#a6e22e">IntegrateBRDF</span>(<span style="color:#66d9ef">float</span> NdotV, <span style="color:#66d9ef">float</span> roughness)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    vec3 V;
+</span></span><span style="display:flex;"><span>    V.x <span style="color:#f92672">=</span> sqrt(<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> NdotV<span style="color:#f92672">*</span>NdotV);
+</span></span><span style="display:flex;"><span>    V.y <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>;
+</span></span><span style="display:flex;"><span>    V.z <span style="color:#f92672">=</span> NdotV;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> A <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> B <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    vec3 N <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> uint SAMPLE_COUNT <span style="color:#f92672">=</span> <span style="color:#ae81ff">1024u</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(uint i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0u</span>; i <span style="color:#f92672">&lt;</span> SAMPLE_COUNT; <span style="color:#f92672">++</span>i)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        vec2 Xi <span style="color:#f92672">=</span> Hammersley(i, SAMPLE_COUNT);
+</span></span><span style="display:flex;"><span>        vec3 H  <span style="color:#f92672">=</span> ImportanceSampleGGX(Xi, N, roughness);
+</span></span><span style="display:flex;"><span>        vec3 L  <span style="color:#f92672">=</span> normalize(<span style="color:#ae81ff">2.0</span> <span style="color:#f92672">*</span> dot(V, H) <span style="color:#f92672">*</span> H <span style="color:#f92672">-</span> V);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">float</span> NdotL <span style="color:#f92672">=</span> max(L.z, <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">float</span> NdotH <span style="color:#f92672">=</span> max(H.z, <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">float</span> VdotH <span style="color:#f92672">=</span> max(dot(V, H), <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span>(NdotL <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0.0</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">float</span> G <span style="color:#f92672">=</span> GeometrySmith(N, V, L, roughness);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">float</span> G_Vis <span style="color:#f92672">=</span> (G <span style="color:#f92672">*</span> VdotH) <span style="color:#f92672">/</span> (NdotH <span style="color:#f92672">*</span> NdotV);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">float</span> Fc <span style="color:#f92672">=</span> pow(<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> VdotH, <span style="color:#ae81ff">5.0</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            A <span style="color:#f92672">+=</span> (<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> Fc) <span style="color:#f92672">*</span> G_Vis;
+</span></span><span style="display:flex;"><span>            B <span style="color:#f92672">+=</span> Fc <span style="color:#f92672">*</span> G_Vis;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    A <span style="color:#f92672">/=</span> <span style="color:#66d9ef">float</span>(SAMPLE_COUNT);
+</span></span><span style="display:flex;"><span>    B <span style="color:#f92672">/=</span> <span style="color:#66d9ef">float</span>(SAMPLE_COUNT);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> vec2(A, B);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ----------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>() 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    vec2 integratedBRDF <span style="color:#f92672">=</span> IntegrateBRDF(TexCoords.x, TexCoords.y);
+</span></span><span style="display:flex;"><span>    FragColor <span style="color:#f92672">=</span> integratedBRDF;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Comme vous pouvez le constater, la convolution de la BRDF est une traduction directe des mathématiques en code. Nous prenons l&rsquo;angle $\theta$ et la rugosité en entrée, générons un vecteur d&rsquo;échantillon avec un échantillonnage d&rsquo;importance, le traitons sur la géométrie et le terme de Fresnel dérivé de la BRDF, et produisons à la fois une échelle et un biais pour $F_0$ pour chaque échantillon, en faisant la moyenne à la fin.</p>
+<h1 id="k_direct">Vous vous souvenez peut-être du chapitre sur la théorie que le terme géométrique de la BRDF est légèrement différent lorsqu&rsquo;il est utilisé avec l&rsquo;IBL, car sa variable $k$ a une interprétation légèrement différente :
+$$
+k_{direct}</h1>
+<h1 id="k_ibl">{
+(\alpha+1)²
+\over
+8
+}
+$$
+$$
+k_{IBL}</h1>
+<p>{
+\alpha²
+\over
+2
+}
+$$
+Comme la convolution de la BRDF fait partie de l&rsquo;intégrale de l&rsquo;IBL spéculaire, nous utiliserons $k_{IBL}$ pour la fonction géométrique Schlick-GGX :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">GeometrySchlickGGX</span>(<span style="color:#66d9ef">float</span> NdotV, <span style="color:#66d9ef">float</span> roughness)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> a <span style="color:#f92672">=</span> roughness;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> k <span style="color:#f92672">=</span> (a <span style="color:#f92672">*</span> a) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2.0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> nom   <span style="color:#f92672">=</span> NdotV;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> denom <span style="color:#f92672">=</span> NdotV <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> k) <span style="color:#f92672">+</span> k;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> nom <span style="color:#f92672">/</span> denom;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ----------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">GeometrySmith</span>(vec3 N, vec3 V, vec3 L, <span style="color:#66d9ef">float</span> roughness)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> NdotV <span style="color:#f92672">=</span> max(dot(N, V), <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> NdotL <span style="color:#f92672">=</span> max(dot(N, L), <span style="color:#ae81ff">0.0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> ggx2 <span style="color:#f92672">=</span> GeometrySchlickGGX(NdotV, roughness);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> ggx1 <span style="color:#f92672">=</span> GeometrySchlickGGX(NdotL, roughness);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> ggx1 <span style="color:#f92672">*</span> ggx2;
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>Notez que si $k$ prend a comme paramètre, nous n&rsquo;avons pas élevé la rugosité au carré comme $a$, comme nous l&rsquo;avons fait à l&rsquo;origine pour d&rsquo;autres interprétations de $a$ ; il est probable que $a$ soit déjà élevé au carré ici. Je ne sais pas s&rsquo;il s&rsquo;agit d&rsquo;une incohérence de la part d&rsquo;Epic Games ou de l&rsquo;article original de Disney, mais en traduisant directement la rugosité en $a$, on obtient une map d&rsquo;intégration de la BRDF identique à la version d&rsquo;Epic Games.</p>
+<p>Enfin, pour stocker le résultat de la convolution BRDF, nous allons générer une texture 2D d&rsquo;une résolution de $512\times512$ :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> brdfLUTTexture;
+</span></span><span style="display:flex;"><span>glGenTextures(<span style="color:#ae81ff">1</span>, <span style="color:#f92672">&amp;</span>brdfLUTTexture);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// pre-allocate enough memory for the LUT texture.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
+</span></span><span style="display:flex;"><span>glTexImage2D(GL_TEXTURE_2D, <span style="color:#ae81ff">0</span>, GL_RG16F, <span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">0</span>, GL_RG, GL_FLOAT, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+</span></span><span style="display:flex;"><span>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
+</span></span></code></pre></div><p>Notez que nous utilisons un format flottant d&rsquo;une précision de 16 bits, comme le recommande Epic Games. Veillez à régler le mode d&rsquo;enveloppement sur <code>GL_CLAMP_TO_EDGE</code> pour éviter les artefacts d&rsquo;échantillonnage des bords.</p>
+<p>Ensuite, nous réutilisons le même objet framebuffer et exécutons ce shader sur un quad d&rsquo;espace d&rsquo;écran NDC :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+</span></span><span style="display:flex;"><span>glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+</span></span><span style="display:flex;"><span>glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, <span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">512</span>);
+</span></span><span style="display:flex;"><span>glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, brdfLUTTexture, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>glViewport(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">512</span>);
+</span></span><span style="display:flex;"><span>brdfShader.use();
+</span></span><span style="display:flex;"><span>glClear(GL_COLOR_BUFFER_BIT <span style="color:#f92672">|</span> GL_DEPTH_BUFFER_BIT);
+</span></span><span style="display:flex;"><span>RenderQuad();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>glBindFramebuffer(GL_FRAMEBUFFER, <span style="color:#ae81ff">0</span>); 
+</span></span></code></pre></div><p>La partie convoluée de la BRDF de l&rsquo;intégrale de la somme divisée devrait donner le résultat suivant :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c02_specular_ibl-20230917-ibl4.png" alt="02_specular_ibl-20230917-ibl4.png"/>
+Avec la map d&rsquo;environnement pré-filtrée et la LUT 2D BRDF, nous pouvons reconstruire l&rsquo;intégrale spéculaire indirecte selon l&rsquo;approximation de la somme divisée. Le résultat combiné sert alors de lumière spéculaire indirecte ou ambiante.</p>
+<h2 id="compléter-la-réflectance-ibl">Compléter la réflectance IBL</h2>
+<p>Pour obtenir la partie spéculaire indirecte de l&rsquo;équation de réflectance, nous devons assembler les deux parties de l&rsquo;approximation de la somme fractionnée. Commençons par ajouter les données d&rsquo;éclairage pré calculées au sommet de notre shader PBR :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>uniform samplerCube prefilterMap;
+</span></span><span style="display:flex;"><span>uniform sampler2D   brdfLUT;  
+</span></span></code></pre></div><p>Tout d&rsquo;abord, nous obtenons les réflexions spéculaires indirectes de la surface en échantillonnant la map de l&rsquo;environnement pré-filtrée à l&rsquo;aide du vecteur de réflexion. Notez que nous échantillonnons le niveau de mip approprié en fonction de la rugosité de la surface, ce qui rend les réflexions spéculaires plus floues sur les surfaces plus rugueuses :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    [...]
+</span></span><span style="display:flex;"><span>    vec3 R <span style="color:#f92672">=</span> reflect(<span style="color:#f92672">-</span>V, N);   
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> MAX_REFLECTION_LOD <span style="color:#f92672">=</span> <span style="color:#ae81ff">4.0</span>;
+</span></span><span style="display:flex;"><span>    vec3 prefilteredColor <span style="color:#f92672">=</span> textureLod(prefilterMap, R,  roughness <span style="color:#f92672">*</span> MAX_REFLECTION_LOD).rgb;    
+</span></span><span style="display:flex;"><span>    [...]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Dans l&rsquo;étape de pré-filtrage, nous ne convoluons la map de l&rsquo;environnement que jusqu&rsquo;à un maximum de 5 niveaux de mip (0 à 4), que nous désignons ici par <code>MAX_REFLECTION_LOD</code> pour nous assurer que nous n&rsquo;échantillonnons pas un niveau de mip où il n&rsquo;y a pas de données (pertinentes).</p>
+<p>Ensuite, nous échantillonnons la texture de recherche BRDF en fonction de la rugosité du matériau et de l&rsquo;angle entre la normale et le vecteur de vue :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 F        <span style="color:#f92672">=</span> FresnelSchlickRoughness(max(dot(N, V), <span style="color:#ae81ff">0.0</span>), F0, roughness);
+</span></span><span style="display:flex;"><span>vec2 envBRDF  <span style="color:#f92672">=</span> texture(brdfLUT, vec2(max(dot(N, V), <span style="color:#ae81ff">0.0</span>), roughness)).rg;
+</span></span><span style="display:flex;"><span>vec3 specular <span style="color:#f92672">=</span> prefilteredColor <span style="color:#f92672">*</span> (F <span style="color:#f92672">*</span> envBRDF.x <span style="color:#f92672">+</span> envBRDF.y);
+</span></span></code></pre></div><p>Compte tenu de l&rsquo;échelle et du biais de $F_0$ (ici, nous utilisons directement le résultat indirect de Fresnel $F$) de la texture de recherche BRDF, nous les combinons avec la partie gauche du pré-filtre de l&rsquo;équation de réflectance IBL et reconstruisons le résultat intégral approximatif en tant que spéculaire.</p>
+<p>Nous obtenons ainsi la partie spéculaire indirecte de l&rsquo;équation de réflectance. Combinez cette partie avec la partie diffuse IBL de l&rsquo;équation de réflectance du dernier chapitre et vous obtiendrez le résultat PBR IBL complet :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 F <span style="color:#f92672">=</span> FresnelSchlickRoughness(max(dot(N, V), <span style="color:#ae81ff">0.0</span>), F0, roughness);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>vec3 kS <span style="color:#f92672">=</span> F;
+</span></span><span style="display:flex;"><span>vec3 kD <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> kS;
+</span></span><span style="display:flex;"><span>kD <span style="color:#f92672">*=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">-</span> metallic;	  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>vec3 irradiance <span style="color:#f92672">=</span> texture(irradianceMap, N).rgb;
+</span></span><span style="display:flex;"><span>vec3 diffuse    <span style="color:#f92672">=</span> irradiance <span style="color:#f92672">*</span> albedo;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> MAX_REFLECTION_LOD <span style="color:#f92672">=</span> <span style="color:#ae81ff">4.0</span>;
+</span></span><span style="display:flex;"><span>vec3 prefilteredColor <span style="color:#f92672">=</span> textureLod(prefilterMap, R,  roughness <span style="color:#f92672">*</span> MAX_REFLECTION_LOD).rgb;   
+</span></span><span style="display:flex;"><span>vec2 envBRDF  <span style="color:#f92672">=</span> texture(brdfLUT, vec2(max(dot(N, V), <span style="color:#ae81ff">0.0</span>), roughness)).rg;
+</span></span><span style="display:flex;"><span>vec3 specular <span style="color:#f92672">=</span> prefilteredColor <span style="color:#f92672">*</span> (F <span style="color:#f92672">*</span> envBRDF.x <span style="color:#f92672">+</span> envBRDF.y);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>vec3 ambient <span style="color:#f92672">=</span> (kD <span style="color:#f92672">*</span> diffuse <span style="color:#f92672">+</span> specular) <span style="color:#f92672">*</span> ao; 
+</span></span></code></pre></div><p>Notez que nous ne multiplions pas le spéculaire par $k_S$ car nous avons déjà une multiplication de Fresnel.</p>
+<p>Maintenant, en exécutant ce code exact sur la série de sphères qui diffèrent par leur rugosité et leurs propriétés métalliques, nous pouvons enfin voir leurs vraies couleurs dans le rendu PBR final :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c02_specular_ibl-20230917-ibl5.png" alt="02_specular_ibl-20230917-ibl5.png"/>
+Nous pourrions même aller plus loin et utiliser des matériaux PBR texturés :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c02_specular_ibl-20230917-ibl6.png" alt="02_specular_ibl-20230917-ibl6.png"/>
+Ou chargez ce <a href="http://artisaverb.info/PBT.html">superbe modèle 3D PBR gratuit</a> d&rsquo;Andrew Maximov :
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c02_specular_ibl-20230917-ibl7.png" alt="02_specular_ibl-20230917-ibl7.png"/>
+Je suis sûr que nous sommes tous d&rsquo;accord pour dire que notre éclairage est maintenant beaucoup plus convaincant. Ce qui est encore mieux, c&rsquo;est que notre éclairage semble physiquement correct quelle que soit la map d&rsquo;environnement que nous utilisons. Ci-dessous, vous verrez plusieurs cartes HDR pré-calculées différentes, qui changent complètement la dynamique de l&rsquo;éclairage, mais qui restent physiquement correctes sans changer une seule variable d&rsquo;éclairage !
+<img src="/docs%5cLEARNOPENGL_FR%5c06_PBR%5c03_IBL%5c02_specular_ibl-20230917-ibl8.png" alt="02_specular_ibl-20230917-ibl8.png"/>
+Cette aventure PBR s&rsquo;est avérée être un long voyage. Il y a beaucoup d&rsquo;étapes et donc beaucoup de choses qui peuvent mal tourner, alors travaillez soigneusement sur les exemples de code de la scène sphérique ou de la scène texturée (y compris tous les shaders) si vous êtes bloqué, ou vérifiez et posez des questions dans les commentaires.</p>
+<h3 id="et-ensuite-">Et ensuite ?</h3>
+<p>Nous espérons qu&rsquo;à la fin de ce tutoriel, vous aurez une compréhension assez claire de ce qu&rsquo;est le PBR, et que vous aurez même un moteur de rendu PBR opérationnel. Dans ces tutoriels, nous avons pré-calculé toutes les données d&rsquo;éclairage PBR basées sur l&rsquo;image au début de notre application, avant la boucle de rendu. C&rsquo;était très bien à des fins éducatives, mais pas très bien pour une utilisation pratique du PBR. Tout d&rsquo;abord, le pré-calcul ne doit être effectué qu&rsquo;une seule fois, et non à chaque démarrage. Deuxièmement, dès que vous utilisez plusieurs maps d&rsquo;environnement, vous devez pré-calculer chacune d&rsquo;entre elles à chaque démarrage, ce qui a tendance à s&rsquo;accumuler.</p>
+<p>C&rsquo;est pourquoi il est préférable de pré-calculer une map d&rsquo;environnement en une map d&rsquo;irradiance et de pré-filtre une seule fois, puis de la stocker sur disque (notez que la map d&rsquo;intégration BRDF ne dépend pas d&rsquo;une map d&rsquo;environnement, vous n&rsquo;avez donc besoin de la calculer ou de la charger qu&rsquo;une seule fois). Cela signifie que vous devrez créer un format d&rsquo;image personnalisé pour stocker les cubemaps HDR, y compris leurs niveaux de mip. Ou bien vous les stockerez (et les chargerez) dans l&rsquo;un des formats disponibles (comme le format <code>.dds</code> qui permet de stocker les niveaux de mip).</p>
+<p>De plus, nous avons décrit l&rsquo;ensemble du processus dans ces tutoriels, y compris la génération d&rsquo;images IBL pré-calculées pour nous aider à mieux comprendre le pipeline PBR. Mais vous pourrez tout aussi bien utiliser plusieurs excellents outils comme <a href="https://github.com/dariomanesku/cmftStudio">cmftStudio</a> ou <a href="https://github.com/derkreature/IBLBaker">IBLBaker</a> pour générer ces maps pré-calculées pour vous.</p>
+<p>Un point que nous n&rsquo;avons pas abordé est celui des cubemaps pré-calculés comme sondes de réflexion : interpolation des cubemaps et correction de la parallaxe. Il s&rsquo;agit de placer plusieurs sondes de réflexion dans votre scène qui prennent un instantané cubemap de la scène à cet endroit spécifique, que nous pouvons ensuite convoluer en tant que données IBL pour cette partie de la scène. En interpolant entre plusieurs de ces sondes en fonction du voisinage de la caméra, nous pouvons obtenir un éclairage local très détaillé basé sur l&rsquo;image qui est simplement limité par la quantité de sondes de réflexion que nous sommes prêts à placer. De cette manière, l&rsquo;éclairage basé sur l&rsquo;image peut être correctement mis à jour lorsque l&rsquo;on passe d&rsquo;une partie extérieure lumineuse d&rsquo;une scène à une partie intérieure plus sombre, par exemple. J&rsquo;écrirai un tutoriel sur les sondes de réflexion dans le futur, mais pour l&rsquo;instant je vous recommande l&rsquo;article de Chetan Jags ci-dessous pour vous donner une longueur d&rsquo;avance.</p>
+<h2 id="ressources-supplémentaires">Ressources supplémentaires</h2>
+<ul>
+<li><a href="http://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf">Real Shading in Unreal Engine 4</a> : explique l&rsquo;approximation de la somme fractionnée d&rsquo;Epic Games. C&rsquo;est sur cet article qu&rsquo;est basé le code IBL PBR.</li>
+<li><a href="http://www.trentreed.net/blog/physically-based-shading-and-image-based-lighting/">Physically Based Shading and Image Based Lighting</a> : excellent article de blog de Trent Reed sur l&rsquo;intégration de l&rsquo;IBL spéculaire dans un pipeline PBR en temps réel.</li>
+<li><a href="https://chetanjags.wordpress.com/2015/08/26/image-based-lighting/">Image Based Lighting</a> : article très complet de Chetan Jags sur l&rsquo;éclairage spéculaire basé sur l&rsquo;image et plusieurs de ses réserves, y compris l&rsquo;interpolation de la sonde lumineuse.</li>
+<li><a href="https://seblagarde.files.wordpress.com/2015/07/course_notes_moving_frostbite_to_pbr_v32.pdf">Moving Frostbite to PBR</a> : aperçu bien écrit et approfondi de l&rsquo;intégration de PBR dans un moteur de jeu AAA par Sébastien Lagarde et Charles de Rousiers.</li>
+<li><a href="https://jmonkeyengine.github.io/wiki/jme3/advanced/pbr_part3.html">Physically Based Rendering - Part Three</a> : vue d&rsquo;ensemble de l&rsquo;éclairage IBL et du PBR par l&rsquo;équipe de JMonkeyEngine.</li>
+<li><a href="https://placeholderart.wordpress.com/2015/07/28/implementation-notes-runtime-environment-map-filtering-for-image-based-lighting/">Notes d&rsquo;implémentation : Runtime Environment Map Filtering for Image Based Lighting</a> : article détaillé de Padraic Hennessy sur le pré-filtrage des maps d&rsquo;environnement HDR et l&rsquo;optimisation significative du processus d&rsquo;échantillonnage.</li>
+</ul>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title></title>
+    <style>
+    .container {
+      max-width: 700px;
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="container">
+      <main id="main">
+       
+
+<h1></h1>
+
+
+<i data-feather="calendar"></i> <time datetime="0001-01-01">Jan 1, 0001</time>
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cg">cg</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/opengl">opengl</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/computer-graphics">computer graphics</a>
+  
+  
+  <a class="btn btn-sm btn-outline-dark tag-btn" href="/tags/cpp">cpp</a>
+  
+
+<br><br>
+<h1 id="lighting-maps">Lighting Maps</h1>
+<p>Dans le chapitre précédent, nous avons évoqué la possibilité de doter chaque objet d&rsquo;un matériau unique qui réagit différemment à la lumière. Cela permet de donner à chaque objet un aspect unique par rapport aux autres objets, mais n&rsquo;offre pas encore beaucoup de flexibilité sur le rendu visuel d&rsquo;un objet.</p>
+<p>Dans le chapitre précédent, nous avons défini un matériau pour l&rsquo;ensemble d&rsquo;un objet. <strong>Cependant, dans le monde réel, les objets ne sont généralement pas constitués d&rsquo;un seul matériau, mais de plusieurs matériaux.</strong> Pensez à une voiture : son extérieur est constitué d&rsquo;un métal brillant, elle a des fenêtres qui reflètent partiellement l&rsquo;environnement, ses pneus sont tout sauf brillants et n&rsquo;ont donc pas de reflets spéculaires, et ses jantes sont super brillantes (si vous avez bien lavé votre voiture). La voiture a également des couleurs diffuses et ambiantes qui ne sont pas les mêmes pour l&rsquo;ensemble de l&rsquo;objet ; une voiture affiche de nombreuses couleurs ambiantes/diffuses différentes. Dans l&rsquo;ensemble, un tel objet possède des propriétés matérielles différentes pour chacune de ses parties.</p>
+<p><strong>Le système de matériaux du chapitre précédent n&rsquo;est donc pas suffisant pour tous les modèles, sauf les plus simples,</strong> et nous devons donc l&rsquo;étendre en introduisant des maps de diffuse et de spéculaires. Celles-ci nous permettent d&rsquo;influencer la composante diffuse (et indirectement la composante ambiante puisqu&rsquo;elles devraient être identiques de toute façon) et la composante spéculaire d&rsquo;un objet avec beaucoup plus de précision.</p>
+<h2 id="diffuse-maps">Diffuse Maps</h2>
+<p>Ce que nous voulons, c&rsquo;est un moyen de définir les couleurs diffuses d&rsquo;un objet pour chaque fragment individuel. Une sorte de système où nous pouvons récupérer une valeur de couleur basée sur la position du fragment sur l&rsquo;objet ?</p>
+<p>Tout cela devrait vous sembler familier et nous utilisons un tel système depuis un certain temps déjà. Cela ressemble aux textures dont nous avons longuement parlé dans l&rsquo;un des chapitres précédents et c&rsquo;est justement cela : une texture. <strong>Nous utilisons simplement un nom différent pour le même principe sous-jacent : utiliser une image enroulée autour d&rsquo;un objet que nous pouvons indexer pour obtenir des valeurs de couleur uniques par fragment.</strong> Dans les scènes éclairées, on parle généralement de diffuse map (c&rsquo;est ainsi que les artistes 3D les appelaient avant le PBR: Physical Bases Rendering), car une image de texture représente toutes les couleurs diffuses de l&rsquo;objet.</p>
+<p>Pour démontrer les maps diffuse, nous allons utiliser l&rsquo;image suivante d&rsquo;un conteneur en bois avec une bordure en acier :
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c03_Lighting%20Maps%5clmap1.png" alt="lmap1"/>
+L&rsquo;utilisation d&rsquo;une map de diffuse dans les shaders se fait exactement comme nous l&rsquo;avons montré dans le chapitre sur les textures. Cette fois-ci, nous stockons la texture sous la forme d&rsquo;un sampler2D à l&rsquo;intérieur de la structure Material. Nous remplaçons le vecteur de couleur diffuse <code>vec3</code> défini précédemment par la diffuse map.</p>
+<p>Gardez à l&rsquo;esprit que <code>sampler2D</code> est un type dit opaque, ce qui signifie que nous ne pouvons pas instancier ces types, mais seulement les définir en tant qu&rsquo;uniformes. Si la structure est instanciée autrement qu&rsquo;en tant qu&rsquo;uniforme (comme un paramètre de fonction), GLSL peut générer des erreurs étranges ; la même chose s&rsquo;applique donc à toute structure contenant de tels types opaques.</p>
+<p>Nous supprimons également le vecteur de couleur du matériau ambiant puisque la couleur ambiante est de toute façon égale à la couleur diffuse maintenant que nous contrôlons l&rsquo;ambiance avec la lumière. Il n&rsquo;est donc pas nécessaire de le stocker séparément :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Material</span> {
+</span></span><span style="display:flex;"><span>    sampler2D diffuse;
+</span></span><span style="display:flex;"><span>    vec3      specular;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span>     shininess;
+</span></span><span style="display:flex;"><span>}; 
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>in vec2 TexCoords;
+</span></span></code></pre></div><p>Si vous êtes un peu têtu et que vous voulez toujours régler les couleurs ambiantes sur une valeur différente (autre que la valeur diffuse), vous pouvez conserver le <code>vec3 ambiant</code>, mais les couleurs ambiantes resteront alors les mêmes pour l&rsquo;ensemble de l&rsquo;objet. Pour obtenir des valeurs ambiantes différentes pour chaque fragment, il faudrait utiliser une autre texture pour les seules valeurs ambiantes.</p>
+<p>Notez que nous aurons à nouveau besoin des coordonnées de la texture dans le fragment shader, c&rsquo;est pourquoi nous avons déclaré une variable d&rsquo;entrée supplémentaire. Ensuite, nous échantillonnons simplement la texture pour récupérer la valeur de la couleur diffuse du fragment:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 diffuse <span style="color:#f92672">=</span> light.diffuse <span style="color:#f92672">*</span> diff <span style="color:#f92672">*</span> vec3(texture(material.diffuse, TexCoords));  
+</span></span></code></pre></div><p>N&rsquo;oubliez pas non plus de régler la couleur du matériau ambiant sur la couleur du matériau diffus :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 ambient <span style="color:#f92672">=</span> light.ambient <span style="color:#f92672">*</span> vec3(texture(material.diffuse, TexCoords));
+</span></span></code></pre></div><p>C&rsquo;est tout ce qu&rsquo;il faut pour utiliser une carte diffuse. Comme vous pouvez le constater, il n&rsquo;y a rien de nouveau, mais la qualité visuelle s&rsquo;en trouve considérablement améliorée. Pour que cela fonctionne, nous devons mettre à jour les données de vertex avec les coordonnées de la texture, les transférer en tant qu&rsquo;attributs de vertex au fragment shader, charger la texture et lier la texture à l&rsquo;unité de texture appropriée.</p>
+<p>Les données de vertex mises à jour se trouvent ici. Les données de vertex comprennent désormais les positions de vertex, les vecteurs de narmales et les coordonnées de texture pour chacun des sommets du cube. Mettons à jour le vertex shader pour qu&rsquo;il accepte les coordonnées de texture en tant qu&rsquo;attribut de sommet et les transmette au fragment shader :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 330 core
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) in vec3 aPos;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>) in vec3 aNormal;
+</span></span><span style="display:flex;"><span>layout (location <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>) in vec2 aTexCoords;
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>out vec2 TexCoords;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>    TexCoords <span style="color:#f92672">=</span> aTexCoords;
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>Veillez à mettre à jour les pointeurs d&rsquo;attributs de vertex des deux VAO (Vertex Array Object) pour qu&rsquo;ils correspondent aux nouvelles données de vertex et chargez l&rsquo;image du conteneur en tant que texture.
+Avant de rendre le cube, nous voulons assigner la bonne unité de texture à l&rsquo;échantillonneur uniforme <code>material.diffuse</code> et lier la texture du conteneur à cette unité de texture :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>lightingShader.setInt(<span style="color:#e6db74">&#34;material.diffuse&#34;</span>, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>glActiveTexture(GL_TEXTURE0);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_2D, diffuseMap);
+</span></span></code></pre></div><p>En utilisant maintenant une diffuse map, nous obtenons à nouveau une augmentation considérable de détails et, cette fois, le conteneur commence vraiment à briller (littéralement). Votre conteneur doit maintenant ressembler à ceci :
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c03_Lighting%20Maps%5clmap2.png" alt="lmap2"/>
+Le code source est disponible <a href="https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/4.1.lighting_maps_diffuse_map/lighting_maps_diffuse.cpp">ici</a>.</p>
+<h2 id="specular-maps">Specular Maps</h2>
+<p>Vous avez probablement remarqué que la surbrillance spéculaire est un peu étrange puisque l&rsquo;objet est un conteneur composé principalement de bois et que le bois n&rsquo;a pas de telles surbrillances spéculaires. Nous pouvons résoudre ce problème en réglant le matériau spéculaire de l&rsquo;objet sur <code>vec3(0.0)</code>, mais cela signifierait que les bords en acier du conteneur cesseraient d&rsquo;afficher des reflets spéculaires, alors que l&rsquo;acier doit afficher des reflets spéculaires. Nous aimerions contrôler les parties de l&rsquo;objet qui doivent présenter une surbrillance spéculaire d&rsquo;intensité variable. Ce problème me semble familier. Coïncidence ? Je ne pense pas.</p>
+<p>Nous pouvons également utiliser une texture map uniquement pour les reflets spéculaires. Cela signifie que nous devons générer une texture en noir et blanc (ou en couleurs si vous le souhaitez) qui définit les intensités spéculaires de chaque partie de l&rsquo;objet. L&rsquo;image suivante est un exemple de carte spéculaire : 
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c03_Lighting%20Maps%5clmap3.png" alt="lmap3"/>
+L&rsquo;intensité du reflet spéculaire provient de la luminosité de chaque pixel de l&rsquo;image. Chaque pixel de la carte spéculaire peut être affiché sous la forme d&rsquo;un vecteur de couleur où le noir représente le vecteur de couleur <code>vec3(0,0)</code> et le gris le vecteur de couleur <code>vec3(0,5)</code> par exemple. Dans le fragment shader, nous échantillonnons la valeur de couleur correspondante et la multiplions par l&rsquo;intensité spéculaire de la lumière. Plus un pixel est &ldquo;blanc&rdquo;, plus le résultat de la multiplication est élevé et plus la composante spéculaire d&rsquo;un objet est lumineuse.</p>
+<p><strong>Étant donné que le conteneur est principalement constitué de bois, et que le bois en tant que matériau ne devrait pas avoir de reflets spéculaires, toute la partie en bois de la texture diffuse a été convertie en noir</strong> : les parties noires n&rsquo;ont pas de reflets spéculaires. <strong>La bordure en acier du conteneur présente des intensités spéculaires variables</strong>, <strong>l&rsquo;acier lui-même étant relativement sensible aux reflets spéculaires alors que les fissures ne le sont pas.</strong></p>
+<p>Techniquement, le bois présente également des reflets spéculaires, mais avec une valeur de brillance beaucoup plus faible (plus de diffusion de la lumière) et un impact moindre, mais pour les besoins de l&rsquo;apprentissage, nous pouvons faire comme si le bois n&rsquo;avait aucune réaction à la lumière spéculaire.</p>
+<p>À l&rsquo;aide d&rsquo;outils tels que <em>Photoshop</em> ou <em>Gimp</em>, <strong>il est relativement facile de transformer une texture diffuse en une image spéculaire comme celle-ci</strong> en découpant certaines parties, en la transformant en noir et blanc et en augmentant la luminosité/le contraste.</p>
+<h2 id="échantillonnage-des-specular-maps">Échantillonnage des specular maps</h2>
+<p>Une map spéculaire est comme n&rsquo;importe quelle autre texture, le code est donc similaire à celui de la carte diffuse. Assurez-vous de charger correctement l&rsquo;image et de générer un objet texture. Puisque nous utilisons un autre échantillonneur de texture dans le même fragment shader, nous devons utiliser une unité de texture différente (voir Textures) pour la map de spéculaire, alors lions-la à l&rsquo;unité de texture appropriée avant le rendu :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>lightingShader.setInt(<span style="color:#e6db74">&#34;material.specular&#34;</span>, <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>glActiveTexture(GL_TEXTURE1);
+</span></span><span style="display:flex;"><span>glBindTexture(GL_TEXTURE_2D, specularMap);  
+</span></span></code></pre></div><p>Mettez ensuite à jour les propriétés matérielles du fragment shader pour accepter un <code>sampler2D</code> comme composante spéculaire au lieu d&rsquo;un <code>vec3</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Material</span> {
+</span></span><span style="display:flex;"><span>    sampler2D diffuse;
+</span></span><span style="display:flex;"><span>    sampler2D specular;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span>     shininess;
+</span></span><span style="display:flex;"><span>}; 
+</span></span></code></pre></div><p>Enfin, nous voulons échantillonner la map de spéculaire pour récupérer l&rsquo;intensité spéculaire correspondante du fragment :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec3 ambient  <span style="color:#f92672">=</span> light.ambient  <span style="color:#f92672">*</span> vec3(texture(material.diffuse, TexCoords));
+</span></span><span style="display:flex;"><span>vec3 diffuse  <span style="color:#f92672">=</span> light.diffuse  <span style="color:#f92672">*</span> diff <span style="color:#f92672">*</span> vec3(texture(material.diffuse, TexCoords));  
+</span></span><span style="display:flex;"><span>vec3 specular <span style="color:#f92672">=</span> light.specular <span style="color:#f92672">*</span> spec <span style="color:#f92672">*</span> vec3(texture(material.specular, TexCoords));
+</span></span><span style="display:flex;"><span>FragColor <span style="color:#f92672">=</span> vec4(ambient <span style="color:#f92672">+</span> diffuse <span style="color:#f92672">+</span> specular, <span style="color:#ae81ff">1.0</span>); 
+</span></span></code></pre></div><p>L&rsquo;utilisation d&rsquo;une map de spéculaire permet de spécifier de manière extrêmement détaillée les parties d&rsquo;un objet qui présentent des propriétés de brillance et même de contrôler l&rsquo;intensité correspondante. Les cartes spéculaires nous donnent une couche supplémentaire de contrôle sur l&rsquo;éclairage, en plus de la carte diffuse.</p>
+<p>Si vous ne voulez pas être trop &ldquo;mainstream&rdquo;, vous pouvez également utiliser les couleurs réelles dans la carte spéculaire pour définir non seulement l&rsquo;intensité spéculaire de chaque fragment, mais aussi la couleur de la surbrillance spéculaire. <strong>De manière réaliste, cependant, la couleur de la surbrillance spéculaire est principalement déterminée par la source lumineuse elle-même</strong>, ce qui ne permettrait pas de générer des images réalistes (<strong>c&rsquo;est pourquoi les images sont généralement en noir et blanc : seule l&rsquo;intensité nous intéresse</strong>). </p>
+<p>Si vous exécutez maintenant l&rsquo;application, vous pouvez clairement voir que le matériau du conteneur ressemble maintenant étroitement à celui d&rsquo;un véritable conteneur en bois avec des cadres en acier :
+<img src="/docs%5cLEARNOPENGL_FR%5c02_Lighting%5c03_Lighting%20Maps%5clmap4.png" alt="lmap4"/>
+Vous pouvez trouver le code source complet de l&rsquo;application <a href="https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/4.2.lighting_maps_specular_map/lighting_maps_specular.cpp">ici</a>.</p>
+<p>En utilisant les maps de diffusion et de spéculaire, nous pouvons vraiment ajouter une quantité énorme de détails dans des objets relativement simples. Nous pouvons même ajouter plus de détails aux objets en utilisant d&rsquo;autres maps de texture comme les normal maps/bump maps et/ou les reflection maps, mais c&rsquo;est quelque chose que nous réserverons pour les chapitres suivants. Montrez votre conteneur à tous vos amis et à votre famille et réjouissez-vous du fait que notre conteneur peut un jour devenir encore plus beau qu&rsquo;il ne l&rsquo;est déjà ! </p>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+  </body>
+</html>
