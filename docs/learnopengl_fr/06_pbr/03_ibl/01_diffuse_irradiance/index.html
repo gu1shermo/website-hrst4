@@ -122,24 +122,9 @@
 <p>Comme les algorithmes d&rsquo;éclairage basés sur l&rsquo;image capturent l&rsquo;éclairage d&rsquo;un certain environnement (global), leur entrée est considérée comme une forme plus précise d&rsquo;éclairage ambiant, voire une approximation grossière de l&rsquo;illumination globale. C&rsquo;est ce qui rend l&rsquo;IBL intéressant pour la PBR, car les objets ont l&rsquo;air beaucoup plus précis physiquement lorsque nous prenons en compte l&rsquo;éclairage de l&rsquo;environnement.</p>
 <p>Pour commencer à introduire l&rsquo;IBL dans notre système PBR, jetons un coup d&rsquo;œil rapide à l&rsquo;équation de la réflectance :</p>
 <p>$$
-L_o(p,w_o)=
-\int_\Omega
-(
-k_d
-{
-c
-\over
-\pi
-}+
-k_s
-{
-DFG
-\over
-4(w_o<em>n)(w_i</em>n)
-}
-L_i(p,w_i)n*
-w_idw_i
-)
+L_o(p,w_o)=\int_\Omega(k_d{c\over\pi}+k_s{
+DFG \over 4(w_o<em>n)(w_i</em>n)}
+L_i(p,w_i)n*w_idw_i)
 $$</p>
 <p>Comme décrit précédemment, notre objectif principal est de résoudre l&rsquo;intégrale de toutes les directions lumineuses entrantes $w_i$ sur l&rsquo;hémisphère $\Omega$ . La résolution de l&rsquo;intégrale dans le chapitre précédent était facile car nous connaissions à l&rsquo;avance les quelques directions lumineuses $w_i$ exactes qui contribuaient à l&rsquo;intégrale. Cette fois, cependant, <strong>chaque</strong> direction lumineuse $w_i$ du milieu environnant peut potentiellement avoir une certaine radiance, ce qui rend la résolution de l&rsquo;intégrale moins triviale. Il en résulte deux exigences principales pour la résolution de l&rsquo;intégrale :</p>
 <ul>
