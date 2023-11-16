@@ -14,24 +14,9 @@ Comme les algorithmes d'éclairage basés sur l'image capturent l'éclairage d'u
 Pour commencer à introduire l'IBL dans notre système PBR, jetons un coup d'œil rapide à l'équation de la réflectance :
 
 $$
-L_o(p,w_o)=
-\int_\Omega
-(
-k_d
-{
-c
-\over
-\pi
-}+
-k_s
-{
-DFG
-\over
-4(w_o*n)(w_i*n)
-}
-L_i(p,w_i)n*
-w_idw_i
-)
+L\_o(p,w\_o)=\int_\Omega(k\_d{c\over\pi}+k\_s{
+    DFG \over 4(w\_o*n)(w\_i*n)}
+    L\_i(p,w\_i)n*w\_idw\_i)
 $$
 
 Comme décrit précédemment, notre objectif principal est de résoudre l'intégrale de toutes les directions lumineuses entrantes $w_i$ sur l'hémisphère $\Omega$ . La résolution de l'intégrale dans le chapitre précédent était facile car nous connaissions à l'avance les quelques directions lumineuses $w_i$ exactes qui contribuaient à l'intégrale. Cette fois, cependant, **chaque** direction lumineuse $w_i$ du milieu environnant peut potentiellement avoir une certaine radiance, ce qui rend la résolution de l'intégrale moins triviale. Il en résulte deux exigences principales pour la résolution de l'intégrale :
