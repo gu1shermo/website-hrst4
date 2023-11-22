@@ -6,7 +6,18 @@
     <description>Recent content on hrst4.xyz</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 14 Nov 2023 10:01:06 +0100</lastBuildDate><atom:link href="http://hrst4.xyz/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 22 Nov 2023 11:28:53 +0100</lastBuildDate><atom:link href="http://hrst4.xyz/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Rendering Mendelbrot</title>
+      <link>http://hrst4.xyz/rendering-mendelbrot/</link>
+      <pubDate>Wed, 22 Nov 2023 11:28:53 +0100</pubDate>
+      
+      <guid>http://hrst4.xyz/rendering-mendelbrot/</guid>
+      <description>Rendu de l&amp;rsquo;ensemble de Mandelbrot avec des shaders (avec OpenGL et GLSL) Introduction Une bonne façon de commencer à coder des shaders est de rendre des fractales avec eux.
+Dans ce billet, je vais vous guider dans la création d&amp;rsquo;une application simple d&amp;rsquo;exploration de l&amp;rsquo;ensemble de Mandelbrot que j&amp;rsquo;ai construite en utilisant des shaders GLSL.
+Si vous voulez commencer à apprendre à coder des shaders, je vous suggère de jeter un coup d&amp;rsquo;œil à Shadertoy.</description>
+    </item>
+    
     <item>
       <title>Trees by Joyce Kilmer</title>
       <link>http://hrst4.xyz/trees-by-joyce-kilmer/</link>
@@ -490,11 +501,38 @@ Les artistes et les programmeurs préfèrent généralement utiliser une texture
     
     <item>
       <title></title>
+      <link>http://hrst4.xyz/@renderingmandelbrotset/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://hrst4.xyz/@renderingmandelbrotset/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title></title>
       <link>http://hrst4.xyz/docs/learnopengl_fr/02_lighting/glossary/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>http://hrst4.xyz/docs/learnopengl_fr/02_lighting/glossary/</guid>
       <description>Glossaire Vecteur de couleur : un vecteur représentant la plupart des couleurs du monde réel par une combinaison des composantes rouge, verte et bleue (abrégé en RGB). La couleur d&amp;rsquo;un objet est la composante de couleur réfléchie que l&amp;rsquo;objet n&amp;rsquo;a pas absorbée. Modèle d&amp;rsquo;éclairage Phong : modèle d&amp;rsquo;approximation de l&amp;rsquo;éclairage du monde réel par le calcul d&amp;rsquo;une composante ambiante, diffuse et spéculaire. Éclairage ambiant : approximation de l&amp;rsquo;éclairage global en donnant à chaque objet une petite luminosité afin que les objets ne soient pas complètement sombres s&amp;rsquo;ils ne sont pas directement éclairés.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>http://hrst4.xyz/gg/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://hrst4.xyz/gg/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>http://hrst4.xyz/gogle.fr/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://hrst4.xyz/gogle.fr/</guid>
+      <description></description>
     </item>
     
     <item>
@@ -512,6 +550,15 @@ Les artistes et les programmeurs préfèrent généralement utiliser une texture
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>http://hrst4.xyz/templates/tpl_frontmatter/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>http://hrst4.xyz/wikipedia.fr/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://hrst4.xyz/wikipedia.fr/</guid>
       <description></description>
     </item>
     

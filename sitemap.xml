@@ -3,15 +3,27 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>http://hrst4.xyz/blog/</loc>
-    <lastmod>2023-11-14T10:01:06+01:00</lastmod>
+    <lastmod>2023-11-22T11:28:53+01:00</lastmod>
+  </url><url>
+    <loc>http://hrst4.xyz/tags/fractals/</loc>
+    <lastmod>2023-11-22T11:28:53+01:00</lastmod>
   </url><url>
     <loc>http://hrst4.xyz/</loc>
-    <lastmod>2023-11-14T10:01:06+01:00</lastmod>
+    <lastmod>2023-11-22T11:28:53+01:00</lastmod>
   </url><url>
-    <loc>http://hrst4.xyz/tags/poetry/</loc>
-    <lastmod>2023-11-14T10:01:06+01:00</lastmod>
+    <loc>http://hrst4.xyz/rendering-mendelbrot/</loc>
+    <lastmod>2023-11-22T11:28:53+01:00</lastmod>
+  </url><url>
+    <loc>http://hrst4.xyz/tags/shader/</loc>
+    <lastmod>2023-11-22T11:28:53+01:00</lastmod>
   </url><url>
     <loc>http://hrst4.xyz/tags/</loc>
+    <lastmod>2023-11-22T11:28:53+01:00</lastmod>
+  </url><url>
+    <loc>http://hrst4.xyz/tags/trad_fr/</loc>
+    <lastmod>2023-11-22T11:28:53+01:00</lastmod>
+  </url><url>
+    <loc>http://hrst4.xyz/tags/poetry/</loc>
     <lastmod>2023-11-14T10:01:06+01:00</lastmod>
   </url><url>
     <loc>http://hrst4.xyz/tags/trees/</loc>
@@ -185,13 +197,25 @@
     <loc>http://hrst4.xyz/docs/learnopengl_fr/01_getting_started/06_transformations/</loc>
     <lastmod>2023-11-11T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://hrst4.xyz/@renderingmandelbrotset/</loc>
+    <priority>0</priority>
+  </url><url>
     <loc>http://hrst4.xyz/apropos/</loc>
   </url><url>
     <loc>http://hrst4.xyz/docs/learnopengl_fr/02_lighting/glossary/</loc>
   </url><url>
+    <loc>http://hrst4.xyz/gg/</loc>
+    <priority>0</priority>
+  </url><url>
+    <loc>http://hrst4.xyz/gogle.fr/</loc>
+    <priority>0</priority>
+  </url><url>
     <loc>http://hrst4.xyz/shaders/spacetravel/</loc>
   </url><url>
     <loc>http://hrst4.xyz/templates/tpl_frontmatter/</loc>
+  </url><url>
+    <loc>http://hrst4.xyz/wikipedia.fr/</loc>
+    <priority>0</priority>
   </url><url>
     <loc>http://hrst4.xyz/tags/computer-graphics/</loc>
   </url><url>

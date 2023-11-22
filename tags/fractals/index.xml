@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>fractals on hrst4.xyz</title>
+    <link>http://hrst4.xyz/tags/fractals/</link>
+    <description>Recent content in fractals on hrst4.xyz</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 22 Nov 2023 11:28:53 +0100</lastBuildDate><atom:link href="http://hrst4.xyz/tags/fractals/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Rendering Mendelbrot</title>
+      <link>http://hrst4.xyz/rendering-mendelbrot/</link>
+      <pubDate>Wed, 22 Nov 2023 11:28:53 +0100</pubDate>
+      
+      <guid>http://hrst4.xyz/rendering-mendelbrot/</guid>
+      <description>Rendu de l&amp;rsquo;ensemble de Mandelbrot avec des shaders (avec OpenGL et GLSL) Introduction Une bonne façon de commencer à coder des shaders est de rendre des fractales avec eux.
+Dans ce billet, je vais vous guider dans la création d&amp;rsquo;une application simple d&amp;rsquo;exploration de l&amp;rsquo;ensemble de Mandelbrot que j&amp;rsquo;ai construite en utilisant des shaders GLSL.
+Si vous voulez commencer à apprendre à coder des shaders, je vous suggère de jeter un coup d&amp;rsquo;œil à Shadertoy.</description>
+    </item>
+    
+  </channel>
+</rss>

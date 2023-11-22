@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="generator" content="Hugo 0.110.0">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    
+    
+    
+    <title>Rendering Mendelbrot | hrst4.xyz</title>
+    <style>
+    code.has-jax {
+    -webkit-font-smoothing: antialiased;
+    background: inherit !important;
+    border: none !important;
+    font-size: 100%;
+    }
+
+    .font-125 {
+        font-family: cursive;
+        font-weight: 400;
+    }
+    .jumbotron h1{
+        font-family: cursive;
+        font-weight: 800;
+
+    }
+
+    .container {
+      max-width: 700px;
+      
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+       
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav bg-dark text-white justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/docs/"><i data-feather="database"></i> Doc</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="jumbotron bg-dark text-white container">
+      <main id="main">
+       
+
+<h1>Rendering Mendelbrot</h1>
+
+
+<i data-feather="calendar"></i> <time datetime="2023-11-22">Nov 22, 2023</time>
+
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-light tag-btn" href="/tags/shader">shader</a>
+  
+  
+  <a class="btn btn-sm btn-outline-light tag-btn" href="/tags/fractals">fractals</a>
+  
+  
+  <a class="btn btn-sm btn-outline-light tag-btn" href="/tags/trad_fr">trad_fr</a>
+  
+
+  
+
+
+
+
+
+
+
+
+<br><br>
+<h1 id="rendu-de-lensemble-de-mandelbrot-avec-des-shaders-avec-opengl-et-glsl">Rendu de l&rsquo;ensemble de Mandelbrot avec des shaders (avec OpenGL et GLSL)</h1>
+<h2 id="introduction">Introduction</h2>
+<p>Une bonne façon de commencer à coder des shaders est de rendre des fractales avec eux.</p>
+<p>Dans ce billet, je vais vous guider dans la création d&rsquo;une application simple d&rsquo;exploration de l&rsquo;ensemble de Mandelbrot que j&rsquo;ai construite en utilisant des shaders GLSL.</p>
+<p>Si vous voulez commencer à apprendre à coder des shaders, je vous suggère de jeter un coup d&rsquo;œil à Shadertoy. ShaderToy est un site web où vous pouvez coder vos propres shaders dès le départ, sans avoir à vous soucier d&rsquo;établir une application de niveau inférieur pour gérer les entrées, les bibliothèques d&rsquo;écran et d&rsquo;autres étapes qui pourraient vous démotiver dès le début. Vous pouvez également partager vos créations et il existe quelques tutoriels utiles qui vous permettront d&rsquo;apprendre et d&rsquo;explorer des shaders étonnants !</p>
+<p>Si vous vous sentez aventureux ou si vous ne pouvez pas compter sur une connexion internet, vous pouvez cloner ce dépôt git où j&rsquo;héberge une application C++ et OpenGL de base qui vous permet de plonger directement dans le codage de shaders localement sur votre machine.</p>
+<p>L&rsquo;application que nous construisons dans ce billet est également disponible dans un dépôt <a href="https://github.com/Arukiap/Mandelbrot">github</a>. Vous pouvez la cloner librement et vous amuser !</p>
+<p>Je vous encourage également à visiter le site web d&rsquo;<a href="https://www.iquilezles.org/www/articles/ftrapsgeometric/ftrapsgeometric.htm">Inigo Quilez</a> si vous êtes intéressé par les techniques de rendu fractal et l&rsquo;excellente explication que The Art of Code donne dans sa vidéo d&rsquo;introduction à la fractale de Mandelbrot. J&rsquo;ai largement basé mon développement et mon apprentissage sur ces deux plateformes.</p>
+<h2 id="lensemble-de-mandelbrot">L&rsquo;ensemble de Mandelbrot</h2>
+<p>Si l&rsquo;on reprend la définition de la page <a href="https://www.shadertoy.com/">Wikipedia</a>, l&rsquo;ensemble de Mandelbrot est un ensemble de nombres complexes $c$ pour lequel la fonction:</p>
+<p>$$
+f_c(z) = z^2 + 2
+$$</p>
+<p>reste limitée à une certaine plage de valeurs lorsqu&rsquo;il est itéré à partir de $z = 0$.</p>
+<h3 id="les-nombres-complexes">Les nombres complexes</h3>
+<p><strong>Ne vous laissez pas effrayer par les nombres complexes</strong>. Un nombre complexe est, comme vous le savez peut-être, un nombre qui a deux composantes distinctes : une réelle et une imaginaire. Nous pouvons donc représenter un nombre complexe à l&rsquo;aide d&rsquo;un vecteur à deux dimensions, dont la composante $x$ représente la partie réelle du nombre et la composante $y$ la partie imaginaire. Nous utiliserons $z$ pour désigner notre nombre complexe.</p>
+<p>$$
+z = x + yi
+$$</p>
+<p>$$
+z = vec2(x,y)
+$$</p>
+<p>Maintenant, la seule chose dont nous devons nous préoccuper lorsque nous faisons des calculs sur les nombres imaginaires est la propriété suivante pour cet ensemble :</p>
+<p>$$
+i^2 = -1
+$$</p>
+<p>Essayons de remplacer le nombre complexe $z$ par la fonction de l&rsquo;ensemble de Mandelbrot :</p>
+<p>$$
+f_c(z)= z^2 + c = (x+yi)^2 +c = (x^2 + y^2i^2) + c = x^2 - y^2 + 2xyi + c
+$$</p>
+<p>Et en utilisant la représentation vectorielle bidimensionnelle pour le système des nombres complexes, nous avons :</p>
+<p>$$
+f_c((x,y)_z)) = (x^2 - y^2,2xy)_z + (x,y)_c
+$$</p>
+<p>Nous avons maintenant tout ce qu&rsquo;il faut pour commencer à rendre l&rsquo;ensemble de Mandelbrot. Il ne nous reste plus qu&rsquo;à itérer cette fonction et à voir quelles sont les valeurs qui restent limitées en:</p>
+<p>$$
+|z_n+1| \leq 2
+$$</p>
+<p>ou, en d&rsquo;autres termes, en l&rsquo;appliquant à la représentation vectorielle</p>
+<p>$$
+|(x,y)_z| \leq 2
+$$</p>
+<h2 id="rendre-lensemble">Rendre l&rsquo;ensemble</h2>
+<p>Maintenant que nous avons compris nos mathématiques, ouvrons notre fragment shader et écrivons la fonction principale de notre application : l&rsquo;itération sur la fonction qui définit l&rsquo;ensemble de Mandelbrot.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec2 <span style="color:#a6e22e">squareImaginary</span>(vec2 number){
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> vec2(
+</span></span><span style="display:flex;"><span>		pow(number.x,<span style="color:#ae81ff">2</span>)<span style="color:#f92672">-</span>pow(number.y,<span style="color:#ae81ff">2</span>),
+</span></span><span style="display:flex;"><span>		<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>number.x<span style="color:#f92672">*</span>number.y
+</span></span><span style="display:flex;"><span>	);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">iterateMandelbrot</span>(vec2 coord){
+</span></span><span style="display:flex;"><span>	vec2 z <span style="color:#f92672">=</span> vec2(<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>maxIterations;i<span style="color:#f92672">++</span>){
+</span></span><span style="display:flex;"><span>		z <span style="color:#f92672">=</span> squareImaginary(z) <span style="color:#f92672">+</span> coord;
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span>(length(z)<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">2</span>) <span style="color:#66d9ef">return</span> i<span style="color:#f92672">/</span>maxIterations;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> maxIterations;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Cette fonction s&rsquo;exécute une fois pour chaque pixel de l&rsquo;écran. Le vecteur 2D <code>coord</code> représente les coordonnées du pixel sélectionné. Cela fonctionne très bien car dans les diagrammes de Mandelbrot, l&rsquo;axe $y$ représente la partie imaginaire du nombre complexe et l&rsquo;axe $x$ la partie réelle.</p>
+<p>Nous suivons simplement la définition exacte de la fonction que nous avons énumérée précédemment, et renvoyons une valeur entre 0 et 1 en fonction de la proximité de nos étapes d&rsquo;itération par rapport au nombre maximum d&rsquo;itérations. Cette valeur est utilisée pour attribuer une certaine teinte à chaque pixel de l&rsquo;écran.</p>
+<p>Cela produit l&rsquo;image suivante (nombre maximal d&rsquo;itérations = 100) :</p>
+<p><img src="/blog//medias/mandelbrot1bright.png" alt="mandel im2"/></p>
+<h1 id="ressources">Ressources</h1>
+<p><a href="https://arukiap.github.io/fractals/2019/06/02/rendering-the-mandelbrot-set-with-shaders.html">https://arukiap.github.io/fractals/2019/06/02/rendering-the-mandelbrot-set-with-shaders.html</a></p>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+
+
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$','$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  
+    
+    
+    
+    
+  
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  </body>
+</html>
