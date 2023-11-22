@@ -114,7 +114,7 @@
 
 
 <br><br>
-<h1 id="rendu-de-lensemble-de-mandelbrot-avec-des-shaders-avec-opengl-et-glsl">Rendu de l&rsquo;ensemble de Mandelbrot avec des shaders (avec OpenGL et GLSL)</h1>
+<h2 id="rendu-de-lensemble-de-mandelbrot-avec-des-shaders-avec-opengl-et-glsl">Rendu de l&rsquo;ensemble de Mandelbrot avec des shaders (avec OpenGL et GLSL)</h2>
 <h2 id="introduction">Introduction</h2>
 <p>Une bonne façon de commencer à coder des shaders est de rendre des fractales avec eux.</p>
 <p>Dans ce billet, je vais vous guider dans la création d&rsquo;une application simple d&rsquo;exploration de l&rsquo;ensemble de Mandelbrot que j&rsquo;ai construite en utilisant des shaders GLSL.</p>
@@ -183,7 +183,7 @@ $$</p>
 <p>Mais nous ne voulons certainement pas nous arrêter là. Bien que ces images soient magnifiques et mystérieuses, la représentation graphique de cet ensemble peut être encore plus belle si nous la colorons sur la base de règles mathématiques.</p>
 <h2 id="orbit-trap-coloring">Orbit trap coloring</h2>
 <p>Pour colorer notre graphique de Mandelbrot, nous allons utiliser une technique populaire utilisée pour colorer les fractales, appelée <em>orbit trap</em>. Cette technique consiste à stocker le minimum, la moyenne, le maximum ou d&rsquo;autres types de fonctions mathématiques appliquées à la distance entre le point actuel qui est itéré tout au long de notre fonction itérative et un certain point, une ligne ou une courbe dans notre système de coordonnées. Nous pouvons ensuite colorer nos pixels en fonction de ces valeurs.</p>
-<p>Un point commun auquel comparer la distance est l&rsquo;origine $. Ce faisant, nous obtenons la coloration suivante de notre ensemble :</p>
+<p>Un point commun auquel comparer la distance est l&rsquo;origine $(0,0)$. Ce faisant, nous obtenons la coloration suivante de notre ensemble :</p>
 <p><img src="/blog/./medias/mandelbrotOT1.png" alt="mandelbrotOT1"/></p>
 <p><img src="/blog/./medias/mandelbrotOT2.png" alt="mandelbrotOT2"/></p>
 <p><img src="/blog/./medias/mandelbrotOT3.png" alt="mandelbrotOT3"/></p>
@@ -191,7 +191,7 @@ $$</p>
 <p><img src="/blog/./medias/mandelbrotOT7.png" alt="mandelbrotOT7"/></p>
 <p><img src="/blog/./medias/mandelbrotOT6.png" alt="mandelbrotOT6"/></p>
 <p>Comme il s&rsquo;agit généralement d&rsquo;un art, vous pouvez colorier la fractale comme bon vous semble. N&rsquo;hésitez pas à expérimenter : la plupart des images que j&rsquo;ai affichées ici ont nécessité beaucoup d&rsquo;essais et d&rsquo;erreurs pour obtenir une coloration correcte.</p>
-<p>Si vous êtes intéressé par les techniques de piégeage d&rsquo;orbite, vous pouvez en apprendre davantage à ce sujet [ici]https://www.iquilezles.org/www/articles/ftrapsgeometric/ftrapsgeometric.htm.</p>
+<p>Si vous êtes intéressé par les techniques de piégeage d&rsquo;orbite, vous pouvez en apprendre davantage à ce sujet [ici]https://www.iquilezles.org/www/articles/ftrapsgeometric/ftrapsgeometric.htm).</p>
 <h2 id="le-problème-de-nombres-flottants">Le problème de nombres flottants</h2>
 <p>Parce que les GPU sont typiquement conçus pour travailler sur de grandes quantités de données groupées dans le vertex shader, ils n&rsquo;aiment pas vraiment travailler avec des calculs en virgule flottante de haute précision. La précision maximale que vous pouvez obtenir avec un shader GLSL normal est une virgule flottante de 16 bits et même pour cela, vous devez faire la déclaration suivante dans votre code de shader.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>precision highp <span style="color:#66d9ef">float</span>;
