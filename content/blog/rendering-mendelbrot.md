@@ -159,7 +159,7 @@ J'espère que vous avez apprécié cette lecture et je suis toujours ouvert à v
 Je vous souhaite une excellente journée !
 
 
-# Article original
-[Arukiap](https://arukiap.github.io/fractals/2019/06/02/rendering-the-mandelbrot-set-with-shaders.html)
+## Article original
+[Arukiap - Rúben Carvalho](https://arukiap.github.io/fractals/2019/06/02/rendering-the-mandelbrot-set-with-shaders.html)
 
 
