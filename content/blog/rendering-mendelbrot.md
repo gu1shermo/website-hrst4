@@ -6,7 +6,7 @@ author: "hrst4"
 draft: false
 ---
 
-# Rendu de l'ensemble de Mandelbrot avec des shaders (avec OpenGL et GLSL)
+## Rendu de l'ensemble de Mandelbrot avec des shaders (avec OpenGL et GLSL)
 
 ## Introduction
 
@@ -116,7 +116,7 @@ Mais nous ne voulons certainement pas nous arrêter là. Bien que ces images soi
 
 Pour colorer notre graphique de Mandelbrot, nous allons utiliser une technique populaire utilisée pour colorer les fractales, appelée *orbit trap*. Cette technique consiste à stocker le minimum, la moyenne, le maximum ou d'autres types de fonctions mathématiques appliquées à la distance entre le point actuel qui est itéré tout au long de notre fonction itérative et un certain point, une ligne ou une courbe dans notre système de coordonnées. Nous pouvons ensuite colorer nos pixels en fonction de ces valeurs.
 
-Un point commun auquel comparer la distance est l'origine $. Ce faisant, nous obtenons la coloration suivante de notre ensemble :
+Un point commun auquel comparer la distance est l'origine $(0,0)$. Ce faisant, nous obtenons la coloration suivante de notre ensemble :
 
 
 ![mandelbrotOT1](./medias/mandelbrotOT1.png)
@@ -133,7 +133,7 @@ Un point commun auquel comparer la distance est l'origine $. Ce faisant, nous ob
 
 Comme il s'agit généralement d'un art, vous pouvez colorier la fractale comme bon vous semble. N'hésitez pas à expérimenter : la plupart des images que j'ai affichées ici ont nécessité beaucoup d'essais et d'erreurs pour obtenir une coloration correcte.
 
-Si vous êtes intéressé par les techniques de piégeage d'orbite, vous pouvez en apprendre davantage à ce sujet [ici]https://www.iquilezles.org/www/articles/ftrapsgeometric/ftrapsgeometric.htm.
+Si vous êtes intéressé par les techniques de piégeage d'orbite, vous pouvez en apprendre davantage à ce sujet [ici]https://www.iquilezles.org/www/articles/ftrapsgeometric/ftrapsgeometric.htm).
 
 ## Le problème de nombres flottants
 
