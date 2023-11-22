@@ -108,11 +108,58 @@ Cela produit l'image suivante (nombre maximal d'itérations = 100) :
 
 En implémentant une interaction simple consistant à zoomer et à explorer l'ensemble, nous pouvons déjà commencer à voir la complexité et la beauté de cet ensemble.
 
-![mandelbrot1bright](./medias/mandelbrot.gif)
+![mandelbrotgif](./medias/mandelbrot.gif)
+
+Mais nous ne voulons certainement pas nous arrêter là. Bien que ces images soient magnifiques et mystérieuses, la représentation graphique de cet ensemble peut être encore plus belle si nous la colorons sur la base de règles mathématiques.
+
+## Orbit trap coloring
+
+Pour colorer notre graphique de Mandelbrot, nous allons utiliser une technique populaire utilisée pour colorer les fractales, appelée *orbit trap*. Cette technique consiste à stocker le minimum, la moyenne, le maximum ou d'autres types de fonctions mathématiques appliquées à la distance entre le point actuel qui est itéré tout au long de notre fonction itérative et un certain point, une ligne ou une courbe dans notre système de coordonnées. Nous pouvons ensuite colorer nos pixels en fonction de ces valeurs.
+
+Un point commun auquel comparer la distance est l'origine $. Ce faisant, nous obtenons la coloration suivante de notre ensemble :
 
 
-# Ressources
+![mandelbrotOT1](./medias/mandelbrotOT1.png)
 
-https://arukiap.github.io/fractals/2019/06/02/rendering-the-mandelbrot-set-with-shaders.html
+![mandelbrotOT2](./medias/mandelbrotOT2.png)
+
+![mandelbrotOT3](./medias/mandelbrotOT3.png)
+
+![mandelbrotOT4](./medias/mandelbrotOT4.png)
+
+![mandelbrotOT7](./medias/mandelbrotOT7.png)
+
+![mandelbrotOT6](./medias/mandelbrotOT6.png)
+
+Comme il s'agit généralement d'un art, vous pouvez colorier la fractale comme bon vous semble. N'hésitez pas à expérimenter : la plupart des images que j'ai affichées ici ont nécessité beaucoup d'essais et d'erreurs pour obtenir une coloration correcte.
+
+Si vous êtes intéressé par les techniques de piégeage d'orbite, vous pouvez en apprendre davantage à ce sujet [ici]https://www.iquilezles.org/www/articles/ftrapsgeometric/ftrapsgeometric.htm.
+
+## Le problème de nombres flottants
+
+Parce que les GPU sont typiquement conçus pour travailler sur de grandes quantités de données groupées dans le vertex shader, ils n'aiment pas vraiment travailler avec des calculs en virgule flottante de haute précision. La précision maximale que vous pouvez obtenir avec un shader GLSL normal est une virgule flottante de 16 bits et même pour cela, vous devez faire la déclaration suivante dans votre code de shader.
+
+```cpp
+precision highp float;
+```
+C'est une limitation extrême pour l'application que je voulais écrire : un zoom presque infini dans l'ensemble de Mandelbrot. Pour cette raison, si je continue à zoomer dans mon application après 10 à 15 secondes, j'obtiens les rendus suivants.
+
+![mandelbrotprecision](./medias/mandelbrotprecision.png)
+
+**Il ne s'agit pas d'une image compressée**, mais exactement du rendu que j'obtiens lorsque je zoome trop, en raison des limites de représentation des nombres à virgule flottante dans le GPU.
+
+Par conséquent, pour plonger plus profondément dans cet incroyable monde fractal, il faudrait une implémentation de niveau inférieur qui permettrait une précision illimitée des nombres à virgule flottante. Cela n'entre pas dans le cadre de cette expérimentation.
+
+## Conclusions
+
+La création de cette application expérimentale a non seulement été un excellent moyen de plonger dans le monde des fractales, mais aussi de comprendre les limites fondamentales du développement des shaders. J'encourage vivement tous ceux qui s'intéressent aux techniques de calcul graphique à s'essayer à l'ensemble de Mandelbrot. Il vous prépare à travailler avec les coordonnées des pixels de l'écran, la coloration et l'ombrage, qui sont des composants essentiels du développement des shaders. De plus, les rendus que vous pouvez produire sont étonnants. Jetez un coup d'œil à [cette vidéo](https://www.youtube.com/watch?v=VPHbgHVxLYY) produite par un logiciel disponible sur Internet pour effectuer un rendu et un zoom sur l'ensemble de Mandelbrot avec des millions d'itérations !
+
+J'espère que vous avez apprécié cette lecture et je suis toujours ouvert à vos questions et à vos commentaires.
+
+Je vous souhaite une excellente journée !
+
+
+# Article original
+[Arukiap](https://arukiap.github.io/fractals/2019/06/02/rendering-the-mandelbrot-set-with-shaders.html)
 
 
