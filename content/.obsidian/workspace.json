@@ -16,18 +16,6 @@
             }
           },
           {
-            "id": "6d5fa9713ff85d53",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "blog/if-by-rudyard-kipling.md",
-                "mode": "source",
-                "source": true
-              }
-            }
-          },
-          {
             "id": "cb703a125c9bc039",
             "type": "leaf",
             "state": {
@@ -40,7 +28,7 @@
             }
           }
         ],
-        "currentTab": 2
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -169,6 +157,9 @@
   },
   "active": "cb703a125c9bc039",
   "lastOpenFiles": [
+    "blog/medias/mandelbrot1bright.png",
+    "blog/medias",
+    "blog/images",
     "blog/mandelbrot1bright.png",
     "mandelbrot1bright.png",
     "blog/rendering-mendelbrot.md",
@@ -206,14 +197,11 @@
     "docs/LEARNOPENGL_FR/06_PBR/pbr5.png",
     "docs/LEARNOPENGL_FR/06_PBR/pbr4.png",
     "docs/LEARNOPENGL_FR/06_PBR/pbr3.png",
-    "docs/LEARNOPENGL_FR/06_PBR/pbr2.png",
     "docs/LEARNOPENGL_FR/06_PBR/03_IBL",
     "docs/LEARNOPENGL_FR/06_PBR",
     "docs/LEARNOPENGL_FR/05_Advanced_Lighting",
     "docs/LEARNOPENGL_FR/04_Advanced_OpenGL",
     "docs/LEARNOPENGL_FR/03_Model_Loading",
-    "docs/LEARNOPENGL_FR/02_Lighting/05_Multiple Lights",
-    "docs/LEARNOPENGL_FR/02_Lighting/04_Light Casters",
-    "docs/LEARNOPENGL_FR/02_Lighting/03_Lighting Maps"
+    "docs/LEARNOPENGL_FR/02_Lighting/05_Multiple Lights"
   ]
 }

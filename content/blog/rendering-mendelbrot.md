@@ -105,11 +105,9 @@ Cela produit l'image suivante (nombre maximal d'itérations = 100) :
 
 ![mandel im1](/medias/mandelbrot1bright.png)
 
-![mandel im2](/mandelbrot1bright.png)
+![mandel im2](./mandelbrot1bright.png)
 
-![mandel im3](./mandelbrot1bright.png)
-
-![mandel im4](../mandelbrot1bright.png)
+![mandel im3](./medias/mandelbrot1bright.png)
 
 
 
