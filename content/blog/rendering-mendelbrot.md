@@ -24,7 +24,7 @@ Je vous encourage également à visiter le site web d'[Inigo Quilez](https://www
 
 ## L'ensemble de Mandelbrot
 
-Si l'on reprend la définition de la page [Wikipedia](https://www.shadertoy.com/), l'ensemble de Mandelbrot est un ensemble de nombres complexes $c$ pour lequel la fonction:
+Si l'on reprend la définition de la page [Wikipedia](https://en.wikipedia.org/wiki/Mandelbrot_set), l'ensemble de Mandelbrot est un ensemble de nombres complexes $c$ pour lequel la fonction:
 
 $$
 f_c(z) = z^2 + 2
