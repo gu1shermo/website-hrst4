@@ -102,16 +102,13 @@ Nous suivons simplement la définition exacte de la fonction que nous avons énu
 
 Cela produit l'image suivante (nombre maximal d'itérations = 100) :
 
+![mandelbrot1bright](./medias/mandelbrot1bright.png)
 
-![mandel im1](/medias/mandelbrot1bright.png)
+## Zoomer à l'intérieur de l'ensemble
 
-![mandel im2](./mandelbrot1bright.png)
+En implémentant une interaction simple consistant à zoomer et à explorer l'ensemble, nous pouvons déjà commencer à voir la complexité et la beauté de cet ensemble.
 
-![mandel im3](./medias/mandelbrot1bright.png)
-
-
-
-
+![mandelbrot1bright](./medias/mandelbrot.gif)
 
 
 # Ressources
