@@ -19,39 +19,6 @@ Si vous voulez commencer à apprendre à coder des shaders, je vous suggère de 
     </item>
     
     <item>
-      <title>Trees by Joyce Kilmer</title>
-      <link>http://hrst4.xyz/trees-by-joyce-kilmer/</link>
-      <pubDate>Tue, 14 Nov 2023 10:01:06 +0100</pubDate>
-      
-      <guid>http://hrst4.xyz/trees-by-joyce-kilmer/</guid>
-      <description>I think that I shall never see A poem lovely as a tree.
-A tree whose hungry mouth is prest Against the earth&amp;rsquo;s sweet flowing breast;
-A tree that looks at God all day, And lifts her leafy arms to pray;
-A tree that may in Summer wear A nest of robins in her hair;
-Upon whose bosom snow has lain; Who intimately lives with rain.
-Poems are made by fools like me, But only God can make a tree.</description>
-    </item>
-    
-    <item>
-      <title>That It Will Never Come Again by Emily Dickinson</title>
-      <link>http://hrst4.xyz/that-it-will-never-come-again-by-emily-dickinson/</link>
-      <pubDate>Tue, 14 Nov 2023 10:00:45 +0100</pubDate>
-      
-      <guid>http://hrst4.xyz/that-it-will-never-come-again-by-emily-dickinson/</guid>
-      <description>That it will never come again Is what makes life so sweet. Believing what we don&amp;rsquo;t believe Does not exhilarate.
-That if it be, it be at best An ablative estate &amp;ndash; This instigates an appetite Precisely opposite.</description>
-    </item>
-    
-    <item>
-      <title>If by Rudyard Kipling</title>
-      <link>http://hrst4.xyz/if-by-rudyard-kipling/</link>
-      <pubDate>Tue, 14 Nov 2023 09:48:26 +0100</pubDate>
-      
-      <guid>http://hrst4.xyz/if-by-rudyard-kipling/</guid>
-      <description>If you can keep your head when all about you Are losing theirs and blaming it on you, If you can trust yourself when all men doubt you, But make allowance for their doubting too; If you can wait and not be tired by waiting, Or being lied about, don&amp;rsquo;t deal in lies, Or being hated, don&amp;rsquo;t give way to hating, And yet don&amp;rsquo;t look too good, nor talk too wise:</description>
-    </item>
-    
-    <item>
       <title>advanced data</title>
       <link>http://hrst4.xyz/docs/learnopengl_fr/04_advanced_opengl/06_advanced_data/</link>
       <pubDate>Sat, 11 Nov 2023 00:00:00 +0000</pubDate>
@@ -497,15 +464,6 @@ Les artistes et les programmeurs préfèrent généralement utiliser une texture
       
       <guid>http://hrst4.xyz/docs/learnopengl_fr/01_getting_started/06_transformations/</guid>
       <description>Transformations Nous savons maintenant comment créer des objets, les colorer et/ou leur donner une apparence détaillée à l&amp;rsquo;aide de textures, mais ils ne sont toujours pas très intéressants puisqu&amp;rsquo;il s&amp;rsquo;agit d&amp;rsquo;objets statiques. Nous pourrions essayer de les faire bouger en changeant leurs sommets et en reconfigurant leurs buffers à chaque image, mais c&amp;rsquo;est lourd et coûteux en puissance de traitement. Il existe de bien meilleures façons de transformer un objet, et c&amp;rsquo;est en utilisant des objets matriciels (multiples).</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>http://hrst4.xyz/@renderingmandelbrotset/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://hrst4.xyz/@renderingmandelbrotset/</guid>
-      <description></description>
     </item>
     
     <item>
