@@ -162,4 +162,7 @@ Je vous souhaite une excellente journée !
 ## Article original
 [Arukiap - Rúben Carvalho](https://arukiap.github.io/fractals/2019/06/02/rendering-the-mandelbrot-set-with-shaders.html)
 
+## Implémentation du code
+[Code shadertoy](https://www.shadertoy.com/view/mlGcDV)
+
 
