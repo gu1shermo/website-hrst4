@@ -33,7 +33,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/LEARNOPENGL_FR/02_Lighting/00_Colors/colors.md",
+                "file": "blog/rendering-mendelbrot.md",
                 "mode": "source",
                 "source": true
               }
@@ -106,7 +106,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "docs/LEARNOPENGL_FR/02_Lighting/00_Colors/colors.md",
+                "file": "blog/rendering-mendelbrot.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -123,7 +123,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "docs/LEARNOPENGL_FR/02_Lighting/00_Colors/colors.md",
+                "file": "blog/rendering-mendelbrot.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -146,7 +146,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "docs/LEARNOPENGL_FR/02_Lighting/00_Colors/colors.md"
+                "file": "blog/rendering-mendelbrot.md"
               }
             }
           }
@@ -169,10 +169,18 @@
   },
   "active": "cb703a125c9bc039",
   "lastOpenFiles": [
+    "blog/mandelbrot1bright.png",
+    "mandelbrot1bright.png",
+    "blog/rendering-mendelbrot.md",
+    "wikipedia.fr.md",
+    "gg.md",
+    "blog/if-by-rudyard-kipling.md",
+    "gogle.fr.md",
+    "@RenderingMandelbrotSet.md",
+    "docs/LEARNOPENGL_FR/02_Lighting/00_Colors/colors.md",
     "docs/LEARNOPENGL_FR/01_Getting_Started/07_coordinate systems.md",
     "docs/LEARNOPENGL_FR/01_Getting_Started/07_coordinate_systems.md",
     "docs/LEARNOPENGL_FR/01_Getting_Started/08_camera.md",
-    "docs/LEARNOPENGL_FR/02_Lighting/00_Colors/colors.md",
     "docs/LEARNOPENGL_FR/01_Getting_Started/04_shaders.md",
     "docs/LEARNOPENGL_FR/01_Getting_Started/02_hello window.md",
     "docs/LEARNOPENGL_FR/01_Getting_Started/09_glossary.md",
@@ -183,7 +191,6 @@
     "docs/LEARNOPENGL_FR/01_Getting_Started/00_opengl.md",
     "docs/LEARNOPENGL_FR/02_Lighting/02_Materials/materials.md",
     "docs/LEARNOPENGL_FR/02_Lighting/02_Materials/material1.png",
-    "blog/if-by-rudyard-kipling.md",
     "docs/LEARNOPENGL_FR/00_Introduction/introduction.md",
     "docs/learnopengl_fr.md",
     "docs/LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting.md",
@@ -192,7 +199,6 @@
     "archives.md",
     "docs/another_post.md",
     "docs/LEARNOPENGL_FR",
-    "docs/src_post.md",
     "docs/LEARNOPENGL_FR/06_PBR/pbr9.png",
     "docs/LEARNOPENGL_FR/06_PBR/pbr8.png",
     "docs/LEARNOPENGL_FR/06_PBR/pbr7.png",
@@ -201,14 +207,8 @@
     "docs/LEARNOPENGL_FR/06_PBR/pbr4.png",
     "docs/LEARNOPENGL_FR/06_PBR/pbr3.png",
     "docs/LEARNOPENGL_FR/06_PBR/pbr2.png",
-    "docs/LEARNOPENGL_FR/06_PBR/pbr10.png",
-    "docs/LEARNOPENGL_FR/06_PBR/03_IBL/02_specular_ibl.md",
-    "docs/LEARNOPENGL_FR/06_PBR/03_IBL/01_diffuse_irradiance.md",
     "docs/LEARNOPENGL_FR/06_PBR/03_IBL",
-    "docs/LEARNOPENGL_FR/06_PBR/02_lighting.md",
-    "docs/LEARNOPENGL_FR/06_PBR/01_theory.md",
     "docs/LEARNOPENGL_FR/06_PBR",
-    "docs/LEARNOPENGL_FR/05_Advanced_Lighting/08_ssao.md",
     "docs/LEARNOPENGL_FR/05_Advanced_Lighting",
     "docs/LEARNOPENGL_FR/04_Advanced_OpenGL",
     "docs/LEARNOPENGL_FR/03_Model_Loading",
