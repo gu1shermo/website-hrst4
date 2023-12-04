@@ -21,7 +21,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blog/rendering-mendelbrot.md",
+                "file": "templates/tpl_frontmatter.md",
                 "mode": "source",
                 "source": true
               }
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "blog/rendering-mendelbrot.md",
+                "file": "templates/tpl_frontmatter.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -111,7 +111,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "blog/rendering-mendelbrot.md",
+                "file": "templates/tpl_frontmatter.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -134,7 +134,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "blog/rendering-mendelbrot.md"
+                "file": "templates/tpl_frontmatter.md"
               }
             }
           }
@@ -157,6 +157,8 @@
   },
   "active": "cb703a125c9bc039",
   "lastOpenFiles": [
+    "docs/learnopengl_fr.md",
+    "blog/rendering-mendelbrot.md",
     "blog/medias/mandelbrotprecision.png",
     "blog/medias/mandelbrotOT7.png",
     "blog/medias/mandelbrotOT6.png",
@@ -169,8 +171,6 @@
     "blog/medias/mandelbrot1bright.png",
     "blog/medias",
     "blog/images",
-    "blog/mandelbrot1bright.png",
-    "blog/rendering-mendelbrot.md",
     "wikipedia.fr.md",
     "gg.md",
     "blog/if-by-rudyard-kipling.md",
@@ -190,7 +190,6 @@
     "docs/LEARNOPENGL_FR/01_Getting_Started/00_opengl.md",
     "docs/LEARNOPENGL_FR/02_Lighting/02_Materials/materials.md",
     "docs/LEARNOPENGL_FR/00_Introduction/introduction.md",
-    "docs/learnopengl_fr.md",
     "docs/LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting.md",
     "search.md",
     "docs/assets/hugo.yml",
