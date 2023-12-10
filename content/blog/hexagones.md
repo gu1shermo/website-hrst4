@@ -11,8 +11,9 @@ J'ai remarqué récemment que beaucoup d'effets 2D vraiment intéressants sur [s
 Voici quelques effets que j'ai créés récemment en utilisant cette technique (cliquez sur les gifs pour voir le code) :
 
 ![hexgif1](./medias/hexagone/hexgif1.gif)
-
+> https://www.shadertoy.com/view/llcyDH
 ![hexgif21](./medias/hexagone/hexgif21.gif)
+> https://www.shadertoy.com/view/Mlcczr
 
 Nous allons explorer deux façons particulièrement élégantes de rendre les hexagones. **La première technique est mieux adaptée au rendu d'un seul hexagone. La seconde technique génère une grille hexagonale.** Ces deux techniques sont utiles si vous souhaitez obtenir une large gamme d'effets hexagonaux et sont toutes deux utilisées dans les effets que j'ai montrés ci-dessus. Elles sont loin d'être les seules techniques de rendu hexagonal existantes, mais elles sont propres, rapides, et ce sont les premières que j'ai rencontrées. Avant d'entrer dans le vif du sujet, je dois rendre à César ce qui lui appartient : j'ai appris ces techniques mathématiques en étudiant [ce shader](https://www.shadertoy.com/view/Xljczw) de [Shane](https://www.shadertoy.com/user/Shane), un utilisateur de shadertoy (je vous encourage d'ailleurs à consulter le reste de son travail - ce type est un magicien des shaders).
 
