@@ -21,8 +21,8 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "templates/tpl_frontmatter.md",
-                "mode": "source",
+                "file": "blog/hexagones.md",
+                "mode": "preview",
                 "source": true
               }
             }
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "templates/tpl_frontmatter.md",
+                "file": "blog/hexagones.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -111,7 +111,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "templates/tpl_frontmatter.md",
+                "file": "blog/hexagones.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -134,7 +134,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "templates/tpl_frontmatter.md"
+                "file": "blog/hexagones.md"
               }
             }
           }
@@ -157,18 +157,23 @@
   },
   "active": "cb703a125c9bc039",
   "lastOpenFiles": [
-    "docs/learnopengl_fr.md",
     "blog/rendering-mendelbrot.md",
-    "blog/medias/mandelbrotprecision.png",
-    "blog/medias/mandelbrotOT7.png",
-    "blog/medias/mandelbrotOT6.png",
-    "blog/medias/mandelbrotOT4.png",
-    "blog/medias/mandelbrotOT3.png",
-    "blog/medias/mandelbrotOT2.png",
-    "blog/medias/mandelbrotOT1.png",
-    "blog/medias/mandelbrot.gif",
-    "mandelbrot.gif",
-    "blog/medias/mandelbrot1bright.png",
+    "blog/hexagones.md",
+    "blog/medias/hexagone/staggered_dots.png",
+    "blog/medias/hexagone/nonabs.png",
+    "blog/medias/hexagone/inouthex1.png",
+    "blog/medias/hexagone/hexoffset1.png",
+    "blog/medias/hexagone/hexheight2.png",
+    "blog/medias/hexagone/hexgif21.gif",
+    "blog/medias/hexagone/hexgif1.gif",
+    "blog/medias/hexagone/hexdiagonal1.png",
+    "blog/medias/hexagone/hex-11.webp",
+    "blog/medias/hexagone/greenrect1.png",
+    "blog/medias/hexagone",
+    "blog/_index.md",
+    "hexgif1.gif.md",
+    "templates/tpl_frontmatter.md",
+    "docs/learnopengl_fr.md",
     "blog/medias",
     "blog/images",
     "wikipedia.fr.md",
@@ -190,17 +195,12 @@
     "docs/LEARNOPENGL_FR/01_Getting_Started/00_opengl.md",
     "docs/LEARNOPENGL_FR/02_Lighting/02_Materials/materials.md",
     "docs/LEARNOPENGL_FR/00_Introduction/introduction.md",
-    "docs/LEARNOPENGL_FR/02_Lighting/01_Basic Lighting/basic lighting.md",
-    "search.md",
     "docs/assets/hugo.yml",
-    "archives.md",
-    "docs/another_post.md",
     "docs/LEARNOPENGL_FR",
     "docs/LEARNOPENGL_FR/06_PBR/03_IBL",
     "docs/LEARNOPENGL_FR/06_PBR",
     "docs/LEARNOPENGL_FR/05_Advanced_Lighting",
     "docs/LEARNOPENGL_FR/04_Advanced_OpenGL",
-    "docs/LEARNOPENGL_FR/03_Model_Loading",
-    "docs/LEARNOPENGL_FR/02_Lighting/05_Multiple Lights"
+    "docs/LEARNOPENGL_FR/03_Model_Loading"
   ]
 }
