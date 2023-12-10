@@ -6,20 +6,29 @@
     <description>Recent content in Tags on hrst4.xyz</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 22 Nov 2023 11:28:53 +0100</lastBuildDate><atom:link href="http://hrst4.xyz/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 10 Dec 2023 11:28:53 +0100</lastBuildDate><atom:link href="http://hrst4.xyz/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>fractals</title>
-      <link>http://hrst4.xyz/tags/fractals/</link>
-      <pubDate>Wed, 22 Nov 2023 11:28:53 +0100</pubDate>
+      <title>hexagone</title>
+      <link>http://hrst4.xyz/tags/hexagone/</link>
+      <pubDate>Sun, 10 Dec 2023 11:28:53 +0100</pubDate>
       
-      <guid>http://hrst4.xyz/tags/fractals/</guid>
+      <guid>http://hrst4.xyz/tags/hexagone/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>sdf</title>
+      <link>http://hrst4.xyz/tags/sdf/</link>
+      <pubDate>Sun, 10 Dec 2023 11:28:53 +0100</pubDate>
+      
+      <guid>http://hrst4.xyz/tags/sdf/</guid>
       <description></description>
     </item>
     
     <item>
       <title>shader</title>
       <link>http://hrst4.xyz/tags/shader/</link>
-      <pubDate>Wed, 22 Nov 2023 11:28:53 +0100</pubDate>
+      <pubDate>Sun, 10 Dec 2023 11:28:53 +0100</pubDate>
       
       <guid>http://hrst4.xyz/tags/shader/</guid>
       <description></description>
@@ -28,9 +37,18 @@
     <item>
       <title>trad_fr</title>
       <link>http://hrst4.xyz/tags/trad_fr/</link>
-      <pubDate>Wed, 22 Nov 2023 11:28:53 +0100</pubDate>
+      <pubDate>Sun, 10 Dec 2023 11:28:53 +0100</pubDate>
       
       <guid>http://hrst4.xyz/tags/trad_fr/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>fractals</title>
+      <link>http://hrst4.xyz/tags/fractals/</link>
+      <pubDate>Wed, 22 Nov 2023 11:28:53 +0100</pubDate>
+      
+      <guid>http://hrst4.xyz/tags/fractals/</guid>
       <description></description>
     </item>
     

@@ -6,7 +6,16 @@
     <description>Recent content in shader on hrst4.xyz</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 22 Nov 2023 11:28:53 +0100</lastBuildDate><atom:link href="http://hrst4.xyz/tags/shader/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 10 Dec 2023 11:28:53 +0100</lastBuildDate><atom:link href="http://hrst4.xyz/tags/shader/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Effets hexagonaux</title>
+      <link>http://hrst4.xyz/hexagones/</link>
+      <pubDate>Sun, 10 Dec 2023 11:28:53 +0100</pubDate>
+      
+      <guid>http://hrst4.xyz/hexagones/</guid>
+      <description>Tutoriel de graphisme procédural : Effets hexagonaux J&amp;rsquo;ai remarqué récemment que beaucoup d&amp;rsquo;effets 2D vraiment intéressants sur shadertoy.com impliquent des motifs répétitifs et des grilles d&amp;rsquo;une sorte ou d&amp;rsquo;une autre. Les grilles cartésiennes standard, les grilles triangulaires et les grilles hexagonales semblent être les plus courantes. Les hexagones en particulier ont un aspect très cool et futuriste, ce qui explique que des motifs hexagonaux apparaissent dans de nombreux fonds d&amp;rsquo;écran et dessins de science-fiction.</description>
+    </item>
+    
     <item>
       <title>Rendering Mendelbrot</title>
       <link>http://hrst4.xyz/rendering-mendelbrot/</link>

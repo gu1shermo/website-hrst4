@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="generator" content="Hugo 0.110.0">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    
+    
+    
+    <title>Effets hexagonaux | hrst4.xyz</title>
+    <style>
+    code.has-jax {
+    -webkit-font-smoothing: antialiased;
+    background: inherit !important;
+    border: none !important;
+    font-size: 100%;
+    }
+
+    .font-125 {
+        font-family: cursive;
+        font-weight: 400;
+    }
+    .jumbotron h1{
+        font-family: cursive;
+        font-weight: 800;
+
+    }
+
+    .container {
+      max-width: 700px;
+      
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+       
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav bg-dark text-white justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/docs/"><i data-feather="database"></i> Doc</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="jumbotron bg-dark text-white container">
+      <main id="main">
+       
+
+<h1>Effets hexagonaux</h1>
+
+
+<i data-feather="calendar"></i> <time datetime="2023-12-10">Dec 10, 2023</time>
+
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-light tag-btn" href="/tags/shader">shader</a>
+  
+  
+  <a class="btn btn-sm btn-outline-light tag-btn" href="/tags/sdf">sdf</a>
+  
+  
+  <a class="btn btn-sm btn-outline-light tag-btn" href="/tags/hexagone">hexagone</a>
+  
+  
+  <a class="btn btn-sm btn-outline-light tag-btn" href="/tags/trad_fr">trad_fr</a>
+  
+
+  
+
+
+
+
+
+
+
+
+<br><br>
+<h1 id="tutoriel-de-graphisme-procédural--effets-hexagonaux">Tutoriel de graphisme procédural : Effets hexagonaux</h1>
+<p>J&rsquo;ai remarqué récemment que beaucoup d&rsquo;effets 2D vraiment intéressants sur <a href="https://www.shadertoy.com/">shadertoy.com</a> impliquent des motifs répétitifs et des grilles d&rsquo;une sorte ou d&rsquo;une autre. <strong>Les grilles cartésiennes standard, les grilles triangulaires et les grilles hexagonales semblent être les plus courantes.</strong> Les hexagones en particulier ont un aspect très cool et futuriste, ce qui explique que des motifs hexagonaux apparaissent dans de nombreux fonds d&rsquo;écran et dessins de science-fiction.</p>
+<p>Voici quelques effets que j&rsquo;ai créés récemment en utilisant cette technique (cliquez sur les gifs pour voir le code) :</p>
+<p><img src="/blog/./medias/hexagone/hexgif1.gif" alt="hexgif1"/></p>
+<p><img src="/blog/./medias/hexagone/hexgif21.gif" alt="hexgif21"/></p>
+<p>Nous allons explorer deux façons particulièrement élégantes de rendre les hexagones. <strong>La première technique est mieux adaptée au rendu d&rsquo;un seul hexagone. La seconde technique génère une grille hexagonale.</strong> Ces deux techniques sont utiles si vous souhaitez obtenir une large gamme d&rsquo;effets hexagonaux et sont toutes deux utilisées dans les effets que j&rsquo;ai montrés ci-dessus. Elles sont loin d&rsquo;être les seules techniques de rendu hexagonal existantes, mais elles sont propres, rapides, et ce sont les premières que j&rsquo;ai rencontrées. Avant d&rsquo;entrer dans le vif du sujet, je dois rendre à César ce qui lui appartient : j&rsquo;ai appris ces techniques mathématiques en étudiant <a href="https://www.shadertoy.com/view/Xljczw">ce shader</a> de <a href="https://www.shadertoy.com/user/Shane">Shane</a>, un utilisateur de shadertoy (je vous encourage d&rsquo;ailleurs à consulter le reste de son travail - ce type est un magicien des shaders).</p>
+<p>Pour les deux algorithmes ci-dessous, supposons que notre but est de rendre un hexagone (ou une grille d&rsquo;hexagones) où chaque hexagone a exactement <strong>1 unité de large</strong>. <strong>Nous aurons affaire à des hexagones à sommet pointu</strong> plutôt qu&rsquo;à des hexagones à sommet plat, et nous aurons affaire à <strong>des grilles hexagonales qui sont décalées par ligne plutôt que par colonne.</strong></p>
+<p>Avant de poursuivre, il est également utile de connaître la hauteur de l&rsquo;hexagone, que nous pouvons facilement calculer en fonction de sa largeur :</p>
+<p><img src="/blog/./medias/hexagone/hexheight2.png" alt="hexheight2"/></p>
+<blockquote>
+<p>La hauteur de l&rsquo;hexagone est $2 / \sqrt{3}$ car elle est égale à 2 * la longueur de l&rsquo;hypoténuse calculée ci-dessus.</p>
+</blockquote>
+<h1 id="méthode-1--fonction-de-distance-hexagonale">Méthode 1 : Fonction de distance hexagonale</h1>
+<p>Pour rendre un hexagone unique, nous utiliserons <a href="http://jamie-wong.com/2016/07/15/ray-marching-signed-distance-functions/#signed-distance-functions">une fonction de distance signée</a> (<strong>SDF</strong> en abrégé). <strong>Une SDF permet de décrire une forme à l&rsquo;aide d&rsquo;une fonction mathématique.</strong> Typiquement, <strong>une SDF renvoie la distance d&rsquo;un point donné par rapport à la limite de la forme.</strong> <strong>Les valeurs positives indiquent que le point est à l&rsquo;extérieur de la forme, les valeurs négatives indiquent que le point est à l&rsquo;intérieur de la forme, et une valeur de zéro indique que le point est à la limite de la forme.</strong></p>
+<p>Si nous voulions, par exemple, dessiner un hexagone rouge sur un fond noir, nous mettrions en œuvre une fonction de distance pour l&rsquo;hexagone, puis nous attribuerions une couleur rouge aux pixels situés à l&rsquo;intérieur de la forme et une couleur noire aux pixels situés à l&rsquo;extérieur de la forme. Voici la fonction de distance pour un hexagone.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">calcHexDistance</span>(vec2 p)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> hexHalfWidth<span style="color:#f92672">=</span> <span style="color:#ae81ff">.5</span>;
+</span></span><span style="display:flex;"><span>     <span style="color:#75715e">// 1.7320508 is sqrt(3)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">float</span> s <span style="color:#f92672">=</span> vec2(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1.7320508</span>);
+</span></span><span style="display:flex;"><span>     p <span style="color:#f92672">=</span> abs(p);
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">return</span> max(dot(p, s <span style="color:#f92672">*</span> <span style="color:#ae81ff">.5</span>), p.x) <span style="color:#f92672">-</span> hexHalfWidth;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><a href="https://www.shadertoy.com/view/MsVBWt">Voici un shader</a> qui utilise cette formule pour rendre un simple hexagone. Il s&rsquo;agit simplement de calculer la distance à l&rsquo;aide de la fonction ci-dessus, puis de colorer le pixel en fonction de cette distance.</p>
+<h2 id="comment-tout-cela-fonctionne-t-il-">Comment tout cela fonctionne-t-il ?</h2>
+<p>Tout d&rsquo;abord, <strong>considérons le quadrant supérieur droit de l&rsquo;hexagone</strong>. Pour un hexagone de largeur 1, tout point situé à plus de 0,5 unité du centre le long de l&rsquo;axe des x se trouve à l&rsquo;extérieur de l&rsquo;hexagone. C&rsquo;est pourquoi <code>p.x</code> apparaît à l&rsquo;intérieur de la fonction <code>max</code> dans l&rsquo;instruction de retour.</p>
+<p>Un point est également à l&rsquo;extérieur de l&rsquo;hexagone s&rsquo;il se trouve à plus de $0.5$ unité le long de la ligne diagonale illustrée ci-dessous (ne vous préoccupez pas des points dans les autres quadrants pour l&rsquo;instant - c&rsquo;est à cela que sert l&rsquo;appel à la fonction <code>abs</code>) :</p>
+<p><img src="/blog/./medias/hexagone/inouthex1.png" alt="inouthex1"/></p>
+<p>Pour savoir à quelle distance un point se trouve de cette diagonale, il suffit de faire le produit scalaire du point par un vecteur unitaire pointant dans la même direction que la diagonale. Vous pouvez trouver cette diagonale en profitant du fait que les hexagones sont composés de triangles équilatéraux reliés au centre. Nous allons le faire avec un hexagone générique dont la diagonale susmentionnée est de longueur 1, puisque nous avons besoin qu&rsquo;elle soit un vecteur unitaire pour que le produit de points nous donne le déplacement :</p>
+<p><img src="/blog/./medias/hexagone/hexdiagonal1.png" alt="hexdiagonal1"/></p>
+<blockquote>
+<p>L&rsquo;angle le plus à gauche du cercle rouge est de 60 degrés car les vecteurs rouges rayonnant à partir du centre coupent tous deux des angles de 60 degrés. 30 + 30 = 60.</p>
+</blockquote>
+<p>Comme illustré ci-dessus, pour trouver la diagonale pertinente, nous formons un triangle 30-60-90 à partir de la bissectrice perpendiculaire de la diagonale, puis nous calculons la longueur des côtés pour créer un <code>vec2</code> (en utilisant la moitié de la largeur de l&rsquo;hexagone, 0,5, et en tirant parti de la relation entre les longueurs des côtés des triangles 30-60-90 qui ont toujours les mêmes rapports les uns par rapport aux autres).</p>
+<p>La constante &ldquo;s&rdquo;, multipliée par 0,5, représente cette diagonale (1,7320508 est la racine carrée de 3). L&rsquo;appel à la fonction <code>max</code> nous donne donc le maximum des déplacements du point courant le long des deux axes qui nous intéressent (l&rsquo;axe horizontal et la diagonale).</p>
+<p>Vous remarquerez que nous opérons sur la valeur absolue de p plutôt que sur p. En effet, sans la ligne &ldquo;<code>p = abs(p)</code>&rdquo;, nous obtiendrions la forme suivante :</p>
+<p><img src="/blog/./medias/hexagone/nonabs.png" alt="nonabs"/></p>
+<p>Pour obtenir un véritable hexagone, nous devons appliquer la logique aux quatre quadrants. En prenant la valeur absolue de p, tous les points sont placés dans le quadrant 1, ce qui nous permet d&rsquo;utiliser le même calcul. Ainsi, nous n&rsquo;avons pas besoin de vérifier le déplacement horizontal du point dans la direction négative, ni de trouver le déplacement le long des trois autres diagonales.</p>
+<p>Enfin, nous soustrayons $0.5$ de la valeur obtenue pour compléter la fonction de distance. <strong>Avec cette soustraction, tout fragment qui s&rsquo;étend au-delà de 0,5 dans n&rsquo;importe quelle direction horizontale ou qui s&rsquo;étend au-delà de 0,5 dans la direction diagonale (dans n&rsquo;importe lequel des quatre quadrants) sera considéré comme étant à l&rsquo;extérieur du &ldquo;polygone&rdquo;.</strong> Ceux qui ne dépassent pas 0,5 ou plus dans ces directions seront considérés comme étant à l&rsquo;intérieur du &ldquo;polygone&rdquo;.</p>
+<p>La valeur renvoyée par cette fonction vous donne la distance du fragment par rapport à la limite de l&rsquo;hexagone. Vous pouvez l&rsquo;utiliser pour ombrer l&rsquo;hexagone (en colorant tous les pixels ayant une valeur de distance non positive) d&rsquo;une certaine couleur, comme cela est fait dans l&rsquo;exemple. <strong>Avec quelques ajustements, vous pouvez également l&rsquo;utiliser pour dessiner des hexagones/isolines concentriques, comme le fait Shane dans son shader</strong>. Je laisserai au lecteur le soin d&rsquo;implémenter cette méthode.</p>
+<h1 id="méthode-2--grille-hexagonale">Méthode 2 : Grille hexagonale</h1>
+<p>Il est intéressant de noter que la méthode suivante de rendu d&rsquo;une grille dont je vais parler ne repose pas du tout sur la formule du champ de distance que j&rsquo;ai décrite plus haut. En effet, nous pouvons tirer parti d&rsquo;une propriété intéressante des hexagones : <strong>si vous disposez d&rsquo;une grille de points échelonnés, comme illustré ci-dessous, l&rsquo;ensemble des pixels pour lesquels un point donné est le point le plus proche forme un hexagone !</strong></p>
+<p><img src="/blog/./medias/hexagone/staggered_dots.png" alt="staggered_dots"/></p>
+<p>Si vous choisissez simplement une couleur pour chaque pixel en fonction du point le plus proche, vous obtenez automatiquement et gratuitement une grille hexagonale colorée :</p>
+<p><a href="https://www.shadertoy.com/view/ll3yW7">Voici un exemple de shader</a> qui fait exactement cela. Voyons comment il fonctionne.</p>
+<p>À un niveau élevé, c&rsquo;est ce que nous faisons :</p>
+<ul>
+<li><strong>Tout d&rsquo;abord, nous divisons l&rsquo;espace en deux grilles cartésiennes différentes - l&rsquo;une dont les centres des cellules représentent les points non décalés décrits ci-dessus et l&rsquo;autre dont les centres des cellules représentent les points décalés (rappelons que ces points représentent les centres des hexagones)</strong>. Il en résulte deux grilles cartésiennes décalées qui, si l&rsquo;on examine collectivement chaque centre de cellule (le centre de chaque &ldquo;carré de la grille&rdquo; dans la grille cartésienne), nous donnent le motif en pointillés illustré ci-dessus dans l&rsquo;image avec les points rouges et noirs.</li>
+<li><strong>Ensuite, nous déterminons le centre de l&rsquo;hexagone le plus proche du fragment en comparant la distance du centre de la cellule la plus proche dans chacune des deux grilles</strong> (la grille décalée et la grille non décalée).</li>
+<li>Enfin, nous renvoyons l&rsquo;ID unique (dans ce cas, nous utilisons simplement la position) du centre de l&rsquo;hexagone le plus proche dans les composantes <code>.zw</code> du vec4 renvoyé et nous renvoyons la distance du centre de l&rsquo;hexagone le plus proche dans les composantes <code>.xy</code> du vec4 renvoyé. Nous pourrons ensuite utiliser cet identifiant unique pour colorer chaque hexagone de manière unique et nous pourrons utiliser la distance pour dessiner des isolignes et rendre des hexagones plus petits à l&rsquo;intérieur de chaque cellule.</li>
+</ul>
+<p>La magie opère dans la fonction <code>calcHexInfo</code>, affichée ci-dessous.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec4 <span style="color:#a6e22e">calcHexInfo</span>(vec2 uv)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>     <span style="color:#75715e">// remember, s is vec2(1, sqrt(3))
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     vec4 hexCenter <span style="color:#f92672">=</span> round(vec4(uv, uv <span style="color:#f92672">-</span> vec2(<span style="color:#ae81ff">.5</span>, <span style="color:#ae81ff">1.</span>)) <span style="color:#f92672">/</span> s.xyxy);
+</span></span><span style="display:flex;"><span>     vec4 offset <span style="color:#f92672">=</span> vec4(uv <span style="color:#f92672">-</span> hexCenter.xy <span style="color:#f92672">*</span> s, uv <span style="color:#f92672">-</span> (hexCenter.zw <span style="color:#f92672">+</span> <span style="color:#ae81ff">.5</span>) <span style="color:#f92672">*</span> s);
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">return</span> dot(offset.xy, offset.xy) <span style="color:#f92672">&lt;</span> dot(offset.zw, offset.zw) <span style="color:#f92672">?</span> 
+</span></span><span style="display:flex;"><span>          vec4(offset.xy, hexCenter.xy) <span style="color:#f92672">:</span> vec4(offset.zw, hexCenter.zw);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>Examinons-le ligne par ligne.</strong></p>
+<p><strong>La première ligne divise essentiellement l&rsquo;espace en une grille de carrés de taille</strong> <code>(1, sqrt(3))</code>, en divisant la coordonnée UV par <code>s.xy</code>, et en utilisant <code>round</code> pour déterminer quel est le carré de la grille le plus proche. <strong>La valeur résultante, stockée dans hexCenter, est l&rsquo;index du carré le plus proche</strong>. Mais pourquoi la grille est-elle constituée de carrés de taille <code>(1, sqrt(3))</code> ?</p>
+<p>Les carrés de la grille contiennent les rangées non décalées de la grille hexagonale (dans notre grille hexagonale, une rangée sur deux sera décalée). <strong>La taille de ces carrés doit être telle que les hexagones soient complètement serrés les uns contre les autres horizontalement, tout en laissant suffisamment d&rsquo;espace entre les hexagones pour qu&rsquo;ils puissent s&rsquo;insérer dans la rangée en quinconce.</strong> La largeur de cellule de 1 est évidente - nos hexagones (comme nous l&rsquo;avons décidé au début de l&rsquo;article) ont une largeur de 1. Nous utilisons une hauteur de <code>sqrt(3)</code> parce que <code>sqrt(3)</code> est exactement $3/2$ de la hauteur de chaque hexagone que nous rendons (rappelez-vous que la hauteur de chaque hexagone est $2 / \sqrt{3}$). Cela nous permet d&rsquo;échelonner parfaitement les rangées, puisque la hauteur $3 / 2 * hexHeight$ nous donne exactement assez d&rsquo;espace entre chaque hexagone aligné verticalement pour insérer un hexagone en quinconce. Voir le diagramme ci-dessous pour comprendre pourquoi c&rsquo;est le cas :</p>
+<p><img src="/blog/./medias/hexagone/hex-11.webp" alt="hex-11"/></p>
+<blockquote>
+<p>$1/2 * h$ doit être égal à $n$ pour que la rangée d&rsquo;hexagones en quinconce soit parfaitement ajustée. Nous savons que $n$ est égal à $1 / \sqrt{3}$ - voir le premier diagramme de cet article pour comprendre pourquoi (il suffit de doubler le côté $.5 / \sqrt{3}$). Nous savons également que $h$ est égal à $2 / \sqrt{3}$. Donc $1/2 * h = n$.</p>
+</blockquote>
+<p>Parlons maintenant du code. Remarquez que nous passons un <code>vec4</code> dans la fonction <code>round</code>. Considérez ce <code>vec4</code> comme deux <code>vec2</code> concaténés ensemble - nous les plaçons dans un seul <code>vec4</code> sur une seule ligne pour des raisons de commodité. Dans les composants <code>xy</code>, nous stockons simplement la valeur <strong>UV</strong> du point. Les composants <code>zw</code> stockent un ensemble différent de coordonnées qui sont utilisées pour les rangées en quinconce. Vous verrez comment ces coordonnées sont utilisées à l&rsquo;étape suivante, mais pour l&rsquo;instant, il suffit de savoir que nous soustrayons $(.5, 1)$ afin de nous assurer que le résultat arrondi de la ligne contient, dans la composante <code>zw</code>, la cellule $1$ par $\sqrt{3}$ située immédiatement en bas à gauche de tout point situé dans l&rsquo;un des hexagones en quinconce. Le nombre $(.5, 1)$ est quelque peu arbitraire - il aurait pu s&rsquo;agir de n&rsquo;importe quel <code>vec2</code> garantissant que tous les points de l&rsquo;hexagone décalé (étiqueté &ldquo;B&rdquo;) illustré ci-dessous se trouvent dans la région indiquée par le rectangle vert après l&rsquo;avoir soustrait de la position du fragment :</p>
+<p><img src="/blog/./medias/hexagone/greenrect1.png" alt="greenrect1"/></p>
+<p>Pour tout point d&rsquo;un hexagone non décalé, vous verrez que la valeur <code>zw</code> n&rsquo;est pas pertinente et qu&rsquo;elle sera rejetée par la suite.</p>
+<p>La division par <code>s.xyxy</code> et l&rsquo;arrondi consistent essentiellement à prendre chaque point (l&rsquo;UV original et la valeur UV décalée vers le bas à gauche) et à vous donner le centre de la cellule le plus proche.</p>
+<p><strong>Dans la ligne suivante, nous calculons le décalage du fragment par rapport au centre de cellule le plus proche et à la coordonnée de cellule décalée immédiatement en haut à droite du centre de cellule le plus proche à &ldquo;fragment moins $(.5, 1)$&rdquo;.</strong></p>
+<p>Cette dernière coordonnée vous donnera toujours le centre de cellule correct pour les fragments dans les cellules hexagonales décalées - pour ceux qui ne sont pas dans des cellules hexagonales décalées, cette coordonnée n&rsquo;aura pas de sens et finira par être ignorée parce que nous comparons les décalages et rejetons celui qui est le plus éloigné. Nous obtenons ces décalages en soustrayant simplement les positions des centres hexagonaux respectifs des coordonnées <code>uv</code>. Le centre de la cellule stocké dans <code>hexCenter.xy</code> est facile à calculer - il suffit de le multiplier par la taille de la cellule (la fonction <code>round</code> nous a donné l&rsquo;index de la cellule hexagonale, pas la position réelle). Le centre de la cellule décalée est calculé en décalant la cellule de la moitié de la taille de la cellule <code>s</code> :</p>
+<p><img src="/blog/./medias/hexagone/hexoffset1.png" alt="hexoffset1"/></p>
+<p>Nous vérifions ensuite quelle cellule est la plus proche du point (la cellule décalée ou la cellule non décalée) en comparant les distances au carré. Enfin, nous renvoyons le décalage et l&rsquo;ID unique (en fait, l&rsquo;index arrondi) de l&rsquo;hexagone le plus proche.</p>
+<h1 id="utilisation-de-ces-fonctions">Utilisation de ces fonctions</h1>
+<p>Armé de ces fonctions, vous avez maintenant tout ce qu&rsquo;il vous faut pour créer des effets uniques à base d&rsquo;hexagones. Par exemple, l&rsquo;effet d&rsquo;hexagone de science-fiction que j&rsquo;ai montré au début de cet article utilise la fonction de grille hexagonale pour colorer aléatoirement les hexagones dans différentes nuances de bleu. Les lignes rotatives à l&rsquo;intérieur de chaque hexagone ne sont que des contours hexagonaux, rendus à l&rsquo;aide de l&rsquo;algorithme de la fonction de distance, qui sont coupés par des masques rotatifs dont les rotations sont décalées par un nombre aléatoire et par le temps actuel.</p>
+<p>Bonne rédaction de shaders ! La seule limite est votre imagination. Et votre capacité à coder.</p>
+<h1 id="ressources">Ressources</h1>
+<ul>
+<li><a href="https://andrewhungblog.wordpress.com/2018/07/28/shader-art-tutorial-hexagonal-grids/">https://andrewhungblog.wordpress.com/2018/07/28/shader-art-tutorial-hexagonal-grids/</a> (article original)</li>
+<li><a href="https://www.youtube.com/watch?v=VmrIDyYiJBA">https://www.youtube.com/watch?v=VmrIDyYiJBA</a> (the art of code)</li>
+<li><a href="https://www.twitch.tv/videos/395570942?collection=8xzkI-QfSxbsBw">https://www.twitch.tv/videos/395570942?collection=8xzkI-QfSxbsBw</a> (Flopine)</li>
+</ul>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+
+
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$','$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  
+    
+    
+    
+    
+  
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  </body>
+</html>
