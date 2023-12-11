@@ -1,3 +1,11 @@
+---
+title: "Hegagone TAoC"
+date: 2023-13-10T11:28:53+01:00
+tags: ["shader", "sdf", "hexagone", "trad_fr"]
+author: "hrst4"
+draft: false
+---
+
 # SDF d'un hexagone
 Première chose à remarquer: la symétrie en $X$ et en $Y$.
 ![[medias/hex_taoc/hexagone_taoc-20231211.png]]

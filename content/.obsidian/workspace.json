@@ -22,7 +22,7 @@
               "type": "markdown",
               "state": {
                 "file": "blog/hexagon_taoc.md",
-                "mode": "preview",
+                "mode": "source",
                 "source": true
               }
             }
@@ -157,6 +157,8 @@
   },
   "active": "cb703a125c9bc039",
   "lastOpenFiles": [
+    "blog/hexagones.md",
+    "blog/hexagon_taoc.md",
     "blog/medias/hex_taoc/hexagone_taoc-20231211-31.png",
     "blog/medias/hex_taoc/hexagone_taoc-20231211-30.png",
     "blog/medias/hex_taoc/hexagone_taoc-20231211-29.png",
@@ -167,10 +169,7 @@
     "blog/medias/hex_taoc/hexagone_taoc-20231211-24.png",
     "blog/medias/hex_taoc/hexagone_taoc-20231211-23.png",
     "blog/medias/hex_taoc/hexagone_taoc-20231211-22.png",
-    "blog/medias/hex_taoc/hexagone_taoc-20231211-21.png",
     "blog/medias/hex_taoc",
-    "blog/hexagones.md",
-    "blog/hexagon_taoc.md",
     "blog/rendering-mendelbrot.md",
     "blog/medias/hexagone",
     "blog/_index.md",
