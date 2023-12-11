@@ -119,24 +119,24 @@
 <br><br>
 <h1 id="sdf-dun-hexagone">SDF d&rsquo;un hexagone</h1>
 <p>Première chose à remarquer: la symétrie en $X$ et en $Y$.
-![[./medias/hex_taoc/hexagone_taoc-20231211.png]]
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211.png" alt="hexagone_taoc-20231211"/>
 On peut diviser la forme en 4 quadrants, et du coup se concentrer sur un seul quadrant.
-![[./medias/hex_taoc/hexagone_taoc-20231211-1.png]]
+![./medias/hex_taoc/hexagone_taoc-20231211-1.png]
 On remarque 2 lignes, les pixels qui appartiennent à l&rsquo;hexagone se situent à la fois:</p>
 <ul>
 <li><strong>à gauche de la ligne verticale</strong></li>
 <li><strong>et</strong></li>
 <li><strong>en dessous de la ligne diagonale</strong></li>
 </ul>
-<p>![[./medias/hex_taoc/hexa_taof.jpg]]</p>
+<p>![./medias/hex_taoc/hexa_taof.jpg]</p>
 <h2 id="ligne-verticale">Ligne verticale</h2>
 <p>C&rsquo;est assez simple, on la détermine grâce à la position du pixel en $X$.
-![[./medias/hex_taoc/hexa_taof2.jpg]]</p>
+![./medias/hex_taoc/hexa_taof2.jpg]</p>
 <h2 id="ligne-diagonale">Ligne diagonale</h2>
 <p>Pour obtenir n&rsquo;importe quelle ligne arbitraire on peut utiliser le produit scalaire <code>dot(vector1,vector2)</code>.
 On peut par exemple demander le produit scalaire entre un point de l&rsquo;espace et un angle, qui sera exprimé par un ratio en $X$ et $Y$.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> c <span style="color:#f92672">=</span> dot(uv, vec2(<span style="color:#ae81ff">1.</span>,<span style="color:#ae81ff">1.</span>)); <span style="color:#75715e">// donnera un angle de 45°
-</span></span></span></code></pre></div><p>![[./medias/hex_taoc/hexa_taof3.jpg]]</p>
+</span></span></span></code></pre></div><p>![./medias/hex_taoc/hexa_taof3.jpg]</p>
 <p>Pour une valeur plus juste, il faut penser à normaliser le vecteur, car en l&rsquo;état le vecteur à une longueur de $\sqrt{2}$.</p>
 <p>![[./medias/hex_taoc/hexagone_taoc-20231211-2.png]]
 Pour trouver la bonne valeur de l&rsquo;angle, il faut s&rsquo;intéresser aux propriétés de l&rsquo;hexagone.
