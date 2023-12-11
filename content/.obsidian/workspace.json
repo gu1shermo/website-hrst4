@@ -21,7 +21,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blog/rendering-mendelbrot.md",
+                "file": "blog/hexagon_taoc.md",
                 "mode": "source",
                 "source": true
               }
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "blog/rendering-mendelbrot.md",
+                "file": "blog/hexagon_taoc.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -111,7 +111,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "blog/rendering-mendelbrot.md",
+                "file": "blog/hexagon_taoc.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -134,7 +134,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "blog/rendering-mendelbrot.md"
+                "file": "blog/hexagon_taoc.md"
               }
             }
           }
@@ -157,11 +157,11 @@
   },
   "active": "cb703a125c9bc039",
   "lastOpenFiles": [
-    "blog/medias/mandelbrot/mandelbrot.gif",
-    "blog/hexagon_taoc.md",
-    "blog/medias/mandelbrot",
     "blog/hexagones.md",
+    "blog/hexagon_taoc.md",
     "blog/rendering-mendelbrot.md",
+    "blog/medias/mandelbrot/mandelbrot.gif",
+    "blog/medias/mandelbrot",
     "blog/medias/hex_taoc/hexagone_taoc-20231211-31.png",
     "blog/medias/hex_taoc/hexagone_taoc-20231211-30.png",
     "blog/medias/hex_taoc/hexagone_taoc-20231211-29.png",

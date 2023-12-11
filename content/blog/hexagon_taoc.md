@@ -8,19 +8,19 @@ draft: false
 
 # SDF d'un hexagone
 Première chose à remarquer: la symétrie en $X$ et en $Y$.
-![[./medias/hex_taoc/hexagone_taoc-20231211.png]]
+![hexagone_taoc-20231211](./medias/hex_taoc/hexagone_taoc-20231211.png)
 On peut diviser la forme en 4 quadrants, et du coup se concentrer sur un seul quadrant.
-![[./medias/hex_taoc/hexagone_taoc-20231211-1.png]]
+![./medias/hex_taoc/hexagone_taoc-20231211-1.png]
 On remarque 2 lignes, les pixels qui appartiennent à l'hexagone se situent à la fois:
 - **à gauche de la ligne verticale**
 - **et**
 - **en dessous de la ligne diagonale**
 
-![[./medias/hex_taoc/hexa_taof.jpg]]
+![./medias/hex_taoc/hexa_taof.jpg]
 
 ## Ligne verticale
 C'est assez simple, on la détermine grâce à la position du pixel en $X$.
-![[./medias/hex_taoc/hexa_taof2.jpg]]
+![./medias/hex_taoc/hexa_taof2.jpg]
 
 ## Ligne diagonale
 Pour obtenir n'importe quelle ligne arbitraire on peut utiliser le produit scalaire `dot(vector1,vector2)`.
@@ -29,7 +29,7 @@ On peut par exemple demander le produit scalaire entre un point de l'espace et u
 float c = dot(uv, vec2(1.,1.)); // donnera un angle de 45°
 ```
 
-![[./medias/hex_taoc/hexa_taof3.jpg]]
+![./medias/hex_taoc/hexa_taof3.jpg]
 
 Pour une valeur plus juste, il faut penser à normaliser le vecteur, car en l'état le vecteur à une longueur de $\sqrt{2}$.
 
