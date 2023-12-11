@@ -13,7 +13,9 @@
       <pubDate>Mon, 11 Dec 2023 09:06:53 +0100</pubDate>
       
       <guid>http://hrst4.xyz/hexagon_taoc/</guid>
-      <description>SDF d&amp;rsquo;un hexagone Première chose à remarquer: la symétrie en $X$ et en $Y$. On peut diviser la forme en 4 quadrants, et du coup se concentrer sur un seul quadrant. On remarque 2 lignes, les pixels qui appartiennent à l&amp;rsquo;hexagone se situent à la fois:
+      <description>SDF d&amp;rsquo;un hexagone Première chose à remarquer: la symétrie en $X$ et en $Y$.
+On peut diviser la forme en 4 quadrants, et du coup se concentrer sur un seul quadrant.
+On remarque 2 lignes, les pixels qui appartiennent à l&amp;rsquo;hexagone se situent à la fois:
 à gauche de la ligne verticale et en dessous de la ligne diagonale Ligne verticale C&amp;rsquo;est assez simple, on la détermine grâce à la position du pixel en $X$.</description>
     </item>
     
