@@ -3,27 +3,30 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>http://hrst4.xyz/blog/</loc>
-    <lastmod>2023-12-10T11:28:53+01:00</lastmod>
-  </url><url>
-    <loc>http://hrst4.xyz/hexagones/</loc>
-    <lastmod>2023-12-10T11:28:53+01:00</lastmod>
+    <lastmod>2023-12-11T09:06:53+01:00</lastmod>
   </url><url>
     <loc>http://hrst4.xyz/tags/hexagone/</loc>
-    <lastmod>2023-12-10T11:28:53+01:00</lastmod>
+    <lastmod>2023-12-11T09:06:53+01:00</lastmod>
+  </url><url>
+    <loc>http://hrst4.xyz/hexagon_taoc/</loc>
+    <lastmod>2023-12-11T09:06:53+01:00</lastmod>
   </url><url>
     <loc>http://hrst4.xyz/</loc>
-    <lastmod>2023-12-10T11:28:53+01:00</lastmod>
+    <lastmod>2023-12-11T09:06:53+01:00</lastmod>
   </url><url>
     <loc>http://hrst4.xyz/tags/sdf/</loc>
-    <lastmod>2023-12-10T11:28:53+01:00</lastmod>
+    <lastmod>2023-12-11T09:06:53+01:00</lastmod>
   </url><url>
     <loc>http://hrst4.xyz/tags/shader/</loc>
-    <lastmod>2023-12-10T11:28:53+01:00</lastmod>
+    <lastmod>2023-12-11T09:06:53+01:00</lastmod>
   </url><url>
     <loc>http://hrst4.xyz/tags/</loc>
-    <lastmod>2023-12-10T11:28:53+01:00</lastmod>
+    <lastmod>2023-12-11T09:06:53+01:00</lastmod>
   </url><url>
     <loc>http://hrst4.xyz/tags/trad_fr/</loc>
+    <lastmod>2023-12-11T09:06:53+01:00</lastmod>
+  </url><url>
+    <loc>http://hrst4.xyz/hexagones/</loc>
     <lastmod>2023-12-10T11:28:53+01:00</lastmod>
   </url><url>
     <loc>http://hrst4.xyz/tags/fractals/</loc>
@@ -194,8 +197,6 @@
     <loc>http://hrst4.xyz/templates/tpl_frontmatter/</loc>
   </url><url>
     <loc>http://hrst4.xyz/tags/computer-graphics/</loc>
-  </url><url>
-    <loc>http://hrst4.xyz/hexagon_taoc/</loc>
   </url><url>
     <loc>http://hrst4.xyz/shaders/</loc>
   </url><url>
