@@ -1,6 +1,6 @@
 ---
 title: "Hexagone TAoC"
-date: 2023-13-10T11:28:53+01:00
+date: 2023-12-11T09:06:53+01:00
 tags: ["shader", "sdf", "hexagone", "trad_fr"]
 author: "hrst4"
 draft: false
