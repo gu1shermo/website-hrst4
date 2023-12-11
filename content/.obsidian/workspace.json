@@ -19,11 +19,9 @@
             "id": "cb703a125c9bc039",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "image",
               "state": {
-                "file": "blog/hexagon_taoc.md",
-                "mode": "source",
-                "source": true
+                "file": "blog/medias/hex_taoc/hexa01.gif"
               }
             }
           }
@@ -78,7 +76,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 509.5
   },
   "right": {
     "id": "35994f4a18c35398",
@@ -94,7 +92,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "blog/hexagon_taoc.md",
+                "file": "blog/medias/hex_taoc/hexa01.gif",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -111,7 +109,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "blog/hexagon_taoc.md",
+                "file": "blog/medias/hex_taoc/hexa01.gif",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -134,7 +132,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "blog/hexagon_taoc.md"
+                "file": "blog/medias/hex_taoc/hexa01.gif"
               }
             }
           }
@@ -157,8 +155,9 @@
   },
   "active": "cb703a125c9bc039",
   "lastOpenFiles": [
-    "blog/hexagones.md",
     "blog/hexagon_taoc.md",
+    "blog/medias/hex_taoc/hexa01.gif",
+    "blog/hexagones.md",
     "blog/rendering-mendelbrot.md",
     "blog/medias/mandelbrot/mandelbrot.gif",
     "blog/medias/mandelbrot",
@@ -170,7 +169,6 @@
     "blog/medias/hex_taoc/hexagone_taoc-20231211-26.png",
     "blog/medias/hex_taoc/hexagone_taoc-20231211-25.png",
     "blog/medias/hex_taoc/hexagone_taoc-20231211-24.png",
-    "blog/medias/hex_taoc/hexagone_taoc-20231211-23.png",
     "blog/medias/hex_taoc",
     "blog/medias/hexagone",
     "blog/_index.md",
