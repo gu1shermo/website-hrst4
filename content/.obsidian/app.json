@@ -6,5 +6,9 @@
   "attachmentFolderPath": "posts/assets",
   "promptDelete": false,
   "alwaysUpdateLinks": true,
-  "livePreview": false
+  "livePreview": false,
+  "readableLineLength": false,
+  "strictLineBreaks": false,
+  "showLineNumber": true,
+  "focusNewTab": true
 }
