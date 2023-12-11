@@ -477,6 +477,17 @@ Les artistes et les programmeurs préfèrent généralement utiliser une texture
     
     <item>
       <title></title>
+      <link>http://hrst4.xyz/hexagon_taoc/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://hrst4.xyz/hexagon_taoc/</guid>
+      <description>SDF d&amp;rsquo;un hexagone Première chose à remarquer: la symétrie en $X$ et en $Y$. ![[medias/hex_taoc/hexagone_taoc-20231211.png]] On peut diviser la forme en 4 quadrants, et du coup se concentrer sur un seul quadrant. ![[medias/hex_taoc/hexagone_taoc-20231211-1.png]] On remarque 2 lignes, les pixels qui appartiennent à l&amp;rsquo;hexagone se situent à la fois:
+à gauche de la ligne verticale et en dessous de la ligne diagonale ![[medias/hex_taoc/hexa_taof.jpg]]
+Ligne verticale C&amp;rsquo;est assez simple, on la détermine grâce à la position du pixel en $X$.</description>
+    </item>
+    
+    <item>
+      <title></title>
       <link>http://hrst4.xyz/docs/learnopengl_fr/02_lighting/glossary/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
