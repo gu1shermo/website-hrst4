@@ -157,13 +157,17 @@
   },
   "active": "cb703a125c9bc039",
   "lastOpenFiles": [
+    "[./medias/hex_taoc/hexataof.jpg.md",
+    "blog/hexagon_taoc.md",
+    "blog/hexagones.md",
+    "blog/medias/hex_taoc/hexa01.gif",
     "blog/medias/hex_taoc/hexataof.jpg",
+    "[./medias/hex_taoc",
+    "[./medias",
+    "[.",
     "blog/medias/hex_taoc/hexataof3.jpg",
     "blog/medias/hex_taoc/hexataof2.jpg",
     "blog/medias/hex_taoc/hexa_taof2.jpg",
-    "blog/hexagon_taoc.md",
-    "blog/medias/hex_taoc/hexa01.gif",
-    "blog/hexagones.md",
     "blog/rendering-mendelbrot.md",
     "blog/medias/mandelbrot/mandelbrot.gif",
     "blog/medias/mandelbrot",
@@ -171,7 +175,6 @@
     "blog/medias/hex_taoc/hexagone_taoc-20231211-30.png",
     "blog/medias/hex_taoc/hexagone_taoc-20231211-29.png",
     "blog/medias/hex_taoc/hexagone_taoc-20231211-28.png",
-    "blog/medias/hex_taoc/hexagone_taoc-20231211-27.png",
     "blog/medias/hex_taoc",
     "blog/medias/hexagone",
     "blog/_index.md",
@@ -197,11 +200,7 @@
     "docs/LEARNOPENGL_FR/01_Getting_Started/03_hello triangle.md",
     "docs/LEARNOPENGL_FR/01_Getting_Started/01_creating a window.md",
     "docs/LEARNOPENGL_FR/01_Getting_Started/00_opengl.md",
-    "docs/LEARNOPENGL_FR/02_Lighting/02_Materials/materials.md",
     "docs/assets/hugo.yml",
-    "docs/LEARNOPENGL_FR",
-    "docs/LEARNOPENGL_FR/06_PBR/03_IBL",
-    "docs/LEARNOPENGL_FR/06_PBR",
-    "docs/LEARNOPENGL_FR/05_Advanced_Lighting"
+    "docs/LEARNOPENGL_FR"
   ]
 }
