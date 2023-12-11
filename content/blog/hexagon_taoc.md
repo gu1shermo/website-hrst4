@@ -19,12 +19,12 @@ On remarque 2 lignes, les pixels qui appartiennent à l'hexagone se situent à l
 - **et**
 - **en dessous de la ligne diagonale**
 
-![hexa_taof]([./medias/hex_taoc/hexa_taof.jpg)
+![hexataof]([./medias/hex_taoc/hexataof.jpg)
 
 ## Ligne verticale
 C'est assez simple, on la détermine grâce à la position du pixel en $X$.
 
-![hexa_taof2](./medias/hex_taoc/hexa_taof2.jpg)
+![hextaof2](./medias/hex_taoc/hexataof2.jpg)
 
 ## Ligne diagonale
 Pour obtenir n'importe quelle ligne arbitraire on peut utiliser le produit scalaire `dot(vector1,vector2)`.
@@ -33,7 +33,7 @@ On peut par exemple demander le produit scalaire entre un point de l'espace et u
 float c = dot(uv, vec2(1.,1.)); // donnera un angle de 45°
 ```
 
-![hexa_taof3](./medias/hex_taoc/hexa_taof3.jpg)
+![hexataof3](medias/hex_taoc/hexataof3.jpg)
 
 Pour une valeur plus juste, il faut penser à normaliser le vecteur, car en l'état le vecteur à une longueur de $\sqrt{2}$.
 
