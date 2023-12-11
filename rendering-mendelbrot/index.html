@@ -176,27 +176,27 @@ $$</p>
 </span></span></code></pre></div><p>Cette fonction s&rsquo;exécute une fois pour chaque pixel de l&rsquo;écran. Le vecteur 2D <code>coord</code> représente les coordonnées du pixel sélectionné. Cela fonctionne très bien car dans les diagrammes de Mandelbrot, l&rsquo;axe $y$ représente la partie imaginaire du nombre complexe et l&rsquo;axe $x$ la partie réelle.</p>
 <p>Nous suivons simplement la définition exacte de la fonction que nous avons énumérée précédemment, et renvoyons une valeur entre 0 et 1 en fonction de la proximité de nos étapes d&rsquo;itération par rapport au nombre maximum d&rsquo;itérations. Cette valeur est utilisée pour attribuer une certaine teinte à chaque pixel de l&rsquo;écran.</p>
 <p>Cela produit l&rsquo;image suivante (nombre maximal d&rsquo;itérations = 100) :</p>
-<p><img src="/blog/./medias/mandelbrot1bright.png" alt="mandelbrot1bright"/></p>
+<p><img src="/blog/./medias/mandelbrot/mandelbrot1bright.png" alt="mandelbrot1bright"/></p>
 <h2 id="zoomer-à-lintérieur-de-lensemble">Zoomer à l&rsquo;intérieur de l&rsquo;ensemble</h2>
 <p>En implémentant une interaction simple consistant à zoomer et à explorer l&rsquo;ensemble, nous pouvons déjà commencer à voir la complexité et la beauté de cet ensemble.</p>
-<p><img src="/blog/./medias/mandelbrot.gif" alt="mandelbrotgif"/></p>
+<p><img src="/blog/./medias/mandelbrot/mandelbrot.gif" alt="mandelbrotgif"/></p>
 <p>Mais nous ne voulons certainement pas nous arrêter là. Bien que ces images soient magnifiques et mystérieuses, la représentation graphique de cet ensemble peut être encore plus belle si nous la colorons sur la base de règles mathématiques.</p>
 <h2 id="orbit-trap-coloring">Orbit trap coloring</h2>
 <p>Pour colorer notre graphique de Mandelbrot, nous allons utiliser une technique populaire utilisée pour colorer les fractales, appelée <em>orbit trap</em>. Cette technique consiste à stocker le minimum, la moyenne, le maximum ou d&rsquo;autres types de fonctions mathématiques appliquées à la distance entre le point actuel qui est itéré tout au long de notre fonction itérative et un certain point, une ligne ou une courbe dans notre système de coordonnées. Nous pouvons ensuite colorer nos pixels en fonction de ces valeurs.</p>
 <p>Un point commun auquel comparer la distance est l&rsquo;origine $(0,0)$. Ce faisant, nous obtenons la coloration suivante de notre ensemble :</p>
-<p><img src="/blog/./medias/mandelbrotOT1.png" alt="mandelbrotOT1"/></p>
-<p><img src="/blog/./medias/mandelbrotOT2.png" alt="mandelbrotOT2"/></p>
-<p><img src="/blog/./medias/mandelbrotOT3.png" alt="mandelbrotOT3"/></p>
-<p><img src="/blog/./medias/mandelbrotOT4.png" alt="mandelbrotOT4"/></p>
-<p><img src="/blog/./medias/mandelbrotOT7.png" alt="mandelbrotOT7"/></p>
-<p><img src="/blog/./medias/mandelbrotOT6.png" alt="mandelbrotOT6"/></p>
+<p><img src="/blog/./medias/mandelbrot/mandelbrotOT1.png" alt="mandelbrotOT1"/></p>
+<p><img src="/blog/./medias/mandelbrot/mandelbrotOT2.png" alt="mandelbrotOT2"/></p>
+<p><img src="/blog/./medias/mandelbrot/mandelbrotOT3.png" alt="mandelbrotOT3"/></p>
+<p><img src="/blog/./medias/mandelbrot/mandelbrotOT4.png" alt="mandelbrotOT4"/></p>
+<p><img src="/blog/./medias/mandelbrot/mandelbrotOT7.png" alt="mandelbrotOT7"/></p>
+<p><img src="/blog/./medias/mandelbrot/mandelbrotOT6.png" alt="mandelbrotOT6"/></p>
 <p>Comme il s&rsquo;agit généralement d&rsquo;un art, vous pouvez colorier la fractale comme bon vous semble. N&rsquo;hésitez pas à expérimenter : la plupart des images que j&rsquo;ai affichées ici ont nécessité beaucoup d&rsquo;essais et d&rsquo;erreurs pour obtenir une coloration correcte.</p>
 <p>Si vous êtes intéressé par les techniques de piégeage d&rsquo;orbite, vous pouvez en apprendre davantage à ce sujet [ici]https://www.iquilezles.org/www/articles/ftrapsgeometric/ftrapsgeometric.htm).</p>
 <h2 id="le-problème-de-nombres-flottants">Le problème de nombres flottants</h2>
 <p>Parce que les GPU sont typiquement conçus pour travailler sur de grandes quantités de données groupées dans le vertex shader, ils n&rsquo;aiment pas vraiment travailler avec des calculs en virgule flottante de haute précision. La précision maximale que vous pouvez obtenir avec un shader GLSL normal est une virgule flottante de 16 bits et même pour cela, vous devez faire la déclaration suivante dans votre code de shader.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>precision highp <span style="color:#66d9ef">float</span>;
 </span></span></code></pre></div><p>C&rsquo;est une limitation extrême pour l&rsquo;application que je voulais écrire : un zoom presque infini dans l&rsquo;ensemble de Mandelbrot. Pour cette raison, si je continue à zoomer dans mon application après 10 à 15 secondes, j&rsquo;obtiens les rendus suivants.</p>
-<p><img src="/blog/./medias/mandelbrotprecision.png" alt="mandelbrotprecision"/></p>
+<p><img src="/blog/./medias/mandelbrot/mandelbrotprecision.png" alt="mandelbrotprecision"/></p>
 <p><strong>Il ne s&rsquo;agit pas d&rsquo;une image compressée</strong>, mais exactement du rendu que j&rsquo;obtiens lorsque je zoome trop, en raison des limites de représentation des nombres à virgule flottante dans le GPU.</p>
 <p>Par conséquent, pour plonger plus profondément dans cet incroyable monde fractal, il faudrait une implémentation de niveau inférieur qui permettrait une précision illimitée des nombres à virgule flottante. Cela n&rsquo;entre pas dans le cadre de cette expérimentation.</p>
 <h2 id="conclusions">Conclusions</h2>
