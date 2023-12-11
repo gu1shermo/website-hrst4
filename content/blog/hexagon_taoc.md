@@ -44,7 +44,7 @@ En effet, dans le cas de l'hexagone, l'angle que l'on recherche ne vaut pas $45�
 
 ![hexagone_taoc-20231211-3](./medias/hex_taoc/hexagone_taoc-20231211-3.png)
 
-Si on fait pivoter le triangle rectangle du schéma ci-dessus on met en évidence le vecteur que l'on recherche (celui décrit par l'hypothénuse)
+Si on fait pivoter le triangle rectangle du schéma ci-dessus on met en évidence le vecteur que l'on recherche (celui décrit par l'hypoténuse).
 
 ![hexagone_taoc-20231211-4](./medias/hex_taoc/hexagone_taoc-20231211-4.png)
 
