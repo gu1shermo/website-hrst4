@@ -21,7 +21,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blog/hexagones.md",
+                "file": "blog/hexagon_taoc.md",
                 "mode": "preview",
                 "source": true
               }
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "blog/hexagones.md",
+                "file": "blog/hexagon_taoc.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -111,7 +111,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "blog/hexagones.md",
+                "file": "blog/hexagon_taoc.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -134,7 +134,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "blog/hexagones.md"
+                "file": "blog/hexagon_taoc.md"
               }
             }
           }
@@ -157,18 +157,21 @@
   },
   "active": "cb703a125c9bc039",
   "lastOpenFiles": [
-    "blog/rendering-mendelbrot.md",
+    "blog/medias/hex_taoc/hexagone_taoc-20231211-31.png",
+    "blog/medias/hex_taoc/hexagone_taoc-20231211-30.png",
+    "blog/medias/hex_taoc/hexagone_taoc-20231211-29.png",
+    "blog/medias/hex_taoc/hexagone_taoc-20231211-28.png",
+    "blog/medias/hex_taoc/hexagone_taoc-20231211-27.png",
+    "blog/medias/hex_taoc/hexagone_taoc-20231211-26.png",
+    "blog/medias/hex_taoc/hexagone_taoc-20231211-25.png",
+    "blog/medias/hex_taoc/hexagone_taoc-20231211-24.png",
+    "blog/medias/hex_taoc/hexagone_taoc-20231211-23.png",
+    "blog/medias/hex_taoc/hexagone_taoc-20231211-22.png",
+    "blog/medias/hex_taoc/hexagone_taoc-20231211-21.png",
+    "blog/medias/hex_taoc",
     "blog/hexagones.md",
-    "blog/medias/hexagone/staggered_dots.png",
-    "blog/medias/hexagone/nonabs.png",
-    "blog/medias/hexagone/inouthex1.png",
-    "blog/medias/hexagone/hexoffset1.png",
-    "blog/medias/hexagone/hexheight2.png",
-    "blog/medias/hexagone/hexgif21.gif",
-    "blog/medias/hexagone/hexgif1.gif",
-    "blog/medias/hexagone/hexdiagonal1.png",
-    "blog/medias/hexagone/hex-11.webp",
-    "blog/medias/hexagone/greenrect1.png",
+    "blog/hexagon_taoc.md",
+    "blog/rendering-mendelbrot.md",
     "blog/medias/hexagone",
     "blog/_index.md",
     "hexgif1.gif.md",
@@ -194,13 +197,11 @@
     "docs/LEARNOPENGL_FR/01_Getting_Started/01_creating a window.md",
     "docs/LEARNOPENGL_FR/01_Getting_Started/00_opengl.md",
     "docs/LEARNOPENGL_FR/02_Lighting/02_Materials/materials.md",
-    "docs/LEARNOPENGL_FR/00_Introduction/introduction.md",
     "docs/assets/hugo.yml",
     "docs/LEARNOPENGL_FR",
     "docs/LEARNOPENGL_FR/06_PBR/03_IBL",
     "docs/LEARNOPENGL_FR/06_PBR",
     "docs/LEARNOPENGL_FR/05_Advanced_Lighting",
-    "docs/LEARNOPENGL_FR/04_Advanced_OpenGL",
-    "docs/LEARNOPENGL_FR/03_Model_Loading"
+    "docs/LEARNOPENGL_FR/04_Advanced_OpenGL"
   ]
 }
