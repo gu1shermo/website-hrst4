@@ -121,36 +121,36 @@
 <p>Première chose à remarquer: la symétrie en $X$ et en $Y$.
 <img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211.png" alt="hexagone_taoc-20231211"/>
 On peut diviser la forme en 4 quadrants, et du coup se concentrer sur un seul quadrant.
-![./medias/hex_taoc/hexagone_taoc-20231211-1.png]
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-1.png" alt="hexagone_taoc-20231211-1"/>
 On remarque 2 lignes, les pixels qui appartiennent à l&rsquo;hexagone se situent à la fois:</p>
 <ul>
 <li><strong>à gauche de la ligne verticale</strong></li>
 <li><strong>et</strong></li>
 <li><strong>en dessous de la ligne diagonale</strong></li>
 </ul>
-<p>![./medias/hex_taoc/hexa_taof.jpg]</p>
+<p><img src="/blog/[./medias/hex_taoc/hexa_taof.jpg" alt="hexa_taof"/></p>
 <h2 id="ligne-verticale">Ligne verticale</h2>
 <p>C&rsquo;est assez simple, on la détermine grâce à la position du pixel en $X$.
-![./medias/hex_taoc/hexa_taof2.jpg]</p>
+<img src="/blog/./medias/hex_taoc/hexa_taof2.jpg" alt="hexa_taof2"/></p>
 <h2 id="ligne-diagonale">Ligne diagonale</h2>
 <p>Pour obtenir n&rsquo;importe quelle ligne arbitraire on peut utiliser le produit scalaire <code>dot(vector1,vector2)</code>.
 On peut par exemple demander le produit scalaire entre un point de l&rsquo;espace et un angle, qui sera exprimé par un ratio en $X$ et $Y$.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> c <span style="color:#f92672">=</span> dot(uv, vec2(<span style="color:#ae81ff">1.</span>,<span style="color:#ae81ff">1.</span>)); <span style="color:#75715e">// donnera un angle de 45°
-</span></span></span></code></pre></div><p>![./medias/hex_taoc/hexa_taof3.jpg]</p>
+</span></span></span></code></pre></div><p><img src="/blog/./medias/hex_taoc/hexa_taof3.jpg" alt="hexa_taof3"/></p>
 <p>Pour une valeur plus juste, il faut penser à normaliser le vecteur, car en l&rsquo;état le vecteur à une longueur de $\sqrt{2}$.</p>
-<p>![[./medias/hex_taoc/hexagone_taoc-20231211-2.png]]
+<p><img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-2.png" alt="hexagone_taoc-20231211-2"/>
 Pour trouver la bonne valeur de l&rsquo;angle, il faut s&rsquo;intéresser aux propriétés de l&rsquo;hexagone.
 En effet, dans le cas de l&rsquo;hexagone, l&rsquo;angle que l&rsquo;on recherche ne vaut pas $45°$.
-![[./medias/hex_taoc/hexagone_taoc-20231211-3.png]]</p>
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-3.png" alt="hexagone_taoc-20231211-3"/></p>
 <p>Si on fait pivoter le triangle rectangle du schéma ci-dessus on met en évidence le vecteur que l&rsquo;on recherche (celui décrit par l&rsquo;hypothénuse)
-![[./medias/hex_taoc/hexagone_taoc-20231211-4.png]]</p>
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-4.png" alt="hexagone_taoc-20231211-4"/></p>
 <p>Il faut donc trouver le ratio $X / Y$ du premier triangle, et ensuite inverser les composantes pour trouver le bon angle. On ne s&rsquo;intéresse pas tellement aux valeurs exactes de $X$ et $Y$ car à la fin le vecteur sera normalisé.
-![[./medias/hex_taoc/hexagone_taoc-20231211-6.png]]</p>
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-6.png" alt="hexagone_taoc-20231211-6"/></p>
 <p>Pour cela, on va doubler la taille du triangle, et considérer l&rsquo;hexagone particulier tel que $Y=1$ (cela n&rsquo;influera pas le résultat, car encore une fois il sera normalisé, de plus on ne s&rsquo;intéresse qu&rsquo;au rapport entre $X$ et $Y$).
-![[./medias/hex_taoc/hexagone_taoc-20231211-7.png]]
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-7.png" alt="hexagone_taoc-20231211-7"/>
 Ce que l&rsquo;on remarque, c&rsquo;est que si $Y = 1$, alors chaque côté de l&rsquo;hexagone vaut $1$.
 On peut donc en déduire que l&rsquo;hypoténuse du grand triangle vaut $2$.
-![[./medias/hex_taoc/hexagone_taoc-20231211-8.png]]
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-8.png" alt="hexagone_taoc-20231211-8"/>
 On fait alors appel au théorème de Pythagore pour trouver la valeur de $X$:</p>
 <p>$$
 \begin{aligned}
@@ -162,13 +162,13 @@ X = \sqrt{3} \approx 1.73
 $$</p>
 <p>Pour retrouver le ratio que l&rsquo;on cherchait au départ, il faut inverser les composantes $X$ et $Y$.
 On trouve donc le ratio <code>vec2(1.,1.73)</code>.
-![[./medias/hex_taoc/hexagone_taoc-20231211-9.png]]
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-9.png" alt="hexagone_taoc-20231211-9"/>
 Et voici le résultat lorsque l&rsquo;on applique la symétrie:
-![[./medias/hex_taoc/hexagone_taoc-20231211-10.png]]
-![[./medias/hex_taoc/hexagone_taoc-20231211-12.png]]
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-10.png" alt="hexagone_taoc-20231211-10"/>
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-12.png" alt="hexagone_taoc-20231211-12"/>
 Il suffit maintenant de calculer l&rsquo;intersection entre la verticale et la diagonale en utilisant la fonction <code>max</code>:
-![[./medias/hex_taoc/hexagone_taoc-20231211-13.png]]
-![./medias/hex_taoc/hexagone_taoc-20231211-14.png]]</p>
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-13.png" alt="hexagone_taoc-20231211-13"/>
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-14.png" alt="hexagone_taoc-20231211-14"/></p>
 <p>Il ne reste plus qu&rsquo;à rassembler tout ça dans une fonction:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">hexSDF</span>(vec2 uv, <span style="color:#66d9ef">float</span> size)
 </span></span><span style="display:flex;"><span>{
@@ -181,50 +181,50 @@ Il suffit maintenant de calculer l&rsquo;intersection entre la verticale et la d
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h1 id="pavage-hexagonal">Pavage hexagonal</h1>
 <p>Commençons par dessiner un pavage classique composé de carrés:
-![[./medias/hex_taoc/hexagone_taoc-20231211-15.png]]
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-15.png" alt="hexagone_taoc-20231211-15"/>
 On va dessiner un deuxième pavage de telle manière que chaque centre des carrés du deuxième pavage se situera dans le coin supérieur droit de chaque carré du premier pavage.
 Comme les coordonnées sont centrées, il suffit de décaler la position des pixels de $0.5$ unités en $X$ et en $Y$.
-![[./medias/hex_taoc/hexagone_taoc-20231211-16.png]]</p>
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-16.png" alt="hexagone_taoc-20231211-16"/></p>
 <p>On centre l&rsquo;origine au milieu de chaque carré grâce à un offset de $0.5$.
-![[./medias/hex_taoc/hexagone_taoc-20231211-17.png]]</p>
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-17.png" alt="hexagone_taoc-20231211-17"/></p>
 <p>Maintenant, pour chaque pixel de l&rsquo;écran, on détermine de quelle grille nous sommes le plus proche.
-![[./medias/hex_taoc/hexagone_taoc-20231211-18.png]]</p>
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-18.png" alt="hexagone_taoc-20231211-18"/></p>
 <p>On peut écrire aussi:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>vec2 guv <span style="color:#f92672">=</span> dot(ga,ga) <span style="color:#f92672">&lt;</span> dot(gb,gb) <span style="color:#f92672">?</span> ga : gb;
 </span></span></code></pre></div><p>Ce que l&rsquo;on remarque, c&rsquo;est&rsquo; que l&rsquo;on obtient des losanges et non des hexagones.
 En effet, un hexagone n&rsquo;a pas une largeur égale à sa hauteur.
 Donc lorsque l&rsquo;on réalise un offset de $0.5$ en $X$ et $Y$ les hexagones vont se superposer, ce qui est incorrect.
-![[./medias/hex_taoc/hexagone_taoc-20231211-19.png]]
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-19.png" alt="hexagone_taoc-20231211-19"/>
 Aussi, si on fait un offset de $1.0$ seulement en $Y$ on aura aussi une superposition.
-![[./medias/hex_taoc/hexagone_taoc-20231211-20.png]]
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-20.png" alt="hexagone_taoc-20231211-20"/>
 Il faudrait donc décaler en $Y$ de telle manière qu&rsquo;il y ait assez de place pour caler un autre hexagone (décalé de $0.5$ en $X$).
-![[./medias/hex_taoc/hexagone_taoc-20231211-21.png]]
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-21.png" alt="hexagone_taoc-20231211-21"/>
 On remarque que ce n&rsquo;est pas d&rsquo;une grille carrée dont on a besoin, mais plutôt d&rsquo;une grille rectangulaire:
-![[./medias/hex_taoc/hexagone_taoc-20231211-22.png]]
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-22.png" alt="hexagone_taoc-20231211-22"/>
 On constate que le vecteur de translation avec cette grille rectangulaire est le même que celui que l&rsquo;on a déterminé pour la SDF de l&rsquo;hexagone. On aura donc le même ratio <code>vec2(1.,1.73)</code>.</p>
 <p>Pour obtenir la grille rectangulaire, il faut utiliser la fonction <code>mod</code> pour répéter l&rsquo;espace de manière arbitraire. (la fonction <code>fract</code> correspond à <strong>modulo 1</strong>).
-![[./medias/hex_taoc/hexagone_taoc-20231211-23.png]]
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-23.png" alt="hexagone_taoc-20231211-23"/>
 Si on choisit la grille la plus proche pour chaque pixel on obtient nos hexagones avec le repère cartésien <em>classique</em>.</p>
-<p>![[./medias/hex_taoc/hexagone_taoc-20231211-24.png]]</p>
+<p><img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-24.png" alt="hexagone_taoc-20231211-24"/></p>
 <p>Maintenant rassemblons tout cela dans une fonction, mais en plus de renvoyer le nouvel espace, on retournera un id qui renverra aussi l&rsquo;id des cellules hexagonales pour savoir dans quelle cellule on se situe.
 La fonction contient donc 4 informations: elle renvoie un <code>vec4</code>.
-![[./medias/hex_taoc/hexagone_taoc-20231211-25.png]]</p>
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-25.png" alt="hexagone_taoc-20231211-25"/></p>
 <p>Pour l&rsquo;id, on remarque que l&rsquo;espace des grilles <code>ga</code> et <code>gb</code> est répété au même rythme. Pour obtenir un identifiant unique on soustrait l&rsquo;espace hexagonal à l&rsquo;espace originel <code>uv</code>.
-![[./medias/hex_taoc/hexagone_taoc-20231211-26.png]]</p>
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-26.png" alt="hexagone_taoc-20231211-26"/></p>
 <p>On multiplie par un nombre plus petit que 1 pour mieux visualiser:
-![[./medias/hex_taoc/hexagone_taoc-20231211-27.png]]</p>
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-27.png" alt="hexagone_taoc-20231211-27"/></p>
 <p>Les coordonnées cartésiennes que l&rsquo;on vient créer sont pratiques pour dessiner dessus, mais pas adaptées si on veut fusionner les cellules.
 On aurait besoin d&rsquo;une information qui nous indique la distance qui nous sépare soit du centre, soit des <em>edges</em> (côtés) de l&rsquo;hexagone.
 Pour cela on peut réutiliser la SDF de l&rsquo;hexagone qui détermine la distance qui nous sépare du centre de l&rsquo;hexagone.
-![[./medias/hex_taoc/hexagone_taoc-20231211-28.png]]</p>
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-28.png" alt="hexagone_taoc-20231211-28"/></p>
 <p>Pour obtenir la distance depuis les edges, on soustrait la distance à $0.5$ car on sait que c&rsquo;est la distance qui nous sépare du centre des rectangles des edges.
-![[./medias/hex_taoc/hexagone_taoc-20231211-29.png]]</p>
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-29.png" alt="hexagone_taoc-20231211-29"/></p>
 <p>On pourrait aussi transmettre l&rsquo;information qui permet de connaître l&rsquo;angle du pixel dans le cercle trigonométrique dans la première composante du <code>vec4</code> grâce à la fonction <code>atan</code>.
-![[./medias/hex_taoc/hexagone_taoc-20231211-30.png]]
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-30.png" alt="hexagone_taoc-20231211-30"/>
 Pour mieux visualiser et éliminer le noir:
-![[./medias/hex_taoc/hexagone_taoc-20231211-31.png]]</p>
+<img src="/blog/./medias/hex_taoc/hexagone_taoc-20231211-31.png" alt="hexagone_taoc-20231211-31"/></p>
 <h2 id="mise-en-pratique">Mise en pratique</h2>
-<p>![[./medias/hex_taoc/hexa01.gif]]</p>
+<p><img src="/blog/./medias/hex_taoc/hexa01.gif" alt="hexa01"/></p>
 <h2 id="code-glsl">Code GLSL</h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 150
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
