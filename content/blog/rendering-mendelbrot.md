@@ -102,13 +102,13 @@ Nous suivons simplement la définition exacte de la fonction que nous avons énu
 
 Cela produit l'image suivante (nombre maximal d'itérations = 100) :
 
-![mandelbrot1bright](./medias/mandelbrot1bright.png)
+![mandelbrot1bright](./medias/mandelbrot/mandelbrot1bright.png)
 
 ## Zoomer à l'intérieur de l'ensemble
 
 En implémentant une interaction simple consistant à zoomer et à explorer l'ensemble, nous pouvons déjà commencer à voir la complexité et la beauté de cet ensemble.
 
-![mandelbrotgif](./medias/mandelbrot.gif)
+![mandelbrotgif](./medias/mandelbrot/mandelbrot.gif)
 
 Mais nous ne voulons certainement pas nous arrêter là. Bien que ces images soient magnifiques et mystérieuses, la représentation graphique de cet ensemble peut être encore plus belle si nous la colorons sur la base de règles mathématiques.
 
@@ -119,17 +119,17 @@ Pour colorer notre graphique de Mandelbrot, nous allons utiliser une technique p
 Un point commun auquel comparer la distance est l'origine $(0,0)$. Ce faisant, nous obtenons la coloration suivante de notre ensemble :
 
 
-![mandelbrotOT1](./medias/mandelbrotOT1.png)
+![mandelbrotOT1](./medias/mandelbrot/mandelbrotOT1.png)
 
-![mandelbrotOT2](./medias/mandelbrotOT2.png)
+![mandelbrotOT2](./medias/mandelbrot/mandelbrotOT2.png)
 
-![mandelbrotOT3](./medias/mandelbrotOT3.png)
+![mandelbrotOT3](./medias/mandelbrot/mandelbrotOT3.png)
 
-![mandelbrotOT4](./medias/mandelbrotOT4.png)
+![mandelbrotOT4](./medias/mandelbrot/mandelbrotOT4.png)
 
-![mandelbrotOT7](./medias/mandelbrotOT7.png)
+![mandelbrotOT7](./medias/mandelbrot/mandelbrotOT7.png)
 
-![mandelbrotOT6](./medias/mandelbrotOT6.png)
+![mandelbrotOT6](./medias/mandelbrot/mandelbrotOT6.png)
 
 Comme il s'agit généralement d'un art, vous pouvez colorier la fractale comme bon vous semble. N'hésitez pas à expérimenter : la plupart des images que j'ai affichées ici ont nécessité beaucoup d'essais et d'erreurs pour obtenir une coloration correcte.
 
@@ -144,7 +144,7 @@ precision highp float;
 ```
 C'est une limitation extrême pour l'application que je voulais écrire : un zoom presque infini dans l'ensemble de Mandelbrot. Pour cette raison, si je continue à zoomer dans mon application après 10 à 15 secondes, j'obtiens les rendus suivants.
 
-![mandelbrotprecision](./medias/mandelbrotprecision.png)
+![mandelbrotprecision](./medias/mandelbrot/mandelbrotprecision.png)
 
 **Il ne s'agit pas d'une image compressée**, mais exactement du rendu que j'obtiens lorsque je zoome trop, en raison des limites de représentation des nombres à virgule flottante dans le GPU.
 

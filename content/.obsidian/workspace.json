@@ -21,7 +21,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blog/hexagon_taoc.md",
+                "file": "blog/rendering-mendelbrot.md",
                 "mode": "source",
                 "source": true
               }
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "blog/hexagon_taoc.md",
+                "file": "blog/rendering-mendelbrot.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -111,7 +111,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "blog/hexagon_taoc.md",
+                "file": "blog/rendering-mendelbrot.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -134,7 +134,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "blog/hexagon_taoc.md"
+                "file": "blog/rendering-mendelbrot.md"
               }
             }
           }
@@ -157,10 +157,11 @@
   },
   "active": "cb703a125c9bc039",
   "lastOpenFiles": [
-    "blog/hexagones.md",
+    "blog/medias/mandelbrot/mandelbrot.gif",
     "blog/hexagon_taoc.md",
+    "blog/medias/mandelbrot",
+    "blog/hexagones.md",
     "blog/rendering-mendelbrot.md",
-    "blog/medias/mandelbrot.gif",
     "blog/medias/hex_taoc/hexagone_taoc-20231211-31.png",
     "blog/medias/hex_taoc/hexagone_taoc-20231211-30.png",
     "blog/medias/hex_taoc/hexagone_taoc-20231211-29.png",
@@ -200,7 +201,6 @@
     "docs/LEARNOPENGL_FR",
     "docs/LEARNOPENGL_FR/06_PBR/03_IBL",
     "docs/LEARNOPENGL_FR/06_PBR",
-    "docs/LEARNOPENGL_FR/05_Advanced_Lighting",
-    "docs/LEARNOPENGL_FR/04_Advanced_OpenGL"
+    "docs/LEARNOPENGL_FR/05_Advanced_Lighting"
   ]
 }
