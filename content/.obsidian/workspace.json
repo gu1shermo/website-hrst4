@@ -19,9 +19,11 @@
             "id": "cb703a125c9bc039",
             "type": "leaf",
             "state": {
-              "type": "image",
+              "type": "markdown",
               "state": {
-                "file": "blog/medias/hex_taoc/hexa01.gif"
+                "file": "blog/hexagon_taoc.md",
+                "mode": "source",
+                "source": true
               }
             }
           }
@@ -92,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "blog/medias/hex_taoc/hexa01.gif",
+                "file": "blog/hexagon_taoc.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -109,7 +111,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "blog/medias/hex_taoc/hexa01.gif",
+                "file": "blog/hexagon_taoc.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -132,7 +134,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "blog/medias/hex_taoc/hexa01.gif"
+                "file": "blog/hexagon_taoc.md"
               }
             }
           }
@@ -155,8 +157,10 @@
   },
   "active": "cb703a125c9bc039",
   "lastOpenFiles": [
-    "blog/hexagon_taoc.md",
     "blog/medias/hex_taoc/hexa01.gif",
+    "blog/medias/hex_taoc/hexa_taof3.jpg",
+    "blog/medias/hex_taoc/hexa_taof.jpg",
+    "blog/hexagon_taoc.md",
     "blog/hexagones.md",
     "blog/rendering-mendelbrot.md",
     "blog/medias/mandelbrot/mandelbrot.gif",
@@ -168,7 +172,6 @@
     "blog/medias/hex_taoc/hexagone_taoc-20231211-27.png",
     "blog/medias/hex_taoc/hexagone_taoc-20231211-26.png",
     "blog/medias/hex_taoc/hexagone_taoc-20231211-25.png",
-    "blog/medias/hex_taoc/hexagone_taoc-20231211-24.png",
     "blog/medias/hex_taoc",
     "blog/medias/hexagone",
     "blog/_index.md",
