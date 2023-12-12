@@ -6,7 +6,22 @@
     <description>Recent content in trad_fr on hrst4.xyz</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 11 Dec 2023 09:06:53 +0100</lastBuildDate><atom:link href="http://hrst4.xyz/tags/trad_fr/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 12 Dec 2023 09:19:38 +0100</lastBuildDate><atom:link href="http://hrst4.xyz/tags/trad_fr/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Truchet TAoC</title>
+      <link>http://hrst4.xyz/truchet_taoc/</link>
+      <pubDate>Tue, 12 Dec 2023 09:19:38 +0100</pubDate>
+      
+      <guid>http://hrst4.xyz/truchet_taoc/</guid>
+      <description>Comment ça marche? Tout d&amp;rsquo;abord on divise l&amp;rsquo;espace en une grille de carrés.
+Dans chaque cellule, on dessine une forme très simple (par exemple une diagonale).
+Pour toutes les cellules:
+Ensuite, on flip les cellules de manière aléatoire.
+Dans Kodelife Tout d&amp;rsquo;abord on divise l&amp;rsquo;espace en multipliant les uv puis en récupérant seulement la partie fractionnelle.
+On décale d&amp;rsquo;un vec2(.5) pour centrer les coordonnées.
+On peut aussi dessiner le contour des cellules à des fins de debug.</description>
+    </item>
+    
     <item>
       <title>Hexagone TAoC</title>
       <link>http://hrst4.xyz/hexagon_taoc/</link>

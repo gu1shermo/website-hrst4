@@ -6,7 +6,43 @@
     <description>Recent content in Tags on hrst4.xyz</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 11 Dec 2023 09:06:53 +0100</lastBuildDate><atom:link href="http://hrst4.xyz/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 12 Dec 2023 09:19:38 +0100</lastBuildDate><atom:link href="http://hrst4.xyz/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>shader</title>
+      <link>http://hrst4.xyz/tags/shader/</link>
+      <pubDate>Tue, 12 Dec 2023 09:19:38 +0100</pubDate>
+      
+      <guid>http://hrst4.xyz/tags/shader/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tiling</title>
+      <link>http://hrst4.xyz/tags/tiling/</link>
+      <pubDate>Tue, 12 Dec 2023 09:19:38 +0100</pubDate>
+      
+      <guid>http://hrst4.xyz/tags/tiling/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>trad_fr</title>
+      <link>http://hrst4.xyz/tags/trad_fr/</link>
+      <pubDate>Tue, 12 Dec 2023 09:19:38 +0100</pubDate>
+      
+      <guid>http://hrst4.xyz/tags/trad_fr/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>truchet</title>
+      <link>http://hrst4.xyz/tags/truchet/</link>
+      <pubDate>Tue, 12 Dec 2023 09:19:38 +0100</pubDate>
+      
+      <guid>http://hrst4.xyz/tags/truchet/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>hexagone</title>
       <link>http://hrst4.xyz/tags/hexagone/</link>
@@ -22,24 +58,6 @@
       <pubDate>Mon, 11 Dec 2023 09:06:53 +0100</pubDate>
       
       <guid>http://hrst4.xyz/tags/sdf/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>shader</title>
-      <link>http://hrst4.xyz/tags/shader/</link>
-      <pubDate>Mon, 11 Dec 2023 09:06:53 +0100</pubDate>
-      
-      <guid>http://hrst4.xyz/tags/shader/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>trad_fr</title>
-      <link>http://hrst4.xyz/tags/trad_fr/</link>
-      <pubDate>Mon, 11 Dec 2023 09:06:53 +0100</pubDate>
-      
-      <guid>http://hrst4.xyz/tags/trad_fr/</guid>
       <description></description>
     </item>
     

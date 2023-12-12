@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="generator" content="Hugo 0.110.0">
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    
+    
+    
+    <title>Truchet TAoC | hrst4.xyz</title>
+    <style>
+    code.has-jax {
+    -webkit-font-smoothing: antialiased;
+    background: inherit !important;
+    border: none !important;
+    font-size: 100%;
+    }
+
+    .font-125 {
+        font-family: cursive;
+        font-weight: 400;
+    }
+    .jumbotron h1{
+        font-family: cursive;
+        font-weight: 800;
+
+    }
+
+    .container {
+      max-width: 700px;
+      
+    }
+    #nav a {
+      font-weight: bold;
+      color: inherit;
+    }
+    #nav-border {
+      border-bottom: 1px solid #212529;
+    }
+    #main {
+       
+      margin-top: 1em;
+      margin-bottom: 4em;
+    }
+    #home-jumbotron {
+      background-color: inherit;
+    }
+    .font-125 {
+      font-size: 125%;
+    }
+    .tag-btn {
+      margin-bottom: 0.3em;
+    }
+    img {
+      max-width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="nav-border" class="container">
+    <nav id="nav" class="nav bg-dark text-white justify-content-center">
+    
+      
+      
+      <a class="nav-link" href="/"><i data-feather="home"></i> Home</a>
+    
+      
+      
+      <a class="nav-link" href="/blog/"><i data-feather="edit"></i> Blog</a>
+    
+      
+      
+      <a class="nav-link" href="/docs/"><i data-feather="database"></i> Doc</a>
+    
+      
+      
+      <a class="nav-link" href="/tags/"><i data-feather="tag"></i> Tags</a>
+    
+    </nav>
+  </div>
+  
+    <div class="jumbotron bg-dark text-white container">
+      <main id="main">
+       
+
+<h1>Truchet TAoC</h1>
+
+
+<i data-feather="calendar"></i> <time datetime="2023-12-12">Dec 12, 2023</time>
+
+
+  <br>
+  <i data-feather="tag"></i>
+  
+  
+  <a class="btn btn-sm btn-outline-light tag-btn" href="/tags/shader">shader</a>
+  
+  
+  <a class="btn btn-sm btn-outline-light tag-btn" href="/tags/tiling">tiling</a>
+  
+  
+  <a class="btn btn-sm btn-outline-light tag-btn" href="/tags/truchet">truchet</a>
+  
+  
+  <a class="btn btn-sm btn-outline-light tag-btn" href="/tags/trad_fr">trad_fr</a>
+  
+
+  
+
+
+
+
+
+
+
+
+<br><br>
+<h1 id="comment-ça-marche">Comment ça marche?</h1>
+<p>Tout d&rsquo;abord on divise l&rsquo;espace en une grille de carrés.</p>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212.png" alt="truchet_taoc-20231212"/></p>
+<p>Dans chaque cellule, on dessine une forme très simple (par exemple une diagonale).</p>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-1.png" alt="truchet_taoc-20231212-1"/></p>
+<p>Pour toutes les cellules:</p>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-2.png" alt="truchet_taoc-20231212-2"/></p>
+<p>Ensuite, on <em>flip</em> les cellules de manière <strong>aléatoire</strong>.</p>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-3.png" alt="truchet_taoc-20231212-3"/></p>
+<h1 id="dans-kodelife">Dans Kodelife</h1>
+<p>Tout d&rsquo;abord on divise l&rsquo;espace en multipliant les uv puis en récupérant seulement la partie fractionnelle.</p>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-4.png" alt="truchet_taoc-20231212-4"/></p>
+<p>On décale d&rsquo;un <code>vec2(.5)</code> pour centrer les coordonnées.</p>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-5.png" alt="truchet_taoc-20231212-5"/></p>
+<p>On peut aussi dessiner le contour des cellules à des fins de debug.</p>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-6.png" alt="truchet_taoc-20231212-6"/></p>
+<p>On dessine une diagonale pour chaque cellule.</p>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-7.png" alt="truchet_taoc-20231212-7"/></p>
+<p>Pour obtenir l&rsquo;autre diagonale, il suffit de soustraire <code>gv.y</code> à <code>gv.x</code>.</p>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-8.png" alt="truchet_taoc-20231212-8"/></p>
+<p>Nous voulons choisir le sens de la diagonale aléatoirement.
+Pour cela nous avons besoin d&rsquo;identifier chaque cellule, on peut faire cela grâce à la fonction <code>floor</code>.</p>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-9.png" alt="truchet_taoc-20231212-9"/></p>
+<p>On utilise cet id unique pour générer un nombre aléatoire, qui déterminera le sens de la diagonale.
+Pour cela on écrit la fonction <code>Hash21</code> (2 pour le nombre d&rsquo;inputs et 1 pour le nombre d&rsquo;outputs).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">Hash21</span>(vec2 p)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	p <span style="color:#f92672">=</span> fract(p<span style="color:#f92672">*</span>vec2(<span style="color:#ae81ff">234.34</span>,<span style="color:#ae81ff">435.345</span>));
+</span></span><span style="display:flex;"><span>	p <span style="color:#f92672">+=</span> dot(p, p<span style="color:#f92672">+</span><span style="color:#ae81ff">34.23</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> fract(p.x<span style="color:#f92672">*</span>p.y);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="/blog/./medias/truchet/truchet_taoc-20231212-10.png" alt="truchet_taoc-20231212-10"/></p>
+<p>On peut utiliser ce nombre aléatoire pour décider du sens de la diagonale.</p>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-11.png" alt="truchet_taoc-20231212-11"/></p>
+<p>On remarque une anomalie aux coins des cellules:
+<img src="/blog/./medias/truchet/truchet_taoc-20231212-12.png" alt="truchet_taoc-20231212-12"/></p>
+<p>Pour y remédier on trace 2 diagonales qui partent du centre des edges.</p>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-13.png" alt="truchet_taoc-20231212-13"/></p>
+<p>Maintenant au lieu de dessiner 2 lignes droites, on pourrait dessiner 2 arcs de cercle.</p>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-14.png" alt="truchet_taoc-20231212-14"/></p>
+<h1 id="rajouter-des-textures">Rajouter des textures</h1>
+<p>D&rsquo;abord on récupère l&rsquo;angle des points situés sur le cercle avec <code>atan</code>.
+On affiche l&rsquo;angle grâce à <code>sin</code> et un mouvement dans le temps.</p>
+<p><img src="/blog/./medias/truchet/atan_truchet.gif" alt="atan_truchet"/></p>
+<h2 id="animer-la-texture">Animer la texture</h2>
+<p>On aimerait que le mouvement ne soit pas inversé entre chaque cellule. Pour cela on utilise <code>mod</code>.
+En l&rsquo;appliquant à <code>id.x + id.y</code> on sélectionne bien les cellules pour lesquelles on veut inverser le mouvement. (une sur deux)</p>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-15.png" alt="truchet_taoc-20231212-15"/></p>
+<p>On décale l&rsquo;intervalle des valeurs (0 ou +1) vers -1 ou +1 pour obtenir le résultat escompté: le mouvement a une direction constante.</p>
+<p>![atan_truchet2 1](./medias/truchet/atan_truchet2 1.gif)</p>
+<h2 id="coordonnées-uv">Coordonnées UV</h2>
+<p>On veut fabriquer des coordonnées UV pour y placer des formes ultérieurement. On normalisera ces coordonnées pour plus de clarté.</p>
+<ul>
+<li>La coordonnée $x$ représente l&rsquo;angle du point situé sur le cercle. (avec <code>atan</code>)</li>
+<li>La coordonnée $y$ représente la position du point sur l&rsquo;axe perpendiculaire à l&rsquo;arc de cercle (un côté du contour à $0$ et l&rsquo;autre côté à $1$).</li>
+</ul>
+<h3 id="la-coordonnée-x">la coordonnée x</h3>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-16.png" alt="truchet_taoc-20231212-16"/></p>
+<h3 id="la-coordonnée-y">la coordonnée y</h3>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-17.png" alt="truchet_taoc-20231212-17"/></p>
+<p>On remarque que la transition pour $y$ n&rsquo;est pas fluide.
+Pour y remédier, on change l&rsquo;intervalle vers $[0.5, 0.0, 0.5]$ &hellip;</p>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-18.png" alt="truchet_taoc-20231212-18"/></p>
+<p>&hellip; puis vers $[1.0, 0.0, 1.0]$ pour normaliser.</p>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-19.png" alt="truchet_taoc-20231212-19"/></p>
+<p>Voici l&rsquo;affichage complet des uvs des arcs de cercle:</p>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-21.png" alt="truchet_taoc-20231212-21"/></p>
+<p>À partir de maintenant, on peut se servir des uvs pour intégrer une texture ou pourquoi pas un autre effet Truchet.</p>
+<p><img src="/blog/./medias/truchet/truchet_taoc-20231212-22.png" alt="truchet_taoc-20231212-22"/></p>
+<p><img src="/blog/./medias/truchet/atan_truchet3.gif" alt="atan_truchet3"/></p>
+<p>On peut utiliser les uvs d&rsquo;origine pour faire varier la taille en $y$.</p>
+<p><img src="/blog/./medias/truchet/atan_truchet5.gif" alt="atan_truchet5"/></p>
+<h1 id="code-glsl">Code GLSL</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#version 150
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">// src:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// https://youtu.be/2R7h76GoIJM
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>uniform <span style="color:#66d9ef">float</span> time;
+</span></span><span style="display:flex;"><span>uniform vec2 resolution;
+</span></span><span style="display:flex;"><span>uniform vec2 mouse;
+</span></span><span style="display:flex;"><span>uniform vec3 spectrum;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>uniform sampler2D texture0;
+</span></span><span style="display:flex;"><span>uniform sampler2D texture1;
+</span></span><span style="display:flex;"><span>uniform sampler2D texture2;
+</span></span><span style="display:flex;"><span>uniform sampler2D texture3;
+</span></span><span style="display:flex;"><span>uniform sampler2D prevFrame;
+</span></span><span style="display:flex;"><span>uniform sampler2D prevPass;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>in VertexData
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    vec4 v_position;
+</span></span><span style="display:flex;"><span>    vec3 v_normal;
+</span></span><span style="display:flex;"><span>    vec2 v_texcoord;
+</span></span><span style="display:flex;"><span>} inData;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>out vec4 fragColor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> <span style="color:#a6e22e">Hash21</span>(vec2 p)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    p <span style="color:#f92672">=</span> fract(p<span style="color:#f92672">*</span>vec2(<span style="color:#ae81ff">234.34</span>,<span style="color:#ae81ff">987.969</span>));
+</span></span><span style="display:flex;"><span>    p <span style="color:#f92672">+=</span> dot(p, p<span style="color:#f92672">+</span><span style="color:#ae81ff">34.23</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> fract(p.x<span style="color:#f92672">*</span>p.y);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">void</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    vec2 uv <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1.</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">2.</span> <span style="color:#f92672">*</span> inData.v_texcoord;
+</span></span><span style="display:flex;"><span>    uv.x <span style="color:#f92672">*=</span> resolution.x <span style="color:#f92672">/</span> resolution.y;
+</span></span><span style="display:flex;"><span>    vec2 UV <span style="color:#f92672">=</span> inData.v_texcoord;
+</span></span><span style="display:flex;"><span>    uv <span style="color:#f92672">+=</span> time<span style="color:#f92672">*</span><span style="color:#ae81ff">.2</span>;
+</span></span><span style="display:flex;"><span>    vec3 col <span style="color:#f92672">=</span> vec3(<span style="color:#ae81ff">0.</span>);
+</span></span><span style="display:flex;"><span>    uv <span style="color:#f92672">*=</span> <span style="color:#ae81ff">1.5</span>;
+</span></span><span style="display:flex;"><span>    vec2 id <span style="color:#f92672">=</span> floor(uv);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    vec2 gv <span style="color:#f92672">=</span> fract(uv)<span style="color:#f92672">-</span><span style="color:#ae81ff">.5</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//if(gv.x &gt; 0.48 || gv.y &gt; 0.48) col = vec3(1.,0.,0.);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> width <span style="color:#f92672">=</span> <span style="color:#ae81ff">.2</span> <span style="color:#f92672">*</span> UV.y; ;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> n <span style="color:#f92672">=</span> Hash21(id); <span style="color:#75715e">// random number between 0 and 1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> mask;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// float d = abs(abs(gv.x - gv.y)-.5); straight lines
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span>(n <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">.5</span>) gv.x <span style="color:#f92672">*=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1.</span>;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> d <span style="color:#f92672">=</span> abs(abs(gv.x<span style="color:#f92672">+</span>gv.y)<span style="color:#f92672">-</span><span style="color:#ae81ff">.5</span>); <span style="color:#75715e">// straight lines
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vec2 cUV <span style="color:#f92672">=</span> gv <span style="color:#f92672">-</span> sign(gv.x <span style="color:#f92672">+</span> gv.y<span style="color:#f92672">+</span><span style="color:#ae81ff">.001</span>)<span style="color:#f92672">*</span><span style="color:#ae81ff">.5</span>; <span style="color:#75715e">// trick pour éviter le zéro
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    d <span style="color:#f92672">=</span> length(cUV); <span style="color:#75715e">// circle
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    mask <span style="color:#f92672">=</span> smoothstep(<span style="color:#ae81ff">0.02</span>, <span style="color:#ae81ff">0.01</span>, abs(d<span style="color:#f92672">-</span><span style="color:#ae81ff">.5</span>)<span style="color:#f92672">-</span>width);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> angle <span style="color:#f92672">=</span>atan(cUV.x, cUV.y);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// méthode 2 avec le produit scalaire
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//mask = step(abs(dot(gv,vec2(-1.,1.))),.02);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// col += mask;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// col.rg = id*.2;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> checker <span style="color:#f92672">=</span> mod(id.x<span style="color:#f92672">+</span>id.y,<span style="color:#ae81ff">2.</span>);
+</span></span><span style="display:flex;"><span>    checker <span style="color:#f92672">=</span> checker <span style="color:#f92672">*</span> <span style="color:#ae81ff">2.</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1.</span>;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> flow <span style="color:#f92672">=</span> sin(checker<span style="color:#f92672">*</span>angle<span style="color:#f92672">*</span><span style="color:#ae81ff">10.</span><span style="color:#f92672">+</span>time);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> x <span style="color:#f92672">=</span> angle; <span style="color:#75715e">// 0 à PI/2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    x <span style="color:#f92672">/=</span> <span style="color:#ae81ff">1.57</span>; <span style="color:#75715e">// 0 à 1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    x <span style="color:#f92672">=</span> fract(checker<span style="color:#f92672">*</span>x<span style="color:#f92672">+</span>time<span style="color:#f92672">*</span><span style="color:#ae81ff">.2</span>); <span style="color:#75715e">// pour prendre en compte les valeurs négatives
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">float</span> y <span style="color:#f92672">=</span> d<span style="color:#f92672">-</span>(<span style="color:#ae81ff">.5</span><span style="color:#f92672">-</span>width);
+</span></span><span style="display:flex;"><span>    y <span style="color:#f92672">/=</span> (<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>width);
+</span></span><span style="display:flex;"><span>    y <span style="color:#f92672">=</span> abs(y<span style="color:#f92672">-</span><span style="color:#ae81ff">.5</span>)<span style="color:#f92672">*</span><span style="color:#ae81ff">2.</span>;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    vec2 tUV <span style="color:#f92672">=</span> vec2(x,y);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//col.rg = tUV * mask;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    col <span style="color:#f92672">+=</span> mask<span style="color:#f92672">*</span> texture(texture0, tUV<span style="color:#f92672">*</span><span style="color:#ae81ff">.5</span>).rgb;
+</span></span><span style="display:flex;"><span>    col <span style="color:#f92672">*=</span> <span style="color:#ae81ff">1.</span><span style="color:#f92672">-</span>tUV.y;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// col.rg = UV;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    fragColor <span style="color:#f92672">=</span> vec4(col,<span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="vidéo-originale">Vidéo originale</h1>
+<p><a href="https://youtu.be/2R7h76GoIJM">https://youtu.be/2R7h76GoIJM</a> (the art of code)</p>
+
+
+
+      </main>
+    </div>
+    
+<script src="/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
+
+
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$','$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  
+    
+    
+    
+    
+  
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  </body>
+</html>
