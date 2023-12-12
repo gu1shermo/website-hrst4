@@ -11,14 +11,6 @@
             "id": "8be4f0cb8ddbe286",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {}
-            }
-          },
-          {
-            "id": "cb703a125c9bc039",
-            "type": "leaf",
-            "state": {
               "type": "markdown",
               "state": {
                 "file": "blog/hexagon_taoc.md",
@@ -26,9 +18,16 @@
                 "source": true
               }
             }
+          },
+          {
+            "id": "cb703a125c9bc039",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {}
+            }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -57,7 +56,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "medias/",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -78,7 +77,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 509.5
+    "width": 226.5
   },
   "right": {
     "id": "35994f4a18c35398",
@@ -155,26 +154,30 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "cb703a125c9bc039",
+  "active": "8be4f0cb8ddbe286",
   "lastOpenFiles": [
-    "[./medias/hex_taoc/hexataof.jpg.md",
-    "blog/hexagon_taoc.md",
     "blog/hexagones.md",
-    "blog/medias/hex_taoc/hexa01.gif",
-    "blog/medias/hex_taoc/hexataof.jpg",
+    "blog/hexagon_taoc.md",
+    "blog/truchet_taoc.md",
+    "blog/medias/truchet/atan_truchet5.gif",
+    "blog/medias/truchet/atan_truchet3.gif",
+    "blog/medias/truchet/atan_truchet2.gif",
+    "blog/medias/truchet/atan_truchet2 1.gif",
+    "blog/medias/truchet/atan_truchet.gif",
+    "blog/medias/truchet/truchet_taoc-20231212-21.png",
+    "blog/medias/truchet/truchet_taoc-20231212-20.png",
+    "blog/medias/truchet/truchet_taoc-20231212-19.png",
+    "blog/medias/truchet/truchet_taoc-20231212-18.png",
+    "blog/medias/truchet/truchet_taoc-20231212-17.png",
+    "blog/medias/truchet",
+    "Untitled 1.canvas",
+    "Untitled.canvas",
+    "[./medias/hex_taoc/hexataof.jpg.md",
     "[./medias/hex_taoc",
     "[./medias",
     "[.",
-    "blog/medias/hex_taoc/hexataof3.jpg",
-    "blog/medias/hex_taoc/hexataof2.jpg",
-    "blog/medias/hex_taoc/hexa_taof2.jpg",
     "blog/rendering-mendelbrot.md",
-    "blog/medias/mandelbrot/mandelbrot.gif",
     "blog/medias/mandelbrot",
-    "blog/medias/hex_taoc/hexagone_taoc-20231211-31.png",
-    "blog/medias/hex_taoc/hexagone_taoc-20231211-30.png",
-    "blog/medias/hex_taoc/hexagone_taoc-20231211-29.png",
-    "blog/medias/hex_taoc/hexagone_taoc-20231211-28.png",
     "blog/medias/hex_taoc",
     "blog/medias/hexagone",
     "blog/_index.md",
@@ -199,8 +202,6 @@
     "docs/LEARNOPENGL_FR/01_Getting_Started/05_textures.md",
     "docs/LEARNOPENGL_FR/01_Getting_Started/03_hello triangle.md",
     "docs/LEARNOPENGL_FR/01_Getting_Started/01_creating a window.md",
-    "docs/LEARNOPENGL_FR/01_Getting_Started/00_opengl.md",
-    "docs/assets/hugo.yml",
-    "docs/LEARNOPENGL_FR"
+    "docs/assets/hugo.yml"
   ]
 }
