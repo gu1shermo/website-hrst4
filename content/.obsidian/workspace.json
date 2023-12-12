@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blog/hexagon_taoc.md",
+                "file": "blog/truchet_taoc.md",
                 "mode": "source",
                 "source": true
               }
@@ -77,7 +77,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 226.5
+    "width": 385.5
   },
   "right": {
     "id": "35994f4a18c35398",
@@ -93,7 +93,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "blog/hexagon_taoc.md",
+                "file": "blog/truchet_taoc.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -110,7 +110,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "blog/hexagon_taoc.md",
+                "file": "blog/truchet_taoc.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -133,7 +133,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "blog/hexagon_taoc.md"
+                "file": "blog/truchet_taoc.md"
               }
             }
           }
@@ -156,13 +156,13 @@
   },
   "active": "8be4f0cb8ddbe286",
   "lastOpenFiles": [
-    "blog/hexagones.md",
-    "blog/hexagon_taoc.md",
+    "blog/medias/truchet/atan_truchet21.gif",
     "blog/truchet_taoc.md",
+    "blog/hexagon_taoc.md",
+    "blog/hexagones.md",
     "blog/medias/truchet/atan_truchet5.gif",
     "blog/medias/truchet/atan_truchet3.gif",
     "blog/medias/truchet/atan_truchet2.gif",
-    "blog/medias/truchet/atan_truchet2 1.gif",
     "blog/medias/truchet/atan_truchet.gif",
     "blog/medias/truchet/truchet_taoc-20231212-21.png",
     "blog/medias/truchet/truchet_taoc-20231212-20.png",

@@ -92,7 +92,7 @@ En l'appliquant à `id.x + id.y` on sélectionne bien les cellules pour lesquell
 
 On décale l'intervalle des valeurs (0 ou +1) vers -1 ou +1 pour obtenir le résultat escompté: le mouvement a une direction constante.
 
-![atan_truchet2 1](./medias/truchet/atan_truchet2 1.gif)
+![atan_truchet21](./medias/truchet/atan_truchet21.gif)
 
 ## Coordonnées UV
 On veut fabriquer des coordonnées UV pour y placer des formes ultérieurement. On normalisera ces coordonnées pour plus de clarté.
