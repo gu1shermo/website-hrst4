@@ -156,8 +156,9 @@
   },
   "active": "8be4f0cb8ddbe286",
   "lastOpenFiles": [
-    "blog/medias/truchet/atan_truchet21.gif",
+    "blog/rendering-mendelbrot.md",
     "blog/truchet_taoc.md",
+    "blog/medias/truchet/atan_truchet21.gif",
     "blog/hexagon_taoc.md",
     "blog/hexagones.md",
     "blog/medias/truchet/atan_truchet5.gif",
@@ -176,7 +177,6 @@
     "[./medias/hex_taoc",
     "[./medias",
     "[.",
-    "blog/rendering-mendelbrot.md",
     "blog/medias/mandelbrot",
     "blog/medias/hex_taoc",
     "blog/medias/hexagone",
